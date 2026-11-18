@@ -37,7 +37,7 @@ iorlas-brainstorm).
 - Before you write a decision, look for an earlier one that asks the same question and for an earlier removal of the
   same thing. Add an option to the old decision; do not open a second one (untested).
 - Structure (layout, layers, kinds, paths): before recommending to remove or change it, search the owner's earlier answers
-  (`ogy find`, `ogy history`); a conflict goes into the decision's `heard` (a paraphrase), so the card shows "differs". "Unused in captures" is never by
+  (`ogy find`, `ogy history`); a conflict goes into the decision's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....". "Unused in captures" is never by
   itself a reason to remove structure the owner asked for. A structural decision (`structure: true`) is asked on its own
   card, never in an accept-all (`yes`, `yes all`, `decide`).
 

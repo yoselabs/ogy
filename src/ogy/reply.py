@@ -29,7 +29,8 @@ from ogy.edit import Editor
 from ogy.kinds import NAME
 from ogy.model import Address
 from ogy.rounds import Round, Shown
-from ogy.settle import decisions
+from ogy.settle import Decision, decisions
+from ogy.status import delegated
 from ogy.target import Target
 from ogy.verdict import NotFound
 from ogy.writes import Clock, Said, WriteRefused, agree, answer, commit, current, files, said, stamp, utc_now
@@ -159,6 +160,15 @@ def _yes(target: Target, found: Round, words: Said, group: str | None) -> str:
     return "; ".join([*confirmed, f"agreed to {len(cards)} sentence(s)"])
 
 
+def _recommended(decision: Decision | None) -> object:
+    """What `yes all` answers: the guess of a question, the option in force of a decision an agent answered under delegation."""
+    if decision is None:
+        return None
+    if decision.answers:
+        return decision.in_force.option if delegated(decision) and decision.in_force else None
+    return decision.guess.fields.get("chose") if decision.guess else None
+
+
 def _accept_all(target: Target, found: Round, words: Said) -> str:
     """`yes all` / `decide`: the recommended option of every question and agreement to every card, with the one paraphrase."""
     done: list[str] = []
@@ -173,8 +183,8 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
             kept.append(f"{card.address} is structural: it needs its own letter ({card.label} a), not yes all")
         else:
             snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
-            found_decision = next((d for d in decisions(snapshot) if str(d.address) == card.address and not d.answers), None)
-            chose = found_decision.guess.fields.get("chose") if found_decision and found_decision.guess else None
+            found_decision = next((d for d in decisions(snapshot) if str(d.address) == card.address), None)
+            chose = _recommended(found_decision)
             if not isinstance(chose, str) or chose not in card.options:
                 kept.append(f"{card.address} has no recommended option: choose one ({card.label} a)")
                 continue

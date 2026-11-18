@@ -79,11 +79,14 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   review cards and removed items hold it. The build hash adds the proofs and what the kind's `fingerprint.also` and
   `fingerprint.reached` paths read; only the built record and work left compare it. A new proof or a changed dependency is
   work, never a question for the owner.
+- Once a decision has an answer, its guess is inert: nothing compares it with the answer and nobody rewrites it. A decision an
+  agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
 - A guess that rests on what the owner said carries a paraphrase: `guess.heard: {said}`. The review card reads
   "You said (paraphrased): .... Read as B." and one `yes` records the answer, chosen option B.
 - `ogy review` keeps the cards it showed as a round, by id (the last 10, in the Git directory).
   `ogy reply --round <id>` resolves against that round (required over MCP; on the CLI the newest round is the default): `yes`, `yes 1 3`, `2: <new sentence>` (replaces and agrees), `no 4` (the sentence becomes a
-  question; why, paraphrased, goes in `--said`), `Q1 b` (option B or its key), `later`, `yes all` (or `decide`: every question gets its recommended option, the guess, and
+  question; why, paraphrased, goes in `--said`), `Q1 b` (option B or its key), `later`, `yes all` (or `decide`: every question gets its recommended option, the guess, a decision an agent answered under delegation
+  gets a person's answer for the option in force, and
   every card is agreed to; a card that changed stays in the queue and is reported; a structural decision stays too, see Layout). A bare `yes` to a round shown with `--all` is
   refused: name the cards, or spell `yes all`. A card whose entry changed since it was shown is refused and stays in
   the queue. Natural words ("Fine, go ahead, I suppose.") are read by the agent as a grammar line (`yes`), with the hedge

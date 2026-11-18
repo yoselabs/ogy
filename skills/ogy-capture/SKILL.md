@@ -99,7 +99,7 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
    - Every area holds its `area.yml` (`says`: what it covers; `distinct`: what belongs next door). Read it before writing
      into an area; a new area brings its `area.yml` in the same `ogy put`.
    - Before recommending to remove or change structure, search the owner's earlier answers (`ogy find <words>`,
-     `ogy history`). A conflict goes into the decision's `heard` (a paraphrase), so the card shows "differs".
+     `ogy history`). A conflict goes into the decision's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....".
    - "Unused in captures" is never by itself a reason to remove structure the owner asked for.
    - Ask a structural decision (`structure: true`) on its own card, never in an accept-all (`yes`, `yes all`, `decide`).
 

@@ -8,7 +8,7 @@ from ogy.pages import pages
 from ogy.removed import Item, is_address
 from ogy.settle import decisions
 from ogy.snapshot import Snapshot
-from ogy.status import MAX_CARDS, Card, Label, Status, agreed_hashes, guess_differs, label, queue, status
+from ogy.status import MAX_CARDS, Card, Label, Status, agreed_hashes, label, queue, status
 from ogy.verdict import NotFound
 
 
@@ -89,21 +89,19 @@ class Dropped:
 
     guessed_no: tuple[Address, ...]  # the AI's guess in force says no (sets an address to null)
     unexplained: tuple[str, ...]  # removed ids whose `why` is null (older removals; a new one always has a why)
-    differs: tuple[Address, ...]  # the guess is not the owner's answer (also a card)
     plain_why: tuple[str, ...] = ()  # removed ids whose `why` is plain words, not the address of a decision
     noted: tuple[Address, ...] = ()  # decisions with an answer that carries a note: the owner's hedge or condition
     delegated: tuple[Address, ...] = ()  # decisions with an answer an agent gave under a delegation: the person may veto it
 
     def __len__(self) -> int:
-        return sum(len(group) for group in (self.guessed_no, self.unexplained, self.differs, self.plain_why, self.noted, self.delegated))
+        return sum(len(group) for group in (self.guessed_no, self.unexplained, self.plain_why, self.noted, self.delegated))
 
 
 def dropped(snapshot: Snapshot, ledger: list[Item]) -> Dropped:
     found = decisions(snapshot)
     guessed = [d.address for d in found if (force := d.in_force) and not force.by_answer and None in force.sets.values()]
-    differs = [d.address for d in found if guess_differs(d)]
     noted = [d.address for d in found if any(a.note for a in d.answers)]
     delegated = [d.address for d in found if any(a.who == "ai" for a in d.answers)]
     plain = [item.id for item in ledger if item.why is not None and not is_address(item.why)]
-    return Dropped(tuple(guessed), tuple(item.id for item in ledger if item.why is None), tuple(differs), tuple(plain), tuple(noted),
+    return Dropped(tuple(guessed), tuple(item.id for item in ledger if item.why is None), tuple(plain), tuple(noted),
                    tuple(delegated))

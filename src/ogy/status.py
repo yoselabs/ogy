@@ -36,14 +36,15 @@ class Label(StrEnum):
 
 @dataclass(frozen=True)
 class Card:
-    """One thing the review asks: a `question` (a decision), or a `yes` (decided by AI) or a `changed` entry."""
+    """One thing the review asks: a `question` (a decision with no answer), a `delegated` decision (an agent answered it under
+    the owner's delegation: the owner may confirm or veto), or a `yes` (decided by AI) or a `changed` entry."""
 
-    kind: str  # question, differs (the guess is not the answer), yes (decided by AI) or changed
+    kind: str  # question, delegated, yes (decided by AI) or changed
     address: Address
     harm: Harm | None
     dependants: int
     text: str = ""  # the question, or the sentence asked about
-    guess: str = ""  # the option the AI guessed, for a question
+    guess: str = ""  # the option the AI guessed, for a question; the option in force, for a delegated decision
     fingerprint: str = ""  # of the entry or decision as shown: a reply that finds another one is refused
     options: tuple[tuple[str, str], ...] = ()  # (key, label) of a question's options, the AI's guess first
     heard: str = ""  # what the owner said that the guess rests on, paraphrased: one yes answers the question with the guess
@@ -140,15 +141,17 @@ def rank(tag: Harm | None) -> int:
     return list(Harm).index(tag) if tag is not None else len(Harm)
 
 
-def guess_differs(decision: Decision) -> bool:
-    """The AI's guess names an option other than the one the owner's newest answer chose."""
-    force, chose = decision.in_force, decision.guess.fields.get("chose") if decision.guess else None
-    return bool(force and force.by_answer and isinstance(chose, str) and chose != force.option)
+def delegated(decision: Decision) -> bool:
+    """The answer in force is an agent's, under the owner's delegation: once a decision has an answer its guess is inert."""
+    force = decision.in_force
+    return bool(force and force.by_answer and force.delegated)
 
 
 def _reason(decision: Decision) -> str:
     """The line under a question: why the AI guessed it, unless the guess rests on the owner's words (the card's `heard` line)."""
-    fields = decision.guess.fields if decision.guess and not (decision.heard and not decision.answers) else {}
+    if decision.answers:
+        return ""
+    fields = decision.guess.fields if decision.guess and not decision.heard else {}
     value = fields.get("why")
     return f"AI guess because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
@@ -156,8 +159,9 @@ def _reason(decision: Decision) -> str:
 def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], kind: str) -> Card:
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
     tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=rank)
-    guess = decision.guess.fields.get("chose") if decision.guess else None
-    keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess first: it is the recommended one, letter A
+    force = decision.in_force
+    guess = force.option if decision.answers and force else decision.guess.fields.get("chose") if decision.guess else None
+    keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
     said = decision.heard.fields.get("said") if decision.heard and not decision.answers else None
     options = tuple((key, str(snapshot.entries[decision.address.part("option", key)].fields.get("label", key))) for key in keys)
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
@@ -196,11 +200,11 @@ def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Addr
 
 
 def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
-    """Questions (and guesses that differ from the answer), then entries decided by AI and entries changed since agreed
-    , each group by harm then dependants; at most `limit` in all (None: every one)."""
+    """Questions and the decisions an agent answered under delegation, then entries decided by AI and entries changed since
+    agreed, each group by harm then dependants; at most `limit` in all (None: every one)."""
     count, hashes = dependants(snapshot), agreed_hashes(snapshot)
-    questions = [_asked(snapshot, decision, count, "question" if not decision.answers else "differs")
-                 for decision in decisions(snapshot) if not decision.answers or guess_differs(decision)]
+    questions = [_asked(snapshot, decision, count, "question" if not decision.answers else "delegated")
+                 for decision in decisions(snapshot) if not decision.answers or delegated(decision)]
     cards: list[Card] = []
     for address in snapshot.entries:
         if "says" not in snapshot.kind_of(address).fields or not snapshot.kind_of(address).asked:

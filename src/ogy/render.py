@@ -115,10 +115,11 @@ def _card(label: str, card: Card) -> list[str]:
     if card.avoid:
         lines.append(f"   not: {'; '.join(card.avoid)}")
     for letter, (key, text) in zip(string.ascii_uppercase, card.options, strict=False):
-        lines.append(f"   {letter}. {text}" + ("  (recommended)" if key == card.guess else ""))
+        mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
+        lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))
     if card.harm is Harm.STRUCTURE:
         lines.append(f"   Structural: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
-    if card.kind in ("question", "differs") and not card.options:
+    if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")
     keys = [key for key, _ in card.options]
     if card.heard and card.guess in keys:
@@ -183,7 +184,6 @@ def render_review_md(found: Review) -> list[str]:
 def render_dropped(found: Dropped) -> list[str]:
     lines = [f"guess says no, nobody has seen it: {address}" for address in found.guessed_no]
     lines += [f"removed with no why: {item}" for item in found.unexplained]
-    lines += [f"guess differs from the answer: {address}" for address in found.differs]
     lines += [f"removed with plain words, not a decision: {item}" for item in found.plain_why]
     lines += [f"answer with a note (the owner's hedge or condition): {address}" for address in found.noted]
     lines += [f"answer an agent gave under a delegation (the owner may veto): {address}" for address in found.delegated]
