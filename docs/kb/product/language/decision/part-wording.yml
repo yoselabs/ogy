@@ -5,7 +5,7 @@ options:
     label: The parent's full address, then the part's kind and key
     sets:
       product/shared/term/part:
-        says: An entry that lives inside another entry's file and is addressed by its parent's address, its kind and its key (<layer>/<area>/<kind>/<id>/<part kind>/<key>), such as a step of a workflow or an option of a decision.
+        says: "An entry inside its parent's file, addressed <parent>/<kind>/<key>: a step, an option."
   keep:
     label: 'Keep: area/kind/id/part-kind/key'
     sets:

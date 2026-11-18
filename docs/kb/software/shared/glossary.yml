@@ -1,12 +1,6 @@
 - id: built-record
   word: built record
-  says: The tool-written file under built/ that holds, per entry, the hash that was proved and built; work left is computed from it.
-  group: built
-  src:
-  - code:src/ogy/built.py#read_all
-  distinct:
-  - a field inside the entry
-  - something an agent edits
+  says: "Tool-written files under built/: each entry's built hash; never in entries, never hand-edited."
   avoid:
   - meta
   - receipts inside entries
@@ -18,13 +12,7 @@
     hash: ca3674d31c1b
 - id: proof
   word: proof
-  says: A test, written path.py::function, that shows a rule or value holds in code.
-  group: built
-  src:
-  - code:src/ogy/evidencecheck.py#_proofs
-  distinct:
-  - evidence, which says where a sentence came from
-  - a message
+  says: A test, path.py::function, showing a rule or value holds in code; not evidence.
   agreed:
     at: '2026-11-17T23:25:57+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -33,14 +21,7 @@
     hash: 521d810d9391
 - id: software-ontology
   word: software ontology
-  says: 'The ontology shipped with ogy that describes a software product: goals, actors, workflows, entities, rules, decisions and the glossary; a repository names it in ogy.yml.'
-  group: ontology
-  src:
-  - code:src/ogy/ontology.py#DEFAULT_ONTOLOGY
-  distinct:
-  - a requirements-only model
-  - a plugin
-  - a copy of kinds in each repository
+  says: ogy's shipped ontology for software, named in ogy.yml; never copied, no plugin, not requirements-only.
   avoid:
   - v5
   - requirements ontology

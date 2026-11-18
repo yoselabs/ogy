@@ -128,6 +128,7 @@ class Problem(StrEnum):
     NO_GUESS = "no-guess"
     WORD_CLASH = "word-clash"
     AVOIDED_WORD = "avoided-word"
+    TERM_TOO_LONG = "term-too-long"
     TERM_NOT_AGREED = "term-not-agreed"
     PROPOSED_TERM = "proposed-term"
     EDITED_APPEND_ONLY = "edited-append-only"

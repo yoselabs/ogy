@@ -5,22 +5,22 @@
   - code:src/taskloop/land.py#_branch
 - id: claim
   word: claim
-  says: The tracker's mark that the factory is working on a task; it is taken when the task is admitted and lapses unless renewed.
+  says: The tracker's mark that the factory works on a task; it lapses unless renewed.
   src:
   - code:src/taskloop/claim_lease.py#KeepAlive
 - id: gate
   word: gate
-  says: Everything that decides whether checks pass - the checks, their setup, the required names, tool configuration files and the tests.
+  says: 'Whatever decides whether checks pass: checks, setup, required names, tool configs, tests.'
   src:
   - code:src/taskloop/land_gate.py#Gate
 - id: land
   word: land
-  says: To finish a task's delivery - its change accepted on origin's main and the task closed in the tracker.
+  says: "To finish a delivery: the change on origin's main and the task closed."
   src:
   - code:src/taskloop/land.py#land
 - id: squash
   word: S
-  says: The one commit that holds the checked commit's whole change on top of the target tip.
+  says: The one commit holding the checked commit's whole change on the target tip.
   src:
   - code:src/taskloop/land_target.py#made_s
 - id: target-tip

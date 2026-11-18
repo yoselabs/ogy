@@ -1,11 +1,6 @@
 - id: shape
   word: shape
-  says: 'How a kind is stored: one file per entry (entity), one list file per area (list), one entry per area in a named file (single), or a part inside another entry (inline).'
-  group: ontology
-  src:
-  - code:src/ogy/kinds.py#Shape
-  distinct:
-  - the fields of a kind
+  says: 'How a kind is stored: entity, list, single or inline; not its fields.'
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

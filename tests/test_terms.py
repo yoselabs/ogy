@@ -1,10 +1,15 @@
 """The glossary checks T1-T5 and the terminal listing."""
 
+from collections.abc import Callable
+
+from tests.conftest import Kb
+
 from ogy.model import Address, Problem
 from ogy.ontology import packaged
 from ogy.snapshot import Snapshot, build
 from ogy.terms import check_terms, glossary_lines, proposed_terms, terms_not_agreed
 
+type Make = Callable[[dict[str, str | None] | None], Kb]
 LAND = "- {id: land, word: land, says: To finish a delivery., avoid: [merge, check run]}\n"
 
 
@@ -16,12 +21,14 @@ def problems(snapshot: Snapshot) -> set[tuple[object, str]]:
     return {(f.problem, str(f.address)) for f in check_terms(snapshot)}
 
 
-def test_term_has_says_or_of() -> None:
-    both = snap("- {id: a, word: a, says: x., of: product/shared/term/b}\n- {id: b, word: b}\n"
-                "- {id: c, word: c, of: product/shared/term/b}\n")
-    assert problems(both) == {(Problem.ONE_OF, "product/shared/term/a"), (Problem.ONE_OF, "product/shared/term/b"),
-                              (Problem.WRONG_TYPE, "product/shared/term/a"), (Problem.WRONG_TYPE, "product/shared/term/c")}
+def test_a_term_says_one_line_of_under_15_words(kb: Make) -> None:
+    long = "- {id: a, word: a, says: " + " ".join(["word"] * 15) + "}\n- {id: b, word: b, says: \"One.\\nTwo.\"}\n"
+    assert problems(snap(long)) == {(Problem.TERM_TOO_LONG, "product/shared/term/a"), (Problem.TERM_TOO_LONG, "product/shared/term/b")}
     assert problems(snap(LAND)) == set()
+    old = "- {id: fee, word: fee, of: product/app/value/fee, distinct: [a price], group: Money, example: x, borrowed: 'https://x.org'}\n"
+    found = kb({"product/app/glossary.yml": old}).findings()
+    assert {problem for problem, _ in found} == {Problem.NEEDS_MIGRATION, Problem.MISSING_FIELD}  # `ogy migrate`, then a `says`
+    assert not kb({"product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings(evidence=True)
 
 
 def test_word_clash() -> None:
@@ -55,7 +62,7 @@ def test_proposed_term_blocks_landing() -> None:
 
 
 def test_glossary_lines_print_the_shared_terms_then_each_area() -> None:
-    kb = snap(LAND, **{"software/app/glossary.yml": "- {id: x, word: X, says: The commit., distinct: [O]}\n",
+    kb = snap(LAND, **{"software/app/glossary.yml": "- {id: x, word: X, says: The commit.}\n",
                        "software/shared/glossary.yml": "- {id: y, word: Y, says: A run.}\n"})
     assert glossary_lines(kb) == ["product/shared:", "  land: To finish a delivery.", "    avoid: merge; check run",
-                                  "software/shared:", "  Y: A run.", "software/app:", "  X: The commit.", "    distinct: O"]
+                                  "software/shared:", "  Y: A run.", "software/app:", "  X: The commit."]

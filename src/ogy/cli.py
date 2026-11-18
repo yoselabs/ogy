@@ -90,7 +90,7 @@ def _asks(commands: Adder) -> None:
     asking.add_argument("area", nargs="?", help="only this area")
     asking.add_argument("--all", action="store_true", help="every card, not the first 7")
     asking.add_argument("--from", dest="source", choices=["docs", "code"],
-                        help="page through what nobody agreed to yet that came from documents (a section or a term group per page) "
+                        help="page through what nobody agreed to yet that came from documents (a section or the terms of an area per page) "
                              "or from code (an area per page); `yes` agrees to the page")
     asking.add_argument("--page", type=int, default=1, help="with --from: the page (default 1; agreed pages drop out)")
     asking.add_argument("--md", action="store_true", help="Markdown, to paste into a ticket")

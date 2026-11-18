@@ -16,7 +16,7 @@ options:
     label: The name of an entry, <layer>/<area>/<kind>/<id>; a part adds its kind and key; a term has no layer or area
     sets:
       product/shared/term/address:
-        says: 'The name of an entry: <layer>/<area>/<kind>/<id>; a part adds its own kind and key; a term is glossary/term/<id>, with no layer or area.'
+        says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
 guess:
   chose: fable-wording
   why: The owner chose this on 2026-11-18.

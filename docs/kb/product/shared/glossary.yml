@@ -1,26 +1,12 @@
 - id: actor
   word: actor
-  says: 'Whoever uses or operates the product: a person (nature human), an AI model (nature ai) or a third-party system that invokes a workflow (nature program); an entry of the kind actor.'
-  group: ontology
-  because:
-  - software/ontology/rule/one-actor-kind
-  - software/ontology/rule/who-is-an-actor
-  - software/ontology/rule/actor-program
-  distinct:
-  - a message, which is what an actor said
-  - an external, which the product depends on and which is never the actor of a step
+  says: 'Who uses or operates the product: human, ai or program; never an external.'
   avoid:
   - persona
   - role
 - id: address
   word: address
-  says: 'The name of an entry: <layer>/<area>/<kind>/<id>; a part adds its own kind and key; a term is glossary/term/<id>, with no layer or area.'
-  group: tool
-  src:
-  - code:src/ogy/model.py#parse_address
-  distinct:
-  - a file path
-  - a link, which holds an address
+  says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
   agreed:
     at: '2026-11-18T14:57:15+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -29,13 +15,7 @@
     hash: ddad087056e8
 - id: agreement
   word: agreement
-  says: A person's yes in a review round to the sentence now on an entry, kept on the entry with its fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
-  group: decisions
-  src:
-  - code:src/ogy/status.py#agreed_in
-  distinct:
-  - a stored status
-  - a proposal by a person versus by an agent
+  says: A person's yes to a sentence's fingerprint, whoever proposed it; status computed, never stored.
   avoid:
   - standing
   - ratified
@@ -50,14 +30,7 @@
     hash: 931302e469d2
 - id: answer
   word: answer
-  says: The choice of one option of a decision, kept with a short paraphrase of what was said, who (a person, or an agent under a delegation), when and where; the newest is in force.
-  group: decisions
-  src:
-  - code:src/ogy/settle.py#Answer
-  distinct:
-  - a guess
-  - a quote, which ogy never keeps
-  - something an agent may write for the owner
+  says: Option chosen by the owner or delegated agent, paraphrased, never quoted; not a guess.
   avoid:
   - ratified
   agreed:
@@ -68,13 +41,7 @@
     hash: d123c5c5a242
 - id: area
   word: area
-  says: The folder under a layer that groups entries by topic; named after a topic, never the product. The same name under both layers is two areas.
-  group: ontology
-  src:
-  - code:src/ogy/layout.py#locate
-  distinct:
-  - a kind
-  - a layer
+  says: A topic folder in one layer, never named like the product; not a kind.
   avoid:
   - subject
   - product axis
@@ -86,13 +53,7 @@
     hash: d58bc0427a6f
 - id: because
   word: because
-  says: 'A chain of links to entries that reach a source: the sentence was concluded, widened or combined, not said.'
-  group: evidence
-  src:
-  - code:src/ogy/evidencecheck.py#_grounded
-  distinct:
-  - src
-  - an answer
+  says: 'Links to entries reaching a source: concluded, not said; neither src nor answer.'
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -101,7 +62,7 @@
     hash: 3db734241ef2
 - id: constitution
   word: constitution
-  says: 'The fixed folder constitution/: every principle, printed whole to every agent before it writes.'
+  says: 'The fixed folder constitution/: every principle, printed whole to every agent first.'
   agreed:
     at: '2026-11-18T17:33:54+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -110,14 +71,7 @@
     hash: 02e3d80f8531
 - id: decision
   word: decision
-  says: One question with its options, the guess that is built meanwhile and the owner's answers; the only home of a question and its answers.
-  group: decisions
-  src:
-  - code:src/ogy/settle.py#Decision
-  distinct:
-  - a bead or ticket, which may only mirror it
-  - a source
-  - a message
+  says: A question, its options, guess and answers; beads only mirror it; never a source.
   avoid:
   - settles
   - ?open
@@ -129,13 +83,7 @@
     hash: 42e0de35613d
 - id: entry
   word: entry
-  says: One item of one kind in the knowledge base, with an id that never changes; it is named by its address.
-  group: tool
-  src:
-  - code:src/ogy/model.py#Entry
-  distinct:
-  - a file (one file may hold many entries)
-  - a part, which lives inside another entry
+  says: One item of a kind with a permanent id; one file may hold many.
   agreed:
     at: '2026-11-18T14:57:15+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -144,13 +92,7 @@
     hash: 7540b4620ddf
 - id: evidence
   word: evidence
-  says: 'What an entry needs for itself: a src, a because chain that reaches one, or a deciding decision; without it ogy check reports no-evidence.'
-  group: evidence
-  src:
-  - code:src/ogy/evidencecheck.py#_no_evidence
-  distinct:
-  - proof, which shows the code does it
-  - agreement, which shows the owner accepts it
+  says: An entry's src, because chain or deciding decision; not proof, not agreement.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -159,13 +101,7 @@
     hash: 9b5338bf0577
 - id: fingerprint
   word: fingerprint
-  says: A short hash of the meaning fields of an entry; notes, src and the built record are outside it, so editing them changes no agreement.
-  group: decisions
-  src:
-  - code:src/ogy/snapshot.py#fingerprint
-  distinct:
-  - a commit hash
-  - a version number
+  says: Hash of an entry's meaning, notes and src aside; neither commit hash nor version.
   agreed:
     at: '2026-11-17T23:39:17+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -174,13 +110,7 @@
     hash: 4a05ec0f562d
 - id: guess
   word: guess
-  says: 'What is built while a decision has no answer: an option the AI chose, or values, with the reason.'
-  group: decisions
-  src:
-  - code:src/ogy/settle.py#Force
-  distinct:
-  - an answer
-  - anything the owner said
+  says: The AI's option or values and why, built until the owner answers; not theirs.
   avoid:
   - assumed
   - ?assumed
@@ -192,13 +122,7 @@
     hash: 4430c18105f0
 - id: harm-tag
   word: harm tag
-  says: 'A word that a kind or field declares in harm: for what a wrong sentence costs; review sorts its queue by it.'
-  group: review
-  src:
-  - code:src/ogy/kinds.py#Harm
-  distinct:
-  - a risk score
-  - a gate
+  says: What a wrong sentence costs (harm:); it ranks review; neither risk score nor gate.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -207,13 +131,7 @@
     hash: a0635ecd717a
 - id: id
   word: id
-  says: The permanent name of an entry within its kind and area; it is never reused, even after the entry is removed, while its title may change.
-  group: tool
-  src:
-  - code:src/ogy/put.py#_new
-  distinct:
-  - the title, which can be renamed
-  - the address, which also holds the area and kind
+  says: An entry's permanent name in its kind and area, never reused; unlike its title.
   avoid:
   - slug
   agreed:
@@ -224,13 +142,7 @@
     hash: c0ab0c866083
 - id: kind
   word: kind
-  says: The shape of one sort of entry, declared as a file in the ontology's kinds folder; it lists the fields, links and checks of its entries.
-  group: ontology
-  src:
-  - code:src/ogy/kinds.py#Kind
-  distinct:
-  - a field type (text, number, link)
-  - an entry
+  says: A sort of entry; its file lists fields, links, checks; not a field type.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -239,13 +151,7 @@
     hash: a3b243cdb366
 - id: layer
   word: layer
-  says: 'One of the two top folders: product (what it does and why) or software (how it is built). Every entry except a term lives in exactly one; each kind lists the layers it may appear in.'
-  group: ontology
-  src:
-  - code:src/ogy/layout.py#locate
-  distinct:
-  - an area
-  - a decision's kind of question
+  says: 'Top folder: product (what, why) or software (how); holds areas, not question types.'
   agreed:
     at: '2026-11-18T14:57:15+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -254,13 +160,7 @@
     hash: d3dba0f5f5c6
 - id: 'null'
   word: 'null'
-  says: "In an option's sets, the one way to say no, not now or removed: under that option the entry does not exist."
-  group: decisions
-  src:
-  - code:src/ogy/settle.py#settles
-  distinct:
-  - a missing field
-  - a scope or status field
+  says: 'In sets: no, not now or removed; neither a missing field nor a status.'
   avoid:
   - scope
   - rejected
@@ -274,13 +174,7 @@
     hash: a98b61dc80ed
 - id: ontology
   word: ontology
-  says: The kinds, fields and checks that say what an entry may be, kept as kind files; the knowledge base holds the entries.
-  group: ontology
-  src:
-  - code:src/ogy/ontology.py#Ontology
-  distinct:
-  - the knowledge base
-  - a plugin
+  says: Kind files saying what entries may be; not the knowledge base, not a plugin.
   avoid:
   - schema
   agreed:
@@ -291,13 +185,7 @@
     hash: b075bec4ea02
 - id: owner
   word: owner
-  says: The person who decides the business questions of the product; an agent records what the owner said as a short paraphrase and never answers or agrees for them.
-  group: tool
-  src:
-  - code:src/ogy/writes.py#agree
-  distinct:
-  - an agent
-  - a user of the product
+  says: The person deciding business questions; an agent only paraphrases them, never answers for them.
   avoid:
   - user
   agreed:
@@ -308,12 +196,7 @@
     hash: e214c8304276
 - id: part
   word: part
-  says: An entry that lives inside another entry's file and is addressed by its parent's address, its kind and its key (<layer>/<area>/<kind>/<id>/<part kind>/<key>), such as a step of a workflow or an option of a decision.
-  group: tool
-  src:
-  - code:src/ogy/model.py#Address.part
-  distinct:
-  - an entry with its own file
+  says: "An entry inside its parent's file, addressed <parent>/<kind>/<key>: a step, an option."
   agreed:
     at: '2026-11-18T15:01:29+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -322,7 +205,7 @@
     hash: 9fd5fc7b6f08
 - id: principle
   word: principle
-  says: A statement every design decision is judged against; decisions cite it as their reason; kept in constitution/. The spoken word "values" means these.
+  says: A statement decisions are judged against and cite; in constitution/; the owner says values.
   avoid:
   - value-as-principle
   agreed:
@@ -333,13 +216,7 @@
     hash: 5055a02082cc
 - id: question
   word: question
-  says: A decision with no answer yet; it is a thing in its own list, not a state of an entry.
-  group: decisions
-  src:
-  - code:src/ogy/status.py#Status
-  distinct:
-  - a sentence in force
-  - a card
+  says: 'An unanswered decision, listed apart: not an entry state, a sentence or a card.'
   avoid:
   - ?open
   - open question
@@ -351,13 +228,7 @@
     hash: 8a3f30293642
 - id: read-back
   word: read-back
-  says: 'Playing the entries back to the owner as plain sentences in three groups: what you said, what we concluded and what we guessed; one yes agrees to a group.'
-  group: review
-  src:
-  - doc:61048d84cd375c433ec891246697eb413736ea29:skills/elicit/SKILL.md#6-read-back
-  distinct:
-  - a review round
-  - a summary
+  says: Entries played back as said, concluded, guessed; neither a summary nor a review round.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -366,14 +237,7 @@
     hash: 201ffa068daa
 - id: removed-ledger
   word: removed ledger
-  says: The append-only file removed.yml of an area, written only by ogy remove, that keeps each removed entry's envelope and snapshot so an id is never reused and the entry can be found without Git.
-  group: built
-  src:
-  - code:src/ogy/removed.py#append
-  distinct:
-  - Git history
-  - a change log
-  - a restore command
+  says: 'Append-only removed.yml of an area: snapshots, ids never reused; not Git, log or restore.'
   avoid:
   - tombstone
   - retired
@@ -385,13 +249,7 @@
     hash: 3f2a2a6e38dd
 - id: review-round
   word: review round
-  says: The cards that ogy review showed, kept so that ogy reply resolves against them; at most 7 cards.
-  group: review
-  src:
-  - code:src/ogy/rounds.py#Round
-  distinct:
-  - a read-back
-  - a land
+  says: Cards ogy review kept, at most 7, for ogy reply; neither read-back nor land.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -400,14 +258,7 @@
     hash: 17a2f342d65b
 - id: src
   word: src
-  says: 'The place a sentence came from: a code: link or a doc: link, and nothing else.'
-  group: evidence
-  src:
-  - code:src/ogy/evidence.py#check_item
-  distinct:
-  - an authority (only a person's yes agrees)
-  - part of the fingerprint
-  - a decision, which is never a source
+  says: "A sentence's code: or doc: link; not authority, not a decision, outside the fingerprint."
   avoid:
   - origin
   - provenance
@@ -419,13 +270,7 @@
     hash: 0021903be0d6
 - id: term
   word: term
-  says: "A word of the glossary: one word of the product's language with its meaning, what it is not and the names to avoid; the owner must agree to it."
-  group: glossary
-  src:
-  - code:src/ogy/terms.py#check_terms
-  distinct:
-  - a code identifier
-  - a kind
+  says: 'Glossary word: its line, what to avoid, owner-agreed; neither code name nor kind.'
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -434,13 +279,7 @@
     hash: 1236189be557
 - id: work-left
   word: work left
-  says: 'What the built record says is still to do: a fingerprint that differs from what was built, a dependency hash that differs, or a required proof that is missing.'
-  group: built
-  src:
-  - code:src/ogy/receipts.py#work_left
-  distinct:
-  - a task list
-  - a bead
+  says: 'Still to build: changed fingerprints or dependencies, missing proofs; not tasks or beads.'
   agreed:
     at: '2026-11-17T23:25:57+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

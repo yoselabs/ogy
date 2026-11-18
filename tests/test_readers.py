@@ -15,7 +15,7 @@ def test_the_shipped_fields_name_their_readers(ontology: Ontology) -> None:
     assert {"flow", "requires", "links and impact", "fingerprint"} <= set(found[("step", "actor")])
     assert found[("guess", "sets")] == ["exactly_one_of", "settling"]
     assert "fingerprint path" in found[("external", "pin")]  # an operation that uses the external reads its pin
-    assert found[("term", "example")] == [] and found[("area", "distinct")] == []
+    assert found[("area", "distinct")] == [] and "check term-too-long" in found[("term", "says")]
     assert found[("decision", "context")] == ["check avoided-word"]  # a note: outside every fingerprint
 
 
@@ -24,5 +24,5 @@ def test_a_field_nothing_reads_is_listed(repo: Path) -> None:
     texts = {f"kinds/{item.name}": item.read_text() for item in root.iterdir()}
     texts["kinds/area.yml"] += "  colour: {note: true}\n"
     assert readers(parse_kinds(texts, packaged().layers))[("area", "colour")] == []
-    code, lines = ogy(repo, "kinds", "term", "--readers")
-    assert code == cli.OK and "term.example: nothing" in lines and lines[-2].startswith("read by nothing (2): term.borrowed")
+    code, lines = ogy(repo, "kinds", "area", "--readers")
+    assert code == cli.OK and "area.distinct: nothing" in lines and lines[-2] == "read by nothing (1): area.distinct"

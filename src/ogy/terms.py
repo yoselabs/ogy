@@ -8,12 +8,13 @@ import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
 from ogy.kinds import SHARED_AREA
-from ogy.model import Address, Entry, Finding, Problem, link_values, parse_address
+from ogy.model import Address, Entry, Finding, Problem, link_values
 from ogy.snapshot import Snapshot
 from ogy.source import Source
 from ogy.status import Agreement, Status, agreement, status
 
 TERM = "term"
+TERM_WORDS = 15  # a term's `says` has fewer words than this
 TEXT_FIELDS = frozenset({"says", "title", "question", "label", "context", "why"})
 _CODE = re.compile(r"`[^`]*`")
 _WORD = re.compile(r"[a-z0-9]+")  # ids split at - and _ too
@@ -65,16 +66,13 @@ def _avoided(snapshot: Snapshot, entries: list[Entry]) -> list[Finding]:
     return found
 
 
-def _meaning(snapshot: Snapshot, entry: Entry) -> list[Finding]:
-    """T1: exactly one of `says`, `of`, and `of` names no term."""
-    found: list[Finding] = []
-    if (entry.fields.get("says") is None) == (entry.fields.get("of") is None):
-        found.append(Finding(Problem.ONE_OF, entry.path, "a term has exactly one of says, of", entry.address))
-    for link in link_values(entry.fields.get("of")):
-        target = parse_address(link, snapshot.ontology)
-        if target is not None and target.kind == TERM:
-            found.append(Finding(Problem.WRONG_TYPE, entry.path, f"of names a term: {link}", entry.address))
-    return found
+def _compressed(entry: Entry) -> list[Finding]:
+    """T1: a term says what it means in one line of under 15 words."""
+    says = entry.text("says") or ""
+    if "\n" in says.strip() or len(says.split()) >= TERM_WORDS:
+        return [Finding(Problem.TERM_TOO_LONG, entry.path, f"a term says one line of under {TERM_WORDS} words, not {len(says.split())}",
+                        entry.address)]
+    return []
 
 
 def _clashes(entries: list[Entry]) -> list[Finding]:
@@ -95,7 +93,7 @@ def _clashes(entries: list[Entry]) -> list[Finding]:
 def check_terms(snapshot: Snapshot, source: Source | None = None) -> list[Finding]:
     """T1, T2 and T3."""
     entries = terms(snapshot)
-    found = [problem for entry in entries for problem in _meaning(snapshot, entry)]
+    found = [problem for entry in entries for problem in _compressed(entry)]
     return [*found, *_clashes(entries), *_avoided(snapshot, entries)]
 
 
@@ -131,11 +129,9 @@ def glossary_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
         found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=_word)
         lines += [f"{where}:"] if found else []
         for entry in found:
-            meaning = entry.text("says") or f"see {', '.join(link_values(entry.fields.get('of')))}"
-            lines.append(f"  {entry.text('word')}: {meaning}")
-            for label in ("distinct", "avoid"):
-                if items := link_values(entry.fields.get(label)):
-                    lines.append(f"    {label}: {'; '.join(items)}")
+            lines.append(f"  {entry.text('word')}: {entry.text('says')}")
+            if items := link_values(entry.fields.get("avoid")):
+                lines.append(f"    avoid: {'; '.join(items)}")
     return lines
 
 

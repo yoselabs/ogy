@@ -16,7 +16,7 @@ options:
     label: The folder under a layer that groups entries by topic, never named after the product
     sets:
       product/shared/term/area:
-        says: The folder under a layer that groups entries by topic; named after a topic, never the product. The same name under both layers is two areas.
+        says: A topic folder in one layer, never named like the product; not a kind.
 guess:
   chose: fable-wording
   why: The owner chose this on 2026-11-18.

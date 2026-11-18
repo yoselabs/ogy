@@ -6,13 +6,9 @@ layers: [product, software]
 shared: true                                         # a word two areas use lives in <layer>/shared/glossary.yml
 moved_from: glossary/terms.yml                       # the one global list it was; `ogy migrate` moves it to product/shared
 must_be_agreed: true                                 # agreed in a review round, or proposed by a decision with no answer yet
-exactly_one_of: [[says, of]]                         # a meaning has one home
+evidence: none                                       # it keeps no sources: where a word is used is computed from the sentences
 fields:
   word: {required: true}                             # the word people say (`land`, `X`, `task tracker`); a term writes no `title`
-  says: {}                                           # the definition, one sentence
-  of: {type: link, to: [any]}                        # the entry that models this word; any kind but `term`
-  distinct: {type: texts}                            # what it is not
+  says: {required: true}                             # what it means, one line of under 15 words (`term-too-long`)
   avoid: {type: texts}                               # words and phrases never used for this concept; retired names live here
-  example: {note: true}
-  borrowed: {type: uri, schemes: [https], note: true}   # the page the word is borrowed from
-  group: {note: true}                                # the heading `ogy glossary` prints it under
+dropped: [of, distinct, example, borrowed, group]    # a term is compressed: what it is not goes into says or avoid first

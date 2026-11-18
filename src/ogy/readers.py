@@ -21,10 +21,8 @@ NAMED: dict[str, tuple[str, ...]] = {
     "guess.why": ("check avoided-word", "printer review"),
     "principle.why": ("check avoided-word", "printer glossary"),
     "term.word": ("check word-clash", "printer glossary"),
+    "term.says": ("check term-too-long", "printer glossary"),
     "term.avoid": ("check avoided-word", "check word-clash", "printer glossary"),
-    "term.of": ("check one-of", "check wrong-type", "printer glossary"),
-    "term.distinct": ("printer glossary",),
-    "term.group": ("printer glossary",),
 }
 
 type Reads = dict[tuple[str, str], set[str]]

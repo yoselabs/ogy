@@ -63,7 +63,7 @@ class Review:
     source: str = ""  # `docs` or `code` when the cards are a page of what came from there
     page: int = 0
     pages: int = 0
-    title: str = ""  # the page's document section, term group or area
+    title: str = ""  # the page's document section, the terms of an area, or an area
 
 
 def _headers(snapshot: Snapshot, area: str | None) -> list[Header]:

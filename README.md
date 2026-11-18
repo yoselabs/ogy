@@ -105,7 +105,9 @@ declares `every_area`, so an area folder without it is `missing-entry`, and a wr
 no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folder
 `constitution/` is no area. An area or kind at the top, or an unknown layer, is `bad-path`. A folder that holds only its `removed.yml`
 is an area no more.
-- The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. Each layer has the reserved area `shared`, a
+- The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. A term is compressed: `word`, `says` (one
+  line of under 15 words, else `term-too-long`) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
+  from the sentences. Each layer has the reserved area `shared`, a
   normal area with its `area.yml`: a term, an actor or a set that two areas use lives there (`product/shared/glossary.yml`,
   `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, set and area)
   may live there; any other is `bad-path`, and `ogy move` into `shared` refuses it. Which shared entry fewer than two areas use is

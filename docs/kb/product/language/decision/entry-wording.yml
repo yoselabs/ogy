@@ -16,7 +16,7 @@ options:
     label: One item of one kind with an id that never changes, named by its address
     sets:
       product/shared/term/entry:
-        says: One item of one kind in the knowledge base, with an id that never changes; it is named by its address.
+        says: One item of a kind with a permanent id; one file may hold many.
 guess:
   chose: fable-wording
   why: The owner chose this on 2026-11-18.

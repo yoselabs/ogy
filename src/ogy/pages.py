@@ -1,6 +1,6 @@
 """`ogy review --from docs|code`: the entries nobody has agreed to whose sentence came from a document or from code, paged.
 
-A page is one document section (or one term group) for `docs`, one area for `code`, cut to at most `PAGE` cards. A page is
+A page is one document section (or the terms of one area) for `docs`, one area for `code`, cut to at most `PAGE` cards. A page is
 a round like any other: the owner's `yes` agrees to all of it, `yes 2 5` to some. What the owner agreed to leaves the pages."""
 
 from dataclasses import dataclass
@@ -24,7 +24,7 @@ def _group(snapshot: Snapshot, card: Card, source: Label) -> str:
     if source is Label.CODE:
         return f"{card.address.home}: from code"
     if card.word:
-        return f"{card.address.home}: terms, {fields.get('group') or 'no group'}"
+        return f"{card.address.home}: terms"
     where = next((item for item in link_values(fields.get("src")) if item.startswith("doc:")), "doc:")
     return f"{card.address.home}: {where.removeprefix('doc:').partition(':')[2] or where.removeprefix('doc:')}"
 

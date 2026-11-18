@@ -16,7 +16,7 @@ options:
     label: 'One of the two top folders: product (what and why) or software (how it is built)'
     sets:
       product/shared/term/layer:
-        says: 'One of the two top folders: product (what it does and why) or software (how it is built). Every entry except a term lives in exactly one; each kind lists the layers it may appear in.'
+        says: 'Top folder: product (what, why) or software (how); holds areas, not question types.'
 guess:
   chose: fable-wording
   why: The owner chose this on 2026-11-18.

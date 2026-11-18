@@ -124,8 +124,9 @@ at its top. Each layer has the area `shared` (`product/shared/`): only the terms
 there; everything else lives in the area that owns it. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
 - Run `just ogy glossary` first, before reading code or writing a sentence: it prints the constitution (the principles every decision is
   judged against; cite one with `because`), then the glossary: the shared terms, then each area's (`<layer>/<area>/glossary.yml`);
-  `just ogy glossary <layer>/<area>` prints one area's terms with the shared ones it reads. Read both; use the words it prints. A word
-  one area uses goes in that area's glossary, one that two areas use in the `shared` area of their layer. `just ogy status` shows where things
+  `just ogy glossary <layer>/<area>` prints one area's terms with the shared ones it reads. Read both; use the words it prints. A term
+  is `word`, `says` (one line of under 15 words) and `avoid`, nothing else; it needs no source. A word one area uses goes in that
+  area's glossary, one that two areas use in the `shared` area of their layer. `just ogy status` shows where things
   stand; `just ogy find <words>` searches live and removed entries (search before you propose); `just ogy show <address>` reads one.
 - Add and change entries with ONE command, `just ogy put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
   (`just ogy put '[{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}]'`). An address that exists is changed (`"field": null` removes a
