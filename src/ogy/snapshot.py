@@ -27,12 +27,12 @@ def _plain(value: object) -> object:
 
 
 def fingerprint(kind: Kind, entry: Entry, parts: Sequence[object] = (), also: Sequence[object] = (), proofs: bool = True) -> str:
-    """A short hash of the entry's kind, its fields that are not notes, and the content of its unkeyed parts.
+    """A short hash of the entry's kind, its fields that are set and are not notes, and the content of its unkeyed parts.
 
-    `src` and the other common fields are outside it. A kind may add the set of its proof ids and values reached along
-    link paths (`also`)."""
-    payload: dict[str, object] = {"kind": kind.kind, **{name: _plain(entry.fields.get(name)) for name, spec in sorted(kind.fields.items())
-                                                        if not spec.note}}
+    `src` and the other common fields are outside it, and so is a field the entry leaves unset: a kind that gains a field
+    changes no fingerprint. A kind may add the set of its proof ids and values reached along link paths (`also`)."""
+    payload: dict[str, object] = {"kind": kind.kind, **{name: _plain(entry.fields[name]) for name, spec in sorted(kind.fields.items())
+                                                        if not spec.note and entry.fields.get(name) is not None}}
     if parts:
         payload["parts"] = list(parts)
     if kind.fingerprint.proofs and proofs:

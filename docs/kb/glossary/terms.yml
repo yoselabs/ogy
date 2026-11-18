@@ -12,7 +12,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to both
-    hash: 7e974bfe1cc0
+    hash: 7540b4620ddf
 - id: part
   word: part
   says: An entry that lives inside another entry's file and is addressed by its parent's address, its kind and its key (<layer>/<area>/<kind>/<id>/<part kind>/<key>), such as a step of a workflow or an option of a decision.
@@ -26,7 +26,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes
-    hash: e723793603d2
+    hash: 9fd5fc7b6f08
 - id: id
   word: id
   says: The permanent name of an entry within its kind and area; it is never reused, even after the entry is removed, while its title may change.
@@ -43,7 +43,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: 0dcf3ad17597
+    hash: c0ab0c866083
 - id: address
   word: address
   says: 'The name of an entry: <layer>/<area>/<kind>/<id>; a part adds its own kind and key; a term is glossary/term/<id>, with no layer or area.'
@@ -58,7 +58,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to both
-    hash: 68e86ead499d
+    hash: ddad087056e8
 - id: kind
   word: kind
   says: The shape of one sort of entry, declared as a file in the ontology's kinds folder; it lists the fields, links and checks of its entries.
@@ -73,7 +73,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: 993b5966cbcd
+    hash: a3b243cdb366
 - id: shape
   word: shape
   says: 'How a kind is stored: one file per entry (entity), one list file per area (list), one entry per area in a named file (single), or a part inside another entry (inline).'
@@ -105,7 +105,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to both
-    hash: b73176995adf
+    hash: d58bc0427a6f
 - id: layer
   word: layer
   says: 'One of the two top folders: product (what it does and why) or software (how it is built). Every entry except a term lives in exactly one; each kind lists the layers it may appear in.'
@@ -120,7 +120,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to both
-    hash: 0258b737dc64
+    hash: d3dba0f5f5c6
 - id: src
   word: src
   says: 'The place a sentence came from: a code: link or a doc: link, and nothing else.'
@@ -154,7 +154,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: d9c34e3d84c3
+    hash: 3db734241ef2
 - id: evidence
   word: evidence
   says: 'What an entry needs for itself: a src, a because chain that reaches one, or a deciding decision; without it ogy check reports no-evidence.'
@@ -169,7 +169,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: d81776507c65
+    hash: 9b5338bf0577
 - id: decision
   word: decision
   says: One question with its options, the guess that is built meanwhile and the owner's answers; the only home of a question and its answers.
@@ -188,7 +188,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Left the glossary page to the agent; no term changed
-    hash: 11bc36787819
+    hash: 42e0de35613d
 - id: guess
   word: guess
   says: 'What is built while a decision has no answer: an option the AI chose, or values, with the reason.'
@@ -206,7 +206,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Left the glossary page to the agent; no term changed
-    hash: a392f986f007
+    hash: 4430c18105f0
 - id: answer
   word: answer
   says: The choice of one option of a decision, kept with a short paraphrase of what was said, who (a person, or an agent under a delegation), when and where; the newest is in force.
@@ -260,7 +260,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Left the glossary page to the agent; no term changed
-    hash: 3838f17a58a7
+    hash: 4a05ec0f562d
 - id: 'null'
   word: 'null'
   says: "In an option's sets, the one way to say no, not now or removed: under that option the entry does not exist."
@@ -280,7 +280,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Left the glossary page to the agent; no term changed
-    hash: 8c7ed0441dc2
+    hash: a98b61dc80ed
 - id: question
   word: question
   says: A decision with no answer yet; it is a thing in its own list, not a state of an entry.
@@ -298,7 +298,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Left the glossary page to the agent; no term changed
-    hash: 9a3075f506e8
+    hash: 8a3f30293642
 - id: proof
   word: proof
   says: A test, written path.py::function, that shows a rule or value holds in code.
@@ -313,7 +313,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Tentative yes to the glossary page
-    hash: 2c5d66690a2e
+    hash: 521d810d9391
 - id: built-record
   word: built record
   says: The tool-written file under built/ that holds, per entry, the hash that was proved and built; work left is computed from it.
@@ -331,7 +331,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Tentative yes to the glossary page
-    hash: 3eb3f90d5824
+    hash: ca3674d31c1b
 - id: work-left
   word: work left
   says: 'What the built record says is still to do: a fingerprint that differs from what was built, a dependency hash that differs, or a required proof that is missing.'
@@ -346,7 +346,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Tentative yes to the glossary page
-    hash: dacb3f102b44
+    hash: 3efac8d876ca
 - id: removed-ledger
   word: removed ledger
   says: The append-only file removed.yml of an area, written only by ogy remove, that keeps each removed entry's envelope and snapshot so an id is never reused and the entry can be found without Git.
@@ -365,7 +365,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Tentative yes to the glossary page
-    hash: 4aa2d1bf05bb
+    hash: 3f2a2a6e38dd
 - id: term
   word: term
   says: "A word of the glossary: one word of the product's language with its meaning, what it is not and the names to avoid; the owner must agree to it."
@@ -380,7 +380,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: b1864eceaa07
+    hash: 1236189be557
 - id: ontology
   word: ontology
   says: The kinds, fields and checks that say what an entry may be, kept as kind files; the knowledge base holds the entries.
@@ -397,7 +397,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: 52ebcdb92d9d
+    hash: b075bec4ea02
 - id: software-ontology
   word: software ontology
   says: 'The ontology shipped with ogy that describes a software product: goals, actors, workflows, entities, rules, decisions and the glossary; a repository names it in ogy.yml.'
@@ -448,7 +448,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: 6f4f1260a886
+    hash: 201ffa068daa
 - id: review-round
   word: review round
   says: The cards that ogy review showed, kept so that ogy reply resolves against them; at most 7 cards.
@@ -463,7 +463,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: 004e067014bf
+    hash: 17a2f342d65b
 - id: harm-tag
   word: harm tag
   says: 'A word that a kind or field declares in harm: for what a wrong sentence costs; review sorts its queue by it.'
@@ -478,7 +478,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to the rest of the glossary
-    hash: a8f325c7650f
+    hash: a0635ecd717a
 - id: principle
   word: principle
   says: A statement every design decision is judged against; decisions cite it as their reason; kept in constitution/. The spoken word "values" means these.
@@ -489,7 +489,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to all four
-    hash: bae49793fae4
+    hash: 5055a02082cc
 - id: constitution
   word: constitution
   says: 'The fixed folder constitution/: every principle, printed whole to every agent before it writes.'
@@ -498,7 +498,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
     said: Yes to all four
-    hash: e603ca37fe4b
+    hash: 02e3d80f8531
 - id: actor
   word: actor
   says: 'Whoever uses or operates the product: a person (nature human), an AI model (nature ai) or a third-party system that invokes a workflow; an entry of the kind actor.'
