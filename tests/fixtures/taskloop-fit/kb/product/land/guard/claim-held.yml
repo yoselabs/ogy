@@ -1,0 +1,5 @@
+says: Nothing new is delivered for a task the factory no longer holds in the tracker.
+"on": product/land/workflow/land/step/continue
+when: {text: the tracker shows the task in progress and assigned to the factory's actor, reads: [software/claim/external/bd]}
+else: product/land/workflow/land/end/claim-lost
+src: ["code:src/taskloop/land.py#_tracker"]

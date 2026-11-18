@@ -1,0 +1,30 @@
+title: Where the constitution lives
+structure: true
+question: The owner wants the knowledge base to hold the values that every design decision is judged against (the constitution). Where do they live, and under what name?
+context: Two Fable consults on 2026-11-18 (a paper simulation over ogy, task-loop and a booking app); the owner asked about a layer above or beside product and software, and a tree of constitutions per layer.
+options:
+  one-folder:
+    label: One fixed folder constitution/ beside glossary/, kind principle, no tags; agent operating rules stay in AGENTS.md
+    sets:
+      software/ontology/rule/constitution-is-one-folder:
+        says: 'The constitution is one fixed folder, constitution/, beside glossary/: entries of the kind principle at constitution/principle/<id>, agreed only by the owner, cited by decisions as their reason and printed whole to every agent. It has no tags or sub-lists; agent operating rules (worktrees, gates, caps) stay in AGENTS.md, skills and linters.'
+  layer-tag:
+    label: The same folder, plus an optional tag naming what it binds (product, software, code)
+    sets:
+      software/ontology/rule/constitution-is-one-folder:
+        says: The constitution is one fixed folder, constitution/, with kind principle; each principle may carry a tag naming what it binds (product, software, code) that filters what is printed.
+  third-layer:
+    label: A third layer beside product and software, with areas
+    sets:
+      software/ontology/rule/constitution-is-one-folder:
+        says: A third layer holds the constitution in areas, beside product/ and software/.
+guess:
+  chose: one-folder
+  why: In the simulation about half the principles bind both layers; a split per layer duplicates them and agents in one layer miss the other's. One short list keeps one address per principle.
+answers:
+- chose: one-folder
+  note: tentative
+  said: Follow the consult's guidance
+  from: human
+  at: '2026-11-18T16:59:17+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

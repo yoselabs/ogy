@@ -1,0 +1,18 @@
+- id: ask-the-owner
+  says: ogy shows the owner the questions and the entries nobody agreed to as numbered cards, the most harmful first, and keeps them as a review round.
+  serves:
+  - product/review/goal/fewest-questions
+  src:
+  - code:src/ogy/status.py#queue
+- id: apply-a-reply
+  says: "ogy applies the owner's reply to the round it answers: agree to sentences, choose an option, replace a sentence, reopen a sentence as a question, or leave a card for later."
+  serves:
+  - product/review/goal/requirements-agreed
+  src:
+  - code:src/ogy/reply.py#reply
+- id: page-captured-facts
+  says: ogy pages through the entries nobody agreed to that came from documents or from code, one document section or one area per page, and one yes agrees to a page.
+  serves:
+  - product/review/goal/requirements-agreed
+  src:
+  - code:src/ogy/pages.py#pages

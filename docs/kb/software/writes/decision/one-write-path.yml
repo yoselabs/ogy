@@ -1,0 +1,22 @@
+question: Is there one command to create and update entries, taking an array of records?
+context: '`new --from file` was proposed as a shortcut for many entries; the owner asked for one path to create and update (O4).'
+options:
+  put:
+    label: One command, `ogy put`, creates or updates entries from an array of records
+    sets:
+      software/writes/rule/one-write-path:
+        says: '`ogy put` is the one write path for creating and updating entries; it takes an array of records.'
+  new-from-file:
+    label: '`new --from <file>` for many entries, `set` for updates'
+    sets:
+      software/writes/rule/one-write-path:
+        says: Entries are created with `ogy new` (also from a file) and changed with `ogy set`.
+guess:
+  chose: put
+  why: One path is easier to learn and to check than two.
+answers:
+- chose: put
+  said: One write path that takes many records
+  from: human
+  at: '2026-11-17T21:38:17.324+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900

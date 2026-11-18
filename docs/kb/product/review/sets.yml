@@ -1,0 +1,24 @@
+- id: reply-items
+  says: What one item of a reply to a review round may be.
+  members:
+  - yes
+  - yes all
+  - decide
+  - yes <cards>
+  - '<n>: <sentence>'
+  - no <n> [words]
+  - Q<n> <option>
+  - 'Q<n>: <words>'
+  - later
+  src:
+  - code:src/ogy/reply.py#_apply
+- id: harm-tags
+  says: The harm tags a kind or field may declare, in the order the review asks them.
+  members:
+  - structure
+  - moves-money
+  - tells-outside
+  - irreversible
+  - who-is-allowed
+  src:
+  - code:src/ogy/kinds.py#Harm

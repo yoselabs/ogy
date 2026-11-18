@@ -1,0 +1,17 @@
+format: 1
+items:
+- id: software/checks/rule/area-named-like-the-product-warns
+  kind: rule
+  parent:
+  title:
+  said: An area named like the repository is a warning in check and status, never a finding, and it never changes the exit code.
+  why: the owner asked that an area named like the product be an error, not a warning
+  replaced_by: software/checks/rule/area-named-like-the-product-is-an-error
+  at: 2026-11-18 18:27:08+00:00
+  last_seen: 684eec37ee8205d58671eacf6270697b7ab0db0e
+  hash: 1eba5d276e3a
+  ontology: software
+  snapshot:
+    says: An area named like the repository is a warning in check and status, never a finding, and it never changes the exit code.
+    src:
+    - code:src/ogy/coverage.py#area_warnings

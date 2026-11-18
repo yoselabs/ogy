@@ -1,0 +1,22 @@
+question: How does a decision say no, not now or removed?
+context: A proposal that is dropped silently is lost; the owner had to search transcripts to find a refused idea.
+options:
+  null-in-sets:
+    label: "`null` in an option's `sets`"
+    sets:
+      software/writes/rule/null-in-sets-is-no:
+        says: "`null` in an option's sets is the one way to say no, not now or removed: under that option the entry does not exist."
+  status-field:
+    label: A status field on the entry
+    sets:
+      software/writes/rule/null-in-sets-is-no:
+        says: An entry carries a field that says it is not done, later or removed.
+guess:
+  chose: null-in-sets
+  why: The owner's answer then picks that option, and nothing needs a new field.
+answers:
+- chose: null-in-sets
+  said: Null in an option means no
+  from: human
+  at: '2026-11-17T18:56:25.058+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6636

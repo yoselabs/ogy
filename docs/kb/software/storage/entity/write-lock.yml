@@ -1,0 +1,17 @@
+says: The file ogy.lock in the Git directory that one ogy write holds at a time.
+src:
+- code:src/ogy/writes.py#locked
+states:
+  free:
+    says: No write holds the lock.
+  held:
+    says: One write holds it; another write is refused.
+transitions:
+  acquire:
+    from:
+    - free
+    to: held
+  release:
+    from:
+    - held
+    to: free

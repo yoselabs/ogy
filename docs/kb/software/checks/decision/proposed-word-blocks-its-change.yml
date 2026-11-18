@@ -1,0 +1,28 @@
+question: Does a proposed new word block every landing, only the change that adds it, or none?
+context: A name spreads into code and a rename is a hard cut (Q7, card E3). The owner left it to the agent.
+options:
+  change-only:
+    label: It blocks only the change that adds the word
+    sets:
+      software/checks/rule/proposed-word-blocks-its-change:
+        says: A proposed word blocks only the change that adds it.
+  every-landing:
+    label: It blocks every landing
+    sets:
+      software/checks/rule/proposed-word-blocks-its-change:
+        says: A proposed word blocks every landing.
+  never:
+    label: It never blocks; it waits like any question
+    sets:
+      software/checks/rule/proposed-word-blocks-its-change:
+        says: A proposed word never blocks; it waits like any question.
+guess:
+  chose: change-only
+  why: The owner left it to the agent; one agent's naming question then stops no parallel task and the word cannot land first.
+answers:
+- chose: change-only
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:50+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

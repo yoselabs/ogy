@@ -1,0 +1,33 @@
+question: Are `message` and `answer` commands agents use, and does `agree` stay?
+context: '`agree` lets an agent agree to sentences nobody was shown (Q11).'
+options:
+  keep-two:
+    label: Keep `message` and `answer`; remove `agree` from the CLI and MCP
+    sets:
+      software/cli/rule/message-and-answer-are-public:
+        says: '`message` and `answer` are public commands for words said outside a review round; `agree` is not a command, a review round is the only road to agreement.'
+  keep-all:
+    label: Keep all three
+    sets:
+      software/cli/rule/message-and-answer-are-public:
+        says: '`message`, `answer` and `agree` are public commands.'
+  answer-only:
+    label: 'Only `answer` and `reply`: no `message` and no `agree` command'
+    sets:
+      software/cli/rule/message-and-answer-are-public:
+        says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+guess:
+  chose: answer-only
+  why: The owner chose it on 2026-11-18, with no messages stored.
+answers:
+- chose: keep-two
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:42+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: answer-only
+  said: Drop the message command with the messages
+  from: human
+  at: '2026-11-18T20:45:23+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

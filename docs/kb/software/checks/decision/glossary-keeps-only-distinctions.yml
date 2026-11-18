@@ -1,0 +1,44 @@
+title: The glossary keeps only words with a meaning of their own
+question: Which words belong in ogy's glossary?
+context: '38 terms; the owner asked whether that is too many and left it to the agent. Test: a term stays when ogy gives the word a meaning plain English does not, or when agents would reach for another word.'
+options:
+  distinctions:
+    label: Only distinct words; plain ones leave
+    sets:
+      glossary/term/option:
+      glossary/term/agent:
+      glossary/term/skill:
+      glossary/term/ogy:
+      glossary/term/knowledge-base:
+      glossary/term/capture:
+      glossary/term/card:
+      glossary/term/glossary:
+  all:
+    label: Keep all 38
+    sets:
+      glossary/term/option:
+        word: option
+      glossary/term/agent:
+        word: agent
+      glossary/term/skill:
+        word: skill
+      glossary/term/ogy:
+        word: ogy
+      glossary/term/knowledge-base:
+        word: knowledge base
+      glossary/term/capture:
+        word: capture
+      glossary/term/card:
+        word: card
+      glossary/term/glossary:
+        word: glossary
+guess:
+  chose: distinctions
+  why: Plain words (option, agent, skill, capture, card) and names of things (ogy, knowledge base, glossary) carry no meaning beyond English; 30 distinct terms are easier to agree to and to follow.
+answers:
+- chose: distinctions
+  delegated: software/writes/decision/capture-judgement
+  said: The agent kept only the 30 distinct terms, as delegated
+  from: ai
+  at: '2026-11-17T23:37:50+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

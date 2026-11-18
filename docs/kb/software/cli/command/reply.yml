@@ -1,0 +1,7 @@
+says: Apply the owner's reply to a review round, read as a grammar line, with a short paraphrase of what they said.
+invoked_as: ogy reply <grammar line> --said <paraphrase> --where <uri> [--at <iso>] [--round <id>] [--note <words>]
+serves:
+- product/review/workflow/review-and-reply/step/reply
+- product/capture/workflow/store-owner-words/step/store
+src:
+- code:src/ogy/cli.py#_writes

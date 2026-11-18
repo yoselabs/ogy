@@ -1,0 +1,22 @@
+question: Can an id change?
+context: Messages and agreements name addresses and are never edited.
+options:
+  permanent:
+    label: The id is permanent and the title can be renamed
+    sets:
+      software/storage/rule/id-is-permanent:
+        says: An id is permanent; the title is the part that can be renamed.
+  renameable:
+    label: An id changes with a rename
+    sets:
+      software/storage/rule/id-is-permanent:
+        says: An id changes when the entry is renamed.
+guess:
+  chose: permanent
+  why: Old messages must keep naming the same entry.
+answers:
+- chose: permanent
+  said: Ids are permanent; titles may change
+  from: human
+  at: '2026-11-17T18:00:15.375+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6359

@@ -1,0 +1,3 @@
+says: A repository names its ontology in ogy.yml; the kinds come from the installed ogy and the repository may add kinds.
+src:
+- code:src/ogy/config.py#KEYS

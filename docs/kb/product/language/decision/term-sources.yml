@@ -1,0 +1,26 @@
+title: Where a term is used is computed
+question: Does a term keep the sources it came from, or is where it is used computed?
+context: Sources on every term add many links; the use of a word can be read from the sentences that hold it.
+options:
+  computed:
+    label: No sources; use is computed from the knowledge base's sentences
+    sets:
+      product/language/rule/term-use-is-computed:
+        says: A term keeps no sources. Where a term is used is computed from the sentences of the knowledge base, never from source code; a term that no area uses is an error.
+  stored:
+    label: A term keeps its sources, stored but not printed
+    sets:
+      product/language/rule/term-use-is-computed:
+        says: A term keeps the sources it came from (messages, documents, code); they are stored but not printed.
+guess:
+  chose: computed
+  why: The sentences already say where a word is used; stored sources are a second copy of that fact.
+  heard:
+    said: Probably
+answers:
+- chose: computed
+  note: terms will appear in code; no need to rescan code each time
+  said: Probably computed
+  from: human
+  at: '2026-11-18T19:37:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

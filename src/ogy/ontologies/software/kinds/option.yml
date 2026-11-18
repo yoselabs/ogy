@@ -1,0 +1,8 @@
+kind: option
+about: one way to answer a decision, and the field values it puts into the settled entries, or `null` for an entry that does not exist under it
+shape: inline
+part_of: decision
+key: options
+fields:
+  label: {required: true}
+  sets: {type: sets, required: true}                 # {address: {field: value} | null}; null: the entry does not exist (no, not now, removed)

@@ -1,0 +1,22 @@
+question: Is ogy split into a generic ontology engine and the software ontology now?
+context: The owner first meant a generic engine (a smaller a2kay); they accept moving on and challenging it later.
+options:
+  one-package:
+    label: One package for now; revisit the split later
+    sets:
+      software/packaging/rule/ogy-is-one-package-for-now:
+        says: ogy is one package that ships the software ontology; the split into a generic engine is revisited later.
+  split:
+    label: Split now
+    sets:
+      software/packaging/rule/ogy-is-one-package-for-now:
+        says: ogy is a generic engine and the software ontology is separate from the start.
+guess:
+  chose: one-package
+  why: No part of the engine has needed to stay free of the ontology so far.
+answers:
+- chose: one-package
+  said: One package for now
+  from: human
+  at: '2026-11-17T19:41:40.214+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6774

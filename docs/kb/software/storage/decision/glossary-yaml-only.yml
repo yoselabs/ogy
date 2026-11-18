@@ -1,0 +1,34 @@
+question: Is there a glossary document besides the YAML list?
+context: Two copies need a test that pins one to the other.
+options:
+  yaml-only:
+    label: The YAML list only; `ogy glossary` prints it
+    sets:
+      software/storage/rule/glossary-is-yaml-only:
+        says: The glossary is kb/glossary/terms.yml only; no glossary document is generated or kept.
+  generated:
+    label: A generated Markdown page pinned by a test
+    sets:
+      software/storage/rule/glossary-is-yaml-only:
+        says: A glossary page is generated from the YAML and pinned by a test.
+  yaml-per-area:
+    label: YAML only, a glossary.yml in each area and at each layer root
+    sets:
+      software/storage/rule/glossary-is-yaml-only:
+        says: The glossary is YAML only, a glossary.yml in each area and at each layer root; no glossary document is generated or kept.
+guess:
+  chose: yaml-per-area
+  why: The files mirror the areas, so reading the folder reads the same model.
+  heard:
+    said: A glossary file per area
+answers:
+- chose: yaml-only
+  said: Use the YAML glossary file
+  from: human
+  at: '2026-11-17T18:42:12.251+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6512
+- chose: yaml-per-area
+  said: One glossary file per area
+  from: human
+  at: '2026-11-18T19:13:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

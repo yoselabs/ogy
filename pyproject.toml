@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling==1.33.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ogy"
+version = "0.1.0"
+description = "Requirements ontology: a checked YAML knowledge base, its CLI, a capture skill and an eval suite."
+readme = "README.md"
+requires-python = ">=3.15"
+dependencies = [
+    "any-markdown==0.4.0",
+    "any-yaml==0.1.0",
+    "argparse-mcp==0.1.0",
+    "content-digest==0.1.0",
+    "py-symbols==0.1.0",
+    "fastmcp>=3.4,<4",
+    "mcp<2",
+    "atomic-io==0.2.0",
+    "git-porcelain==0.24.0",
+    "lean-wire==0.3.0",
+    "managed-region==0.1.0",
+    "pydantic==2.14.3",
+    "process-lock==0.2.1",
+    "settings-base==0.1.0",
+    "yaml-merge==0.2.0",
+]
+
+[project.scripts]
+ogy = "ogy.cli:main"
+
+[dependency-groups]
+dev = ["pytest==9.2.0", "test-reach==0.1.0", "verb-cli==0.2.0"]
+
+[tool.uv.sources]
+test-reach = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/test-reach", tag = "test-reach-v0.1.0" }
+verb-cli = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/verb-cli", tag = "verb-cli-v0.2.0" }
+atomic-io = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/atomic-io", tag = "atomic-io-v0.2.0" }
+lean-wire = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/lean-wire", tag = "lean-wire-v0.3.0" }
+managed-region = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/managed-region", tag = "managed-region-v0.1.0" }
+settings-base = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/settings-base", tag = "settings-base-v0.1.0" }
+process-lock = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/process-lock", tag = "process-lock-v0.2.1" }
+git-porcelain = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/git-porcelain", tag = "git-porcelain-v0.24.0" }
+any-markdown = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/any-markdown", tag = "any-markdown-v0.4.0" }
+any-yaml = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/any-yaml", tag = "any-yaml-v0.1.0" }
+argparse-mcp = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/argparse-mcp", tag = "argparse-mcp-v0.1.0" }
+content-digest = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/content-digest", tag = "content-digest-v0.1.0" }
+py-symbols = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/py-symbols", tag = "py-symbols-v0.1.0" }
+yaml-merge = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/yaml-merge", tag = "yaml-merge-v0.2.0" }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ogy"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/ogy", "pyproject.toml", "README.md"]
+
+[tool.shelf-size]
+code-file = 400
+function = 80
+test-file = 800
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--import-mode=importlib -p no:cacheprovider"
+
+[tool.uv]
+override-dependencies = [
+    "atomic-io @ git+https://github.com/yoselabs/shelf.git@atomic-io-v0.2.0#subdirectory=packages/atomic-io",
+    "yaml-merge @ git+https://github.com/yoselabs/shelf.git@yaml-merge-v0.2.0#subdirectory=packages/yaml-merge",
+]

@@ -1,0 +1,42 @@
+title: Land phase of a round
+says: Under automatic landing, the oldest passed task a round took is landed or put on hold.
+trigger: called
+start: mode
+src: ["code:src/taskloop/round_land.py#land_passed"]
+steps:
+  mode:
+    says: The round reads who lands, from origin's main as fetched now.
+    cases:
+      nobody-waits:
+        order: 1
+        when: {text: no passed task of this round waits}
+        then: nothing
+      manual:
+        order: 2
+        when: {text: the land mode is not auto, reads: [software/land/config_key/land-mode, software/land/set/land-mode]}
+        then: nothing
+      otherwise: {then: land-oldest}
+  land-oldest:
+    says: The same land a person runs, for the oldest waiting task.
+    calls: product/land/workflow/land
+    cases:
+      landed:
+        covers_ends: [product/land/workflow/land/end/landed]
+        then: done
+      held:
+        covers_ends: [product/land/workflow/land/end/conflict, product/land/workflow/land/end/checks-failed, product/land/workflow/land/end/remote-rejected, product/land/workflow/land/end/branch-moved, product/land/workflow/land/end/claim-lost]
+        effects: [{do: tell, "on": product/land/actor/person, value: "the task is on hold with the cause land:<reason>; one comment says what a person can do"}]
+        then: held
+        by: [product/land/rule/held-once]
+      retry:
+        covers_ends: [product/land/workflow/land/end/unavailable]
+        then: retried
+      waits:
+        covers_ends: [product/land/workflow/land/end/gate-changed, product/land/workflow/land/end/no-change, product/land/workflow/land/end/refused, product/land/workflow/land/end/delivered-unclosed, product/land/workflow/land/end/withdrawn, product/land/workflow/land/end/reported]
+        then: waiting
+ends:
+  nothing: {result: success, says: Nothing was landed; landing is manual or no passed task waits.}
+  done: {result: success, says: One task is landed and closed.}
+  held: {result: failure, says: One task is on hold until a person answers.}
+  retried: {result: failure, says: The land could not tell; the next round tries again.}
+  waiting: {result: failure, says: The refusal is reported once and the task waits for a person.}

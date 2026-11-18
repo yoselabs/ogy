@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "ogy": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--frozen",
+        "--no-sync",
+        "python",
+        "-I",
+        "-m",
+        "ogy",
+        "mcp"
+      ]
+    }
+  }
+}

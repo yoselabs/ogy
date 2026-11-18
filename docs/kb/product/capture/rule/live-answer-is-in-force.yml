@@ -1,0 +1,3 @@
+says: An answer recorded live is in force at once and listed at the session end for the owner's veto.
+src:
+- code:src/ogy/writes.py#answer

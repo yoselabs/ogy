@@ -1,0 +1,3 @@
+says: ogy has no `why` command; `find` and `show` answer who decided something.
+src:
+- code:src/ogy/commands.py#HANDLERS

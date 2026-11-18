@@ -1,0 +1,7 @@
+# Where entries live. The loader enforces it; no flag, setting or field skips a level.
+#   <layer>/<area>/<kind>/<id>.yml     an entity kind
+#   <layer>/<area>/<file>              a list kind (the kind's `file`), or a single kind: one entry whose id is the area
+#                                      (`area.yml`; `every_area` makes an area without it `missing-entry`)
+#   <folder>/<file>                    a kind that names a fixed folder with `area` (the glossary, the constitution)
+# A kind lists the layers it may appear in (`layers:`); the folder is the layer's only home.
+layers: [product, software]

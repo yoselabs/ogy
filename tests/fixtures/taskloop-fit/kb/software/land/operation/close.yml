@@ -1,0 +1,6 @@
+says: Closes the delivered candidate's task in the tracker and records the close once.
+performs:
+  - product/land/workflow/land/step/close/case/otherwise
+  - product/land/workflow/land/step/close-answer/case/closed
+uses: [software/claim/external/bd]
+src: ["code:src/taskloop/land_close.py#closed"]

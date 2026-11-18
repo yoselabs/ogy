@@ -1,0 +1,24 @@
+# Skeleton printed by the tool. Copy one block per entry. Every __ must become an answer, `na: <reason>` or
+# `?open {question, assumed}`. A block with a __ left fails lint.
+persona/__: {nature: __, acts_in: [step/__]}
+goal/__: {states: __, served_by: [capability/__]}
+capability/__: {does: __, serves: goal/__, workflows: [workflow/__]}
+value/__: {is: __, unit: __, used_by: [__]}
+entity/__:
+  key: [__]
+  attrs: {__: {type: __, max: __, written_by: [__], read_by: [__]}}
+  lifecycle: {states: [__], initial: __, terminal: [__], transitions: {__: {from: __, to: __}}, exits: {<each non-terminal state>: __}}
+external/__: {owns_facts: [__], events: [__], down: __, slow: __, wrong_answer: __, answers_twice: __, changes_behind_us: __}
+workflow/__:
+  goal: goal/__
+  actors: [__]
+  trigger: __
+  inputs: {__: {type: __, limited_by: rule/__}}
+  start: step/__
+  ends: {__: {result: success, means: __}, __: {result: failure, means: __}}
+  steps:
+    __: {actor: persona/__, choices: {__: {label: __, then: __}}, timeout: {after: value/__, then: __}}
+    __: {actor: system, cases: {__: {order: __, when: __, then: __}}, otherwise: __}
+    __: {actor: system, causes: [{__: __}], outward: {rerun: __, no_answer: __, done_twice: __, silently_not_done: __}, then: __}
+rule/__: {kind: __, scope: __, body: __}
+interface/__: {form: __, serves: [step/__], says: {end/__: __}}

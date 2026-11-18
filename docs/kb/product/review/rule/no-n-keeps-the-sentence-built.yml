@@ -1,0 +1,3 @@
+says: '`no N` stores the words, opens a decision that asks whether the sentence is still right, and leaves the sentence built until it is answered; ogy blocks nothing.'
+src:
+- code:src/ogy/reply.py#_reconsider

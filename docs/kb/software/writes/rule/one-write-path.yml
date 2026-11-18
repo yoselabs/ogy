@@ -1,0 +1,3 @@
+says: '`ogy put` is the one write path for creating and updating entries; it takes an array of records.'
+src:
+- code:src/ogy/put.py#put

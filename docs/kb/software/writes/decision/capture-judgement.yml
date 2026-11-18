@@ -1,0 +1,23 @@
+title: Who judges what to keep during capture
+question: When an agent re-absorbs a product's knowledge, does it decide what to keep and fix, or ask the owner each time?
+context: The owner trims and corrects little by hand; asking each time floods the review.
+options:
+  agent-judges:
+    label: The agent judges critically and decides; decisions are listed at session end for veto
+    sets:
+      software/writes/rule/capture-judges-critically:
+        says: When an agent captures a product's knowledge, glossary included, it judges the sources critically (trims plain words, fixes statements that contradict the code or other sources, merges duplicates) and decides on its own; every such decision is listed at session end for the owner's veto.
+  owner-each:
+    label: The agent asks the owner about each change
+    sets:
+      software/writes/rule/capture-judges-critically:
+        says: When an agent captures a product's knowledge, it asks the owner before trimming or correcting anything.
+guess:
+  chose: agent-judges
+  why: The owner said so.
+answers:
+- chose: agent-judges
+  said: During capture the agent judges critically and decides
+  from: human
+  at: '2026-11-17T23:50:50+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

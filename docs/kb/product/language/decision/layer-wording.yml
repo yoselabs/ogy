@@ -1,0 +1,30 @@
+title: What the word layer means now
+question: The term layer still says business, technical or implementation; the layers are now the folders product and software. Which meaning does the glossary keep?
+context: The owner chose mandatory layer folders (software/storage/decision/no-axis-above-area, answer of 2026-11-18); the term was agreed on 2026-11-17 under the old model.
+options:
+  folders:
+    label: One of the two top folders, product or software
+    sets:
+      glossary/term/layer:
+        says: One of the two top folders of the knowledge base, product or software, that an entry lives in; each kind lists the layers it may appear in, and the glossary is in none.
+  who-decides:
+    label: 'Keep: who decides an entry (business, technical, implementation)'
+    sets:
+      glossary/term/layer:
+        says: 'Who decides an entry: business (the owner only), technical (an agent proposes, the owner agrees) or implementation (an agent decides).'
+  fable-wording:
+    label: 'One of the two top folders: product (what and why) or software (how it is built)'
+    sets:
+      glossary/term/layer:
+        says: 'One of the two top folders: product (what it does and why) or software (how it is built). Every entry except a term lives in exactly one; each kind lists the layers it may appear in.'
+guess:
+  chose: fable-wording
+  why: The owner chose this on 2026-11-18.
+  heard:
+    said: No skipping the product layer to put an area or kind on top
+answers:
+- chose: fable-wording
+  said: Yes, record the proposed wording
+  from: human
+  at: '2026-11-18T11:32:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

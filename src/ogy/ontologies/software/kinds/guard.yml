@@ -1,0 +1,12 @@
+kind: guard
+about: a condition checked on entering a workflow or a step; when it does not hold, the work goes to `else`
+harm: [who-is-allowed]
+shape: entity
+layers: [product, software]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  says: {required: true}
+  "on": {type: link, to: [workflow, step], required: true}
+  when: {type: expr, to: [value, set, entity, attr, state, external, config_key], required: true}   # must hold
+  else: {type: link, to: [end, step], required: true}

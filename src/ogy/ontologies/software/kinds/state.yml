@@ -1,0 +1,7 @@
+kind: state
+about: one state of an entity's lifecycle; first and last states are computed from the transitions
+shape: inline
+part_of: entity
+key: states
+fields:
+  says: {required: true}

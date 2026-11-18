@@ -1,0 +1,3 @@
+says: Git holds the knowledge base and its history, and its Git directory holds ogy's local working state, the write lock and the review rounds.
+src:
+- code:src/ogy/source.py#GitSource

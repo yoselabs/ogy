@@ -1,0 +1,23 @@
+title: Memory of removed ids
+question: How does the knowledge base remember an id that was removed?
+context: >-
+  Ids are permanent, so a reused id would make an old agreement name a new entry.
+  The bead ogy-yy9.32 mirrors this question; this file is its home.
+src: ["doc:e1ce8757b0a1:docs/consults/memory-removals-fable.md#c-removals"]
+options:
+  tombstone:
+    label: The entry stays in its file, marked retired
+    sets: {software/removal/rule/removed-id-is-recorded: {says: A removed entry stays in its file with a retired mark.}}
+  ledger:
+    label: "The entry is deleted; it is recorded in a file, `<area>/removed.yml`"
+    sets: {software/removal/rule/removed-id-is-recorded: {says: "A removed entry is deleted from its file and recorded in its area's removed.yml, which is never edited."}}
+  git:
+    label: "The entry is deleted; used ids are read from Git"
+    sets: {software/removal/rule/removed-id-is-recorded: {says: A new address is refused when Git history holds an entry with it.}}
+  none:
+    label: No record of removed ids
+    sets: {software/removal/rule/removed-id-is-recorded: null}
+guess: {chose: ledger, why: Agreements name addresses; the check must work in a clone without history.}
+answers:
+  - {chose: tombstone, said: Retire ids by a status, from: human, at: "2026-11-13T14:57:00+01:00", where: "bd:ogy-yy9"}
+  - {chose: ledger, said: Keep removed ids in a file, from: human, at: "2026-11-17T12:30:00+01:00", where: "ai:claude/095b#1"}

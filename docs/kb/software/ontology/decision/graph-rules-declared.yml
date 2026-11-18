@@ -1,0 +1,23 @@
+question: 'Where are the rules about the graph (which links, parts and fields an entry needs) written: in Python checks, or declared in the kind files?'
+structure: true
+options:
+  declared:
+    label: Declared in the kind files, derived from field types where possible; custom validators only as named parameters in the ontology YAML
+    sets:
+      software/ontology/rule/graph-rules-declared:
+        says: Every rule about the graph is declared in the kind files, derived from the field types where possible; a custom validator is only a named parameter in the ontology YAML; an algorithm moves out of ogy or is generalized.
+  python:
+    label: Hand-written checks in ogy's Python stay
+    sets:
+      software/ontology/rule/graph-rules-declared:
+guess:
+  chose: declared
+  why: A rule that is data can be read, changed per ontology and checked without editing ogy; hand-written checks hide rules from the ontology.
+  heard:
+    said: Graph rules all declared in the kinds
+answers:
+- chose: declared
+  said: Every graph rule belongs in the kind files
+  from: human
+  at: '2026-11-18T19:52:47+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

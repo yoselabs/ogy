@@ -1,0 +1,5 @@
+- id: owner
+  title: Library owner
+  says: The person who runs the tool library and decides its rules.
+  nature: human
+  agreed: {at: "2026-11-12T10:05:00+01:00", where: "ai:claude/5f2c#12", from: human, said: That is me, hash: 4baae4a2d599}

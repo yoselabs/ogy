@@ -1,0 +1,19 @@
+format: 1
+items:
+  - id: software/storage/value/message-digest-length
+    kind: value
+    parent:
+    title:
+    said: The length of the digest in a message's id, after its date.
+    why: product/capture/decision/every-reply-is-a-message
+    replaced_by:
+    at: 2026-11-18 20:45:04+01:00
+    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+    hash: 184133f7d4b0
+    ontology: software
+    snapshot:
+      says: The length of the digest in a message's id, after its date.
+      is: 4
+      unit: hex digits
+      src:
+      - code:src/ogy/writes.py#message

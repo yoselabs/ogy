@@ -1,0 +1,7 @@
+says: ogy holds business logic only; technical details (Git, YAML, hashes, locks, MCP, atomic writes) live in shelf packages.
+agreed:
+  at: '2026-11-17T20:11:47.714+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7081
+  from: human
+  said: ogy keeps only business logic
+  hash: c406af534ffc

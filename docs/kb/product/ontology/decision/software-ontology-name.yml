@@ -1,0 +1,27 @@
+question: What is the shipped ontology called?
+context: It covers technical implementation and the glossary as well as requirements.
+options:
+  software:
+    label: software
+    sets:
+      product/ontology/rule/shipped-ontology-is-named-software:
+        says: The shipped ontology is named software.
+  product:
+    label: product
+    sets:
+      product/ontology/rule/shipped-ontology-is-named-software:
+        says: The shipped ontology is named product.
+  requirements:
+    label: requirements
+    sets:
+      product/ontology/rule/shipped-ontology-is-named-software:
+        says: The shipped ontology is named requirements.
+guess:
+  chose: software
+  why: It describes a software product, not only its requirements.
+answers:
+- chose: software
+  said: The ontology is named software
+  from: human
+  at: '2026-11-17T19:44:55.960+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6799

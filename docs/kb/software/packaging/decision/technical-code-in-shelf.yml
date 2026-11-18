@@ -1,0 +1,22 @@
+question: 'Where does technical code live: in ogy or in shelf packages?'
+context: Quirks of Git, YAML, locks, MCP and files are not what ogy decides.
+options:
+  in-shelf:
+    label: In shelf packages; ogy holds business logic only
+    sets:
+      software/packaging/rule/ogy-holds-business-logic-only:
+        says: ogy holds business logic only; technical details (Git, YAML, hashes, locks, MCP, atomic writes) live in shelf packages.
+  in-ogy:
+    label: In ogy
+    sets:
+      software/packaging/rule/ogy-holds-business-logic-only:
+        says: ogy holds its own technical helpers.
+guess:
+  chose: in-shelf
+  why: The owner wants shelf packages adjusted or created when needed.
+answers:
+- chose: in-shelf
+  said: ogy keeps business logic; technical code goes to shelf
+  from: human
+  at: '2026-11-17T20:11:47.714+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7081

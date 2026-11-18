@@ -1,0 +1,27 @@
+says: One question with its options, the AI's guess that is built meanwhile, and the owner's answers.
+src:
+- code:src/ogy/settle.py#Decision
+attrs:
+  question:
+    type: text
+    says: The question.
+  structure:
+    type: flag
+    says: A structural decision; it is asked on its own card and no accept-all answers it.
+  answers:
+    type: list
+    says: The owner's answers; the newest by its time is in force.
+states:
+  question-waiting:
+    says: No answer yet; the guess is built.
+  answered:
+    says: The owner chose an option.
+transitions:
+  answer:
+    from:
+    - question-waiting
+    to: answered
+  answer-again:
+    from:
+    - answered
+    to: answered

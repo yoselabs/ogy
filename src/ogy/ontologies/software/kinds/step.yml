@@ -1,0 +1,14 @@
+kind: step
+about: "an actor step (choices, maybe a timeout), a system step (cases or one `then`) or a calling step (calls, cases over the callee's ends); no actor means the product itself"
+shape: inline
+part_of: workflow
+key: steps
+needs_proof: true
+fingerprint: {proofs: true}
+requires:
+  - {if_set: actor, path: ["<-serves"], kinds: [view, command], error: "an actor step has a view or command that serves it"}
+fields:
+  says: {}
+  actor: {type: link, to: [actor, external]}
+  then: {type: link, to: [step, end, workflow]}
+  calls: {type: link, to: [workflow]}

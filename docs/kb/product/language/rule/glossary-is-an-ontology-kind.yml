@@ -1,0 +1,7 @@
+says: The glossary is the term kind of the ontology, a list per area and one per layer root for shared terms; the owner must agree to each term.
+agreed:
+  at: '2026-11-17T18:28:49.439+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6454
+  from: human
+  said: The glossary belongs in the ontology
+  hash: b8097041be4b

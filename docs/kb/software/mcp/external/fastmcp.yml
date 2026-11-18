@@ -1,0 +1,4 @@
+says: The MCP server library that ogy's stdio server runs on, through shelf's argparse-mcp.
+pin: fastmcp >=3.4,<4; argparse-mcp 0.1.0
+src:
+- code:src/ogy/mcp_server.py#build

@@ -1,0 +1,9 @@
+kind: rule
+about: a statement that must stay true; rows name the rules they follow with `by`
+shape: entity
+layers: [product, software]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  says: {required: true}
+  "on": {type: links, to: [entity, workflow, external, capability]}   # what it constrains, when no row follows it

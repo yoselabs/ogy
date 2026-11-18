@@ -1,0 +1,72 @@
+format: 1
+items:
+  - id: product/capture/decision/every-reply-is-a-message/option/answer-only
+    kind: option
+    parent:
+      address: product/capture/decision/every-reply-is-a-message
+      key: options
+      position: 0
+    title:
+    said:
+    why: product/capture/decision/every-reply-is-a-message
+    replaced_by:
+    at: 2026-11-18 19:44:56+00:00
+    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+    hash: 89b5f9a42275
+    ontology: software
+    snapshot:
+      label: Only replies that answer a decision are stored
+      sets:
+        product/capture/rule/reply-is-a-message:
+          says: Only a reply that answers a decision is stored.
+  - id: product/capture/rule/reply-is-a-message
+    kind: rule
+    parent:
+    title:
+    said: Every reply of the owner is stored whole and once as a message and is never edited.
+    why: product/capture/decision/every-reply-is-a-message
+    replaced_by:
+    at: 2026-11-18 20:45:03+01:00
+    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+    hash: 422fd702aca9
+    ontology: software
+    snapshot:
+      says: Every reply of the owner is stored whole and once as a message and is never edited.
+      agreed:
+        at: '2026-11-17T18:00:15.375+00:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6359
+        from: human
+        said: Every reply stored; ids permanent
+        hash: 422fd702aca9
+  - id: product/capture/entity/message
+    kind: entity
+    parent:
+    title:
+    said: One reply of a person or an agent, stored whole and once and never edited; its id is its date and a digest of who, when, where and the words.
+    why: product/capture/decision/every-reply-is-a-message
+    replaced_by:
+    at: 2026-11-18 19:45:20+00:00
+    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+    hash: 31fd49075354
+    ontology: software
+    snapshot:
+      says: One reply of a person or an agent, stored whole and once and never edited; its id is its date and a digest of who, when, where and the words.
+      src:
+      - code:src/ogy/writes.py#message
+      attrs:
+        by:
+          type: one
+          says: The actor who said it.
+        at:
+          type: time
+          says: When it was said, with a UTC offset.
+        where:
+          type: text
+          says: Where it was said, as a uri.
+          of: software/cli/set/where-schemes
+        text:
+          type: text
+          says: The words, verbatim.
+        agreed:
+          type: list
+          says: The sentences and fingerprints this message agreed to.

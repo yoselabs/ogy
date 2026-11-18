@@ -1,0 +1,17 @@
+- id: ontology
+  says: The ontology folder in ogy/ontologies that the repository uses; a --ontology flag overrides it.
+  name: ontology
+  default: software
+  src:
+  - code:src/ogy/config.py#KEYS
+- id: rev
+  says: The commit reads see by default, or . for the worktree; a --rev flag overrides it.
+  name: rev
+  default: .
+  src:
+  - code:src/ogy/config.py#KEYS
+- id: config-file
+  says: The environment variable that names a settings file other than ogy.yml at the repository root.
+  name: OGY_CONFIG
+  src:
+  - code:src/ogy/config.py#CONFIG_ENV

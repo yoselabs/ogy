@@ -1,0 +1,4 @@
+title: A removed id is recorded
+says: A removed entry is deleted from its file and recorded in its area's removed.yml, which is never edited.
+proof: ["tests/test_v5_removed.py::test_removal_without_item"]
+agreed: {at: "2026-11-17T12:30:00+01:00", where: "ai:claude/095b#1", from: human, said: Keep removed ids in a file, hash: c47a02d95e16}

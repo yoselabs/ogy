@@ -1,0 +1,3 @@
+says: uvx runs the published ogy from its Git repository wherever ogy is not on the path; ogy's own repository runs its checkout instead.
+src:
+- code:src/ogy/init.py#invocation

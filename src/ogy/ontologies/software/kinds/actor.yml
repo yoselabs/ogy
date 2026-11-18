@@ -1,0 +1,9 @@
+kind: actor
+about: "who uses the product, a person or an AI; human: a librarian at the desk; ai: a model that implements a task"
+shape: list
+file: actors.yml
+evidence: none          # who uses the product, not a claim
+layers: [product]
+fields:
+  says: {required: true}
+  nature: {type: enum, of: [human, ai], required: true}

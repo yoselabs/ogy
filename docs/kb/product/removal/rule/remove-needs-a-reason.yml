@@ -1,0 +1,3 @@
+says: '`ogy remove` always needs `--why`: a message or decision address, or plain text; an address stays required when a person had agreed; text-only reasons are listed by `dropped`.'
+src:
+- code:src/ogy/removal.py#remove

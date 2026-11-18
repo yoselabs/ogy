@@ -1,0 +1,31 @@
+says: An agent or CI checks the knowledge base before it hands over or lands.
+src:
+- code:src/ogy/ops.py#run_check
+trigger: actor
+realizes: product/checks/capability/check-a-land
+start: run
+steps:
+  run:
+    says: The agent runs ogy check, CI runs ogy --rev HEAD check, and --landing is added before a land.
+    actor: product/people/actor/agent
+    choices:
+      run:
+        label: Check
+        then: judge
+  judge:
+    says: ogy reads the commit or the worktree and runs every check.
+    cases:
+      findings:
+        order: 1
+        when:
+          text: the check reports a finding
+        then: blocked
+      otherwise:
+        then: clean
+ends:
+  clean:
+    result: success
+    says: No finding; the knowledge base may be handed over or landed.
+  blocked:
+    result: failure
+    says: The findings are printed and the exit code is 1.

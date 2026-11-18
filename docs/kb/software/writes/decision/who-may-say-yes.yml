@@ -1,0 +1,27 @@
+question: Who may confirm a sentence or answer a question for the owner?
+context: 'Today any actor with `nature: human` agrees and answers, and the agent sets `--from-owner` (Q13, card E1).'
+options:
+  human:
+    label: A human actor confirms; an AI decides for the owner only when the owner says so in a message; a second human actor is a finding
+    sets:
+      software/writes/rule/who-may-say-yes:
+        says: Only a human actor confirms; an AI decides for the owner only when the owner says so explicitly in a message; today a person is written as human, with no name; a second human actor is a finding.
+  decides-per-layer:
+    label: An actor lists the layers it decides
+    sets:
+      software/writes/rule/who-may-say-yes:
+        says: An actor lists the layers it decides.
+  named-owner:
+    label: One owner is named in `ogy.yml`
+    sets:
+      software/writes/rule/who-may-say-yes:
+        says: One owner is named in `ogy.yml` and only they confirm.
+guess:
+  chose: human
+  why: One human so far; the other two model a case nobody has met.
+answers:
+- chose: human
+  said: For now the person is just human, no name
+  from: human
+  at: '2026-11-17T21:38:17.324+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900

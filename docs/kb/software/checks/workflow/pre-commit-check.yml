@@ -1,0 +1,35 @@
+says: A commit that changes the knowledge base is made only when ogy check passes on the staged tree.
+src:
+- code:src/ogy/init.py#HOOK
+trigger: actor
+start: commit
+steps:
+  commit:
+    says: A person or an agent commits.
+    actor: product/people/actor/owner
+    choices:
+      commit:
+        label: Commit
+        then: check
+  check:
+    says: The hook writes the staged tree as a commit and runs ogy --rev <that commit> check.
+    cases:
+      untouched:
+        order: 1
+        when:
+          text: the commit changes nothing under docs/kb
+        then: committed
+      findings:
+        order: 2
+        when:
+          text: ogy check reports a finding
+        then: refused
+      otherwise:
+        then: committed
+ends:
+  committed:
+    result: success
+    says: The commit is made.
+  refused:
+    result: failure
+    says: The commit is refused and the findings are printed.

@@ -1,0 +1,22 @@
+question: How is the MCP server started?
+context: The tools are generated from the CLI, so a new command appears without an edit.
+options:
+  subcommand:
+    label: '`ogy mcp`, a subcommand of the CLI'
+    sets:
+      software/mcp/rule/mcp-is-the-ogy-mcp-command:
+        says: The MCP server is the subcommand ogy mcp, and each CLI command is a tool.
+  binary:
+    label: A separate executable
+    sets:
+      software/mcp/rule/mcp-is-the-ogy-mcp-command:
+        says: The MCP server is a separate executable.
+guess:
+  chose: subcommand
+  why: One entry point to install and to name in .mcp.json.
+answers:
+- chose: subcommand
+  said: MCP is a subcommand of the ogy CLI
+  from: human
+  at: '2026-11-17T20:09:24.780+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7054

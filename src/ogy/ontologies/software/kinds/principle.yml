@@ -1,0 +1,9 @@
+kind: principle
+about: a value every design decision is judged against, one sentence; the constitution is the fixed folder of them, printed whole to every agent; decisions and rules cite one with `because`
+shape: list
+file: principles.yml
+area: constitution                                   # one global list; a `principles.yml` in any other area is `bad-path`
+must_be_agreed: true                                 # only a review round's yes agrees it
+fields:
+  says: {required: true}                             # the principle, one sentence
+  why: {note: true}                                  # what it protects, or where it came from

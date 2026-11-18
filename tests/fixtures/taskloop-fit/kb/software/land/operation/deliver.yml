@@ -1,0 +1,11 @@
+says: Applies the one delivery rule - read origin, record a delivery found there, supersede a candidate main moved past, else push S.
+performs:
+  - product/land/workflow/land/step/deliver/case/on-origin
+  - product/land/workflow/land/step/deliver/case/gone
+  - product/land/workflow/land/step/deliver/case/moved
+  - product/land/workflow/land/step/push/case/otherwise
+  - product/land/workflow/land/step/push-answer/case/accepted
+  - product/land/workflow/land/step/withdraw/case/on-origin
+  - product/land/workflow/land/step/withdraw/case/otherwise
+uses: [software/land/external/origin]
+src: ["code:src/taskloop/land_push.py#deliver", "code:src/taskloop/land_push.py#withdraw"]

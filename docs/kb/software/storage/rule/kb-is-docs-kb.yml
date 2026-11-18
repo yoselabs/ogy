@@ -1,0 +1,3 @@
+says: The knowledge base is always the folder docs/kb of the repository; no flag or setting moves it.
+src:
+- code:src/ogy/source.py#KB_DIR

@@ -1,0 +1,3 @@
+says: A proposed word blocks only the change that adds it.
+src:
+- code:src/ogy/terms.py#proposed_terms

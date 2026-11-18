@@ -1,0 +1,35 @@
+question: Does an address have an axis above the area (product or development)?
+context: 18 of 20 kinds never used it; development decisions are ordinary entries in an ordinary area.
+options:
+  drop:
+    label: Drop it; only the area groups entries
+    sets:
+      software/storage/rule/area-is-the-only-grouping:
+        says: Entries are grouped by area only; there is no axis above it.
+  keep:
+    label: Keep a product or development axis
+    sets:
+      software/storage/rule/area-is-the-only-grouping:
+        says: Every entry lives under a product or development axis, then an area.
+  layers-mandatory:
+    label: 'Keep: product/ and software/ layer folders, mandatory, enforced by the ontology'
+    sets:
+      software/storage/rule/area-is-the-only-grouping:
+        says: Every entry lives under a layer folder, product or software, then an area; the ontology enforces it and nothing skips it.
+guess:
+  chose: layers-mandatory
+  why: The owner said the layout is mandatory and the ontology must not allow skipping it.
+answers:
+- chose: drop
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:44+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: layers-mandatory
+  said: The layers are mandatory
+  from: human
+  at: '2026-11-18T10:50:21+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+title: Layer folders above the area
+structure: true

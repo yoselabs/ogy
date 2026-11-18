@@ -1,0 +1,35 @@
+title: How entries leave an area
+structure: true
+question: ogy has no command that moves an entry to another area. remove and put would give a new address, lose the agreements recorded on messages and break the decisions that name it. How do the entries of product/ogy and software/ogy reach topic areas?
+context: Found on 2026-11-18 while splitting the area. Messages are stored in their actor's area (product/ogy) and never edited, so their agreements name the old addresses.
+options:
+  move-command:
+    label: 'Build `ogy move`: keeps the id, rewrites links and decision sets, carries agreements and history'
+    sets:
+      software/storage/rule/move-keeps-history:
+        says: '`ogy move <address> <address>` moves an entry, or every entry of an area, to another area: it keeps the id, rewrites every link and decision that names it, records the move so agreements and history follow it, and never reuses the old address.'
+  stay:
+    label: The entries stay in the area ogy; only new entries go to topic areas
+    sets:
+      software/storage/rule/move-keeps-history:
+  move-leaves-no-record:
+    label: 'Build `ogy move`, which records nothing: it rewrites every address in the same write, and Git keeps the history'
+    sets:
+      software/storage/rule/move-keeps-history:
+        says: "`ogy move <address> <area>` moves an entry to another area: it keeps the kind and id and, in the same write, names the new address wherever the old one was (links, decisions, the agreed keys and by of messages, answers, the why of removed items); a message's words never change. It writes no removed.yml item: Git keeps the history, and check --base tells a move (same kind, id and fingerprint) from a loss."
+guess:
+  chose: move-leaves-no-record
+  why: The owner wants a migration to cause no removals and leave no record per move.
+  heard:
+    said: Migrations never cause removals
+answers:
+- chose: move-command
+  said: Yes, a move command
+  from: human
+  at: '2026-11-18T11:32:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: move-leaves-no-record
+  said: Moves and migrations cause no removals
+  from: human
+  at: '2026-11-18T19:13:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

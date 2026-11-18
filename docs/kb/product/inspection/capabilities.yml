@@ -1,0 +1,4 @@
+- id: inspect
+  says: An agent reads one entry, what a change reaches, the flow of a workflow, what changed between two commits, the work left and the anchors of a document.
+  src:
+  - code:src/ogy/ops.py#run_impact

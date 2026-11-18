@@ -1,0 +1,22 @@
+question: Where does the software ontology live?
+context: The owner wants an ontology they reuse many times, scaffolded by `ogy init`.
+options:
+  shipped:
+    label: Inside ogy as a named ontology
+    sets:
+      software/ontology/rule/software-ontology-ships-with-ogy:
+        says: The software ontology is shipped inside ogy under ontologies/software.
+  separate:
+    label: In its own package
+    sets:
+      software/ontology/rule/software-ontology-ships-with-ogy:
+        says: The software ontology is a separate package.
+guess:
+  chose: shipped
+  why: One package to install.
+answers:
+- chose: shipped
+  said: Ship the ontology with ogy, by name
+  from: human
+  at: '2026-11-17T19:41:40.214+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6774

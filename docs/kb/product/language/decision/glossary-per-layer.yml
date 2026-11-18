@@ -1,0 +1,41 @@
+question: Is the glossary one list for the whole project, or split by layer (business, technical, implementation)?
+context: Reading glossary page 1, the owner wondered whether the glossary should be split by layer, then thought one list may be fine, so it is not answered.
+options:
+  one-list:
+    label: One list; a term may carry a layer field for filtering
+    sets:
+      product/language/rule/glossary-homes:
+        says: The glossary is one list for the whole project; a term may carry a layer field for filtering.
+  per-layer:
+    label: A glossary file per layer
+    sets:
+      product/language/rule/glossary-homes:
+        says: The glossary is a file per layer.
+  per-area:
+    label: A glossary.yml per area; a term a second area uses moves to the layer root
+    sets:
+      product/language/rule/glossary-homes:
+        says: Each area has its own glossary.yml. A term that a second area uses moves to the glossary.yml at its layer's root and leaves its area; a term lives in one place only.
+  per-area-borrowed:
+    label: A glossary.yml per area; a shared term stays in its owning area and is borrowed by reference
+    sets:
+      product/language/rule/glossary-homes:
+        says: Each area has its own glossary.yml. A term stays in the area that owns it; another area that uses it borrows it by reference.
+guess:
+  chose: per-area
+  why: An agent working on one area loads only that area's words and the shared ones; one home per term keeps 'is this word taken' a single lookup.
+  heard:
+    said: Per area is simple to use
+answers:
+- chose: one-list
+  said: Unsure about a glossary per layer; one list for now
+  from: human
+  at: '2026-11-17T23:25:57+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: per-area
+  note: may be revisited later
+  said: A glossary per area is simpler to use
+  from: human
+  at: '2026-11-18T19:37:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+structure: true

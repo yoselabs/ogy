@@ -1,0 +1,8 @@
+kind: end
+about: one way a workflow ends
+shape: inline
+part_of: workflow
+key: ends
+fields:
+  says: {required: true}
+  result: {type: enum, of: [success, failure], required: true}

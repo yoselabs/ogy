@@ -1,0 +1,3 @@
+says: A delivery is recorded only from an accepted push of S or from origin's main as read now, never from a local ref or a log.
+"on": [software/land/entity/land-candidate]
+src: ["code:src/taskloop/land_push.py#_seen"]

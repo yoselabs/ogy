@@ -1,0 +1,8 @@
+kind: heard
+about: "what the owner said that a guess rests on, as a short paraphrase (never a quote), when it leans to an option without choosing it; the review asks \"You said: .... Read as B.\" and one yes records the answer"
+shape: inline
+part_of: guess
+key: heard
+holds: one
+fields:
+  said: {note: true, required: true}                 # one short line: the AI's paraphrase of what the owner said

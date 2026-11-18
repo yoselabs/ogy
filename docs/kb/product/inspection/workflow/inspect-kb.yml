@@ -1,0 +1,18 @@
+says: An agent reads the knowledge base without changing it.
+src:
+- code:src/ogy/ops.py#run_impact
+trigger: actor
+realizes: product/inspection/capability/inspect
+start: read
+steps:
+  read:
+    says: The agent runs a read command; reads see the worktree unless --rev names a commit.
+    actor: product/people/actor/agent
+    choices:
+      read:
+        label: Read
+        then: done
+ends:
+  done:
+    result: success
+    says: The agent has what it asked for; nothing was written.

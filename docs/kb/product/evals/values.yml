@@ -1,0 +1,12 @@
+- id: runs-per-arm
+  says: How many runs each arm of an eval gets.
+  is: 8
+  unit: runs
+  src:
+  - doc:87f15b9:evals/README.md#steps
+- id: runs-per-arm-per-group
+  says: How many runs of each arm one scorer group holds.
+  is: 2
+  unit: runs
+  src:
+  - code:evals/blind.py#main

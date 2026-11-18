@@ -1,0 +1,25 @@
+title: An intro for working on an area
+question: What does an agent run before it works on an area?
+context: An agent working on an area needs the constitution and the glossary, maybe in separate calls.
+options:
+  intro:
+    label: "`ogy intro <area>`: constitution, shared words, the area's glossary and map"
+    sets:
+      software/cli/rule/intro-prints-an-area:
+        says: "`ogy intro <area>` prints the constitution, the words in use in every area, the area's glossary and its map."
+  separate:
+    label: No intro; run glossary and show one after the other
+    sets:
+      software/cli/rule/intro-prints-an-area:
+        says: There is no intro command; an agent runs `ogy glossary` and `ogy show <layer>/<area>` one after the other.
+guess:
+  chose: intro
+  why: One call loads exactly what work on one area needs.
+  heard:
+    said: Liked the intro
+answers:
+- chose: intro
+  said: Liked the area intro
+  from: human
+  at: '2026-11-18T19:37:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

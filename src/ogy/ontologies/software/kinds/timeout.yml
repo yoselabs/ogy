@@ -1,0 +1,16 @@
+kind: timeout
+about: what happens when the actor does nothing for a time
+shape: inline
+part_of: step
+key: timeout
+holds: one
+needs_proof: true
+fingerprint:
+  proofs: true
+  also: [[by, "=@fingerprint"], [after, "=is"], [after, "=unit"]]
+requires:
+  - {if_part: effect, path: ["<-performs"], kinds: [operation], error: "a row with an effect has an operation performing it"}
+fields:
+  after: {type: link, to: [value], required: true}
+  then: {type: link, to: [step, end, workflow], required: true}
+  by: {type: links, to: [rule]}

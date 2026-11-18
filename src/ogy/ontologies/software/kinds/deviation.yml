@@ -1,0 +1,10 @@
+kind: deviation
+about: how an external behaves against expectation, and the workaround the product carries
+shape: inline
+part_of: external
+key: deviations
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  when: {type: expr, to: [value, external], required: true}
+  says: {required: true}                             # the workaround

@@ -1,0 +1,11 @@
+kind: value
+about: a number with its unit (an amount, a count, a duration) that someone decides; no literal numbers anywhere else
+shape: list
+file: values.yml
+layers: [product, software]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  says: {required: true}                             # what the value is, without the number
+  is: {type: number, required: true}
+  unit: {required: true}

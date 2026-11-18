@@ -1,0 +1,22 @@
+question: Does ogy have a plugin system?
+context: Graph checks, the proof locator and harm tags can be built in or declared as data; extension code, if ever needed, is imported from the package.
+options:
+  no-plugins:
+    label: No; one package, with built-in checks and ontology data
+    sets:
+      software/checks/rule/ogy-has-no-plugin-system:
+        says: ogy has no plugin system; checks are built in and switched on by kind data.
+  dynamic:
+    label: Plugins loaded by name at run time
+    sets:
+      software/checks/rule/ogy-has-no-plugin-system:
+        says: ogy loads plugins by name at run time.
+guess:
+  chose: no-plugins
+  why: Dynamic loading adds a failure mode with no job that data cannot do.
+answers:
+- chose: no-plugins
+  said: No plugins
+  from: human
+  at: '2026-11-17T19:41:40.214+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6774

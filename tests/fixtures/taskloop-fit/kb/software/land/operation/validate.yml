@@ -1,0 +1,7 @@
+says: Runs the required checks on S in the candidate's slot under the slot's lock, renews the claim meanwhile, concludes the candidate and releases the slot.
+performs:
+  - product/land/workflow/land/step/validate/case/claim-lost
+  - product/land/workflow/land/step/validate/case/passed
+  - product/land/workflow/land/step/validate/case/failed
+uses: [software/claim/external/bd]
+src: ["code:src/taskloop/land_check.py#_custody"]

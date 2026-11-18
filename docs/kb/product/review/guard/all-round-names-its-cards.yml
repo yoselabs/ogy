@@ -1,0 +1,9 @@
+says: A bare yes to a round shown with --all is refused; the owner names the cards or says yes all.
+on: product/review/workflow/review-and-reply/step/apply
+when:
+  text: the round was shown with at most 7 cards, or the yes names its cards
+  reads:
+  - product/review/entity/review-round
+else: product/review/workflow/review-and-reply/end/refused
+src:
+- code:src/ogy/reply.py#_yes

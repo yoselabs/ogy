@@ -1,0 +1,4 @@
+says: The terms of a captured glossary wait as a count, not as errors; the owner agrees them page by page in a review round.
+src:
+- code:src/ogy/pages.py#pages
+- code:src/ogy/ops.py#run_waiting

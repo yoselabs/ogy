@@ -1,0 +1,3 @@
+says: An agent changes the knowledge base only through ogy (CLI or MCP) and reads it through ogy.
+src:
+- code:src/ogy/init.py#_deny

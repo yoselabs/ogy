@@ -1,0 +1,48 @@
+says: An agent turns words, documents or code into entries through one checked write.
+src:
+- code:src/ogy/put.py#put
+trigger: actor
+realizes: product/capture/capability/write-entries
+start: read-glossary
+steps:
+  read-glossary:
+    says: The agent reads the glossary and the kinds before it writes a sentence.
+    actor: product/people/actor/agent
+    choices:
+      read:
+        label: Read the glossary
+        then: search
+  search:
+    says: The agent searches live and removed entries before it proposes anything.
+    actor: product/people/actor/agent
+    choices:
+      searched:
+        label: Search
+        then: put
+  put:
+    says: The agent writes the records with ogy put.
+    actor: product/people/actor/agent
+    choices:
+      put:
+        label: Put the records
+        then: check
+  check:
+    says: ogy checks the batch together and writes it under the write lock.
+    cases:
+      refused:
+        order: 1
+        when:
+          text: a record adds an error to the files or entries it touches
+        then: refused
+      otherwise:
+        then: written
+        effects:
+        - do: write
+          on: product/capture/entity/entry
+ends:
+  written:
+    result: success
+    says: Every record is written.
+  refused:
+    result: failure
+    says: Nothing is written; the refusal names each record at fault.

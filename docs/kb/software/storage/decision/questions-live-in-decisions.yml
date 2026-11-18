@@ -1,0 +1,22 @@
+question: Where do a question and its answers live?
+context: A tracker item may mirror a question so that it is seen.
+options:
+  in-decision:
+    label: In the decision entry; a bead only mirrors
+    sets:
+      software/storage/rule/a-question-lives-in-its-decision:
+        says: A question and its answers live only in a decision entry; a tracker item may mirror them and is never the source.
+  in-tracker:
+    label: In the tracker item
+    sets:
+      software/storage/rule/a-question-lives-in-its-decision:
+        says: A question and its answers live in the tracker item.
+guess:
+  chose: in-decision
+  why: One home for each fact.
+answers:
+- chose: in-decision
+  said: Store nothing in the bead tracker
+  from: human
+  at: '2026-11-17T18:56:25.058+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6636

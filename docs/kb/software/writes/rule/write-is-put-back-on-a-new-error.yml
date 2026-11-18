@@ -1,0 +1,3 @@
+says: A write that adds an error to the files or entries it touched puts every file back and is refused; a term that waits for the owner's agreement is no reason to refuse it.
+src:
+- code:src/ogy/writes.py#commit

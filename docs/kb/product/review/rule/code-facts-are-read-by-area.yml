@@ -1,0 +1,3 @@
+says: Facts read from code rest until an agent changes one; the owner reads them on request as cards, one area at a time (`review --from code <area>`).
+src:
+- code:src/ogy/pages.py#pages

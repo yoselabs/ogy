@@ -1,0 +1,12 @@
+- id: remove-with-reason
+  says: An agent deletes an entry only with a reason, and the entry is kept in its area's removed ledger so its id is never reused.
+  serves:
+  - product/removal/goal/nothing-silently-dropped
+  src:
+  - code:src/ogy/removal.py#remove
+- id: list-dropped
+  says: 'ogy lists what no person has seen: guesses that say no, removals whose reason is plain words, guesses that differ from the answer, answers with a hedge and answers given under a delegation.'
+  serves:
+  - product/removal/goal/nothing-silently-dropped
+  src:
+  - code:src/ogy/review.py#Dropped

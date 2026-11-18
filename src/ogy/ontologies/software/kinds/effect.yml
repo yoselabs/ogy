@@ -1,0 +1,10 @@
+kind: effect
+about: one thing a row changes or tells; the effects of one row happen together or not at all
+shape: inline
+part_of: [choice, case, timeout]
+key: effects
+holds: list
+fields:
+  do: {type: enum, of: [transition, create, delete, write, count, tell], required: true}
+  "on": {type: link, to: [transition, entity, attr, actor, external], required: true}
+  value: {}                                          # text: what is written or told; never evaluated

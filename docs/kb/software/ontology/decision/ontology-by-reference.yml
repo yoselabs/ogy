@@ -1,0 +1,22 @@
+question: Does a repository copy the kinds of a shipped ontology or name them?
+context: A copy drifts from the installed ogy; a name lets the installed version supply the kinds and the repository add its own.
+options:
+  by-name:
+    label: '`ogy.yml` names the ontology; kinds come from the installed ogy'
+    sets:
+      software/ontology/rule/repository-names-its-ontology:
+        says: A repository names its ontology in ogy.yml; the kinds come from the installed ogy and the repository may add kinds.
+  copied:
+    label: '`ogy init` copies the kinds into the repository'
+    sets:
+      software/ontology/rule/repository-names-its-ontology:
+        says: ogy init copies the kinds of the ontology into the repository.
+guess:
+  chose: by-name
+  why: Bead ogy-yy9.35 recommends it; the owner did not choose between copying and naming.
+answers:
+- chose: by-name
+  said: By name, pinned to a version
+  from: human
+  at: '2026-11-17T21:38:17.324+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900

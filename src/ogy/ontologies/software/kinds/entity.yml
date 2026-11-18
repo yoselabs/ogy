@@ -1,0 +1,10 @@
+kind: entity
+about: a thing the product keeps facts about; its attributes and, when it has one, its lifecycle
+shape: entity
+layers: [product, software]
+needs_proof: true
+fingerprint:
+  proofs: true
+  also: [[/attr, "=@fingerprint"], [/state, "=@fingerprint"], [/transition, "=@fingerprint"]]
+fields:
+  says: {required: true}

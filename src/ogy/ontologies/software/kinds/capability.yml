@@ -1,0 +1,9 @@
+kind: capability
+about: something the product can do, decided before its workflows
+harm: [who-is-allowed]
+shape: list
+file: capabilities.yml
+layers: [product]
+fields:
+  says: {required: true}
+  serves: {type: links, to: [goal]}

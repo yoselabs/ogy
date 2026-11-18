@@ -1,0 +1,6 @@
+{
+  "name": "ogy",
+  "description": "Capture requirements into a checked ontology: few owner questions, every answer's origin kept, hazards asked.",
+  "version": "0.1.0",
+  "author": {"name": "iorlas"}
+}

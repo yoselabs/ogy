@@ -1,0 +1,3 @@
+says: ogy is one package that ships the software ontology; the split into a generic engine is revisited later.
+src:
+- code:src/ogy/ontology.py#packaged

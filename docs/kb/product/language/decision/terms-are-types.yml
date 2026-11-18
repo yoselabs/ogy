@@ -1,0 +1,24 @@
+title: The glossary holds types
+question: Does the glossary hold instances (named things) as well as types?
+options:
+  types:
+    label: Only types, never instances
+    sets:
+      product/language/rule/glossary-holds-types:
+        says: The glossary holds only types, never instances.
+  instances:
+    label: Types and instances
+    sets:
+      product/language/rule/glossary-holds-types:
+        says: The glossary holds types and named instances alike.
+guess:
+  chose: types
+  why: An instance is an entry of the knowledge base, not a word of its language.
+  heard:
+    said: Types only, no instances
+answers:
+- chose: types
+  said: The glossary holds types, not instances
+  from: human
+  at: '2026-11-18T19:32:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

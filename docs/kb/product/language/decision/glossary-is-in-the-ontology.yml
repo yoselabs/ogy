@@ -1,0 +1,34 @@
+question: Is the glossary part of the ontology?
+context: 'The owner sees the glossary as close to a constitution: one fixed language that agents reuse.'
+options:
+  kind:
+    label: Yes, the `term` kind in one global list
+    sets:
+      product/language/rule/glossary-is-an-ontology-kind:
+        says: The glossary is the term kind of the ontology, one global list that the owner must agree to.
+  document:
+    label: No, a document beside it
+    sets:
+      product/language/rule/glossary-is-an-ontology-kind:
+        says: The glossary is a document beside the ontology.
+  kind-per-area:
+    label: The term kind of the ontology, a glossary per area
+    sets:
+      product/language/rule/glossary-is-an-ontology-kind:
+        says: The glossary is the term kind of the ontology, a list per area and one per layer root for shared terms; the owner must agree to each term.
+guess:
+  chose: kind-per-area
+  why: The glossary stays a kind of the ontology; only its home changes to one per area.
+  heard:
+    said: Glossaries one to one with an area
+answers:
+- chose: kind
+  said: The glossary belongs in the ontology
+  from: human
+  at: '2026-11-17T18:28:49.439+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6454
+- chose: kind-per-area
+  said: One glossary per area
+  from: human
+  at: '2026-11-18T19:13:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

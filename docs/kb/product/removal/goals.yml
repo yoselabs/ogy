@@ -1,0 +1,6 @@
+- id: nothing-silently-dropped
+  says: Nothing leaves the knowledge base without a recorded reason, and what no person has seen is listed.
+  for:
+  - product/people/actor/owner
+  src:
+  - code:src/ogy/review.py#dropped

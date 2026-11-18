@@ -1,0 +1,3 @@
+says: The task is closed in the tracker only after its change is delivered to origin's main.
+"on": [product/land/workflow/land]
+src: ["code:src/taskloop/land_close.py#closed"]

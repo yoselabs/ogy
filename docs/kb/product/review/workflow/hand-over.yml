@@ -1,0 +1,24 @@
+says: At the end of a session the agent leaves no error it may fix and shows the owner what waits and what no person has seen.
+src:
+- doc:87f15b9:skills/ogy-capture/SKILL.md#8-check-hand-over-end-the-session
+trigger: actor
+start: check
+steps:
+  check:
+    says: The agent runs ogy check and fixes every error that is its own to fix.
+    actor: product/people/actor/agent
+    choices:
+      clean:
+        label: Check
+        then: list
+  list:
+    says: The agent runs ogy dropped and ogy status and reads back the answers recorded today, those given under a delegation among them.
+    actor: product/people/actor/agent
+    choices:
+      read-back:
+        label: Read back
+        then: handed-over
+ends:
+  handed-over:
+    result: success
+    says: The owner has the waiting count, the dropped list and the answers they may veto.

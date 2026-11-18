@@ -1,0 +1,12 @@
+kind: workflow
+about: a result reached by steps; branching is `then` targets, merging is two rows naming one step
+shape: entity
+layers: [product, software]
+flow: {}
+fields:
+  says: {required: true}                             # the result it reaches
+  trigger: {type: enum, of: [actor, schedule, event, called], required: true}
+  schedule: {type: link, to: [value]}                # with trigger schedule
+  event: {type: link, to: [transition]}              # with trigger event
+  start: {type: link, to: [step], required: true}
+  realizes: {type: link, to: [capability]}

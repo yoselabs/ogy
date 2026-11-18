@@ -1,0 +1,11 @@
+kind: guess
+about: what is built while a decision has no answer; an option, or values when the decision has no options; a guess of "no" chooses an option that sets `null`, or gives `null` as the value
+shape: inline
+part_of: decision
+key: guess
+holds: one
+exactly_one_of: [[chose, value]]
+fields:
+  chose: {type: link, to: [option]}
+  value: {type: sets}                                # {address: {field: value} | null}, as in option.sets
+  why: {note: true, required: true}

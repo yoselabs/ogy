@@ -1,0 +1,22 @@
+question: Is the folder under a layer still called an area, or domain, slice, module or context?
+options:
+  area:
+    label: Keep area; avoid domain, slice, module and context
+    sets:
+      product/language/rule/area-is-the-word:
+        says: The folder under a layer is an area; domain, slice, module and context are not used for it.
+  other:
+    label: Rename it (domain, slice, module or context)
+    sets:
+      product/language/rule/area-is-the-word:
+guess:
+  chose: area
+  why: Area is plain, already in every address and command, and carries none of the meanings domain, module or context have in software.
+  heard:
+    said: Fine with it
+answers:
+- chose: area
+  said: Fine with the word area
+  from: human
+  at: '2026-11-18T19:52:47+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

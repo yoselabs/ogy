@@ -1,0 +1,26 @@
+title: The area stays in the address
+structure: true
+question: Does an address keep its area?
+context: Dropping the area would make an id unique per layer and stop a move from changing addresses.
+options:
+  keep:
+    label: 'Keep: <layer>/<area>/<kind>/<id>'
+    sets:
+      software/storage/rule/address-keeps-the-area:
+        says: 'Every address names its area: <layer>/<area>/<kind>/<id>; a part adds its kind and key.'
+  drop:
+    label: 'Drop the area: <layer>/<kind>/<id>'
+    sets:
+      software/storage/rule/address-keeps-the-area:
+        says: 'An address has no area: <layer>/<kind>/<id>; an id is unique within its layer.'
+guess:
+  chose: keep
+  why: The area is how a reader finds an entry and how files are laid out; the owner calls it a must.
+  heard:
+    said: The area must stay in the address
+answers:
+- chose: keep
+  said: The area must stay in the address
+  from: human
+  at: '2026-11-18T19:13:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

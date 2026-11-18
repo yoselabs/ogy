@@ -1,0 +1,4 @@
+says: 'How the knowledge base is stored: the docs/kb layout, addresses and ids, the removed ledgers, the built record, moves, Git and shelf.'
+distinct:
+- 'the kinds and their fields: ontology'
+- 'the write operations: writes'

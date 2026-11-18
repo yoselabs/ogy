@@ -1,0 +1,103 @@
+"""The command surface: flags before or after the verb, help on everything, find, near misses, status, and what an agent is given."""
+
+import asyncio
+from pathlib import Path
+
+import pytest
+from fastmcp.exceptions import ToolError
+from tests.conftest import ogy
+from verb_cli.testing import assert_help_tree
+
+from ogy import cli
+from ogy.mcp_server import build
+
+
+def test_the_global_flags_work_before_and_after_the_verb(repo: Path) -> None:
+    before = ogy(repo, "--rev", "HEAD", "show", "product/app/value/fee")
+    assert before[0] == cli.OK
+    assert cli.run(["show", "product/app/value/fee", "--repo", str(repo), "--rev", "HEAD"]) == before
+    assert cli.run(["--repo", str(repo), "show", "product/app/value/fee", "--rev", "HEAD"]) == before
+    assert cli.run(["check", "--repo", str(repo), "--rev", "."]) == (cli.OK, ["ok"])
+
+
+def test_remove_does_not_ask_for_a_rev(repo: Path) -> None:
+    code, _ = ogy(repo, "--rev", "HEAD", "remove", "software/app/operation/lend", "--why", "not needed")
+    assert code == cli.OK and not (repo / "docs/kb/software/app/operation/lend.yml").exists()
+
+
+def test_every_command_and_option_explains_itself() -> None:
+    assert_help_tree(cli.parser())
+
+
+def test_the_renamed_commands_are_gone_and_the_new_ones_are_there(repo: Path) -> None:
+    for old in ("context", "work-left", "spec", "removed"):
+        with pytest.raises(SystemExit):
+            cli.parser().parse_args([old])
+    for name in ("find", "status", "kinds", "work", "dropped"):
+        assert cli.parser().parse_args([name, *(["x"] if name == "find" else [])]).command == name
+
+
+def test_the_mcp_descriptions_are_the_commands_own() -> None:
+    tools = {tool.name: tool.description for tool in asyncio.run(build().list_tools())}
+    assert "usage:" not in " ".join(tools.values()) and tools["find"].startswith("search live and removed entries")
+
+
+def test_find_lists_live_and_removed_entries_as_a_table(repo: Path) -> None:
+    ogy(repo, "remove", "software/app/operation/lend", "--why", "not needed")
+    code, lines = ogy(repo, "find", "app")
+    assert code == cli.OK and any(line.startswith("product/app/value/fee   value") for line in lines)
+    assert any(line.startswith("software/app/operation/lend   operation   removed") for line in lines)
+    assert [line.split("   ")[0] for line in ogy(repo, "find", "--removed")[1]] == ["software/app/operation/lend"]
+    assert [line.split("   ")[0] for line in ogy(repo, "find", "--kind", "value")[1]] == ["product/app/value/fee"]
+    assert ogy(repo, "find", "nothing-like-it") == (cli.OK, ["nothing found"])
+    assert ogy(repo, "find", "--kind", "valu")[0] == cli.NOT_FOUND
+
+
+def test_find_by_parent_lists_the_parts(repo: Path) -> None:
+    _, lines = ogy(repo, "find", "--parent", "product/app/workflow/borrow")
+    assert {line.split("   ")[0] for line in lines} == {"product/app/workflow/borrow/step/ask", "product/app/workflow/borrow/end/done"}
+
+
+def test_a_miss_offers_near_addresses(repo: Path) -> None:
+    code, lines = ogy(repo, "show", "product/app/value/fe")
+    assert code == cli.NOT_FOUND and lines[0].startswith("no entry product/app/value/fe (did you mean product/app/value/fee")
+    assert "did you mean product/app/value/fee" in ogy(repo, "put", '{"address": "value/fee", "is": 3}')[1][0]
+    assert "did you mean product/app/decision" not in ogy(repo, "show", "product/app/actor/membr")[1][0]
+    assert "did you mean product/app/actor/member" in ogy(repo, "show", "product/app/actor/membr")[1][0]
+
+
+def test_status_counts_an_area_and_saves_nothing(repo: Path) -> None:
+    code, lines = ogy(repo, "status")
+    assert code == cli.OK and lines[0].startswith("product/app   ")
+    assert "findings: 0 (ogy check)" in lines and "work left: 6 (ogy work)" in lines
+    assert ogy(repo, "status", "app") == (code, lines)
+    assert ogy(repo, "status", "ap")[1] == ["no area ap (did you mean app?)"]
+    assert not (repo / ".git/ogy-rounds").exists()
+
+
+def test_check_work_and_review_take_an_area(repo: Path) -> None:
+    assert ogy(repo, "check", "app") == (cli.OK, ["ok"])
+    assert ogy(repo, "work", "app")[0] == cli.FINDINGS
+    assert ogy(repo, "review", "app")[0] == cli.OK
+    for command in ("check", "work", "review"):
+        assert ogy(repo, command, "nope")[0] == cli.NOT_FOUND
+
+
+def test_an_agent_gets_a_table_with_its_header_even_when_empty(repo: Path) -> None:
+    assert cli.run(["--repo", str(repo), "find", "zzz"], agent=True) == (cli.OK, ["address\tkind\tstate\tsays\tnote"])
+    assert cli.run(["--repo", str(repo), "dropped"], agent=True) == (cli.OK, ["why\taddress"])
+    assert cli.run(["--repo", str(repo), "check"], agent=True)[1] == ["problem\tpath\taddress\tdetail"]
+
+
+def test_an_agent_gets_records_and_no_python_reprs(repo: Path) -> None:
+    code, lines = cli.run(["--repo", str(repo), "show", "software/app/operation/lend"], agent=True)
+    text = "\n".join(lines)
+    assert code == cli.OK and "address: software/app/operation/lend" in text and "performs:" in text
+    assert "['" not in text and "{'" not in text
+    assert "['" not in "\n".join(ogy(repo, "show", "software/app/operation/lend")[1])
+    assert "findings: 0" in "\n".join(cli.run(["--repo", str(repo), "status"], agent=True)[1])
+
+
+def test_a_refusal_is_a_tool_error_over_mcp(repo: Path) -> None:
+    with pytest.raises(ToolError, match="did you mean product/app/value/fee"):
+        asyncio.run(build().call_tool("show", {"repo": str(repo), "address": "product/app/value/fe"}))

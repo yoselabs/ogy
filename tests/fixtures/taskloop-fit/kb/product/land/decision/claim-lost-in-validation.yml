@@ -1,0 +1,14 @@
+title: Claim lost while S is checked
+question: When the claim is lost while S is being checked, what does the land answer?
+context: >-
+  The code concludes the candidate as failed with the reason claim_lost, and the land then answers that the checks of S
+  failed. A round puts the task on hold for either answer, with a different cause and a different comment.
+src: ["code:src/taskloop/land_check.py#_ended", "code:src/taskloop/land.py#_checked"]
+options:
+  as-failed-checks:
+    label: The same as failed checks
+    sets: {product/land/workflow/land/step/validate/case/claim-lost: {then: checks-failed}}
+  as-claim-lost:
+    label: The claim is lost
+    sets: {product/land/workflow/land/step/validate/case/claim-lost: {then: claim-lost}}
+guess: {chose: as-failed-checks, why: It is what the code does today.}

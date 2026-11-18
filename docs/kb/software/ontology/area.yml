@@ -1,0 +1,4 @@
+says: 'The kinds of the software ontology: where it ships, how a repository names it, and the rules about kinds, actors, areas and the graph.'
+distinct:
+- 'the files and addresses entries are stored under: storage'
+- "the glossary's words: product/language"

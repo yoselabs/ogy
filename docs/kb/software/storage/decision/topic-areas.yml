@@ -1,0 +1,29 @@
+title: The topic areas of ogy's own knowledge base
+structure: true
+question: ogy's knowledge base has one area per layer named after the product (ogy), which check warns about. Which areas do new entries go to?
+context: Asked by the owner on 2026-11-18 (split the area by topic, both layers). Names chosen by the agent; existing entries cannot move yet (see software/storage/decision/moving-entries).
+options:
+  by-topic:
+    label: 'product: capture, review, removal, checks, setup, inspection, evals, terms; software: cli, mcp, writes, storage, checks, setup'
+    sets:
+      software/storage/rule/areas-by-topic:
+        says: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, terms. software: cli, mcp, writes, storage, checks, setup. No area is named after the product."
+  by-kind-of-work:
+    label: 'Fewer, wider areas: product/requirements and software/implementation'
+    sets:
+      software/storage/rule/areas-by-topic:
+        says: "ogy's own knowledge base has one wide area per layer: product/requirements and software/implementation."
+  by-topic-extended:
+    label: by-topic, plus product/people, product/ontology, software/ontology, software/packaging; product/terms is named product/language
+    sets:
+      software/storage/rule/areas-by-topic:
+        says: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, language, ontology, people. software: cli, mcp, writes, storage, checks, setup, ontology, packaging. No area is named after the product."
+guess:
+  chose: by-topic-extended
+  why: The owner chose this on 2026-11-18; the guess follows the answer.
+answers:
+- chose: by-topic-extended
+  said: Yes, record the topic areas
+  from: human
+  at: '2026-11-18T11:32:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

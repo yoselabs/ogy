@@ -1,0 +1,4 @@
+says: The claim is renewed at a fixed interval while a step runs, and by nothing between steps.
+"on": [software/claim/external/bd]
+src: ["code:src/taskloop/claim_lease.py#keeping"]
+because: [software/claim/value/renew-every]

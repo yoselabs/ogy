@@ -1,0 +1,3 @@
+says: A plain old word is dropped; a distinctive one is an avoid of the nearest term; there is no glossary-level avoid list.
+src:
+- code:src/ogy/terms.py#_avoided

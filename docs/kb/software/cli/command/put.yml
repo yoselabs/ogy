@@ -1,0 +1,6 @@
+says: Add or change entries, one or many records in one checked, atomic write.
+invoked_as: ogy put [records ...] [--file <path> | --file -]
+serves:
+- product/capture/workflow/capture-entries/step/put
+src:
+- code:src/ogy/cli.py#_writes

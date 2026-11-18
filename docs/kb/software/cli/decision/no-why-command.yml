@@ -1,0 +1,23 @@
+question: Does ogy have a `why` command that answers who decided something?
+context: '`find` then `show` may already cover it once `show` prints where an entry came from and was decided (Q12).'
+options:
+  no:
+    label: No, not now; revisit when the owner asks it in real use
+    sets:
+      software/cli/rule/no-why-command:
+        says: ogy has no `why` command; `find` and `show` answer who decided something.
+  yes:
+    label: Add a `why <address>` command
+    sets:
+      software/cli/rule/no-why-command:
+        says: ogy has a `why <address>` command that prints who decided an entry, and when.
+guess:
+  chose: no
+  why: No real use has asked for it yet.
+answers:
+- chose: no
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:47+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

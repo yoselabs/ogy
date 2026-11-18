@@ -1,0 +1,15 @@
+- id: lease-ttl
+  says: How long the tracker keeps a claim without a renewal.
+  is: 300
+  unit: seconds
+- id: renew-every
+  says: The time between two renewals of a claim while a step runs; a third of the lease.
+  is: 100
+  unit: seconds
+  src: ["code:src/taskloop/claim_lease.py#BEAT_EVERY_S"]
+  because: [software/claim/value/lease-ttl]
+- id: renewal-call-limit
+  says: The longest one renewal call to the tracker may take.
+  is: 30
+  unit: seconds
+  src: ["code:src/taskloop/claim_lease.py#BD_TIMEOUT_S"]

@@ -1,0 +1,23 @@
+question: May an agent edit the knowledge base files directly?
+context: ogy mediates, validates and records every change only if no one writes around it; `ogy init` adds deny rules for the folder.
+options:
+  through-ogy:
+    label: No; only through the CLI or MCP commands
+    sets:
+      software/writes/rule/agents-edit-only-through-ogy:
+        says: An agent changes the knowledge base only through ogy (CLI or MCP) and reads it through ogy.
+  by-hand:
+    label: Yes, then run `ogy check`
+    sets:
+      software/writes/rule/agents-edit-only-through-ogy:
+        says: An agent may edit the YAML files directly and run ogy check.
+guess:
+  chose: through-ogy
+  why: Every write is checked and put back on failure.
+answers:
+- chose: through-ogy
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:39+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

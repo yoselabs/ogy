@@ -1,0 +1,1 @@
+says: A rule is linked once, by the entry that follows it (`by` on a case or a choice, as `because` names principles); a rule has no `on`. A rule and its first follower are written in one batch; a rule that nothing follows is an error; `show` and the area map print the link both ways.

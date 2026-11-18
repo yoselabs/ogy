@@ -1,0 +1,23 @@
+question: Does the glossary keep a list of old plain words that no sentence may use?
+context: '`piece`, `node` and `part` are plain English; a check cannot refuse `part` in every sentence (Q9).'
+options:
+  drop:
+    label: Drop them; a distinctive old word hangs on the nearest term as an avoid
+    sets:
+      software/checks/rule/old-names-hang-on-a-term:
+        says: A plain old word is dropped; a distinctive one is an avoid of the nearest term; there is no glossary-level avoid list.
+  list:
+    label: A glossary-level list of old words
+    sets:
+      software/checks/rule/old-names-hang-on-a-term:
+        says: The glossary holds a list of old words that no sentence may use.
+guess:
+  chose: drop
+  why: Plain words clash with ordinary sentences; a distinctive word like lane can hang on one term.
+answers:
+- chose: drop
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:49+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -1,0 +1,27 @@
+title: Whether ogy has views
+question: The software ontology has a view kind (a screen that serves actor steps). ogy prints text on a terminal and returns tables and records over MCP. Does its knowledge base hold a view?
+context: 'Found on 2026-11-18: view was the one kind left without an entry after capture from code.'
+options:
+  none:
+    label: 'No: ogy has no screens; commands serve every actor step'
+    sets:
+      software/cli/view/review-cards:
+  review-cards:
+    label: The printed review round is a view
+    sets:
+      software/cli/view/review-cards:
+        says: 'The review round as printed: a count per area, then numbered cards with their options and the reply line.'
+        serves:
+        - product/review/workflow/review-and-reply/step/reply
+        src:
+        - code:src/ogy/render.py#render_review
+guess:
+  chose: none
+  why: A view is a screen; the printed round is the output of the command review, which already serves the step.
+answers:
+- chose: none
+  delegated: software/writes/decision/capture-judgement
+  said: 'The agent found no view: ogy has no screens'
+  from: ai
+  at: '2026-11-18T11:07:10+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

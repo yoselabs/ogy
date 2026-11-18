@@ -1,0 +1,4 @@
+- id: owner
+  title: Owner
+  says: The person who owns ogy and decides its rules.
+  nature: human

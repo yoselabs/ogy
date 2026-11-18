@@ -1,0 +1,3 @@
+says: S is pushed to origin's main without force, so the push succeeds only while origin's main is an ancestor of S.
+"on": [software/land/external/origin]
+src: ["code:src/taskloop/land_push.py#_pushed"]

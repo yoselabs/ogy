@@ -1,0 +1,9 @@
+kind: external
+about: a library or service the product depends on and does not own
+harm: [tells-outside]
+shape: entity
+layers: [software]
+fields:
+  says: {required: true}                             # what it provides
+  pin: {}
+  terms: {}

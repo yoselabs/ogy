@@ -1,0 +1,8 @@
+- id: land-mode
+  says: Who lands a task whose checks passed.
+  members: [manual, auto]
+  src: ["code:src/taskloop/profile.py#LandMode"]
+- id: holding-refusals
+  says: The refusals that are about the task's own change; a round puts the task on hold for them.
+  members: [conflict, checks_failed, remote_rejected, branch_moved, claim_lost]
+  src: ["code:src/taskloop/round_land.py#HOLDING"]

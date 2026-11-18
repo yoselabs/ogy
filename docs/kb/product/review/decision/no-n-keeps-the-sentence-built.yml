@@ -1,0 +1,23 @@
+question: What does `no N` do in a review reply?
+context: The owner may answer a card with `no 4 [words]` (Q14).
+options:
+  question-opens:
+    label: 'The words are stored, a decision "Is this still right: ..." opens, and the sentence stays built until it is answered'
+    sets:
+      product/review/rule/no-n-keeps-the-sentence-built:
+        says: '`no N` stores the words, opens a decision that asks whether the sentence is still right, and leaves the sentence built until it is answered; ogy blocks nothing.'
+  removes:
+    label: The sentence is removed
+    sets:
+      product/review/rule/no-n-keeps-the-sentence-built:
+        says: '`no N` removes the sentence at once.'
+guess:
+  chose: question-opens
+  why: The owner's no is a question to answer well, not a deletion; the agent asks "what instead?" in the same turn.
+answers:
+- chose: question-opens
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:45+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

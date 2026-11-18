@@ -1,0 +1,4 @@
+says: Every entry lives under a layer folder, product or software, then an area; the ontology enforces it and nothing skips it.
+src:
+- code:src/ogy/layout.py#locate
+title: Layer folders above the area are mandatory

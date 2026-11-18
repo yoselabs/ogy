@@ -1,0 +1,12 @@
+- id: cards-per-round
+  says: The most cards one review round shows, unless every card is asked for with --all.
+  is: 7
+  unit: cards
+  src:
+  - code:src/ogy/status.py#MAX_CARDS
+- id: cards-per-page
+  says: The most cards one page of review --from docs or --from code shows.
+  is: 12
+  unit: cards
+  src:
+  - code:src/ogy/pages.py#PAGE

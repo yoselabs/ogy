@@ -1,0 +1,4 @@
+says: Deleting an entry with a reason, the removed ledger that keeps its id, and the list of what no person has seen.
+distinct:
+- 'adding and changing entries: capture'
+- 'asking the owner: review'

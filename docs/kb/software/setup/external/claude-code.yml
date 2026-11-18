@@ -1,0 +1,3 @@
+says: Claude Code reads .claude/settings.json, where ogy init denies Edit and Write on docs/kb/**/*.yml, and .mcp.json, where it starts the ogy server.
+src:
+- code:src/ogy/init.py#_deny

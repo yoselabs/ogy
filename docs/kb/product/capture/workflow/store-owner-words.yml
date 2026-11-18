@@ -1,0 +1,39 @@
+says: The agent records what the owner said as an answer, with a short paraphrase, before its next action.
+src:
+- code:src/ogy/writes.py#answer
+trigger: actor
+realizes: product/capture/capability/store-words
+start: store
+steps:
+  store:
+    says: The agent records the answer with ogy answer, or ogy reply for a review round, giving --said, a short paraphrase.
+    actor: product/people/actor/agent
+    choices:
+      stored:
+        label: Store the words
+        then: keep
+  keep:
+    says: ogy appends the answer to its decision.
+    cases:
+      not-relayed:
+        order: 1
+        when:
+          text: the answer is an agent's and names no decision whose answer, a person's, let it decide
+        then: refused
+      twice:
+        order: 2
+        when:
+          text: the decision already holds an answer with the same time
+        then: refused
+      otherwise:
+        then: stored
+        effects:
+        - do: transition
+          on: product/review/entity/decision/transition/answer
+ends:
+  stored:
+    result: success
+    says: The answer is on its decision, with what the owner said paraphrased, who, when and where.
+  refused:
+    result: failure
+    says: Nothing is stored.

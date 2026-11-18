@@ -1,0 +1,22 @@
+question: Where do the tool-written receipts (what was proved and built, and its hash) live?
+context: In the entry they make noisy diffs, merge conflicts and trouble on renames; the owner wants agents to read them easily.
+options:
+  built:
+    label: One file per source file under `built/`
+    sets:
+      software/storage/rule/built-record-lives-under-built:
+        says: The built record lives under built/, one file per source file, written only by the tool; ogy show and the library join it to the entry.
+  inline:
+    label: A block inside each entry
+    sets:
+      software/storage/rule/built-record-lives-under-built:
+        says: Receipts sit in a block inside each entry.
+guess:
+  chose: built
+  why: Diffs of meaning stay free of tool output.
+answers:
+- chose: built
+  said: Go with built
+  from: human
+  at: '2026-11-17T18:05:48.716+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6392

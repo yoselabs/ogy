@@ -1,0 +1,28 @@
+title: The address in the term entry
+question: The term entry still says its address is area/kind/id. Which wording does the glossary keep?
+context: Found while checking the four terms asked about; same cause.
+options:
+  with-layer:
+    label: <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term
+    sets:
+      glossary/term/entry:
+        says: Any item with an id in the knowledge base; its address is <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term.
+  keep:
+    label: 'Keep: area/kind/id'
+    sets:
+      glossary/term/entry:
+        says: Any item with an id in the knowledge base; its address is area/kind/id.
+  fable-wording:
+    label: One item of one kind with an id that never changes, named by its address
+    sets:
+      glossary/term/entry:
+        says: One item of one kind in the knowledge base, with an id that never changes; it is named by its address.
+guess:
+  chose: fable-wording
+  why: The owner chose this on 2026-11-18.
+answers:
+- chose: fable-wording
+  said: Yes, record the proposed wording
+  from: human
+  at: '2026-11-18T11:32:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

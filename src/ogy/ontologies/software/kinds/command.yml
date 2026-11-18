@@ -1,0 +1,13 @@
+kind: command
+about: a command line or API call that serves actor steps
+shape: entity
+layers: [software]
+needs_proof: true
+fingerprint:
+  proofs: true
+  also: [[serves, /choice, "=@id"]]
+fields:
+  says: {required: true}
+  invoked_as: {required: true}
+  serves: {type: links, to: [step], required: true}
+  offers: {type: links, to: [choice]}

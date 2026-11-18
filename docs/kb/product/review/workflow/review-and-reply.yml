@@ -1,0 +1,43 @@
+says: The agent shows the owner a round of cards and applies the owner's reply to it.
+src:
+- code:src/ogy/reply.py#reply
+trigger: actor
+realizes: product/review/capability/apply-a-reply
+start: show
+steps:
+  show:
+    says: The agent runs ogy review; the round is saved and its id printed.
+    actor: product/people/actor/agent
+    choices:
+      shown:
+        label: Show the round
+        then: reply
+  reply:
+    says: The owner replies in the reply grammar, or in natural words that the agent stores once and reads as one of its items.
+    actor: product/people/actor/owner
+    choices:
+      replied:
+        label: Reply
+        then: apply
+  apply:
+    says: ogy applies each item of the reply to the round, each on its own.
+    cases:
+      changed:
+        order: 1
+        when:
+          text: the entry of the card changed since the round was shown
+          reads:
+          - product/capture/entity/entry
+        then: refused
+      otherwise:
+        then: applied
+        effects:
+        - do: transition
+          on: product/capture/entity/entry/transition/agree
+ends:
+  applied:
+    result: success
+    says: The answers and agreements are recorded with a short paraphrase of what the owner said.
+  refused:
+    result: failure
+    says: The item is refused and its card stays in the queue.

@@ -1,0 +1,513 @@
+- id: entry
+  word: entry
+  says: One item of one kind in the knowledge base, with an id that never changes; it is named by its address.
+  group: tool
+  src:
+  - code:src/ogy/model.py#Entry
+  distinct:
+  - a file (one file may hold many entries)
+  - a part, which lives inside another entry
+  agreed:
+    at: '2026-11-18T14:57:15+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to both
+    hash: 7e974bfe1cc0
+- id: part
+  word: part
+  says: An entry that lives inside another entry's file and is addressed by its parent's address, its kind and its key (<layer>/<area>/<kind>/<id>/<part kind>/<key>), such as a step of a workflow or an option of a decision.
+  group: tool
+  src:
+  - code:src/ogy/model.py#Address.part
+  distinct:
+  - an entry with its own file
+  agreed:
+    at: '2026-11-18T15:01:29+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes
+    hash: e723793603d2
+- id: id
+  word: id
+  says: The permanent name of an entry within its kind and area; it is never reused, even after the entry is removed, while its title may change.
+  group: tool
+  src:
+  - code:src/ogy/put.py#_new
+  distinct:
+  - the title, which can be renamed
+  - the address, which also holds the area and kind
+  avoid:
+  - slug
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 0dcf3ad17597
+- id: address
+  word: address
+  says: 'The name of an entry: <layer>/<area>/<kind>/<id>; a part adds its own kind and key; a term is glossary/term/<id>, with no layer or area.'
+  group: tool
+  src:
+  - code:src/ogy/model.py#parse_address
+  distinct:
+  - a file path
+  - a link, which holds an address
+  agreed:
+    at: '2026-11-18T14:57:15+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to both
+    hash: 68e86ead499d
+- id: kind
+  word: kind
+  says: The shape of one sort of entry, declared as a file in the ontology's kinds folder; it lists the fields, links and checks of its entries.
+  group: ontology
+  src:
+  - code:src/ogy/kinds.py#Kind
+  distinct:
+  - a field type (text, number, link)
+  - an entry
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 993b5966cbcd
+- id: shape
+  word: shape
+  says: 'How a kind is stored: one file per entry (entity), one list file per area (list), one entry per area in a named file (single), or a part inside another entry (inline).'
+  group: ontology
+  src:
+  - code:src/ogy/kinds.py#Shape
+  distinct:
+  - the fields of a kind
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 9f3f7a7b2373
+- id: area
+  word: area
+  says: The folder under a layer that groups entries by topic; named after a topic, never the product. The same name under both layers is two areas.
+  group: ontology
+  src:
+  - code:src/ogy/layout.py#locate
+  distinct:
+  - a kind
+  - a layer
+  avoid:
+  - subject
+  - product axis
+  agreed:
+    at: '2026-11-18T14:57:15+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to both
+    hash: b73176995adf
+- id: layer
+  word: layer
+  says: 'One of the two top folders: product (what it does and why) or software (how it is built). Every entry except a term lives in exactly one; each kind lists the layers it may appear in.'
+  group: ontology
+  src:
+  - code:src/ogy/layout.py#locate
+  distinct:
+  - an area
+  - a decision's kind of question
+  agreed:
+    at: '2026-11-18T14:57:15+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to both
+    hash: 0258b737dc64
+- id: src
+  word: src
+  says: 'The place a sentence came from: a code: link or a doc: link, and nothing else.'
+  group: evidence
+  src:
+  - code:src/ogy/evidence.py#check_item
+  distinct:
+  - an authority (only a person's yes agrees)
+  - part of the fingerprint
+  - a decision, which is never a source
+  avoid:
+  - origin
+  - provenance
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 0021903be0d6
+- id: because
+  word: because
+  says: 'A chain of links to entries that reach a source: the sentence was concluded, widened or combined, not said.'
+  group: evidence
+  src:
+  - code:src/ogy/evidencecheck.py#_grounded
+  distinct:
+  - src
+  - an answer
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: d9c34e3d84c3
+- id: evidence
+  word: evidence
+  says: 'What an entry needs for itself: a src, a because chain that reaches one, or a deciding decision; without it ogy check reports no-evidence.'
+  group: evidence
+  src:
+  - code:src/ogy/evidencecheck.py#_no_evidence
+  distinct:
+  - proof, which shows the code does it
+  - agreement, which shows the owner accepts it
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: d81776507c65
+- id: decision
+  word: decision
+  says: One question with its options, the guess that is built meanwhile and the owner's answers; the only home of a question and its answers.
+  group: decisions
+  src:
+  - code:src/ogy/settle.py#Decision
+  distinct:
+  - a bead or ticket, which may only mirror it
+  - a source
+  - a message
+  avoid:
+  - settles
+  - ?open
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: 11bc36787819
+- id: guess
+  word: guess
+  says: 'What is built while a decision has no answer: an option the AI chose, or values, with the reason.'
+  group: decisions
+  src:
+  - code:src/ogy/settle.py#Force
+  distinct:
+  - an answer
+  - anything the owner said
+  avoid:
+  - assumed
+  - ?assumed
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: a392f986f007
+- id: answer
+  word: answer
+  says: The choice of one option of a decision, kept with a short paraphrase of what was said, who (a person, or an agent under a delegation), when and where; the newest is in force.
+  group: decisions
+  src:
+  - code:src/ogy/settle.py#Answer
+  distinct:
+  - a guess
+  - a quote, which ogy never keeps
+  - something an agent may write for the owner
+  avoid:
+  - ratified
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: d123c5c5a242
+- id: agreement
+  word: agreement
+  says: A person's yes in a review round to the sentence now on an entry, kept on the entry with its fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
+  group: decisions
+  src:
+  - code:src/ogy/status.py#agreed_in
+  distinct:
+  - a stored status
+  - a proposal by a person versus by an agent
+  avoid:
+  - standing
+  - ratified
+  - stale
+  - signed
+  - sign
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: 931302e469d2
+- id: fingerprint
+  word: fingerprint
+  says: A short hash of the meaning fields of an entry; notes, src and the built record are outside it, so editing them changes no agreement.
+  group: decisions
+  src:
+  - code:src/ogy/snapshot.py#fingerprint
+  distinct:
+  - a commit hash
+  - a version number
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: 3838f17a58a7
+- id: 'null'
+  word: 'null'
+  says: "In an option's sets, the one way to say no, not now or removed: under that option the entry does not exist."
+  group: decisions
+  src:
+  - code:src/ogy/settle.py#settles
+  distinct:
+  - a missing field
+  - a scope or status field
+  avoid:
+  - scope
+  - rejected
+  - non_goal
+  - disposal
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: 8c7ed0441dc2
+- id: question
+  word: question
+  says: A decision with no answer yet; it is a thing in its own list, not a state of an entry.
+  group: decisions
+  src:
+  - code:src/ogy/status.py#Status
+  distinct:
+  - a sentence in force
+  - a card
+  avoid:
+  - ?open
+  - open question
+  agreed:
+    at: '2026-11-17T23:39:17+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Left the glossary page to the agent; no term changed
+    hash: 9a3075f506e8
+- id: proof
+  word: proof
+  says: A test, written path.py::function, that shows a rule or value holds in code.
+  group: built
+  src:
+  - code:src/ogy/evidencecheck.py#_proofs
+  distinct:
+  - evidence, which says where a sentence came from
+  - a message
+  agreed:
+    at: '2026-11-17T23:25:57+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Tentative yes to the glossary page
+    hash: 2c5d66690a2e
+- id: built-record
+  word: built record
+  says: The tool-written file under built/ that holds, per entry, the hash that was proved and built; work left is computed from it.
+  group: built
+  src:
+  - code:src/ogy/built.py#read_all
+  distinct:
+  - a field inside the entry
+  - something an agent edits
+  avoid:
+  - meta
+  - receipts inside entries
+  agreed:
+    at: '2026-11-17T23:25:57+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Tentative yes to the glossary page
+    hash: 3eb3f90d5824
+- id: work-left
+  word: work left
+  says: 'What the built record says is still to do: a fingerprint that differs from what was built, a dependency hash that differs, or a required proof that is missing.'
+  group: built
+  src:
+  - code:src/ogy/receipts.py#work_left
+  distinct:
+  - a task list
+  - a bead
+  agreed:
+    at: '2026-11-17T23:25:57+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Tentative yes to the glossary page
+    hash: dacb3f102b44
+- id: removed-ledger
+  word: removed ledger
+  says: The append-only file removed.yml of an area, written only by ogy remove, that keeps each removed entry's envelope and snapshot so an id is never reused and the entry can be found without Git.
+  group: built
+  src:
+  - code:src/ogy/removed.py#append
+  distinct:
+  - Git history
+  - a change log
+  - a restore command
+  avoid:
+  - tombstone
+  - retired
+  agreed:
+    at: '2026-11-17T23:25:57+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Tentative yes to the glossary page
+    hash: 4aa2d1bf05bb
+- id: term
+  word: term
+  says: "A word of the glossary: one word of the product's language with its meaning, what it is not and the names to avoid; the owner must agree to it."
+  group: glossary
+  src:
+  - code:src/ogy/terms.py#check_terms
+  distinct:
+  - a code identifier
+  - a kind
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: b1864eceaa07
+- id: ontology
+  word: ontology
+  says: The kinds, fields and checks that say what an entry may be, kept as kind files; the knowledge base holds the entries.
+  group: ontology
+  src:
+  - code:src/ogy/ontology.py#Ontology
+  distinct:
+  - the knowledge base
+  - a plugin
+  avoid:
+  - schema
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 52ebcdb92d9d
+- id: software-ontology
+  word: software ontology
+  says: 'The ontology shipped with ogy that describes a software product: goals, actors, workflows, entities, rules, decisions and the glossary; a repository names it in ogy.yml.'
+  group: ontology
+  src:
+  - code:src/ogy/ontology.py#DEFAULT_ONTOLOGY
+  distinct:
+  - a requirements-only model
+  - a plugin
+  - a copy of kinds in each repository
+  avoid:
+  - v5
+  - requirements ontology
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: a826e886cd01
+- id: owner
+  word: owner
+  says: The person who decides the business questions of the product; an agent records what the owner said as a short paraphrase and never answers or agrees for them.
+  group: tool
+  src:
+  - code:src/ogy/writes.py#agree
+  distinct:
+  - an agent
+  - a user of the product
+  avoid:
+  - user
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: e214c8304276
+- id: read-back
+  word: read-back
+  says: 'Playing the entries back to the owner as plain sentences in three groups: what you said, what we concluded and what we guessed; one yes agrees to a group.'
+  group: review
+  src:
+  - doc:e1ce8757b0a1:skills/elicit/SKILL.md#6-read-back
+  distinct:
+  - a review round
+  - a summary
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 6f4f1260a886
+- id: review-round
+  word: review round
+  says: The cards that ogy review showed, kept so that ogy reply resolves against them; at most 7 cards.
+  group: review
+  src:
+  - code:src/ogy/rounds.py#Round
+  distinct:
+  - a read-back
+  - a land
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: 004e067014bf
+- id: harm-tag
+  word: harm tag
+  says: 'A word that a kind or field declares in harm: for what a wrong sentence costs; review sorts its queue by it.'
+  group: review
+  src:
+  - code:src/ogy/kinds.py#Harm
+  distinct:
+  - a risk score
+  - a gate
+  agreed:
+    at: '2026-11-17T23:49:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to the rest of the glossary
+    hash: a8f325c7650f
+- id: principle
+  word: principle
+  says: A statement every design decision is judged against; decisions cite it as their reason; kept in constitution/. The spoken word "values" means these.
+  avoid:
+  - value-as-principle
+  agreed:
+    at: '2026-11-18T17:33:54+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to all four
+    hash: bae49793fae4
+- id: constitution
+  word: constitution
+  says: 'The fixed folder constitution/: every principle, printed whole to every agent before it writes.'
+  agreed:
+    at: '2026-11-18T17:33:54+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to all four
+    hash: e603ca37fe4b
+- id: actor
+  word: actor
+  says: 'Who uses the product: a person (nature human) or an AI model (nature ai); an entry of the kind actor.'
+  group: ontology
+  because:
+  - software/ontology/rule/one-actor-kind
+  distinct:
+  - a message, which is what an actor said
+  - the actor of a step, which names an actor or an external
+  avoid:
+  - persona
+  - role

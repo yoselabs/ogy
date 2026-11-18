@@ -1,0 +1,74 @@
+"""Work left: what the built record says is still to do (loader-changes section 5, B1 to B3).
+
+An entry of a kind that `needs_proof` is work until its built line matches it now; an address with a line and no entry is
+removal work until the line is deleted; an entry whose `code:` or `doc:` source changed since it was captured is listed.
+"""
+
+from collections.abc import Mapping
+from dataclasses import dataclass
+from enum import StrEnum
+
+from ogy import built, evidence, removed
+from ogy.built import Line
+from ogy.model import parse_address
+from ogy.snapshot import Snapshot
+
+
+class Status(StrEnum):
+    """Where one piece of work stands."""
+
+    UNBUILT = "unbuilt"  # never built
+    CHANGED = "changed"  # built, then its meaning changed
+    DEPENDENCY_CHANGED = "dependency changed"  # built, then something it was built against changed
+    REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
+    CODE_CHANGED = "code changed since captured"
+    DOC_CHANGED = "document changed since captured"
+
+
+@dataclass(frozen=True)
+class Work:
+    """One thing still to do. `address` is text: a removed entry has none to resolve."""
+
+    address: str
+    status: Status
+    fingerprint: str
+    built: str | None
+    note: str = ""
+
+
+def _deps_now(snapshot: Snapshot, line: Line) -> dict[str, str]:
+    found: dict[str, str] = {}
+    for text in line.deps:
+        address = parse_address(text, snapshot.ontology)
+        found[text] = snapshot.fingerprint(address) if address in snapshot.entries else ""
+    return found
+
+
+def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
+    proving = [a for a in sorted(snapshot.entries) if snapshot.kind_of(a).needs_proof]
+    current = {str(a): (snapshot.fingerprint(a), _deps_now(snapshot, record[str(a)]) if str(a) in record else {}) for a in proving}
+    return [Work(text, Status(why), current[text][0], record[text].own if text in record else None)
+            for text, why in built.work_left(record, current).items()]
+
+
+def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, removed.Item]) -> list[Work]:
+    """B2: the `why` of the ledger item is printed beside the work."""
+    found: list[Work] = []
+    for text in built.removal_work(record, (str(a) for a in snapshot.entries)):
+        item = next((ledger[i] for i in sorted(ledger, key=len, reverse=True) if text == i or text.startswith(i + "/")), None)
+        found.append(Work(text, Status.REMOVED, "", record[text].own, f"why: {item.why}" if item else "no ledger item"))
+    return found
+
+
+def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Reader) -> list[Work]:
+    """B3: the symbol or the document section now is not the one the entry was captured from."""
+    live = {str(a) for a in snapshot.entries}
+    now = {text: {link: evidence.receipt(link, read) or "" for link in line.sourced} for text, line in record.items() if text in live}
+    return [Work(text, Status.DOC_CHANGED if link.startswith("doc:") else Status.CODE_CHANGED, "", record[text].own, link)
+            for text, links in built.sourced_changes(record, now).items() for link in links]
+
+
+def work_left(snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Reader,
+              ledger: Mapping[str, removed.Item] | None = None) -> list[Work]:
+    """Unbuilt and changed entries, removal work, and sources that changed since capture."""
+    return [*_unbuilt(snapshot, record), *_gone(record, snapshot, ledger or {}), *_sourced(record, snapshot, read)]

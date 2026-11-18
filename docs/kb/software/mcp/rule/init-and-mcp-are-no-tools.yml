@@ -1,0 +1,3 @@
+says: ogy init and ogy mcp are no MCP tools; every other command is one, generated from the CLI, so a new command needs no edit.
+src:
+- code:src/ogy/mcp_server.py#NO_TOOL

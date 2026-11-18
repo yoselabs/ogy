@@ -1,0 +1,25 @@
+title: An area is read as a map
+question: How does a person or an agent read one area?
+context: The owner opened product/ontology and could not tell what a rule does, where it plays or what it impacts.
+options:
+  map:
+    label: '`ogy show <layer>/<area>` prints the area as a map'
+    sets:
+      software/cli/rule/show-area-is-a-map:
+        says: '`ogy show <layer>/<area>` prints the area as a map: its goals, capabilities, workflows, steps with the rules they follow, decisions and what they set, values, questions, and the entries that link nothing.'
+  index-file:
+    label: A generated index file per area
+    sets:
+      software/cli/rule/show-area-is-a-map:
+        says: Each area has a generated index file that lists its entries and their links; a person reads that file.
+guess:
+  chose: map
+  why: One command reads the area from the entries themselves; a generated file is a second copy that drifts.
+  heard:
+    said: Liked the map
+answers:
+- chose: map
+  said: Liked the area map
+  from: human
+  at: '2026-11-18T19:13:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

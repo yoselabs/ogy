@@ -1,0 +1,16 @@
+- id: storage-is-a-projection
+  says: 'The ontology is a graph of linked entries. How an entry is stored (its own file, an item in a list, inline in its parent) is a projection: no meaning and no address depends on it.'
+  agreed:
+    at: '2026-11-18T17:33:54+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to all four
+    hash: 30d1f93ef082
+- id: intuitive-for-ai
+  says: 'The ontology is designed to be intuitive for AI agents: an agent reading the kinds, the glossary and one entry can tell what it means, where it goes and what it links to, without hidden conventions.'
+  agreed:
+    at: '2026-11-18T17:33:54+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: Yes to all four
+    hash: d4a70ec388eb

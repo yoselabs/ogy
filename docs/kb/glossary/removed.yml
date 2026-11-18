@@ -1,0 +1,197 @@
+format: 1
+items:
+- id: glossary/term/option
+  kind: term
+  parent:
+  title:
+  said: One way to answer a decision, with the field values it gives to the entries the decision covers, or null for an entry that does not exist under it.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:22+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: 3dad78fd3acb
+  ontology: software
+  snapshot:
+    word: option
+    says: One way to answer a decision, with the field values it gives to the entries the decision covers, or null for an entry that does not exist under it.
+    group: decisions
+    src:
+    - doc:e1ce8757b0a1:docs/v5/loader-changes.md#4-decisions-messages-status-settlepy-new-about-200-lines-reads-names-from-settling
+    distinct:
+    - a guess
+    - an answer
+- id: glossary/term/agent
+  kind: term
+  parent:
+  title:
+  said: An AI model that works on the knowledge base through ogy; its messages neither answer nor agree.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:23+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: d4176e1b0486
+  ontology: software
+  snapshot:
+    word: agent
+    says: An AI model that works on the knowledge base through ogy; its messages neither answer nor agree.
+    group: tool
+    src:
+    - doc:e1ce8757b0a1:AGENTS.md#agent-instructions
+    distinct:
+    - the owner
+    - a persona of the product
+- id: glossary/term/skill
+  kind: term
+  parent:
+  title:
+  said: An explicit helper for an agent, elicit or ogy-capture; it holds a procedure, never state or policy.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:24+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: 46f3edf95c56
+  ontology: software
+  snapshot:
+    word: skill
+    says: An explicit helper for an agent, elicit or ogy-capture; it holds a procedure, never state or policy.
+    group: tool
+    src:
+    - doc:e1ce8757b0a1:README.md#what-goes-where
+    distinct:
+    - a checker lint
+    - a plugin
+- id: glossary/term/ogy
+  kind: term
+  parent:
+  title:
+  said: 'The tool: a checked YAML knowledge base kept in Git, with a library, a command line, an MCP server and skills for agents.'
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:25+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: ff79c4624143
+  ontology: software
+  snapshot:
+    word: ogy
+    says: 'The tool: a checked YAML knowledge base kept in Git, with a library, a command line, an MCP server and skills for agents.'
+    group: tool
+    src:
+    - doc:e1ce8757b0a1:README.md#ogy
+    distinct:
+    - the software ontology
+    - a task tracker
+    avoid:
+    - OGI
+- id: glossary/term/knowledge-base
+  kind: term
+  parent:
+  title:
+  said: The folder of entries, usually kb/, checked by ogy and kept in Git; it is changed only through ogy, never by editing its YAML.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:26+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: a9df249e9060
+  ontology: software
+  snapshot:
+    word: knowledge base
+    says: The folder of entries, usually kb/, checked by ogy and kept in Git; it is changed only through ogy, never by editing its YAML.
+    group: tool
+    src:
+    - doc:e1ce8757b0a1:README.md#writing
+    distinct:
+    - the ontology
+    - a document folder
+    avoid:
+    - docs/kb
+- id: glossary/term/capture
+  kind: term
+  parent:
+  title:
+  said: Turning the owner's words, docs or code into entries with their src or because, then reading them back.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:26+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: 23f0ca3a150a
+  ontology: software
+  snapshot:
+    word: capture
+    says: Turning the owner's words, docs or code into entries with their src or because, then reading them back.
+    group: tool
+    src:
+    - doc:e1ce8757b0a1:skills/ogy-capture/SKILL.md#2-capture-evaluated-e8-e10
+    distinct:
+    - extraction in batch from code
+    - eliciting
+- id: glossary/term/card
+  kind: term
+  parent:
+  title:
+  said: One question or sentence shown to the owner, with options and a recommended answer, so that yes accepts the recommendation.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:27+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: 3f008cfa543e
+  ontology: software
+  snapshot:
+    word: card
+    says: One question or sentence shown to the owner, with options and a recommended answer, so that yes accepts the recommendation.
+    group: review
+    src:
+    - doc:e1ce8757b0a1:skills/elicit/SKILL.md#5-show-each-question-as-a-card
+    distinct:
+    - an entry
+    - a bead
+- id: glossary/term/glossary
+  kind: term
+  parent:
+  title:
+  said: The one global list kb/glossary/terms.yml of terms; it is YAML only, printed by ogy glossary and never generated as a Markdown document.
+  why: software/checks/decision/glossary-keeps-only-distinctions
+  replaced_by:
+  at: 2026-11-17 22:37:28+00:00
+  last_seen: ba77ad7dd1fb53684285967decefcde14694aa31
+  hash: 3c22c9b36839
+  ontology: software
+  snapshot:
+    word: glossary
+    says: The one global list kb/glossary/terms.yml of terms; it is YAML only, printed by ogy glossary and never generated as a Markdown document.
+    group: glossary
+    src:
+    - doc:e1ce8757b0a1:docs/v5/loader-changes.md#12-glossary-termspy-new-about-100-lines
+    distinct:
+    - a documentation page
+    - a list of kinds (ogy spec prints those)
+    avoid:
+    - glossary.md
+- id: glossary/term/message
+  kind: term
+  parent:
+  title:
+  said: One reply of a person or an agent, stored whole and once, never edited; the only kind that entries may cite as a source and that can agree.
+  why: product/capture/decision/every-reply-is-a-message
+  replaced_by:
+  at: 2026-11-18 20:45:01+01:00
+  last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+  hash: 962b00f055f3
+  ontology: software
+  snapshot:
+    word: message
+    says: One reply of a person or an agent, stored whole and once, never edited; the only kind that entries may cite as a source and that can agree.
+    group: decisions
+    src:
+    - code:src/ogy/writes.py#message
+    distinct:
+    - a quote of it
+    - a bead comment
+    avoid:
+    - quote kind
+    - quote entry
+    agreed:
+      at: '2026-11-17T23:39:17+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Left the glossary page to the agent; no term changed
+      hash: 962b00f055f3

@@ -1,0 +1,12 @@
+- id: write-entries
+  says: An agent adds and changes entries in one checked write that is made whole or not at all.
+  src:
+  - code:src/ogy/put.py#put
+- id: store-words
+  says: When the owner speaks, the agent records the answer at once with a short paraphrase of what they said, and shows that paraphrase to the owner in the read-back.
+  src:
+  - code:src/ogy/writes.py#said
+- id: answer-under-delegation
+  says: An agent answers a decision for the owner only under a decision whose answer, the owner's, let it decide; such answers are in force at once and listed for the owner's veto.
+  src:
+  - code:src/ogy/settle.py#_delegation

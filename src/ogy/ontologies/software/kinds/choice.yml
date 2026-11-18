@@ -1,0 +1,15 @@
+kind: choice
+about: one thing the actor is offered, with one `then`
+shape: inline
+part_of: step
+key: choices
+needs_proof: true
+fingerprint:
+  proofs: true
+  also: [[by, "=@fingerprint"]]                      # a rule the row names changes: the row and its performer are stale
+requires:
+  - {if_part: effect, path: ["<-performs"], kinds: [operation], error: "a row with an effect has an operation performing it"}
+fields:
+  label: {required: true}
+  then: {type: link, to: [step, end, workflow], required: true}
+  by: {type: links, to: [rule]}

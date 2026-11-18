@@ -1,0 +1,7 @@
+says: Over MCP a reply names its round; only a person at a terminal may let the newest round be taken.
+on: software/mcp/workflow/call-a-tool/step/run
+when:
+  text: the tool is not reply, or it names the round with --round
+else: software/mcp/workflow/call-a-tool/end/tool-error
+src:
+- code:src/ogy/mcp_server.py#build

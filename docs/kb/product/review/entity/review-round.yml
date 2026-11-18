@@ -1,0 +1,26 @@
+says: The cards one ogy review showed, kept by id so that a reply resolves against what the owner saw.
+src:
+- code:src/ogy/rounds.py#Round
+attrs:
+  id:
+    type: text
+    says: r and six hex digits of the digest of the cards
+  everything:
+    type: flag
+    says: The round was shown with --all, so a bare yes is refused.
+  cards:
+    type: list
+    says: 'Each card as shown: its label, the address, the sentence and its fingerprint.'
+    max: product/review/value/cards-per-round
+states:
+  kept:
+    says: The round is in the Git directory and a reply may name it.
+  forgotten:
+    says: Newer rounds pushed it out; a reply that names it finds nothing.
+transitions:
+  save:
+    to: kept
+  forget:
+    from:
+    - kept
+    to: forgotten

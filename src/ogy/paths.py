@@ -1,0 +1,65 @@
+"""Link paths: a kind names a route through typed links, used by staleness and by `requires` checks.
+
+A path is a list of hops. `field` follows that link field forward, `<-field` follows it backward (entries whose
+`field` points here), `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
+the entries reached. A final `=@id` or `=@fingerprint` is answered by the snapshot (keys, or the reached entries' own
+fingerprints, so a performer goes stale when the row it performs changes).
+"""
+
+from collections.abc import Mapping, Sequence
+
+from ogy.links import link_items, resolve
+from ogy.model import Address, Entry
+from ogy.ontology import Ontology
+
+BACK = "<-"
+VALUE = "="
+PARTS = "/"
+DERIVED = "=@"
+
+
+class LinkIndex:
+    """Forward and backward links of one set of entries, by field."""
+
+    def __init__(self, ontology: Ontology, entries: Mapping[Address, Entry]) -> None:
+        self.entries = entries
+        self._forward: dict[tuple[Address, str], set[Address]] = {}
+        self._backward: dict[tuple[Address, str], set[Address]] = {}
+        self._parts: dict[tuple[Address, str], set[Address]] = {}
+        for address, entry in entries.items():
+            parent = address.parent()
+            if parent is not None and parent in entries:
+                self._parts.setdefault((parent, address.kind), set()).add(address)
+            for item in link_items(ontology, entry):
+                target = resolve(ontology, entries, address, item).target
+                if target is not None:
+                    self._forward.setdefault((address, item.field), set()).add(target)
+                    self._backward.setdefault((target, item.field), set()).add(address)
+
+    def forward(self, address: Address, field: str) -> set[Address]:
+        return self._forward.get((address, field), set())
+
+    def backward(self, address: Address, field: str) -> set[Address]:
+        return self._backward.get((address, field), set())
+
+    def parts(self, address: Address, kind: str) -> list[Address]:
+        """The parts of one kind, sorted."""
+        return sorted(self._parts.get((address, kind), set()))
+
+    def walk(self, start: Address, hops: Sequence[str]) -> tuple[set[Address], list[object]]:
+        """The entries a path reaches, and the values of a final `=field` hop (sorted by entry)."""
+        current = {start}
+        values: list[object] = []
+        for hop in hops:
+            if hop.startswith(DERIVED):
+                break
+            if hop.startswith(PARTS):
+                current = {part for address in current for part in self.parts(address, hop[len(PARTS):])}
+            elif hop.startswith(VALUE):
+                values.extend(self.entries[address].fields.get(hop[1:]) for address in sorted(current))
+                break
+            elif hop.startswith(BACK):
+                current = {source for address in current for source in self.backward(address, hop[len(BACK):])}
+            else:
+                current = {target for address in current for target in self.forward(address, hop)}
+        return current, values

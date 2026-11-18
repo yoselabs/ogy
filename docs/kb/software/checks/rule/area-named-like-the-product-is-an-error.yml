@@ -1,0 +1,3 @@
+says: 'An area named like the repository is a finding of check (product-area), as every finding is: check prints no warnings.'
+src:
+- code:src/ogy/coverage.py#product_areas

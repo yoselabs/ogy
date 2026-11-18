@@ -1,0 +1,45 @@
+says: A person makes a repository ready for ogy.
+src:
+- code:src/ogy/init.py#init
+trigger: actor
+realizes: product/setup/capability/set-up-a-repository
+start: run
+steps:
+  run:
+    says: A person runs ogy init, or ogy init --check to only ask what is missing.
+    actor: product/people/actor/owner
+    choices:
+      init:
+        label: Set up
+        then: write
+      ask:
+        label: Ask what is missing
+        then: report
+  write:
+    says: ogy writes each missing piece and merges into the files that exist.
+    cases:
+      unreadable:
+        order: 1
+        when:
+          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+        then: refused
+      otherwise:
+        then: set-up
+        effects:
+        - do: write
+          on: software/setup/external/claude-code
+        - do: write
+          on: software/storage/external/git
+  report:
+    says: ogy lists what is not set up and writes nothing.
+    then: reported
+ends:
+  set-up:
+    result: success
+    says: ogy.yml, docs/kb/glossary/terms.yml, the ogy block in AGENTS.md (and CLAUDE.md), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
+  reported:
+    result: success
+    says: The person reads what is missing.
+  refused:
+    result: failure
+    says: Nothing is written.

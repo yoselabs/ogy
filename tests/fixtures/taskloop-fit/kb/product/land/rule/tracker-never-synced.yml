@@ -1,0 +1,3 @@
+says: The land closes the task in the person's local tracker and never shares the tracker; sharing it stays the person's.
+"on": [software/claim/external/bd]
+src: ["code:src/taskloop/land_close.py#NOT_SYNCED"]

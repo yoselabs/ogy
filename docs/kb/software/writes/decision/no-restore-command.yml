@@ -1,0 +1,22 @@
+question: Does ogy restore a removed entry by itself?
+context: A plain restore may put a step back in the wrong place or with fields that no longer fit.
+options:
+  proposal:
+    label: No command; an agent proposes from the snapshot and Git, the owner decides
+    sets:
+      software/writes/rule/removed-entry-is-restored-by-proposal:
+        says: A removed entry is brought back only by an agent's proposal built from its snapshot and Git, and by the owner's decision under a new id.
+  command:
+    label: '`ogy restore` puts the snapshot back as it was'
+    sets:
+      software/writes/rule/removed-entry-is-restored-by-proposal:
+        says: '`ogy restore` puts a removed entry back from its snapshot.'
+guess:
+  chose: proposal
+  why: The owner wants a restore to be an AI proposal that a person decides; nobody asked for a command.
+answers:
+- chose: proposal
+  said: A restore is an AI proposal the owner decides
+  from: human
+  at: '2026-11-17T19:12:40.913+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6668

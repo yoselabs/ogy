@@ -1,0 +1,8 @@
+kind: goal
+about: a result the product exists to reach
+shape: list
+file: goals.yml
+layers: [product]
+fields:
+  says: {required: true}
+  for: {type: links, to: [actor]}

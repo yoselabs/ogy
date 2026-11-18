@@ -1,0 +1,6 @@
+says: The entries changed between two commits or the worktree, entry by entry.
+invoked_as: ogy diff <before> <after>
+serves:
+- product/inspection/workflow/inspect-kb/step/read
+src:
+- code:src/ogy/cli.py#_reads

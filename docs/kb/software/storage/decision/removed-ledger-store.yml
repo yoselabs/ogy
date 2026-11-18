@@ -1,0 +1,31 @@
+question: Where does the knowledge base remember a removed id?
+context: Ids are permanent and messages are never edited, so a reused id would make an old message agree to a new entry.
+options:
+  file:
+    label: A file, `<area>/removed.yml`, written only by `ogy remove`
+    sets:
+      software/storage/rule/removed-id-is-recorded:
+        says: A removed entry is deleted from its file and recorded in its area's removed.yml, which only ogy remove writes; its id is never used again.
+  git:
+    label: Nothing is stored; used ids are read from Git
+    sets:
+      software/storage/rule/removed-id-is-recorded:
+        says: A new id is refused when Git history holds an entry with that address.
+  marked:
+    label: The entry stays in its file, marked `retired`
+    sets:
+      software/storage/rule/removed-id-is-recorded:
+        says: A removed entry stays in its file with a marker.
+  none:
+    label: No record of removed ids
+    sets:
+      software/storage/rule/removed-id-is-recorded:
+guess:
+  chose: file
+  why: A clone without history must still refuse a reused id.
+answers:
+- chose: file
+  said: A file, not read from Git
+  from: human
+  at: '2026-11-17T18:56:25.058+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6636

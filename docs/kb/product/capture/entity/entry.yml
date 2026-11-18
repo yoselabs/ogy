@@ -1,0 +1,27 @@
+says: Any item with an id in the knowledge base; whether the owner agreed to its sentence is computed, never stored.
+src:
+- code:src/ogy/status.py#Status
+attrs:
+  says:
+    type: text
+    says: The sentence the owner reads and agrees to.
+  src:
+    type: list
+    says: 'Where the sentence came from: code: links or doc: links.'
+states:
+  nobody-agreed:
+    says: No person agreed to the sentence yet.
+  decided-by-you:
+    says: The owner agreed to the sentence now on the entry.
+  changed-since-agreed:
+    says: The sentence changed after the owner agreed to it.
+transitions:
+  agree:
+    from:
+    - nobody-agreed
+    - changed-since-agreed
+    to: decided-by-you
+  change:
+    from:
+    - decided-by-you
+    to: changed-since-agreed

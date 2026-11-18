@@ -1,0 +1,11 @@
+kind: attr
+about: one fact kept about an entity
+shape: inline
+part_of: entity
+key: attrs
+fields:
+  says: {}
+  type: {type: enum, of: [text, number, flag, money, date, time, duration, counter, one, list], required: true}
+  of: {type: link, to: [set, entity]}                # for `one` and `list`: what it holds
+  max: {type: link, to: [value]}
+  optional: {type: flag}

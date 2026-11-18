@@ -1,0 +1,22 @@
+question: What does an item of a removed.yml hold?
+context: Most removals are never undone; the owner wants to see and find what was removed without opening Git.
+options:
+  ids-only:
+    label: The id, the time and the reason
+    sets:
+      software/storage/rule/removed-item-keeps-snapshot:
+        says: A removed.yml item holds the id, the time and the reason.
+  envelope-and-snapshot:
+    label: A fixed envelope and a verbatim snapshot of the entry
+    sets:
+      software/storage/rule/removed-item-keeps-snapshot:
+        says: A removed.yml item holds a fixed envelope (id, kind, parent, title, said, why, replaced_by, at, last_seen, hash, ontology) and a verbatim snapshot of the entry as it was; the snapshot is checked only when appended.
+guess:
+  chose: envelope-and-snapshot
+  why: The snapshot lets a person or an agent find and place the entry again without Git.
+answers:
+- chose: envelope-and-snapshot
+  said: Keep a snapshot of the removed entry in the ledger
+  from: human
+  at: '2026-11-17T19:12:40.913+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6668

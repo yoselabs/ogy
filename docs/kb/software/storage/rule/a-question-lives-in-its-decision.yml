@@ -1,0 +1,7 @@
+says: A question and its answers live only in a decision entry; a tracker item may mirror them and is never the source.
+agreed:
+  at: '2026-11-17T18:56:25.058+00:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6636
+  from: human
+  said: Null means no, the ledger is a file, questions live in decisions
+  hash: c14d2d0d31ff

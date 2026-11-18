@@ -1,0 +1,19 @@
+- id: checks
+  says: The checks ogy check runs on every snapshot.
+  members:
+  - entries
+  - flows
+  - evidence
+  - decisions
+  - terms
+  - ledgers
+  - lints
+  src:
+  - code:src/ogy/check.py#CHECKS
+- id: landing-checks
+  says: The checks only check --landing adds.
+  members:
+  - term agreement
+  - proposed terms
+  src:
+  - code:src/ogy/check.py#LANDING

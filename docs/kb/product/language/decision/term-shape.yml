@@ -1,0 +1,27 @@
+title: A term is compressed
+structure: true
+question: What does a term hold?
+context: The glossary is loaded by every agent before work; every field it carries costs tokens.
+options:
+  compressed:
+    label: Word, one line under 15 words, words to avoid
+    sets:
+      product/language/rule/term-is-compressed:
+        says: A term holds its word, one line under 15 words, and the words to avoid; nothing else.
+  full:
+    label: 'Keep the fields: word, says or of, distinct, avoid, example, borrowed, group'
+    sets:
+      product/language/rule/term-is-compressed:
+        says: A term holds its word, says or of, distinct, avoid, example, borrowed and group.
+guess:
+  chose: compressed
+  why: Most words need little or no description; a short line keeps the glossary cheap to load.
+  heard:
+    said: One line under 15 words is acceptable
+answers:
+- chose: compressed
+  note: acceptable, not ideal
+  said: One line of under 15 words is acceptable
+  from: human
+  at: '2026-11-18T19:32:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

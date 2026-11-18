@@ -1,0 +1,23 @@
+question: How does the owner agree to the terms of a glossary captured from documents?
+context: A glossary captured from documents waits for the owner's yes; 38 errors the agent may not fix drown real ones (Q6).
+options:
+  by-page:
+    label: Terms wait as a count; the owner agrees one page of terms at a time with `yes`
+    sets:
+      software/checks/rule/glossary-agreed-by-page:
+        says: The terms of a captured glossary wait as a count, not as errors; the owner agrees them page by page in a review round.
+  all-at-once:
+    label: Every term is an error until the owner agrees to all of them
+    sets:
+      software/checks/rule/glossary-agreed-by-page:
+        says: Every term of a captured glossary is an error until the owner agrees to all of them.
+guess:
+  chose: by-page
+  why: The agent cannot agree for the owner, and a page of terms is a reply the owner can give in one word.
+answers:
+- chose: by-page
+  note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
+  said: Accepted all the recommendations
+  from: human
+  at: '2026-11-17T23:11:40+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

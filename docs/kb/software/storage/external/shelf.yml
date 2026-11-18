@@ -1,0 +1,4 @@
+says: "The shelf packages that hold ogy's technical code: Git access, YAML, Markdown anchors, hashes, Python symbols, MCP tools, atomic writes, the write lock, agent tables, settings and managed blocks."
+pin: git-porcelain 0.24.0, any-yaml 0.1.0, any-markdown 0.4.0, content-digest 0.1.0, py-symbols 0.1.0, argparse-mcp 0.1.0, atomic-io 0.2.0, process-lock 0.2.1, lean-wire 0.3.0, settings-base 0.1.0, managed-region 0.1.0, yaml-merge 0.2.0
+src:
+- code:src/ogy/writes.py#locked
