@@ -14,7 +14,7 @@ TERMS = ("- {id: land, word: land, says: To finish a delivery., group: Land, avo
          "- {id: gate, word: gate, says: The check before a land., group: Land, src: [doc:<rev>:docs/spec.md#land]}\n"
          "- {id: slot, word: slot, says: A place to work., group: Work, src: [doc:<rev>:docs/spec.md#work]}\n")
 SPEC = "# Spec\n\n## Land\n\nLand is finishing.\n\n## Work\n\nA slot is a place.\n"
-PROPOSES = ("question: Name it?\noptions:\n  a: {{label: A, sets: {{glossary/term/{word}: {{says: {says}}}}}}}\n"
+PROPOSES = ("question: Name it?\noptions:\n  a: {{label: A, sets: {{product/shared/term/{word}: {{says: {says}}}}}}}\n"
             "guess: {{chose: a, why: b}}\n")
 SAYS = {"land": "To finish a delivery.", "gate": "The check before a land."}
 
@@ -26,8 +26,9 @@ def terms(repo: Path, text: str = TERMS) -> Path:
         (repo / "docs/spec.md").write_text(SPEC)
         commit(repo, "the spec")
     rev = run_git(repo, "log", "-1", "--format=%H", "--", "docs/spec.md").strip()
-    (repo / "docs/kb/glossary").mkdir(parents=True, exist_ok=True)
-    (repo / "docs/kb/glossary/terms.yml").write_text(text.replace("<rev>", rev))
+    (repo / "docs/kb/product/shared").mkdir(parents=True, exist_ok=True)
+    (repo / "docs/kb/product/shared/area.yml").write_text("says: What two areas use.\n")
+    (repo / "docs/kb/product/shared/glossary.yml").write_text(text.replace("<rev>", rev))
     return repo
 
 
@@ -38,7 +39,7 @@ def test_unagreed_terms_wait_and_are_errors_only_on_a_land(repo: Path) -> None:
     assert "waiting for you: 3 (ogy review)" in w(repo, "status")[1]
     code, lines = w(repo, "check", "--landing")
     assert code == cli.FINDINGS and len([line for line in lines if line.startswith("term-not-agreed")]) == 3, lines
-    assert w(repo, "check", "glossary")[1][-1] == "waiting for you: 3 (ogy review)"
+    assert w(repo, "check", "shared")[1][-1] == "waiting for you: 3 (ogy review)"
 
 
 def test_a_proposed_word_blocks_only_the_change_that_adds_it(repo: Path) -> None:
@@ -50,7 +51,7 @@ def test_a_proposed_word_blocks_only_the_change_that_adds_it(repo: Path) -> None
     (repo / "docs/kb/product/app/decision/new.yml").write_text(PROPOSES.format(word="gate", says=SAYS["gate"]))
     code, lines = w(repo, "check", "--landing", "--base", base)
     proposed = [line for line in lines if line.startswith("proposed-term")]
-    assert code == cli.FINDINGS and len(proposed) == 1 and "glossary/term/gate" in proposed[0], lines
+    assert code == cli.FINDINGS and len(proposed) == 1 and "product/shared/term/gate" in proposed[0], lines
     both = [line for line in w(repo, "check", "--landing")[1] if line.startswith("proposed-term")]
     assert len(both) == 2  # without a base every proposed word blocks
 
@@ -59,13 +60,13 @@ def test_review_from_docs_pages_by_section_and_yes_agrees_to_the_page(repo: Path
     terms(repo)
     code, lines = w(repo, "review", "--from", "docs")
     text = "\n".join(lines)
-    assert code == cli.OK and "page 1 of 2: glossary: terms, Land" in text, lines
+    assert code == cli.OK and "page 1 of 2: product/shared: terms, Land" in text, lines
     assert "land: To finish a delivery." in text and "not: merge; complete" in text
     assert "From docs: doc:" in text and ":docs/spec.md#land" in text
     assert "slot" not in text and lines[0].startswith("round r")
     assert r(repo, "yes", "--round", round_of(lines))[1] == ["yes: agreed to 2 sentence(s)"]
     again = w(repo, "review", "--from", "docs")[1]
-    assert "page 1 of 1: glossary: terms, Work" in "\n".join(again) and "gate" not in "\n".join(again)
+    assert "page 1 of 1: product/shared: terms, Work" in "\n".join(again) and "gate" not in "\n".join(again)
     assert w(repo, "review", "--from", "docs", "--page", "2")[0] == cli.NOT_FOUND
     assert "waiting for you: 1" in w(repo, "status")[1][-4]
 
@@ -105,7 +106,7 @@ def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Pat
 
 def test_a_decision_reads_answered_by_you_with_the_date(repo: Path) -> None:
     (repo / "docs/kb/product/app/decision").mkdir()
-    (repo / "docs/kb/product/app/decision/fee.yml").write_text(PROPOSES.format(word="x", says="Said.").replace("glossary/term/x",
+    (repo / "docs/kb/product/app/decision/fee.yml").write_text(PROPOSES.format(word="x", says="Said.").replace("product/shared/term/x",
                                                                                                                "product/app/value/fee")
                                                   .replace("says: Said.", "is: 3"))
     done = w(repo, "answer", "product/app/decision/fee", "a", "--said", "Option a", "--where", "ai:claude/1",
@@ -132,7 +133,7 @@ def test_anchors_lists_a_files_headings_and_missing_doc_offers_the_nearest(repo:
     code, lines = w(repo, "anchors", "docs/spec.md")
     assert code == cli.OK and lines == ["spec   # Spec", "land     ## Land", "work     ## Work"]
     assert w(repo, "anchors", "docs/none.md")[0] == cli.NOT_FOUND
-    (repo / "docs/kb/glossary/terms.yml").write_text(
+    (repo / "docs/kb/product/shared/glossary.yml").write_text(
         ("- {id: land, word: land, says: To end., src: [doc:<rev>:docs/spec.md#lnad]}\n"
          "- {id: gate, word: gate, says: A check., src: [doc:<rev>:docs/spec.md#zzz]}\n").replace("<rev>", rev))
     found = [line for line in w(repo, "check")[1] if line.startswith("missing-doc")]

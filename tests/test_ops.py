@@ -43,7 +43,7 @@ def test_checks_are_registered_for_evidence_stored_state_and_one_sentence(kb: Ma
 def test_decisions_terms_and_ledgers_are_registered(kb: MakeKb) -> None:
     decision = "question: Q?\noptions:\n  a: {label: A, sets: {product/app/value/fee: {is: 1}}}\n"
     found = codes(kb({"product/app/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n", "product/app/decision/q.yml": decision,
-                      "glossary/terms.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
+                      "product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
                       "product/app/removed.yml": "format: 1\n"}), landing=True)
     assert {Problem.NO_GUESS, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
 
@@ -71,9 +71,16 @@ def snapshot_error() -> None:
 
 
 def test_glossary_and_kinds_print_from_the_data(kb: MakeKb) -> None:
-    root = kb({"glossary/terms.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n"}).repo()
+    root = kb({"product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
+               "product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
+               "software/app/glossary.yml": "- {id: page, word: page, says: What a member sees.}\n"}).repo()
     target = ["--repo", str(root), "--rev", "."]
-    assert cli.run([*target, "glossary"]) == (cli.OK, ["land: To finish.", "  avoid: merge"])
+    land = ["product/shared:", "  land: To finish.", "    avoid: merge"]
+    assert cli.run([*target, "glossary"]) == (cli.OK, [*land, "product/app:", "  fee: What a loan costs.", "software/app:",
+                                                       "  page: What a member sees."])
+    assert cli.run([*target, "glossary", "software/app"]) == (cli.OK, [*land, "software/app:", "  page: What a member sees."])
+    assert cli.run([*target, "glossary", "product/shared"]) == (cli.OK, land)
+    assert cli.run([*target, "glossary", "app"])[0] == cli.NOT_FOUND  # an area is named with its layer
     lines = cli.run([*target, "kinds"])[1]
     assert "external: a library or service the product depends on and does not own" in lines
     assert "  harm if wrong: tells-outside" in lines

@@ -1,0 +1,17 @@
+format: 1
+items:
+  - id: product/people/area/people
+    kind: area
+    parent:
+    title:
+    said: 'Who uses the product: the owner and the AI agent.'
+    why: product/language/decision/shared-entries-home
+    replaced_by:
+    at: 2026-11-18 22:49:06+00:00
+    last_seen: 15a42cd72e6c53883089c904ce683a3c566ac43c
+    hash: 5da809f73a98
+    ontology: software
+    snapshot:
+      says: 'Who uses the product: the owner and the AI agent.'
+      distinct:
+      - 'how words are stored and cited: capture'

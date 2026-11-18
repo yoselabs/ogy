@@ -5,17 +5,17 @@ options:
   with-layer:
     label: <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term
     sets:
-      glossary/term/entry:
+      product/shared/term/entry:
         says: Any item with an id in the knowledge base; its address is <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term.
   keep:
     label: 'Keep: area/kind/id'
     sets:
-      glossary/term/entry:
+      product/shared/term/entry:
         says: Any item with an id in the knowledge base; its address is area/kind/id.
   fable-wording:
     label: One item of one kind with an id that never changes, named by its address
     sets:
-      glossary/term/entry:
+      product/shared/term/entry:
         says: One item of one kind in the knowledge base, with an id that never changes; it is named by its address.
 guess:
   chose: fable-wording

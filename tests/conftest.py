@@ -36,6 +36,7 @@ ends:
 AREAS: dict[str, str] = {
     "product/app/area.yml": "says: What members of the tool library do.\n",
     "software/app/area.yml": "says: The pages and operations that serve the members.\n",
+    "product/shared/area.yml": "says: What two areas of the product use.\n",
 }
 GOOD: dict[str, str] = {
     **AREAS,

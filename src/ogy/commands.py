@@ -6,6 +6,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from ogy import ops, put, render, wire
+from ogy.model import home_of
 from ogy.target import Target
 
 type Result = tuple[int, list[str]]
@@ -69,8 +70,8 @@ def _dropped(target: Target, _: argparse.Namespace, agent: bool) -> Result:
     return done.verdict, wire.dropped(done.value) if agent else render.render_dropped(done.value)
 
 
-def _glossary(target: Target, _: argparse.Namespace, __: bool) -> Result:
-    done = ops.run_glossary(target)
+def _glossary(target: Target, args: argparse.Namespace, _: bool) -> Result:
+    done = ops.run_glossary(target, args.area)
     return done.verdict, done.value or ["no terms"]
 
 
@@ -86,7 +87,8 @@ def _kinds(target: Target, args: argparse.Namespace, _: bool) -> Result:
 
 def _remove(target: Target, args: argparse.Namespace, _: bool) -> Result:
     done = ops.run_remove(target, args.address, args.why, args.to)
-    return done.verdict, [f"removed {done.value.id} (fingerprint {done.value.hash}); recorded in {done.value.id.split('/')[0]}/removed.yml"]
+    home = home_of(done.value.id, target.kinds())
+    return done.verdict, [f"removed {done.value.id} (fingerprint {done.value.hash}); recorded in {home}/removed.yml"]
 
 
 def _move(target: Target, args: argparse.Namespace, _: bool) -> Result:

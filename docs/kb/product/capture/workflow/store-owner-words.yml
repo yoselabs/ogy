@@ -7,7 +7,7 @@ start: store
 steps:
   store:
     says: The agent records the answer with ogy answer, or ogy reply for a review round, giving --said, a short paraphrase.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       stored:
         label: Store the words

@@ -45,7 +45,7 @@ def test_example_tool_library_has_no_findings() -> None:
 def test_taskloop_fit_has_only_expected_findings() -> None:
     terms = {"claim", "land", "squash", "target-tip", "gate", "checked-commit"}
     expected = {(Problem.ORPHAN, "software/land/workflow/round-land"), *((Problem.TERM_NOT_AGREED,
-                                                                          f"glossary/term/{word}") for word in terms)}
+                                                                          f"product/shared/term/{word}") for word in terms)}
     assert findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb")) == expected
     assert not {item for item in findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb"), landing=False)
                 if item[0] is Problem.TERM_NOT_AGREED}  # waiting for the owner, an error only when a land is asked for
@@ -53,6 +53,6 @@ def test_taskloop_fit_has_only_expected_findings() -> None:
 
 def test_taskloop_fit_reads_every_part_with_a_slash_address() -> None:
     snapshot = load(WorktreeSource(V5, "taskloop-fit/kb"), packaged())
-    assert len(snapshot.entries) == 173  # 185 entries of the fit's README, less 16 effects, which have no address
+    assert len(snapshot.entries) == 174  # 185 entries of the fit's README, less 16 effects, which have no address, and the shared area
     squash = snapshot.resolve("product/land/workflow/land/step/squash/case/otherwise")
     assert squash is not None and snapshot.resolve("product/land/workflow/land/step/squash/effect/x") is None

@@ -1,10 +1,11 @@
-"""The removed ledger: `removed.yml` in a home (`<layer>/<area>/`, or a fixed folder such as `glossary/`), format 1, written
+"""The removed ledger: `removed.yml` in a home (`<layer>/<area>/`, or a fixed folder such as `constitution/`), format 1, written
 only by ogy, append-only, one format for every ontology.
 
 Plain data in and out (address strings, dicts, a root Path) so any caller can wire it in. The checks are pure functions
 that return problems; the snapshot is opaque and checked only by a validator the caller passes when an item is
 appended."""
 
+import dataclasses
 import datetime
 import operator
 import re
@@ -35,6 +36,8 @@ __all__ = [
     "from_raw",
     "parse",
     "read_all",
+    "rehome",
+    "rehomed",
     "search",
 ]
 
@@ -249,6 +252,45 @@ def follow(root: Path, rename: Callable[[str], str]) -> list[str]:
             any_yaml.write(path, doc)
             written.append(path.relative_to(root).as_posix())
     return written
+
+
+def _prefixed(old: str, new: str) -> Callable[[str], str]:
+    return lambda text: new + text[len(old):] if text.startswith(old + "/") else text
+
+
+def _moved_item(item: Item, rename: Callable[[str], str]) -> Item:
+    parent = item.parent and Parent(rename(item.parent.address), item.parent.key, item.parent.position)
+    return dataclasses.replace(item, id=rename(item.id), parent=parent, why=item.why and rename(item.why),
+                               replaced_by=item.replaced_by and rename(item.replaced_by))
+
+
+def rehomed(ledgers: Mapping[str, Ledger], old: str, new: str) -> dict[str, Ledger]:
+    """The ledgers after the home `old` (a fixed folder its kind moved out of) became `new`: its items follow the items `new`
+    already holds, every address in them under `new`. What `rehome` writes and how `check --base` reads the base."""
+    found = dict(ledgers)
+    moved = found.pop(old, None)
+    if moved is None:
+        return found
+    held = found[new].items if new in found else ()
+    found[new] = Ledger(new, FORMAT, (*held, *(_moved_item(item, _prefixed(old, new)) for item in moved.items)))
+    return found
+
+
+def rehome(root: Path, old: str, new: str) -> list[str]:
+    """Write `rehomed` for the ledger of `old`: its items go to the end of `new`'s ledger and its file is deleted (`ogy migrate`,
+    the one change to a ledger besides an append and a move's `follow`). Returns the files written, relative to `root`."""
+    ledgers, problems = parse({f"{home}/{FILE}": (root / home / FILE).read_text(encoding="utf-8")
+                               for home in (old, new) if (root / home / FILE).is_file()})
+    if problems:
+        raise RemovedError(problems)
+    if old not in ledgers:
+        return []
+    ledger = rehomed(ledgers, old, new)[new]
+    path = root / new / FILE
+    path.parent.mkdir(parents=True, exist_ok=True)
+    any_yaml.write(path, {"format": FORMAT, "items": [_raw(item) for item in ledger.items]})
+    (root / old / FILE).unlink()
+    return [f"{old}/{FILE}", f"{new}/{FILE}"]
 
 
 def check_new_snapshots(items: Iterable[Item], base_ids: Collection[str],

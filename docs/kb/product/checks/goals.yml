@@ -1,6 +1,6 @@
 - id: kb-checked-in-git
   says: The knowledge base lives in Git next to the code, and every commit that changes it passes ogy check.
   for:
-  - product/people/actor/owner
+  - product/shared/actor/owner
   src:
   - code:src/ogy/init.py#HOOK

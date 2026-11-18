@@ -9,7 +9,7 @@ from ogy.snapshot import fingerprint
 
 ACTOR = "kind: actor\nabout: who uses it\nshape: list\nfile: actors.yml\nlayers: [product]\nfields:\n  nature: {}\n"
 LAYERS = ("product", "software")
-TERM = "kind: term\nabout: x\nshape: list\nfile: terms.yml\narea: glossary\n"
+FIXED = "kind: principle\nabout: x\nshape: list\nfile: principles.yml\narea: glossary\n"
 HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: entity\n"
 PARENT = "kind: parent\nabout: x\nshape: entity\nlayers: [product]\n"
@@ -26,7 +26,8 @@ def load(*texts: str) -> None:
 def test_software_kinds_load() -> None:
     ontology = packaged()
     assert len(ontology.kinds) == 32 and "message" not in ontology.kinds
-    assert ontology.kinds["term"].area == "glossary" and ontology.kinds["principle"].area == "constitution"
+    assert ontology.kinds["term"].area is None and ontology.kinds["principle"].area == "constitution"
+    assert {name for name, kind in ontology.kinds.items() if kind.shared} == {"term", "actor", "set", "area"}
     assert ontology.settling_kind() is ontology.kinds["decision"]
     assert ontology.kinds["effect"].holding is Holds.LIST
     assert ontology.kinds["guess"].holding is Holds.ONE
@@ -106,8 +107,8 @@ def test_list_kind_declares_its_file_once() -> None:
 def test_a_kind_names_the_layers_it_may_appear_in() -> None:
     kinds = packaged().kinds
     assert packaged().layers == ("product", "software")
-    assert kinds["actor"].layers == ("product",) and kinds["view"].layers == ("software",) and kinds["decision"].layers == LAYERS
-    assert kinds["term"].layers == () and kinds["term"].area == "glossary"
+    assert kinds["actor"].layers == LAYERS and kinds["view"].layers == ("software",) and kinds["decision"].layers == LAYERS
+    assert kinds["term"].layers == LAYERS and kinds["term"].moved == ("glossary", "product/shared")
 
 
 def test_the_ontology_file_declares_the_layers() -> None:
@@ -118,7 +119,7 @@ def test_the_ontology_file_declares_the_layers() -> None:
     for layers, why in (((), "declares no layers"), (("Product",), "no valid folder name"), (("kinds",), "no valid folder name"),
                         (("glossary",), "no valid folder name")):
         with pytest.raises(OntologyError, match=why):
-            parse_kinds({"kinds/actor.yml": ACTOR.replace("[product]", "[]"), "kinds/term.yml": TERM}, layers)
+            parse_kinds({"kinds/actor.yml": ACTOR.replace("[product]", "[]"), "kinds/principle.yml": FIXED}, layers)
 
 
 def test_inline_holds_map_list_one() -> None:
@@ -131,7 +132,7 @@ def test_fields_are_meaning_unless_note() -> None:
     ontology = packaged()
     term = ontology.kinds["term"]
     assert term.fields["word"].type is FieldType.TEXT
-    where = Address("", "glossary", (("term", "land"),))
+    where = Address("product", "shared", (("term", "land"),))
     base = Entry(where, "p", {"word": "land", "says": "to finish", "example": "a"})
     same = Entry(where, "p", {"word": "land", "says": "to finish", "example": "another"})
     other = Entry(where, "p", {"word": "land", "says": "to deliver", "example": "a"})

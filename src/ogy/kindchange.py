@@ -8,13 +8,17 @@ migration commit is no edit of an append-only part.
 
 `kept` says which hashes stay current: a pure rename changes no meaning, so an agreement or a built line that was current
 before is current after (as a move keeps it); a dropped field that held a value changes the meaning, so its hash is left
-and the entry comes back to the owner as changed. The old fingerprints are read under `before`, the kinds as they were."""
+and the entry comes back to the owner as changed. The old fingerprints are read under `before`, the kinds as they were.
+
+A kind that moved out of a fixed folder (`moved_from`) has its entries there moved to the `shared` area of its first layer, every
+address under the old folder renamed, as `ogy move` renames (`moved_table`); `migrated` reads the base that way too."""
 
 from collections.abc import Mapping
 from dataclasses import dataclass
 
 from ogy.kinds import FieldSpec, FieldType, Holds, Kind
 from ogy.model import Address, Entry, parse_address
+from ogy.moves import renamed
 from ogy.ontology import Ontology
 from ogy.snapshot import Snapshot
 
@@ -80,8 +84,16 @@ def changes(snapshot: Snapshot, renames: bool = True, drops: bool = True) -> tup
     return Snapshot(snapshot.ontology, entries, list(snapshot.findings)), work.found
 
 
+def moved_table(snapshot: Snapshot) -> dict[Address, Address]:
+    """Each fixed folder a kind moved out of that still holds entries -> the home `ogy migrate` moves them to, as addresses
+    with no path, so every address under the old folder (a removed one too) is renamed by its prefix."""
+    held = {address.area for address in snapshot.entries if not address.layer}
+    return {Address("", old, ()): Address(*new.split("/"), ()) for old, new in snapshot.ontology.moved_homes().items() if old in held}
+
+
 def migrated(snapshot: Snapshot) -> Snapshot:
-    return changes(snapshot)[0]
+    """The snapshot as `ogy migrate` writes it: the fields renamed and dropped, the entries of a fixed folder moved out of it."""
+    return renamed(changes(snapshot)[0], moved_table(snapshot))
 
 
 def _hop(hop: str, back: Mapping[str, str]) -> str:
@@ -111,7 +123,7 @@ class Kept:
         old = before(snapshot.ontology)
         self.was = Snapshot(old, snapshot.entries, [])
         self.dropped = Snapshot(old, changes(snapshot, renames=False)[0].entries, [])
-        self.now = migrated(snapshot)
+        self.now = changes(snapshot)[0]
 
     def hash(self, address: Address, given: str) -> str | None:
         """The fingerprint after the migration when `given` was current and no dropped value touched it, else None."""

@@ -119,10 +119,13 @@ bd prime                # Refresh Beads context
 <!-- BEGIN OGY -->
 ## Knowledge base (ogy)
 
-The requirements knowledge base is the folder `docs/kb/`: `constitution/`, `glossary/`, `product/<area>/` and `software/<area>/`,
-nothing else at its top. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
+The requirements knowledge base is the folder `docs/kb/`: `constitution/`, `product/<area>/` and `software/<area>/`, nothing else
+at its top. Each layer has the area `shared` (`product/shared/`): only the terms, actors and sets that two of its areas use live
+there; everything else lives in the area that owns it. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
 - Run `just ogy glossary` first, before reading code or writing a sentence: it prints the constitution (the principles every decision is
-  judged against; cite one with `because`), then the glossary. Read both; use the words it prints. `just ogy status` shows where things
+  judged against; cite one with `because`), then the glossary: the shared terms, then each area's (`<layer>/<area>/glossary.yml`);
+  `just ogy glossary <layer>/<area>` prints one area's terms with the shared ones it reads. Read both; use the words it prints. A word
+  one area uses goes in that area's glossary, one that two areas use in the `shared` area of their layer. `just ogy status` shows where things
   stand; `just ogy find <words>` searches live and removed entries (search before you propose); `just ogy show <address>` reads one.
 - Add and change entries with ONE command, `just ogy put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
   (`just ogy put '[{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}]'`). An address that exists is changed (`"field": null` removes a
@@ -132,9 +135,11 @@ nothing else at its top. Change it only through ogy (CLI or MCP); never edit its
   never to reorganise. To change an entry's area use `just ogy move <address> <area>` (`<layer>/<area>` to change the layer too): the id
   and the owner's agreements stay, every address follows in the same write, and nothing is recorded (Git keeps it); never remove
   and put again.
-- A newer ogy may rename or drop a field of a kind (the kind file says `renamed: {old: new}` or `dropped: [...]`); `just ogy check` then
-  reports `needs-migration`. Run `just ogy migrate`, never a hand edit: it renames in one write and keeps the owner's agreements and the
-  built lines current; a dropped field that held a value is printed, and that entry comes back to the owner as changed.
+- A newer ogy may rename or drop a field of a kind, or move a kind out of a fixed folder (the kind file says `renamed: {old: new}`,
+  `dropped: [...]` or `moved_from: <folder>/<file>`); `just ogy check` then reports `needs-migration`. Run `just ogy migrate`, never a hand
+  edit: it renames and moves in one write and keeps the owner's agreements and the built lines current; a dropped field that held a
+  value is printed, and that entry comes back to the owner as changed. What it moved lands in `product/shared`: `just ogy move` each
+  entry to the area that uses it.
 - Reads see the worktree by default (`--rev .`); CI reads a commit with `just ogy --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `just ogy show <address> --rev HEAD`.
 - Every write is checked; fix what it refuses. Run `just ogy check` before you hand over: every finding is an error, there are no

@@ -21,6 +21,6 @@ def constitution_lines(snapshot: Snapshot) -> list[str]:
     return ["constitution (every decision is judged against these):", *lines, ""] if lines else []
 
 
-def printed_lines(snapshot: Snapshot) -> list[str]:
-    """What an agent reads first: the constitution, then the glossary."""
-    return [*constitution_lines(snapshot), *glossary_lines(snapshot)]
+def printed_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
+    """What an agent reads first: the constitution, then the glossary (of one area and what it shares, when `home` is given)."""
+    return [*constitution_lines(snapshot), *glossary_lines(snapshot, home)]

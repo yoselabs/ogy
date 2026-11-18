@@ -44,13 +44,23 @@ def check_ledgers(snapshot: Snapshot, source: Source) -> list[Finding]:
     live = [str(address) for address in snapshot.entries]
     problems += removed.find_reuse(items, live) + removed.check_why(items, known_addresses(snapshot))
     problems += removed.check_replacements(items, live) + removed.check_links(_citers(snapshot, [i.id for i in items]), items)
-    return findings_of(problems, snapshot)
+    moved = [Finding(Problem.NEEDS_MIGRATION, f"{home}/{REMOVED_FILE}", f"{home}/ is no home any more: run `ogy migrate`, which "
+                     f"moves its removed items to {new}/{REMOVED_FILE}") for home, new in snapshot.ontology.moved_homes().items()
+             if home in ledgers]
+    return findings_of(problems, snapshot) + moved
+
+
+def migrated_ledgers(ledgers: dict[str, removed.Ledger], snapshot: Snapshot) -> dict[str, removed.Ledger]:
+    """The ledgers as `ogy migrate` writes them: those of a fixed folder a kind moved out of, under the home it moved to."""
+    for old, new in snapshot.ontology.moved_homes().items():
+        ledgers = removed.rehomed(ledgers, old, new)
+    return ledgers
 
 
 def check_against_base(snapshot: Snapshot, source: Source, base: Snapshot, base_source: Source) -> list[Finding]:
     """C1 to C3 and R1, R3, and R7: an item that is not in the base ledger has a snapshot equal to the entry in the base."""
     ledgers, _ = read_ledgers(source)
-    old, _ = read_ledgers(base_source)
+    old = migrated_ledgers(read_ledgers(base_source)[0], snapshot)  # the base as `ogy migrate` would write it
     found = check_base(snapshot, base, ledgers, old)
     in_base = {item.id for ledger in old.values() for item in ledger.items}
     new = [item for ledger in ledgers.values() for item in ledger.items]

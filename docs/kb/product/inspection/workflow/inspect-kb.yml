@@ -7,7 +7,7 @@ start: read
 steps:
   read:
     says: The agent runs a read command; reads see the worktree unless --rev names a commit.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       read:
         label: Read

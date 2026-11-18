@@ -1,6 +1,6 @@
 - id: changes-are-measured
   says: A change to the ontology, a skill or the checker names the eval that tests it, or says it is untested.
   for:
-  - product/people/actor/owner
+  - product/shared/actor/owner
   src:
   - doc:61048d84cd375c433ec891246697eb413736ea29:evals/README.md#ogy-eval-suite-how-to-run-an-eval

@@ -1,6 +1,6 @@
 format: 1
 items:
-- id: glossary/term/option
+- id: product/shared/term/option
   kind: term
   parent:
   title:
@@ -20,7 +20,7 @@ items:
     distinct:
     - a guess
     - an answer
-- id: glossary/term/agent
+- id: product/shared/term/agent
   kind: term
   parent:
   title:
@@ -40,7 +40,7 @@ items:
     distinct:
     - the owner
     - a persona of the product
-- id: glossary/term/skill
+- id: product/shared/term/skill
   kind: term
   parent:
   title:
@@ -60,7 +60,7 @@ items:
     distinct:
     - a checker lint
     - a plugin
-- id: glossary/term/ogy
+- id: product/shared/term/ogy
   kind: term
   parent:
   title:
@@ -82,7 +82,7 @@ items:
     - a task tracker
     avoid:
     - OGI
-- id: glossary/term/knowledge-base
+- id: product/shared/term/knowledge-base
   kind: term
   parent:
   title:
@@ -104,7 +104,7 @@ items:
     - a document folder
     avoid:
     - docs/kb
-- id: glossary/term/capture
+- id: product/shared/term/capture
   kind: term
   parent:
   title:
@@ -124,7 +124,7 @@ items:
     distinct:
     - extraction in batch from code
     - eliciting
-- id: glossary/term/card
+- id: product/shared/term/card
   kind: term
   parent:
   title:
@@ -144,7 +144,7 @@ items:
     distinct:
     - an entry
     - a bead
-- id: glossary/term/glossary
+- id: product/shared/term/glossary
   kind: term
   parent:
   title:
@@ -166,7 +166,7 @@ items:
     - a list of kinds (ogy spec prints those)
     avoid:
     - glossary.md
-- id: glossary/term/message
+- id: product/shared/term/message
   kind: term
   parent:
   title:

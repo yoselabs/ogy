@@ -1,12 +1,12 @@
 - id: requirements-agreed
   says: Every requirement of a product is an entry that names where it came from, and the owner has agreed to it or can still answer it.
   for:
-  - product/people/actor/owner
+  - product/shared/actor/owner
   src:
   - code:src/ogy/status.py#status
 - id: fewest-questions
   says: The owner is asked only what the sources do not answer, a few cards at a time, each with a recommended answer.
   for:
-  - product/people/actor/owner
+  - product/shared/actor/owner
   src:
   - code:src/ogy/status.py#queue

@@ -12,8 +12,9 @@ from ogy.ontology import Ontology
 class Address:
     """An entry's identity: `<layer>/<area>/<kind>/<id>`, and a part's is its parent's plus `/<part kind>/<key>`.
 
-    The folder is the layer's only home: the layer is the first segment. An entry of a kind that names a fixed folder
-    (the glossary) has no layer: `glossary/<kind>/<id>`. A `holds: one` part is its parent's address plus `/<part kind>`
+    The folder is the layer's only home: the layer is the first segment, and every such address keeps its area (what two
+    areas share is in the area `shared`). An entry of a kind that names a fixed folder (the constitution) has no layer:
+    `constitution/<kind>/<id>`. A `holds: one` part is its parent's address plus `/<part kind>`
     (its key is empty). No dots, no `:`.
     """
 
@@ -52,7 +53,7 @@ def _fits(kind: Kind, path: list[tuple[str, str]]) -> bool:
 
 
 def parse_address(text: str, ontology: Ontology) -> Address | None:
-    """Read `<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]` (or `glossary/<kind>/<id>...`); None when it is no address here."""
+    """Read `<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]` (or `constitution/<kind>/<id>...`); None when it is no address here."""
     segments = text.split("/")
     layer = segments[0] if segments[0] in ontology.layers else ""
     head = 2 if layer else 1

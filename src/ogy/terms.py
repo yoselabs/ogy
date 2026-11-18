@@ -1,4 +1,5 @@
-"""The glossary: T1-T3 are pure data checks, T4 and T5 take what another module computed, `glossary_lines` prints it.
+"""The glossary: the terms of every area's `glossary.yml`, the shared ones in the area `shared` of a layer. T1-T3 are pure data
+checks, T4 and T5 take what another module computed, `glossary_lines` prints it.
 
 `check_term_agreement` computes T4 and T5 from the agreement and status of each term.
 """
@@ -6,6 +7,7 @@
 import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
+from ogy.kinds import SHARED_AREA
 from ogy.model import Address, Entry, Finding, Problem, link_values, parse_address
 from ogy.snapshot import Snapshot
 from ogy.source import Source
@@ -110,18 +112,30 @@ def proposed_terms(snapshot: Snapshot, proposed: Collection[Address]) -> list[Fi
             for e in agreeable(snapshot) if e.address in proposed and (k := snapshot.kind_of(e.address).kind)]
 
 
-def glossary_lines(snapshot: Snapshot) -> list[str]:
-    """The terms for the terminal, under each `group`."""
+def glossary_homes(snapshot: Snapshot, home: str | None = None) -> list[str]:
+    """The homes whose terms `ogy glossary` prints, in order: the `shared` area of each layer, then every other area; for one
+    area (`<layer>/<area>`), the `shared` areas of its layer and of the layers before it (a software area reads product's
+    too), then the area itself."""
+    layers = snapshot.ontology.layers
+    shared = [f"{layer}/{SHARED_AREA}" for layer in layers]
+    if home is None:
+        return [*shared, *sorted({entry.address.home for entry in terms(snapshot)} - set(shared))]
+    seen = shared[:layers.index(home.split("/")[0]) + 1]
+    return [*seen, *([home] if home not in seen else [])]
+
+
+def glossary_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
+    """The terms for the terminal, under the home they live in (see `glossary_homes`)."""
     lines: list[str] = []
-    groups = sorted({str(e.fields.get("group") or "") for e in terms(snapshot)})
-    for group in groups:
-        lines += [f"{group}:"] if group else []
-        for entry in sorted((e for e in terms(snapshot) if str(e.fields.get("group") or "") == group), key=_word):
+    for where in glossary_homes(snapshot, home):
+        found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=_word)
+        lines += [f"{where}:"] if found else []
+        for entry in found:
             meaning = entry.text("says") or f"see {', '.join(link_values(entry.fields.get('of')))}"
-            lines.append(f"{'  ' if group else ''}{entry.text('word')}: {meaning}")
-            for label, name in (("distinct", "distinct"), ("avoid", "avoid")):
-                if items := link_values(entry.fields.get(name)):
-                    lines.append(f"{'    ' if group else '  '}{label}: {'; '.join(items)}")
+            lines.append(f"  {entry.text('word')}: {meaning}")
+            for label in ("distinct", "avoid"):
+                if items := link_values(entry.fields.get(label)):
+                    lines.append(f"    {label}: {'; '.join(items)}")
     return lines
 
 

@@ -52,8 +52,9 @@ def test_find_and_show_list_who_cites_a_principle(kb: Make) -> None:
 
 def test_agents_read_the_constitution_before_the_glossary(kb: Make) -> None:
     glossary = "- {id: land, word: land, says: To finish a delivery.}\n"
-    both = printed_lines(kb({"constitution/principles.yml": SAY, "glossary/terms.yml": glossary}).snapshot)
-    assert both[0].startswith("constitution") and both.index("land: To finish a delivery.") > both.index("    why: Storage is no meaning.")
+    both = printed_lines(kb({"constitution/principles.yml": SAY, "product/shared/glossary.yml": glossary}).snapshot)
+    assert both[0].startswith("constitution")
+    assert both.index("  land: To finish a delivery.") > both.index("    why: Storage is no meaning.")
     assert "  graph: The ontology is a graph of linked entries." in both
-    none = kb({"constitution/principles.yml": "[]\n", "glossary/terms.yml": glossary}).snapshot
-    assert printed_lines(none) == ["land: To finish a delivery."]
+    none = kb({"constitution/principles.yml": "[]\n", "product/shared/glossary.yml": glossary}).snapshot
+    assert printed_lines(none) == ["product/shared:", "  land: To finish a delivery."]

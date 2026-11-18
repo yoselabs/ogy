@@ -86,7 +86,7 @@ def test_status_coverage_lists_the_kinds_with_no_entry_per_layer(repo: Path) -> 
 
 def test_coverage_counts_the_kinds_that_own_a_file_by_layer(kb: MakeKb) -> None:
     found = uncovered(kb(None).snapshot)
-    assert set(found) == {"product", "software"} and "step" not in found["product"] and "term" not in found["product"]
+    assert set(found) == {"product", "software"} and "step" not in found["product"] and "term" in found["product"]
     assert "workflow" not in found["product"] and "workflow" in found["software"]  # the sign-in workflow is a product entry
 
 

@@ -3,6 +3,7 @@ about: a closed list of named members (the words a field or an answer may take)
 shape: list
 file: sets.yml
 layers: [product, software]
+shared: true            # a set two areas use lives in <layer>/shared/sets.yml
 fields:
   says: {required: true}
   members: {type: texts, required: true}

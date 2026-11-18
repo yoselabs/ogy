@@ -13,8 +13,10 @@ The skill holds the flow; the ontology (`ogy kinds [kind]`) holds the shapes; `o
 YAML by hand and never read a spec to learn a shape: ask `ogy kinds`.
 
 ## 1. Glossary first
-Run `ogy glossary` before you read code or write a sentence. Use its words; a word it avoids is refused. A word you
-need that is not there is a proposal (a `decision` that proposes a term), not a quiet new entry. Search before you
+Run `ogy glossary` before you read code or write a sentence (`ogy glossary <layer>/<area>` for one area and the shared
+words it reads). Use its words; a word it avoids is refused. A word you need that is not there is a proposal (a `decision`
+that proposes a term), not a quiet new entry: a word one area uses goes in `<layer>/<area>/glossary.yml`, one that two areas
+use in the area `shared` of their layer (`product/shared/glossary.yml`). Search before you
 propose: `ogy find <words>` covers live and removed entries.
 
 
@@ -88,8 +90,10 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
 4. Remove only with `ogy remove <address> --why <decision or text>`. Never edit a `removed.yml`, never reuse an
    id. To bring something back, propose a decision built from the snapshot (`ogy find --removed`) under a new id.
 5. Never edit an answer. A reversal is a new answer; the old one stays.
-6. Structure (layout, layers, kinds, paths) is the owner's, and the folders `docs/kb/{glossary,product/<area>,software/<area>}`
+6. Structure (layout, layers, kinds, paths) is the owner's, and the folders `docs/kb/{constitution,product/<area>,software/<area>}`
    are mandatory:
+   - Each layer has the area `shared`: only the terms, actors and sets that two of its areas use live there (`ogy move` an
+     entry there when a second area starts to use it); everything else stays in the area that owns it and is linked.
    - Every area holds its `area.yml` (`says`: what it covers; `distinct`: what belongs next door). Read it before writing
      into an area; a new area brings its `area.yml` in the same `ogy put`.
    - Before recommending to remove or change structure, search the owner's earlier answers (`ogy find <words>`,

@@ -1,7 +1,8 @@
 """`ogy init`: make a repository ready for ogy. Every step is idempotent and merges; nothing is clobbered.
 
-Writes `ogy.yml`, the knowledge-base folder with its glossary and constitution folders, a marked block in AGENTS.md (and CLAUDE.md when it
-exists), the ogy server in `.mcp.json` and Claude Code deny rules for editing the folder by hand."""
+Writes `ogy.yml`, the knowledge-base folder with its constitution folder and the area `shared` of the first layer, a marked
+block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in `.mcp.json` and Claude Code deny rules for editing the
+folder by hand."""
 
 import json
 import shutil
@@ -14,14 +15,16 @@ from git_porcelain import RealRepo, config_get, git_dir
 from managed_region import replace_region
 
 from ogy import config
+from ogy.kinds import SHARED_AREA
+from ogy.layout import SHARED_SAYS
 from ogy.ontology import packaged
 from ogy.source import KB_DIR
 from ogy.verdict import Refusal
 
 START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
-GLOSSARY_FILE = "glossary/terms.yml"
 CONSTITUTION_FILE = "constitution/principles.yml"
-LISTS = (GLOSSARY_FILE, CONSTITUTION_FILE)  # the fixed folders, each starts as an empty list
+SHARED_FILE = f"product/{SHARED_AREA}/area.yml"  # the shared area of the first layer, with its own entry
+STARTS = {CONSTITUTION_FILE: "[]\n", SHARED_FILE: any_yaml.dump({"says": SHARED_SAYS})}  # what a new knowledge base starts with
 HOOKS_DIR = ".githooks"
 HOOK = """\
 #!/bin/sh
@@ -38,10 +41,13 @@ PUBLISHED = "uvx --from git+https://github.com/yoselabs/ogy ogy"
 BLOCK = """\
 ## Knowledge base (ogy)
 
-The requirements knowledge base is the folder `docs/kb/`: `constitution/`, `glossary/`, `product/<area>/` and `software/<area>/`,
-nothing else at its top. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
+The requirements knowledge base is the folder `docs/kb/`: `constitution/`, `product/<area>/` and `software/<area>/`, nothing else
+at its top. Each layer has the area `shared` (`product/shared/`): only the terms, actors and sets that two of its areas use live
+there; everything else lives in the area that owns it. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
 - Run `{ogy} glossary` first, before reading code or writing a sentence: it prints the constitution (the principles every decision is
-  judged against; cite one with `because`), then the glossary. Read both; use the words it prints. `{ogy} status` shows where things
+  judged against; cite one with `because`), then the glossary: the shared terms, then each area's (`<layer>/<area>/glossary.yml`);
+  `{ogy} glossary <layer>/<area>` prints one area's terms with the shared ones it reads. Read both; use the words it prints. A word
+  one area uses goes in that area's glossary, one that two areas use in the `shared` area of their layer. `{ogy} status` shows where things
   stand; `{ogy} find <words>` searches live and removed entries (search before you propose); `{ogy} show <address>` reads one.
 - Add and change entries with ONE command, `{ogy} put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
   (`{ogy} put '[{{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}}]'`). An address that exists is changed (`"field": null` removes a
@@ -51,9 +57,11 @@ nothing else at its top. Change it only through ogy (CLI or MCP); never edit its
   never to reorganise. To change an entry's area use `{ogy} move <address> <area>` (`<layer>/<area>` to change the layer too): the id
   and the owner's agreements stay, every address follows in the same write, and nothing is recorded (Git keeps it); never remove
   and put again.
-- A newer ogy may rename or drop a field of a kind (the kind file says `renamed: {{old: new}}` or `dropped: [...]`); `{ogy} check` then
-  reports `needs-migration`. Run `{ogy} migrate`, never a hand edit: it renames in one write and keeps the owner's agreements and the
-  built lines current; a dropped field that held a value is printed, and that entry comes back to the owner as changed.
+- A newer ogy may rename or drop a field of a kind, or move a kind out of a fixed folder (the kind file says `renamed: {{old: new}}`,
+  `dropped: [...]` or `moved_from: <folder>/<file>`); `{ogy} check` then reports `needs-migration`. Run `{ogy} migrate`, never a hand
+  edit: it renames and moves in one write and keeps the owner's agreements and the built lines current; a dropped field that held a
+  value is printed, and that entry comes back to the owner as changed. What it moved lands in `product/shared`: `{ogy} move` each
+  entry to the area that uses it.
 - Reads see the worktree by default (`--rev .`); CI reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `{ogy} show <address> --rev HEAD`.
 - Every write is checked; fix what it refuses. Run `{ogy} check` before you hand over: every finding is an error, there are no
@@ -190,9 +198,9 @@ def init(repo: Path, ontology: str | None = None) -> Initialised:
         _json(repo, rel)  # an unreadable file refuses before anything is written
     if not (repo / config.CONFIG_FILE).exists():
         _put(repo, config.CONFIG_FILE, any_yaml.dump({"ontology": name}), written)
-    for rel in LISTS:
+    for rel, text in STARTS.items():
         if not (repo / KB_DIR / rel).exists():
-            atomic_write_text(repo / KB_DIR / rel, "[]\n")
+            atomic_write_text(repo / KB_DIR / rel, text)
             written.append(f"{KB_DIR}/{rel}")
     _block(repo, "AGENTS.md", written)
     if (repo / "CLAUDE.md").exists():
@@ -209,7 +217,7 @@ def doctor(repo: Path) -> list[str]:
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
-    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in LISTS if not (repo / KB_DIR / rel).is_file())
+    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in STARTS if not (repo / KB_DIR / rel).is_file())
     for rel in ("AGENTS.md", "CLAUDE.md"):
         path = repo / rel
         if rel == "AGENTS.md" or path.exists():

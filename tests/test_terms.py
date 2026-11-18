@@ -9,7 +9,7 @@ LAND = "- {id: land, word: land, says: To finish a delivery., avoid: [merge, che
 
 
 def snap(terms: str, **more: str) -> Snapshot:
-    return build(packaged(), {"glossary/terms.yml": terms, **more})
+    return build(packaged(), {"product/shared/glossary.yml": terms, **more})
 
 
 def problems(snapshot: Snapshot) -> set[tuple[object, str]]:
@@ -17,16 +17,16 @@ def problems(snapshot: Snapshot) -> set[tuple[object, str]]:
 
 
 def test_term_has_says_or_of() -> None:
-    both = snap("- {id: a, word: a, says: x., of: glossary/term/b}\n- {id: b, word: b}\n"
-                "- {id: c, word: c, of: glossary/term/b}\n")
-    assert problems(both) == {(Problem.ONE_OF, "glossary/term/a"), (Problem.ONE_OF, "glossary/term/b"),
-                              (Problem.WRONG_TYPE, "glossary/term/a"), (Problem.WRONG_TYPE, "glossary/term/c")}
+    both = snap("- {id: a, word: a, says: x., of: product/shared/term/b}\n- {id: b, word: b}\n"
+                "- {id: c, word: c, of: product/shared/term/b}\n")
+    assert problems(both) == {(Problem.ONE_OF, "product/shared/term/a"), (Problem.ONE_OF, "product/shared/term/b"),
+                              (Problem.WRONG_TYPE, "product/shared/term/a"), (Problem.WRONG_TYPE, "product/shared/term/c")}
     assert problems(snap(LAND)) == set()
 
 
 def test_word_clash() -> None:
     clash = snap(LAND + "- {id: land2, word: Land, says: x.}\n- {id: m, word: Merge, says: y.}\n")
-    assert problems(clash) == {(Problem.WORD_CLASH, "glossary/term/land2"), (Problem.WORD_CLASH, "glossary/term/land")}
+    assert problems(clash) == {(Problem.WORD_CLASH, "product/shared/term/land2"), (Problem.WORD_CLASH, "product/shared/term/land")}
 
 
 def test_avoided_word_outside_backticks() -> None:
@@ -37,24 +37,25 @@ def test_avoided_word_outside_backticks() -> None:
     found = {str(f.address): f.detail for f in check_terms(kb) if f.problem is Problem.AVOIDED_WORD}
     assert "product/app/actor/check-run" in found and "product/app/actor/ok" in found
     assert "product/app/actor/quoted" not in found
-    assert "glossary/term/land" not in found
+    assert "product/shared/term/land" not in found
 
 
 def test_term_must_be_agreed() -> None:
     kb = snap(LAND + "- {id: x, word: x, says: y.}\n")
-    agreed = {Address("", "glossary", (("term", "land"),))}
-    assert [str(f.address) for f in terms_not_agreed(kb, agreed)] == ["glossary/term/x"]
+    agreed = {Address("product", "shared", (("term", "land"),))}
+    assert [str(f.address) for f in terms_not_agreed(kb, agreed)] == ["product/shared/term/x"]
     assert terms_not_agreed(kb, lambda _: True) == []
 
 
 def test_proposed_term_blocks_landing() -> None:
     kb = snap(LAND)
-    found = proposed_terms(kb, {Address("", "glossary", (("term", "land"),))})
+    found = proposed_terms(kb, {Address("product", "shared", (("term", "land"),))})
     assert [f.problem for f in found] == [Problem.PROPOSED_TERM]
     assert proposed_terms(kb, set()) == []
 
 
-def test_glossary_lines_group_terms() -> None:
-    kb = snap(LAND + "- {id: x, word: X, says: The commit., group: Land, distinct: [O]}\n")
-    assert glossary_lines(kb) == ["land: To finish a delivery.", "  avoid: merge; check run", "Land:", "  X: The commit.",
-                                  "    distinct: O"]
+def test_glossary_lines_print_the_shared_terms_then_each_area() -> None:
+    kb = snap(LAND, **{"software/app/glossary.yml": "- {id: x, word: X, says: The commit., distinct: [O]}\n",
+                       "software/shared/glossary.yml": "- {id: y, word: Y, says: A run.}\n"})
+    assert glossary_lines(kb) == ["product/shared:", "  land: To finish a delivery.", "    avoid: merge; check run",
+                                  "software/shared:", "  Y: A run.", "software/app:", "  X: The commit.", "    distinct: O"]

@@ -18,25 +18,25 @@ options:
         says: Store a reply of a person or an agent, whole and once.
       software/storage/value/message-digest-length:
         says: The length of the digest in a message's id, after its date.
-      glossary/term/message:
+      software/writes/operation/record-answer:
+      product/shared/term/message:
         says: One reply of a person or an agent, stored whole and once, never edited; the only kind that entries may cite as a source and that can agree.
-      glossary/term/answer:
+      product/shared/term/answer:
         says: The owner's choice of one option of a decision, kept with its message and a quote; the one whose message is newest is in force.
         distinct:
         - a message, which it points to
         - a guess
         - something an agent may write for the owner
-      glossary/term/agreement:
+      product/shared/term/agreement:
         says: A message that says yes to the sentences now on entries, recorded as the shown text and the fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
-      glossary/term/src:
+      product/shared/term/src:
         says: 'The place a sentence came from: a message, a code: link or a doc: link, and nothing else.'
         distinct:
         - an authority (only a person's message agrees)
         - part of the fingerprint
         - a decision, which is never a source
-      glossary/term/owner:
+      product/shared/term/owner:
         says: The person who decides the business questions of the product; an agent relays the owner's words verbatim and never answers or agrees for them.
-      software/writes/operation/record-answer:
   paraphrase:
     label: 'No messages or quotes: an answer and an agreement keep a short paraphrase, who, when and where'
     sets:
@@ -52,23 +52,6 @@ options:
       software/writes/operation/store-message:
       software/cli/command/message:
       software/storage/value/message-digest-length:
-      glossary/term/message:
-      glossary/term/answer:
-        says: The choice of one option of a decision, kept with a short paraphrase of what was said, who (a person, or an agent under a delegation), when and where; the newest is in force.
-        distinct:
-        - a guess
-        - a quote, which ogy never keeps
-        - something an agent may write for the owner
-      glossary/term/agreement:
-        says: A person's yes in a review round to the sentence now on an entry, kept on the entry with its fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
-      glossary/term/src:
-        says: 'The place a sentence came from: a code: link or a doc: link, and nothing else.'
-        distinct:
-        - an authority (only a person's yes agrees)
-        - part of the fingerprint
-        - a decision, which is never a source
-      glossary/term/owner:
-        says: The person who decides the business questions of the product; an agent records what the owner said as a short paraphrase and never answers or agrees for them.
       software/writes/operation/record-answer:
         says: 'Appends an answer to its decision: the option chosen, a short paraphrase of what was said, who, when and where.'
         performs:
@@ -77,6 +60,23 @@ options:
         - software/storage/external/git
         src:
         - code:src/ogy/writes.py#answer
+      product/shared/term/message:
+      product/shared/term/answer:
+        says: The choice of one option of a decision, kept with a short paraphrase of what was said, who (a person, or an agent under a delegation), when and where; the newest is in force.
+        distinct:
+        - a guess
+        - a quote, which ogy never keeps
+        - something an agent may write for the owner
+      product/shared/term/agreement:
+        says: A person's yes in a review round to the sentence now on an entry, kept on the entry with its fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
+      product/shared/term/src:
+        says: 'The place a sentence came from: a code: link or a doc: link, and nothing else.'
+        distinct:
+        - an authority (only a person's yes agrees)
+        - part of the fingerprint
+        - a decision, which is never a source
+      product/shared/term/owner:
+        says: The person who decides the business questions of the product; an agent records what the owner said as a short paraphrase and never answers or agrees for them.
 guess:
   chose: paraphrase
   why: The owner chose it on 2026-11-18, for privacy.

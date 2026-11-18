@@ -2,7 +2,7 @@
 
 from collections.abc import Mapping
 
-from ogy.kinds import ANY, COMMON_FIELDS, FILED, KIND_NAME, LINKING, NAME, RESERVED_AREAS, FieldSpec, FieldType, Kind, Shape
+from ogy.kinds import ANY, COMMON_FIELDS, FILED, KIND_NAME, LINKING, NAME, RESERVED_AREAS, SHARED_AREA, FieldSpec, FieldType, Kind, Shape
 
 # Facts the tool computes; no kind may store them (K22).
 STORED_STATE = frozenset({
@@ -16,9 +16,9 @@ REMOVED_FILE = "removed.yml"
 
 def problems(kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> list[str]:
     found: list[str] = []
-    fixed = {kind.area for kind in kinds.values() if kind.area}
+    fixed = {kind.area for kind in kinds.values() if kind.area} | {moved[0] for kind in kinds.values() if (moved := kind.moved)}
     found += [f"layer {layer!r} is no valid folder name" for layer in layers
-              if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed]
+              if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed or layer == SHARED_AREA]
     if not layers:
         found.append("the ontology declares no layers")
     for name, kind in kinds.items():
@@ -26,7 +26,7 @@ def problems(kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> list[str]:
         found += _shape(kinds, name, kind) + _per_area(name, kind)
         found += _fields(kinds, name, kind)
         found += _rules(kinds, name, kind)
-        found += _migration(name, kind)
+        found += _migration(name, kind) + _moved(name, kind)
     found += _files(kinds)
     found += _keys(kinds)
     found += _settling(kinds)
@@ -120,6 +120,20 @@ def _migration(name: str, kind: Kind) -> list[str]:
              if old in kind.fields or old in COMMON_FIELDS]
     found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
     found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
+    return found
+
+
+def _moved(name: str, kind: Kind) -> list[str]:
+    """A kind may live in `shared` only under a layer; one that moved out of a fixed folder names `<folder>/<file>.yml` and moves
+    there, so it is a list kind that may live in `shared`."""
+    found = [f"{name}: shared belongs to kinds that live under a layer"] if kind.shared and (kind.area or not kind.layers) else []
+    if kind.moved_from is None:
+        return found
+    folder, _, file = kind.moved_from.partition("/")
+    if not NAME.match(folder) or folder in RESERVED_AREAS or "/" in file or not file.endswith(".yml"):
+        found.append(f"{name}: moved_from is `<folder>/<file>.yml`, the fixed-folder file it was kept in")
+    if kind.shape is not Shape.LIST or not kind.shared:
+        found.append(f"{name}: moved_from belongs to a list kind that may live in shared")
     return found
 
 

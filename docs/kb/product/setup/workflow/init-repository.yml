@@ -7,7 +7,7 @@ start: run
 steps:
   run:
     says: A person runs ogy init, or ogy init --check to only ask what is missing.
-    actor: product/people/actor/owner
+    actor: product/shared/actor/owner
     choices:
       init:
         label: Set up

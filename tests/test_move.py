@@ -119,8 +119,12 @@ def test_a_decision_moves_and_what_cites_it_follows(repo: Path) -> None:
 
 def test_the_layer_may_change_when_the_kind_allows_it_and_is_refused_when_it_does_not(repo: Path) -> None:
     before = tree(repo)
-    code, lines = w(repo, "move", "product/app/actor/member", "software/app")
-    assert code == cli.REFUSED and "actor may live in the layers" in lines[0] and tree(repo) == before
+    goals = repo / KB / "product/app/goals.yml"
+    goals.write_text("- {id: lend, says: Members borrow tools., src: ['code:app.py#lend']}\n")
+    commit(repo, "a goal")
+    before = tree(repo)
+    code, lines = w(repo, "move", "product/app/goal/lend", "software/app")
+    assert code == cli.REFUSED and "goal may live in the layers" in lines[0] and tree(repo) == before
     assert w(repo, "move", "software/app/view/page", "product/app")[0] == cli.REFUSED  # a view is software only
     assert w(repo, "move", "product/app/value/fee", "software/app")[0] == cli.OK
     assert (repo / KB / "software/app/values.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
@@ -134,7 +138,7 @@ def test_a_move_is_refused_when_the_target_exists_or_was_removed(repo: Path) -> 
     code, lines = w(repo, "move", "product/app/actor/member", "product/other")
     assert code == cli.REFUSED and "exists" in lines[0] and tree(repo) == before
     for argv in (["product/app/actor/member", "product/app"], ["product/app/actor/member", "product/a/b/c"],
-                 [STEP, "product/loans"], ["glossary/term/land", "product/loans"]):
+                 [STEP, "product/loans"], ["product/shared/term/land", "product/loans"]):
         assert w(repo, "move", *argv)[0] in (cli.REFUSED, cli.USAGE, cli.NOT_FOUND), argv
     assert tree(repo) == before
     fee = "- {id: fee, says: Another fee., is: 1, unit: EUR, src: ['code:app.py#lend']}\n"

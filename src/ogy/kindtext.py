@@ -28,6 +28,10 @@ def _facts(kind: Kind) -> list[str]:
         where.append(f"part of {'|'.join(kind.part_of)} under key {kind.key} (holds {kind.holding})")
     if kind.area:
         where.append(f"only in the folder {kind.area}")
+    if kind.shared:
+        where.append("also in the area shared, when two areas use it")
+    if kind.moved_from:
+        where.append(f"moved from {kind.moved_from} (`ogy migrate`)")
     flags = [text for text, on in (("in every area", kind.every_area), ("never asked", not kind.asked),
                                    ("needs proof", kind.needs_proof), ("must be agreed", kind.must_be_agreed),
                                    ("append only", kind.append_only), ("settles entries", kind.settling is not None),

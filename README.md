@@ -44,10 +44,10 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `work [area]` | what the built record says is still to do |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
-| `glossary`, `kinds [kind] [--readers]` | the constitution, then the terms of the product; the kinds of the ontology, or one. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
+| `glossary [layer/area]`, `kinds [kind] [--readers]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too); the kinds of the ontology, or one. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it (same kind, id and fingerprint) from a loss |
-| `migrate` | rewrite the entries to the field renames and drops their kinds declare (see "Kind changes"); one checked write that records nothing |
+| `migrate` | rewrite the entries to the field renames, drops and moves out of a fixed folder their kinds declare (see "Kind changes"); one checked write that records nothing |
 | `history <address \| layer/area>` | what changed, who said so, what is in force, when it was built; computed from Git |
 | `mcp` | serve all of the above as MCP tools over stdio |
 | `init` | set the repository up (see "Init") |
@@ -57,7 +57,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 
 ### Init
 
-`ogy init` is idempotent and merges, never clobbers. It writes `ogy.yml`; creates `docs/kb` with `glossary/terms.yml` and `constitution/principles.yml`;
+`ogy init` is idempotent and merges, never clobbers. It writes `ogy.yml`; creates `docs/kb` with `constitution/principles.yml` and the area `product/shared` (its `area.yml`);
 adds a marked block (managed-region) to `AGENTS.md`, and to `CLAUDE.md` when it exists, that tells agents to change the
 knowledge base only through ogy and to run `ogy glossary` first (the constitution, then the glossary); adds the `ogy` server (`ogy mcp`) to `.mcp.json`; adds
 `Edit` and `Write` deny rules for `docs/kb/**/*.yml` to `.claude/settings.json`.
@@ -98,14 +98,21 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
 ### Layout
 
 The ontology declares where entries live (`ontologies/software/ontology.yml`) and the loader enforces it; nothing skips a level.
-`docs/kb/glossary/terms.yml` holds the glossary and `docs/kb/constitution/principles.yml` the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
+`docs/kb/constitution/principles.yml` holds the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
 `<layer>/<area>/<file>`; a single kind: one entry in `<layer>/<area>/<file>` whose id is the area), the layer being `product` or `software`.
 Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `distinct`, what belongs in a neighbouring area): the kind
 declares `every_area`, so an area folder without it is `missing-entry`, and a write into a new area brings it in the same call. It needs
-no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folders
-`glossary/` and `constitution/` are no areas. An area or kind at the top, or an unknown layer, is `bad-path`.
+no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folder
+`constitution/` is no area. An area or kind at the top, or an unknown layer, is `bad-path`. A folder that holds only its `removed.yml`
+is an area no more.
+- The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. Each layer has the reserved area `shared`, a
+  normal area with its `area.yml`: a term, an actor or a set that two areas use lives there (`product/shared/glossary.yml`,
+  `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, set and area)
+  may live there; any other is `bad-path`, and `ogy move` into `shared` refuses it. Which shared entry fewer than two areas use is
+  not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
-entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`.
+entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. A business actor lives in product, a technical one
+(CI, a scheduler, a program calling us) in software.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
@@ -124,6 +131,11 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
   hash re-set to the fingerprint after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
   the entry (and of entries whose fingerprint reads it) are left, so the owner sees it as changed since agreed and it is work;
+- a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>` (the term kind:
+  `glossary/terms.yml`). Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
+  layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
+  removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the
+  area that uses it;
 - `check --base` reads the base migrated, so a migration commit is no edit of an append-only part. Removed items keep the
   names they had; nothing is recorded (Git keeps the old names).
 The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type, a renamed kind

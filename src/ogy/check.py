@@ -64,6 +64,9 @@ class Checker:
         layer = entry.address.layer
         if layer and entry.address.parent() is None and layer not in kind.layers:
             self._add(Problem.BAD_LAYER, entry, f"{kind.kind} may live in the layers {list(kind.layers)}, not {layer}")
+        if not layer and kind.moved is not None and entry.address.parent() is None:
+            self._add(Problem.NEEDS_MIGRATION, entry, f"{kind.kind} moved from {kind.moved_from} to {kind.moved[1]}/{kind.file} and "
+                      "then to the area that uses it: run `ogy migrate`, then `ogy move`")
 
     def _links(self, entry: Entry) -> None:
         for item in link_items(self.snapshot.ontology, entry):

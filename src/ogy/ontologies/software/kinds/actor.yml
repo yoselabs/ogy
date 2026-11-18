@@ -3,7 +3,8 @@ about: "whoever uses or operates the product: a person, an AI or a third-party s
 shape: list
 file: actors.yml
 evidence: none          # who uses the product, not a claim
-layers: [product]
+layers: [product, software]   # a business actor in product, a technical one (a scheduler, CI, a program calling us) in software
+shared: true                  # an actor two areas use lives in <layer>/shared/actors.yml
 fields:
   says: {required: true}
   nature: {type: enum, of: [human, ai, program], required: true}

@@ -7,21 +7,21 @@ start: read-glossary
 steps:
   read-glossary:
     says: The agent reads the glossary and the kinds before it writes a sentence.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       read:
         label: Read the glossary
         then: search
   search:
     says: The agent searches live and removed entries before it proposes anything.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       searched:
         label: Search
         then: put
   put:
     says: The agent writes the records with ogy put.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       put:
         label: Put the records

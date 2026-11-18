@@ -78,7 +78,9 @@ def _asks(commands: Adder) -> None:
     _verb(commands, "work", "what is built against the entries and what is left", "Exit 1 when work is left. Takes an area.").add_argument(
         "area", nargs="?", help="only this area")
     _verb(commands, "glossary", "the constitution, then the terms of the product, with what they say",
-          "Agents read this first: every principle of the constitution, whole, then every term.")
+          "Agents read this first: every principle of the constitution, whole, then the shared terms of each layer, then the terms "
+          "of each area. For one area, its terms and the shared ones it reads.").add_argument(
+        "area", nargs="?", help="only this area, <layer>/<area>, with the shared terms of its layer (and, in software, of product)")
     kinds = _verb(commands, "kinds", "the kinds of the ontology, or one", "What each kind holds, links to and requires.")
     kinds.add_argument("kind", nargs="?", help="only this kind")
     kinds.add_argument("--readers", action="store_true", help="for each field, what reads it: the fingerprint, requires, flow, "
@@ -119,11 +121,13 @@ def _writes(commands: Adder) -> None:
                    "`check --base` tells it from a loss. One atomic write.")
     moving.add_argument("address", help=ADDRESS)
     moving.add_argument("area", help="the new area, or <layer>/<area> when the layer changes too (the kind must allow it)")
-    _verb(commands, "migrate", "rewrite the entries to the field renames and drops their kinds declare",
+    _verb(commands, "migrate", "rewrite the entries to the field renames, drops and folder moves their kinds declare",
           "A kind file keeps a renamed field's old name (`renamed: {old: new}`) and a dropped one (`dropped: [...]`); an entry that "
           "holds one is `needs-migration`. Renames every old name (in entries, list parts and `sets`) and keeps current the "
           "agreements and built lines it only renamed; removes dropped fields and prints each value removed, leaving that "
-          "entry's agreement so the owner sees the change. Records nothing. One atomic write.")
+          "entry's agreement so the owner sees the change. A kind that moved out of a fixed folder (`moved_from`) has its entries "
+          "and removed items there moved to the area shared of its first layer, every address renamed; `move` each to the area "
+          "that uses it. Records nothing. One atomic write.")
     answering = _verb(commands, "answer", "choose an option of a decision, with a short paraphrase of what the person said",
                       "ogy keeps no message and no quote: the answer is `chose`, `said` (one short line, your paraphrase of what the "
                       "person said, fitted to the decision), `from` (human, or ai with --delegated), `at` and `where`. It applies "

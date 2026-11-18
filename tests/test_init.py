@@ -22,7 +22,7 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
     code, lines = cli.run(["--repo", str(tmp_path), "init"])
     assert code == cli.OK and lines[0] == "ogy is set up for the software ontology in docs/kb/"
     assert read(tmp_path, "ogy.yml") == "ontology: software\n"
-    assert (tmp_path / "docs/kb/glossary/terms.yml").is_file() and read(tmp_path, "docs/kb/constitution/principles.yml") == "[]\n"
+    assert (tmp_path / "docs/kb/product/shared/area.yml").is_file() and read(tmp_path, "docs/kb/constitution/principles.yml") == "[]\n"
     agents = read(tmp_path, "AGENTS.md")
     assert agents.startswith(AGENTS.rstrip()) and "<!-- BEGIN OGY -->" in agents and "ogy glossary" in agents
     assert "prints the constitution" in agents
@@ -55,8 +55,10 @@ def test_init_is_idempotent_and_keeps_the_rest(tmp_path: Path) -> None:
 def test_the_folder_is_always_docs_kb_and_nothing_moves_it(tmp_path: Path) -> None:
     code, _ = cli.run(["--repo", str(tmp_path), "init", "--ontology", "software"])
     assert code == cli.OK and read(tmp_path, "ogy.yml") == "ontology: software\n"
-    assert (tmp_path / "docs/kb/glossary/terms.yml").is_file() and "Edit(/docs/kb/**/*.yml)" in read(tmp_path, ".claude/settings.json")
-    assert "`docs/kb/`: `constitution/`, `glossary/`, `product/<area>/` and `software/<area>/`,\nnothing" in read(tmp_path, "AGENTS.md")
+    assert (tmp_path / "docs/kb/product/shared/area.yml").is_file() and "Edit(/docs/kb/**/*.yml)" in read(tmp_path, ".claude/settings.json")
+    agents = read(tmp_path, "AGENTS.md")
+    assert "`docs/kb/`: `constitution/`, `product/<area>/` and `software/<area>/`, nothing else\nat its top." in agents
+    assert "Each layer has the area `shared`" in agents
     with pytest.raises(SystemExit):  # there is no --kb flag
         cli.run(["--repo", str(tmp_path), "init", "--kb", "other"])
     (tmp_path / "ogy.yml").write_text("ontology: software\nkb: other\n")  # and no `kb:` setting

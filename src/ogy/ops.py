@@ -181,9 +181,13 @@ def run_dropped(target: Target) -> Run[Dropped]:
     return Run(dropped(snapshot, list(_ledger(source).values())), source.reads)
 
 
-def run_glossary(target: Target) -> Run[list[str]]:
+def run_glossary(target: Target, home: str | None = None) -> Run[list[str]]:
+    """The constitution, then the terms: every one, or those of one area (`<layer>/<area>`) and of the shared areas it reads."""
     source, snapshot = target.read()
-    return Run(printed_lines(snapshot), source.reads)
+    homes = {address.home for address in snapshot.entries if address.layer}
+    if home is not None and home not in homes:
+        raise NotFound(f"no area {home} (give <layer>/<area>)" + near.hint(home, homes))
+    return Run(printed_lines(snapshot, home), source.reads)
 
 
 def run_find(target: Target, words: list[str], kind: str | None = None, area: str | None = None, state: str | None = None,

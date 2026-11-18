@@ -175,7 +175,9 @@ class Kind(BaseModel):
     about: str
     shape: Shape
     layers: tuple[str, ...] = ()  # the layer folders this kind may appear in (the folder is the layer's only home)
-    area: str | None = None  # entries live only in this area
+    area: str | None = None  # entries live only in this fixed folder (the constitution), outside every layer
+    shared: bool = False  # may live in the reserved area `shared` of a layer: what two areas use (a term, an actor, a set)
+    moved_from: str | None = None  # `<folder>/<file>`: the fixed-folder file it was kept in; `ogy migrate` moves it to `shared`
     file: str | None = None  # a list or single kind's file name inside every area
     every_area: bool = False  # every area of the kind's layers holds an entry of it; an area without one is `missing-entry`
     needs_proof: bool = False  # entries count as work until built
@@ -208,6 +210,13 @@ class Kind(BaseModel):
         return {**dict.fromkeys(self.dropped), **self.renamed}
 
     @property
+    def moved(self) -> tuple[str, str] | None:
+        """(the fixed folder the entries were kept in, the home `ogy migrate` moves them to: the first layer's `shared`)."""
+        if self.moved_from is None or not self.layers:
+            return None
+        return self.moved_from.split("/", 1)[0], f"{self.layers[0]}/{SHARED_AREA}"
+
+    @property
     def holding(self) -> Holds:
         return self.holds or Holds.MAP
 
@@ -232,6 +241,7 @@ class Kind(BaseModel):
 NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")  # an area, an id, a local key
 KIND_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 RESERVED_AREAS = (KINDS_DIR, "built")
+SHARED_AREA = "shared"  # the area of every layer that holds what two of its areas use; only `shared` kinds live there
 ONTOLOGY_FILE = "ontology.yml"  # beside `kinds/`: the layers every entry lives under
 
 # Fields every entry may carry, all outside the fingerprint. `src` says where a sentence came from; `agreed` is the person's

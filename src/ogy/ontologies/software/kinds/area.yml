@@ -6,6 +6,7 @@ every_area: true        # an area folder without its area.yml is `missing-entry`
 evidence: none          # it describes a folder from what the folder holds; it is no claim about the product
 asked: false            # never a review card, never agreed
 layers: [product, software]
+shared: true            # the area `shared` holds its own area.yml too
 fields:
   says: {required: true}                             # one sentence: what the area covers
   distinct: {type: texts}                            # what belongs in a neighbouring area, not here

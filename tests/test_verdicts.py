@@ -82,6 +82,6 @@ def test_a_base_without_a_knowledge_base_has_nothing_to_compare(repo: Path) -> N
     (repo / "docs/kb").rename(repo / "kept")
     base = commit(repo, "without a knowledge base")
     (repo / "kept").rename(repo / "docs/kb")
-    (repo / "docs/kb/glossary").mkdir(exist_ok=True)
-    (repo / "docs/kb/glossary/removed.yml").write_text("format: 1\nitems: []\n")
+    (repo / "docs/kb/constitution").mkdir(exist_ok=True)
+    (repo / "docs/kb/constitution/removed.yml").write_text("format: 1\nitems: []\n")
     assert ogy(repo, "--rev", ".", "check", "--base", base)[0] == cli.OK

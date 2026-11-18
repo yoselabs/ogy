@@ -7,7 +7,7 @@ start: run
 steps:
   run:
     says: The agent runs ogy check, CI runs ogy --rev HEAD check, and --landing is added before a land.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       run:
         label: Check

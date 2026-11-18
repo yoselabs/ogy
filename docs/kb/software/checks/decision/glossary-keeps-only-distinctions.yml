@@ -5,32 +5,32 @@ options:
   distinctions:
     label: Only distinct words; plain ones leave
     sets:
-      glossary/term/option:
-      glossary/term/agent:
-      glossary/term/skill:
-      glossary/term/ogy:
-      glossary/term/knowledge-base:
-      glossary/term/capture:
-      glossary/term/card:
-      glossary/term/glossary:
+      product/shared/term/option:
+      product/shared/term/agent:
+      product/shared/term/skill:
+      product/shared/term/ogy:
+      product/shared/term/knowledge-base:
+      product/shared/term/capture:
+      product/shared/term/card:
+      product/shared/term/glossary:
   all:
     label: Keep all 38
     sets:
-      glossary/term/option:
+      product/shared/term/option:
         word: option
-      glossary/term/agent:
+      product/shared/term/agent:
         word: agent
-      glossary/term/skill:
+      product/shared/term/skill:
         word: skill
-      glossary/term/ogy:
+      product/shared/term/ogy:
         word: ogy
-      glossary/term/knowledge-base:
+      product/shared/term/knowledge-base:
         word: knowledge base
-      glossary/term/capture:
+      product/shared/term/capture:
         word: capture
-      glossary/term/card:
+      product/shared/term/card:
         word: card
-      glossary/term/glossary:
+      product/shared/term/glossary:
         word: glossary
 guess:
   chose: distinctions

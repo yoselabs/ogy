@@ -64,8 +64,9 @@ def restore(target: Target, before: Mapping[str, str]) -> None:
             atomic_write_text(base / rel, text)
 
 
-def _key(finding: Finding) -> tuple[str, str, str, str]:
-    return str(finding.problem), finding.path, str(finding.address or ""), finding.detail
+def _key(finding: Finding, rename: Callable[[str], str] = str) -> tuple[str, str, str]:
+    """A finding at an entry is the same finding wherever its file is; `rename` gives a moved entry its new address."""
+    return str(finding.problem), rename(str(finding.address)) if finding.address else finding.path, finding.detail
 
 
 def _area(rel: str) -> str:
@@ -73,11 +74,13 @@ def _area(rel: str) -> str:
     return "/".join(rel.split("/")[:2])
 
 
-def commit(target: Target, touched: Callable[[Snapshot], list[Address]], act: Callable[[Editor], object]) -> list[str]:
+def commit(target: Target, touched: Callable[[Snapshot], list[Address]], act: Callable[[Editor], object],
+           moved: Callable[[str], str] = str) -> list[str]:
     """Run `act` on the worktree (the lock is held). A finding that is new and concerns the files changed, their areas, or the
-    entries `touched` names (with the decisions that settle them), puts everything back and refuses. Returns the files changed."""
+    entries `touched` names (with the decisions that settle them), puts everything back and refuses; a finding an entry had
+    before it moved (`moved` gives the new address) is not new. Returns the files changed."""
     editor = Editor(target.repo, target.kb, target.kinds())
-    before, known = files(target), {_key(item) for item in worktree_findings(target)}
+    before, known = files(target), {_key(item, moved) for item in worktree_findings(target)}
     try:
         act(editor)
         after = files(target)

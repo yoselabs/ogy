@@ -1,19 +1,21 @@
 """Where files live, as the ontology declares it: `<layer>/<area>/<kind>/<id>.yml` (a list or single kind: `<layer>/<area>/<file>`), a fixed
-folder for a kind that names one (`glossary/<file>`), a home's `removed.yml`, and the `built/` record. Every file under the
-knowledge base is one of these; any other is `bad-path`, and no level can be skipped."""
+folder for a kind that names one (`constitution/<file>`), a home's `removed.yml`, and the `built/` record. Every file under the
+knowledge base is one of these; any other is `bad-path`, and no level can be skipped. The reserved area `shared` of a layer holds
+only the kinds marked `shared`. A kind that moved out of a fixed folder (`moved_from`) is read there until `ogy migrate` moves it."""
 
 from collections.abc import Mapping
 from dataclasses import dataclass
 
 import any_yaml
 
-from ogy.kinds import FILED, NAME, Holds, Kind, Shape
+from ogy.kinds import FILED, NAME, SHARED_AREA, Holds, Kind, Shape
 from ogy.model import Address, Entry, Finding, Problem
 from ogy.ontology import Ontology
 
 SUFFIX = ".yml"
 BUILT_DIR = "built"  # the tool-written built record: read by its owner, never by this reader
 REMOVED_FILE = "removed.yml"  # a home's removed ledger: a core file, not an entry file
+SHARED_SAYS = "What two or more areas of this layer use: their shared terms, actors and sets."  # the `shared` area's own entry
 
 
 @dataclass(frozen=True)
@@ -66,14 +68,25 @@ def locate(ontology: Ontology, rel: str) -> Place | str | None:
     layer, area, tail = home
     if tail == [REMOVED_FILE]:
         return None
+    if not layer and (moved := ontology.moved_kind(rel)) is not None:
+        return Place(layer, area, moved, None)  # `needs-migration` until `ogy migrate` moves it into the layers
     found = _kind_at(ontology, tail) if rel.endswith(SUFFIX) else f"only {SUFFIX} entry files live here: <layer>/<area>/<kind>/<id>.yml"
     if isinstance(found, str):
         return found
     kind, ident = found
-    ident = area if kind.shape is Shape.SINGLE else ident
+    wrong = _misplaced(ontology, kind, layer, area)
+    return wrong or Place(layer, area, kind, area if kind.shape is Shape.SINGLE else ident)
+
+
+def _misplaced(ontology: Ontology, kind: Kind, layer: str, area: str) -> str | None:
+    """Why `kind` may not live in this folder: a fixed folder's kind elsewhere, a layered kind in a fixed folder, or a kind not
+    marked `shared` in the area `shared`."""
     if (kind.area or "") != (area if not layer else ""):
         return f"{kind.kind} lives only in the folder {kind.area}" if kind.area else f"{kind.kind} lives under a layer, not in {area}/"
-    return Place(layer, area, kind, ident)
+    if area == SHARED_AREA and layer and not kind.shared:
+        allowed = ", ".join(sorted(name for name, other in ontology.kinds.items() if other.shared))
+        return f"the area {SHARED_AREA} holds only what two areas use ({allowed}); {kind.kind} lives in the area that owns it"
+    return None
 
 
 def path_for(kind: Kind, home: str, ident: str) -> str:

@@ -5,17 +5,17 @@ options:
   with-layer:
     label: <layer>/<area>/<kind>/<id>; a term is glossary/term/<id>
     sets:
-      glossary/term/address:
+      product/shared/term/address:
         says: 'The path that names an entry: <layer>/<area>/<kind>/<id>, as in product/review/workflow/review-and-reply; a part continues it with its own kind and key (.../step/apply); a term is glossary/term/<id>, with no layer.'
   area-first:
     label: 'Keep: area/kind/id'
     sets:
-      glossary/term/address:
+      product/shared/term/address:
         says: 'The path that names an entry: area/kind/id; a part continues it with its own kind and key, as in ogy/decision/x/option/y.'
   fable-wording:
     label: The name of an entry, <layer>/<area>/<kind>/<id>; a part adds its kind and key; a term has no layer or area
     sets:
-      glossary/term/address:
+      product/shared/term/address:
         says: 'The name of an entry: <layer>/<area>/<kind>/<id>; a part adds its own kind and key; a term is glossary/term/<id>, with no layer or area.'
 guess:
   chose: fable-wording

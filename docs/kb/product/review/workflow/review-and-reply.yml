@@ -7,14 +7,14 @@ start: show
 steps:
   show:
     says: The agent runs ogy review; the round is saved and its id printed.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       shown:
         label: Show the round
         then: reply
   reply:
     says: The owner replies in the reply grammar, or in natural words that the agent stores once and reads as one of its items.
-    actor: product/people/actor/owner
+    actor: product/shared/actor/owner
     choices:
       replied:
         label: Reply

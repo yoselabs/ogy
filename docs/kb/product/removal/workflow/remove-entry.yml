@@ -7,7 +7,7 @@ start: ask
 steps:
   ask:
     says: The agent runs ogy remove <address> --why <reason>.
-    actor: product/people/actor/agent
+    actor: product/shared/actor/agent
     choices:
       remove:
         label: Remove

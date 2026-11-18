@@ -49,8 +49,17 @@ class Ontology:
         return next((kind for kind in self.kinds.values() if kind.shape in FILED and kind.file == file), None)
 
     def fixed_folders(self) -> frozenset[str]:
-        """The top folders that hold no layer and no area: a kind keeps all its entries in one (the glossary)."""
-        return frozenset(kind.area for kind in self.kinds.values() if kind.area)
+        """The top folders that hold no layer and no area: a kind keeps all its entries in one (the constitution), or kept them
+        there before they moved into the layers (`moved_from`, until `ogy migrate`)."""
+        return frozenset({kind.area for kind in self.kinds.values() if kind.area} | set(self.moved_homes()))
+
+    def moved_homes(self) -> dict[str, str]:
+        """Each fixed folder a kind moved out of -> the home `ogy migrate` moves its entries and its removed ledger to."""
+        return dict(kind.moved for kind in self.kinds.values() if kind.moved)
+
+    def moved_kind(self, rel: str) -> Kind | None:
+        """The kind whose entries the fixed-folder file `rel` held before they moved into the layers."""
+        return next((kind for kind in self.kinds.values() if kind.moved_from == rel), None)
 
     def settling_kind(self) -> Kind | None:
         return next((kind for kind in self.kinds.values() if kind.settling is not None), None)

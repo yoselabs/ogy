@@ -5,17 +5,17 @@ options:
   topic-folder:
     label: The folder under a layer that groups entries by topic
     sets:
-      glossary/term/area:
+      product/shared/term/area:
         says: The folder under a layer that groups entries by topic, such as product/review or software/cli; it is named after a topic, never after the product.
   keep:
     label: 'Keep: one path segment, such as glossary or ogy'
     sets:
-      glossary/term/area:
+      product/shared/term/area:
         says: One path segment of an address that groups entries into one folder of the knowledge base, such as glossary or ogy.
   fable-wording:
     label: The folder under a layer that groups entries by topic, never named after the product
     sets:
-      glossary/term/area:
+      product/shared/term/area:
         says: The folder under a layer that groups entries by topic; named after a topic, never the product. The same name under both layers is two areas.
 guess:
   chose: fable-wording

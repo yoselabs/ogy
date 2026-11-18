@@ -58,7 +58,7 @@ def test_reserved_files_are_not_entry_files(kb: Make) -> None:
 
 def test_kind_fixed_to_one_area(kb: Make) -> None:
     terms = "- {id: land, word: land, says: To finish.}\n"
-    assert kb({"glossary/terms.yml": terms}).findings(landing=True) == {(Problem.TERM_NOT_AGREED, "glossary/term/land")}
+    assert kb({"product/shared/glossary.yml": terms}).findings(landing=True) == {(Problem.TERM_NOT_AGREED, "product/shared/term/land")}
     assert (Problem.BAD_PATH, "product/app/terms.yml") in kb({"product/app/terms.yml": terms}).findings()
 
 
@@ -155,6 +155,6 @@ def test_an_area_entry_is_its_area_yml_and_its_id_is_the_folder(kb: Make, ontolo
 
 def test_an_area_folder_without_its_area_yml_is_missing_entry_and_a_fixed_folder_is_no_area(kb: Make) -> None:
     found = kb({"product/app/area.yml": None, "software/loans/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
-                "glossary/terms.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings()
+                "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings()
     assert {item for item in found if item[0] is Problem.MISSING_ENTRY} == {
         (Problem.MISSING_ENTRY, "product/app/area/app"), (Problem.MISSING_ENTRY, "software/loans/area/loans")}
