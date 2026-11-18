@@ -1,4 +1,4 @@
-says: The glossary is YAML only, a glossary.yml in each area and at each layer root; no glossary document is generated or kept.
+says: The glossary is YAML only; no glossary document is generated or kept.
 agreed:
   at: '2026-11-17T18:42:12.251+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6512

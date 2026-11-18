@@ -36,7 +36,7 @@ steps:
 ends:
   set-up:
     result: success
-    says: ogy.yml, docs/kb/glossary/terms.yml, the ogy block in AGENTS.md (and CLAUDE.md), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
+    says: ogy.yml, the shared areas, the ogy block in AGENTS.md (and CLAUDE.md), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
   reported:
     result: success
     says: The person reads what is missing.

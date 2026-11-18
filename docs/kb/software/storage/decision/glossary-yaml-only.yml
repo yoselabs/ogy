@@ -16,6 +16,11 @@ options:
     sets:
       software/storage/rule/glossary-is-yaml-only:
         says: The glossary is YAML only, a glossary.yml in each area and at each layer root; no glossary document is generated or kept.
+  yaml:
+    label: YAML only; where the files live is the layout's
+    sets:
+      software/storage/rule/glossary-is-yaml-only:
+        says: The glossary is YAML only; no glossary document is generated or kept.
 guess:
   chose: yaml-per-area
   why: The files mirror the areas, so reading the folder reads the same model.
@@ -32,3 +37,9 @@ answers:
   from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: yaml
+  said: 'Fable: the rule names no stale glossary home'
+  from: ai
+  at: '2026-11-19T00:27:45+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/review-delegation

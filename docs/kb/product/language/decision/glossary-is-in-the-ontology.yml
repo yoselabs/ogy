@@ -16,6 +16,11 @@ options:
     sets:
       product/language/rule/glossary-is-an-ontology-kind:
         says: The glossary is the term kind of the ontology, a list per area and one per layer root for shared terms; the owner must agree to each term.
+  term-kind:
+    label: The term kind of the ontology, agreed term by term; where the terms live is the layout's
+    sets:
+      product/language/rule/glossary-is-an-ontology-kind:
+        says: The glossary is the term kind of the ontology; the owner must agree to each term.
 guess:
   chose: kind-per-area
   why: The glossary stays a kind of the ontology; only its home changes to one per area.
@@ -32,3 +37,9 @@ answers:
   from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: term-kind
+  said: 'Fable: the rule names no stale glossary home'
+  from: ai
+  at: '2026-11-19T00:27:43+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/review-delegation

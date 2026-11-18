@@ -18,6 +18,11 @@ options:
     sets:
       software/ontology/rule/constitution-is-one-folder:
         says: A third layer holds the constitution in areas, beside product/ and software/.
+  one-folder-alone:
+    label: One fixed folder constitution/, kind principle, no tags; agent operating rules stay in AGENTS.md
+    sets:
+      software/ontology/rule/constitution-is-one-folder:
+        says: 'The constitution is one fixed folder, constitution/: entries of the kind principle at constitution/principle/<id>, agreed only by the owner, cited by decisions as their reason and printed whole to every agent. It has no tags or sub-lists; agent operating rules (worktrees, gates, caps) stay in AGENTS.md, skills and linters.'
 guess:
   chose: one-folder
   why: In the simulation about half the principles bind both layers; a split per layer duplicates them and agents in one layer miss the other's. One short list keeps one address per principle.
@@ -28,3 +33,9 @@ answers:
   from: human
   at: '2026-11-18T16:59:17+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: one-folder-alone
+  said: 'Fable: drop beside glossary/, the folder is gone'
+  from: ai
+  at: '2026-11-19T00:27:48+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/review-delegation
