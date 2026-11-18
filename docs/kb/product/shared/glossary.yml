@@ -276,3 +276,6 @@
     from: human
     said: Tentative yes to the glossary page
     hash: 3efac8d876ca
+- id: review-card
+  word: card
+  says: 'One numbered item of a review round: a question or a sentence to agree.'

@@ -19,8 +19,8 @@ options:
       software/storage/rule/areas-by-topic:
         says: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, language, ontology, people. software: cli, mcp, writes, storage, checks, setup, ontology, packaging. No area is named after the product."
 guess:
-  chose: by-topic-extended
-  why: The owner chose this on 2026-11-18; the guess follows the answer.
+  chose: by-topic
+  why: Each area then matches one workflow or one part of the code, so review --from code pages one topic at a time; two wide areas would only rename ogy.
 answers:
 - chose: by-topic-extended
   said: Yes, record the topic areas
