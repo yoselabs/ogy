@@ -1,4 +1,4 @@
-"""The glossary checks T1-T5 and the terminal listing."""
+"""The glossary checks T1-T6 and the terminal listing."""
 
 from collections.abc import Callable
 
@@ -66,3 +66,16 @@ def test_glossary_lines_print_the_shared_terms_then_each_area() -> None:
                        "software/shared/glossary.yml": "- {id: y, word: Y, says: A run.}\n"})
     assert glossary_lines(kb) == ["product/shared:", "  land: To finish a delivery.", "    avoid: merge; check run",
                                   "software/shared:", "  Y: A run.", "software/app:", "  X: The commit."]
+
+
+def test_a_decision_may_not_give_the_words_of_an_agreed_term() -> None:
+    def kb(sets: str, agreed: bool = True) -> Snapshot:
+        stamp = "{at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1', from: human, said: Yes, hash: 'aaaaaaaaaaaa'}"
+        term = f"- {{id: land, word: land, says: To finish.{', agreed: ' + stamp if agreed else ''}}}\n"
+        decision = f"question: Q?\noptions:\n  a: {{label: A, sets: {{{sets}}}}}\nguess: {{chose: a, why: x}}\n"
+        return snap(term, **{"product/app/decision/q.yml": decision})
+    reworded = "product/shared/term/land: {says: To end.}"
+    assert (Problem.AGREED_TERM_IN_SETS, "product/app/decision/q") in problems(kb(reworded))
+    assert not {p for p, _ in problems(kb("product/shared/term/land: null"))} & {Problem.AGREED_TERM_IN_SETS}
+    assert not {p for p, _ in problems(kb(reworded, agreed=False))} & {Problem.AGREED_TERM_IN_SETS}  # a new word may be proposed
+    assert (Problem.AGREED_TERM_IN_SETS, "product/app/decision/q") in problems(kb("product/shared/term/land: {avoid: [end]}"))

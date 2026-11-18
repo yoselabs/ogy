@@ -131,6 +131,7 @@ class Problem(StrEnum):
     TERM_TOO_LONG = "term-too-long"
     TERM_NOT_AGREED = "term-not-agreed"
     PROPOSED_TERM = "proposed-term"
+    AGREED_TERM_IN_SETS = "agreed-term-in-sets"
     EDITED_APPEND_ONLY = "edited-append-only"
     REMOVED_UNRECORDED = "removed-unrecorded"
     ID_REUSED = "id-reused"

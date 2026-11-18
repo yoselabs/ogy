@@ -1,5 +1,5 @@
 """The glossary: the terms of every area's `glossary.yml`, the shared ones in the area `shared` of a layer. T1-T3 are pure data
-checks, T4 and T5 take what another module computed, `glossary_lines` prints it.
+checks, T4 and T5 take what another module computed, T6 reads the decisions, `glossary_lines` prints it.
 
 `check_term_agreement` computes T4 and T5 from the agreement and status of each term.
 """
@@ -9,9 +9,10 @@ from collections.abc import Callable, Collection, Iterator, Mapping
 
 from ogy.kinds import SHARED_AREA
 from ogy.model import Address, Entry, Finding, Problem, link_values
+from ogy.settle import decisions
 from ogy.snapshot import Snapshot
 from ogy.source import Source
-from ogy.status import Agreement, Status, agreement, status
+from ogy.status import Agreement, Status, agreed_hashes, agreement, status
 
 TERM = "term"
 TERM_WORDS = 15  # a term's `says` has fewer words than this
@@ -94,7 +95,22 @@ def check_terms(snapshot: Snapshot, source: Source | None = None) -> list[Findin
     """T1, T2 and T3."""
     entries = terms(snapshot)
     found = [problem for entry in entries for problem in _compressed(entry)]
-    return [*found, *_clashes(entries), *_avoided(snapshot, entries)]
+    return [*found, *_clashes(entries), *_avoided(snapshot, entries), *check_term_sets(snapshot)]
+
+
+def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
+    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or guess
+    gives it fields: its words have one home, the term and its agreement."""
+    agreed = agreed_hashes(snapshot)
+    found: list[Finding] = []
+    for decision in decisions(snapshot):
+        for sets in decision.sets_all():
+            for text, given in sets.items():
+                address = snapshot.resolve(text)
+                if address is not None and address.kind == TERM and text in agreed and given is not None:
+                    found.append(Finding(Problem.AGREED_TERM_IN_SETS, decision.entry.path,
+                                         f"{text} is agreed: a decision may only set it to null", decision.address))
+    return found
 
 
 def terms_not_agreed(snapshot: Snapshot, agreed: Callable[[Address], bool] | Collection[Address]) -> list[Finding]:

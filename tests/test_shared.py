@@ -15,7 +15,7 @@ from ogy.target import Target
 type Make = Callable[[dict[str, str | None] | None], Kb]
 KB = "docs/kb"
 TERMS = "- {id: fee, word: fee, says: What a loan costs.}\n- {id: old, word: old fee, says: What a loan cost before.}\n"
-NAMES = "question: Name the fee?\noptions:\n  keep: {label: Keep it, sets: {glossary/term/fee: {says: What a loan costs.}}}\n"
+NAMES = "question: Drop the old word?\noptions:\n  drop: {label: Drop it, sets: {glossary/term/old: null}}\n"
 
 
 def w(repo: Path, *argv: str) -> tuple[int, list[str]]:
@@ -28,8 +28,8 @@ def old_glossary(repo: Path) -> str:
     (repo / KB / "glossary/terms.yml").write_text(TERMS)
     (repo / KB / "product/app/decision").mkdir(parents=True)
     (repo / KB / "product/app/decision/names.yml").write_text(NAMES)
-    assert w(repo, "answer", "product/app/decision/names", "keep", "--said", "Keep", "--where", "ai:claude/1")[0] == 0
     assert w(repo, "remove", "glossary/term/old", "--why", "product/app/decision/names")[0] == 0
+    assert w(repo, "answer", "product/app/decision/names", "drop", "--said", "Drop it", "--where", "ai:claude/1")[0] == 0
     writes.agree(Target(repo), writes.said("Yes", "ai:claude/1", None), ["glossary/term/fee"])
     return commit(repo, "the old layout")
 
@@ -44,7 +44,7 @@ def test_migrate_moves_the_glossary_folder_to_the_shared_area(repo: Path) -> Non
     assert lines[0] == "moved glossary/term/fee to product/shared/term/fee: `ogy move` it to the area that uses it"
     assert not (repo / KB / "glossary").exists() and (repo / KB / "product/shared/area.yml").is_file()
     assert "id: product/shared/term/old" in (repo / KB / "product/shared/removed.yml").read_text()
-    assert "product/shared/term/fee:" in (repo / KB / "product/app/decision/names.yml").read_text()
+    assert "product/shared/term/old:" in (repo / KB / "product/app/decision/names.yml").read_text()
     snapshot = target.read()[1]
     fee = snapshot.resolve("product/shared/term/fee")
     assert fee is not None and agreement(snapshot, fee) is Agreement.AGREED
