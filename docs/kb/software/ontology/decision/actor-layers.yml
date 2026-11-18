@@ -1,0 +1,27 @@
+question: Where do business actors and technical actors (a scheduler, CI, a system calling us) live?
+structure: true
+options:
+  by-layer:
+    label: Business actors in the product layer, technical actors in the software layer; no new field
+    sets:
+      software/ontology/rule/actors-split-by-layer:
+        says: Business actors live in the product layer and technical actors (a scheduler, CI, a system calling us) in the software layer; no field marks the difference.
+      constitution/principle/layers-split-business-from-technical:
+        says: The product layer holds what the business decides, the software layer how it is built; every entry belongs to one.
+  by-field:
+    label: One layer, and a field on the actor marks it business or technical
+    sets:
+      software/ontology/rule/actors-split-by-layer:
+        says: Actors live in one layer and a field on the actor marks it business or technical.
+      constitution/principle/layers-split-business-from-technical:
+guess:
+  chose: by-layer
+  why: The layers already separate what the business decides from how it is built; a field would repeat that.
+  heard:
+    said: Split business and technical actors by layer.
+answers:
+- chose: by-layer
+  said: Split business and technical actors by layer.
+  from: human
+  at: '2026-11-18T21:04:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

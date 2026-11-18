@@ -1,0 +1,25 @@
+question: May a repository define its own kinds in its ontology?
+structure: true
+options:
+  not-now:
+    label: No custom kinds for now; perhaps later
+    sets:
+      software/ontology/rule/no-repository-kinds:
+        says: A repository cannot define its own kinds; it uses the kinds of the ontology it names. Perhaps later.
+  repo-kinds:
+    label: A repository extends the ontology with its own kinds
+    sets:
+      software/ontology/rule/no-repository-kinds:
+        says: A repository may extend the ontology it names with its own kinds declared in YAML.
+guess:
+  chose: not-now
+  why: One shipped set of kinds keeps every kb readable the same way until a real need appears.
+  heard:
+    said: No custom kinds for now; later yes.
+answers:
+- chose: not-now
+  said: No custom kinds for now; later yes.
+  from: human
+  at: '2026-11-18T21:05:01+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  note: later, perhaps yes

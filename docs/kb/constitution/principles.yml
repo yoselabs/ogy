@@ -14,3 +14,5 @@
     from: human
     said: Yes to all four
     hash: d4a70ec388eb
+- id: layers-split-business-from-technical
+  says: The product layer holds what the business decides, the software layer how it is built; every entry belongs to one.

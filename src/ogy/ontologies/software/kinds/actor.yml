@@ -1,5 +1,5 @@
 kind: actor
-about: "who uses the product, a person or an AI; human: a librarian at the desk; ai: a model that implements a task"
+about: "whoever uses or operates the product: a person, an AI or a third-party system that invokes a workflow; human: a librarian at the desk; ai: a model that implements a task"
 shape: list
 file: actors.yml
 evidence: none          # who uses the product, not a claim

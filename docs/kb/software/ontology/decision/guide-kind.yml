@@ -1,0 +1,24 @@
+question: An SOP or runbook is a workflow whose steps an operator actor performs. What serves such a step, and how is it proved built?
+structure: true
+options:
+  rendered:
+    label: A guide, rendered deterministically from the workflows it serves by a separate tool or extension
+    sets:
+      software/ontology/rule/guide-is-rendered:
+        says: A guide (a software-layer kind, not yet built) is an output, a skill file or a Markdown runbook, rendered deterministically from the workflows it serves; it is built when the file equals the render and has work left when a linked part changes; the renderer is a separate tool or an extension, not core ogy.
+  hand-written:
+    label: A hand-written guide, proved by a recorded run
+    sets:
+      software/ontology/rule/guide-is-rendered:
+        says: A guide is written by hand and proved built by a recorded run of the workflow it serves.
+guess:
+  chose: rendered
+  why: A render keeps the guide equal to the workflow and makes its work left computable; a recorded run proves one moment only.
+  heard:
+    said: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.
+answers:
+- chose: rendered
+  said: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.
+  from: human
+  at: '2026-11-18T21:04:56+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

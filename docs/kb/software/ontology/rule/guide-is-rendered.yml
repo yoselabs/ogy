@@ -1,0 +1,1 @@
+says: A guide (a software-layer kind, not yet built) is an output, a skill file or a Markdown runbook, rendered deterministically from the workflows it serves; it is built when the file equals the render and has work left when a linked part changes; the renderer is a separate tool or an extension, not core ogy.

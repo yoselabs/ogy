@@ -501,10 +501,11 @@
     hash: e603ca37fe4b
 - id: actor
   word: actor
-  says: 'Who uses the product: a person (nature human) or an AI model (nature ai); an entry of the kind actor.'
+  says: 'Whoever uses or operates the product: a person (nature human), an AI model (nature ai) or a third-party system that invokes a workflow; an entry of the kind actor.'
   group: ontology
   because:
   - software/ontology/rule/one-actor-kind
+  - software/ontology/rule/who-is-an-actor
   distinct:
   - a message, which is what an actor said
   - the actor of a step, which names an actor or an external
