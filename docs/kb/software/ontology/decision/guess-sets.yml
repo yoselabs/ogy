@@ -1,0 +1,23 @@
+title: A guess gives its values with sets
+structure: true
+question: A guess with no option gives its values with `value`, an option gives the same shape with `sets`. Is the guess's field renamed to `sets`?
+options:
+  sets:
+    label: Rename guess.value to sets
+    sets:
+      software/ontology/rule/guess-sets:
+        says: A guess that chooses no option gives its values with `sets`, the same field and shape an option uses; a guess has no `value`.
+  keep-value:
+    label: Keep guess.value
+    sets:
+      software/ontology/rule/guess-sets:
+guess:
+  chose: sets
+  why: One shape, one name; `value` also names a kind.
+answers:
+- chose: sets
+  said: Rename guess.value to sets.
+  from: ai
+  at: '2026-11-18T23:22:42+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/structural-delegation

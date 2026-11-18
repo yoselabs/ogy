@@ -1,0 +1,28 @@
+title: A third-party system is an actor of nature program
+structure: true
+question: A step's actor may link to an actor or an external, so `mcp-clients` is an external that acts. What is a third-party system that invokes a workflow, and what may a step's actor link to?
+options:
+  program:
+    label: Actor nature [human, ai, program]; step.actor links only to actors; an external stays what the product depends on
+    sets:
+      software/ontology/rule/actor-program:
+        says: An actor's nature is human, ai or program; a third-party system that invokes a workflow is an actor of nature program; a step's actor links only to an actor; an external is only what the product depends on; a step with no actor is a system step.
+  system:
+    label: Actor nature [human, ai, system]; step.actor links only to actors
+    sets:
+      software/ontology/rule/actor-program:
+        says: An actor's nature is human, ai or system; a step's actor links only to an actor.
+  keep-external:
+    label: A step's actor may stay an external
+    sets:
+      software/ontology/rule/actor-program:
+guess:
+  chose: program
+  why: A system step already means a step with no actor, so the nature `system` would read as two things; one link target per field keeps step.actor checked.
+answers:
+- chose: program
+  said: step.actor links only to actors; new nature program, because 'system step' already means no actor; mcp-clients becomes an actor.
+  from: ai
+  at: '2026-11-18T23:22:34+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/structural-delegation

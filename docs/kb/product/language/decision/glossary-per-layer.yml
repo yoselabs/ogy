@@ -21,6 +21,11 @@ options:
     sets:
       product/language/rule/glossary-homes:
         says: Each area has its own glossary.yml. A term stays in the area that owns it; another area that uses it borrows it by reference.
+  per-area-shared:
+    label: A glossary.yml per area; a term a second area uses moves to the reserved area `shared` of its layer
+    sets:
+      product/language/rule/glossary-homes:
+        says: Each area has its own glossary.yml. A term that a second area uses moves to the glossary.yml of its layer's reserved area `shared` (product/shared/glossary.yml) and leaves its area; a term lives in one place only.
 guess:
   chose: per-area
   why: An agent working on one area loads only that area's words and the shared ones; one home per term keeps 'is this word taken' a single lookup.
@@ -38,4 +43,10 @@ answers:
   from: human
   at: '2026-11-18T19:37:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: per-area-shared
+  said: Reserved shared area per layer; no area-less addresses.
+  from: ai
+  at: '2026-11-18T23:22:38+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/structural-delegation
 structure: true

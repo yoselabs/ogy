@@ -1,1 +1,1 @@
-says: Each area has its own glossary.yml. A term that a second area uses moves to the glossary.yml at its layer's root and leaves its area; a term lives in one place only.
+says: Each area has its own glossary.yml. A term that a second area uses moves to the glossary.yml of its layer's reserved area `shared` (product/shared/glossary.yml) and leaves its area; a term lives in one place only.
