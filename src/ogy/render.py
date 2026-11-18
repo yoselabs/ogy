@@ -46,7 +46,7 @@ def render_impact(found: Impact) -> list[str]:
 
 
 def render_work(found: list[Work]) -> list[str]:
-    return [f"{item.status}: {item.address} (now {item.fingerprint or '-'}, built {item.built or '-'})"
+    return [f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})"
             + (f" {item.note}" if item.note else "") for item in found] or ["no work left"]
 
 
@@ -84,7 +84,7 @@ def _said(found: Shown) -> list[str]:
 def _built(found: Shown) -> str:
     if found.built is None:
         return f"built ({found.built_file}): no line"
-    state = "= now" if found.built.own == found.fingerprint else f"!= now {found.fingerprint}"
+    state = "= now" if found.built.own == found.build_hash else f"!= now {found.build_hash}"
     left = ", ".join(f"{item.status} {item.note}".strip() for item in found.work) or "none"
     return f"built ({found.built_file}): own {found.built.own} {state}; covers {', '.join(found.built.covers) or '-'}; work left: {left}"
 

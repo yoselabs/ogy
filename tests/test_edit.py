@@ -86,9 +86,11 @@ def test_fingerprint_follows_fields_that_are_not_notes(editor: Editor, ontology:
     assert editor.snapshot().fingerprint(fee) == before
     editor.update(fee, {"is": 5})
     assert editor.snapshot().fingerprint(fee) != before
+    meaning = editor.snapshot().fingerprint(fee)
     editor.update(fee, {"proof": ["tests/test_fee.py::test_fee"]})
     snapshot = editor.snapshot()
-    assert snapshot.fingerprint(fee) != snapshot.fingerprint(fee, proofs=False)
+    assert snapshot.fingerprint(fee) == meaning  # a new proof never sends the entry back to the owner
+    assert snapshot.build_hash(fee) != snapshot.build_hash(fee, proofs=False)  # but it is work for the built record
 
 
 def test_a_parent_fingerprint_follows_its_unkeyed_parts_and_declared_paths(editor: Editor) -> None:
@@ -109,9 +111,10 @@ def test_a_rule_holder_stales_nothing_and_a_pin_makes_the_rule_suspect(editor: E
     editor.update(FLOW, {"by": [str(rule)]})  # a workflow held to it: neither changes
     editor.update(mailer, {"by": [str(rule)]})  # a pinned external held to it: only the rule changes
     held = editor.snapshot()
-    assert held.fingerprint(FLOW) == before.fingerprint(FLOW) and held.fingerprint(mailer) == before.fingerprint(mailer)
-    assert held.fingerprint(rule) != before.fingerprint(rule)
+    assert held.build_hash(FLOW) == before.build_hash(FLOW) and held.build_hash(mailer) == before.build_hash(mailer)
+    assert held.build_hash(rule) != before.build_hash(rule)
     editor.update(mailer, {"pin": "smtplib 2"})
-    assert editor.snapshot().fingerprint(rule) not in {before.fingerprint(rule), held.fingerprint(rule)}
+    assert editor.snapshot().build_hash(rule) not in {before.build_hash(rule), held.build_hash(rule)}
     editor.update(mailer, {"by": None})
-    assert editor.snapshot().fingerprint(rule) == before.fingerprint(rule)  # a path that reaches nothing leaves it as it was
+    assert editor.snapshot().build_hash(rule) == before.build_hash(rule)  # a path that reaches nothing leaves it as it was
+    assert editor.snapshot().fingerprint(rule) == before.fingerprint(rule)  # a pin never changes the rule's meaning

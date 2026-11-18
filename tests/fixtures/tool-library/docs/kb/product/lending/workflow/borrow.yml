@@ -53,7 +53,7 @@ steps:
       where: ai:claude/9b01#45
       from: human
       said: Yes to the cards but the borrow step
-      hash: f45d8bf7c3ac
+      hash: 6b8ed5ef1a51
 ends:
   lent:
     says: The member has the tool.

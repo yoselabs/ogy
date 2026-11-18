@@ -80,7 +80,8 @@ class FieldSpec(BaseModel):
 
 
 class Fingerprint(BaseModel):
-    """What besides the fields makes a built entry stale. `also` are link paths ending in `=field` (see paths)."""
+    """What besides the meaning enters the build hash, which only the built record compares. `also` are link paths ending in
+    `=field` (see paths)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     proofs: bool = False  # the set of proof test ids: appending a proof (bug triage) makes the entry work again

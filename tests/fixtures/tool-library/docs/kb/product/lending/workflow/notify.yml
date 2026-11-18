@@ -24,7 +24,7 @@ steps:
       where: ai:claude/9b01#45
       from: human
       said: Yes to the cards but the borrow step
-      hash: 5198b36ce6e2
+      hash: 31a831a5e197
 ends:
   sent:
     says: The message went out.

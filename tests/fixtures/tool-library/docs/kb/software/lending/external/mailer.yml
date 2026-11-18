@@ -12,6 +12,6 @@ deviations:
       where: ai:claude/9b01#45
       from: human
       said: Yes to the cards but the borrow step
-      hash: 5b8dd60ae79d
+      hash: d8f21f7bb42f
 by:
 - software/lending/rule/one-reminder-a-day

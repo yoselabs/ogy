@@ -75,6 +75,10 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
 - A person's yes in a review round is kept on the entry it agrees to: `agreed: {at, where, from: human, said, hash}`
   (outside the fingerprint, written only by `reply`; `put` refuses it). Only `from: human` agrees. The entry is "decided by
   you" while its fingerprint is `hash`, "changed since you agreed" after. A person's yes is evidence of its own.
+- Two hashes. The fingerprint is the meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements,
+  review cards and removed items hold it. The build hash adds the proofs and what the kind's `fingerprint.also` and
+  `fingerprint.reached` paths read; only the built record and work left compare it. A new proof or a changed dependency is
+  work, never a question for the owner.
 - A guess that rests on what the owner said carries a paraphrase: `guess.heard: {said}`. The review card reads
   "You said (paraphrased): .... Read as B." and one `yes` records the answer, chosen option B.
 - `ogy review` keeps the cards it showed as a round, by id (the last 10, in the Git directory).
@@ -130,9 +134,9 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
 - every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
   or a guess's `sets` gives an entry of that kind;
 - a pure rename changes no meaning: an agreement or a built line (`own` and `deps`) that was current stays current, its
-  hash re-set to the fingerprint after the rename, as `ogy move` does;
+  hash re-set to the fingerprint (a built line's to the build hash) after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
-  the entry (and of entries whose fingerprint reads it) are left, so the owner sees it as changed since agreed and it is work;
+  the entry (and the built lines whose build hash reads it) are left, so the owner sees it as changed since agreed and it is work;
 - a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>` (the term kind:
   `glossary/terms.yml`). Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
@@ -168,8 +172,8 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - What it depends on: `external` and its `deviation`s.
 - What is open and what the owner chose: `decision` with `option`, `guess` (and its `heard`) and `answer`.
 - Held to: a row, an external, a workflow, an entity, an attribute or a guard names the rules it is held to with `by`; a
-  rule has no `on`. `by` is outside the fingerprint of all but the rows, so adding a rule stales no holder; the pin of an
-  external held to a rule is part of the rule's fingerprint (`fingerprint.reached`), so a new pin makes its proofs work again.
+  rule has no `on`. `by` is outside the build hash of all but the rows, so adding a rule stales no holder; the pin of an
+  external held to a rule is part of the rule's build hash (`fingerprint.reached`), so a new pin makes its proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),

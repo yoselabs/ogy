@@ -4,10 +4,10 @@ src:
 attrs:
   own:
     type: text
-    says: The fingerprint of the entry that was proved.
+    says: 'The build hash of the entry that was proved: its fingerprint, proofs and what its kind reaches.'
   deps:
     type: list
-    says: The fingerprints of the entries it depends on.
+    says: The build hashes of the entries it depends on.
   covers:
     type: list
     says: What the proof covers.

@@ -13,7 +13,7 @@ steps:
       where: ai:claude/9b01#45
       from: human
       said: Yes to the cards but the borrow step
-      hash: 2cdca4ac02f9
+      hash: 850fcd3b065e
 ends:
   closed:
     says: The loan is closed.

@@ -23,7 +23,7 @@ steps:
       where: ai:claude/9b01#45
       from: human
       said: Yes to the cards but the borrow step
-      hash: cbc41471a8be
+      hash: fc3c99bb3732
 ends:
   done:
     says: Every late member was reminded.

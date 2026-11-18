@@ -56,8 +56,9 @@ def _built(target: Target, snapshot: Snapshot, kept: Kept) -> list[str]:
         address = snapshot.resolve(text)
         if address is None:
             continue
-        own = kept.hash(address, line.own) or line.own
-        deps = {dep: (kept.hash(found, given) if (found := snapshot.resolve(dep)) else None) or given for dep, given in line.deps.items()}
+        own = kept.hash(address, line.own, build=True) or line.own
+        deps = {dep: (kept.hash(found, given, build=True) if (found := snapshot.resolve(dep)) else None) or given
+                for dep, given in line.deps.items()}
         if own != line.own or deps != dict(line.deps):
             built.stamp(root, snapshot.entries[address].path, text, built.Line(own, deps, line.covers, line.sourced))
             done.append(text)

@@ -63,6 +63,13 @@ def fingerprint(target: Target, text: str) -> str:
     return snapshot.fingerprint(address)
 
 
+def build_hash(target: Target, text: str) -> str:
+    snapshot = target.read()[1]
+    address = parse_address(text, snapshot.ontology)
+    assert address is not None
+    return snapshot.build_hash(address)
+
+
 @pytest.fixture
 def before(repo: Path) -> str:
     """The fee and the operation agreed, the fee, the choice and the timeout built, and an answer with a note: committed."""
@@ -70,10 +77,10 @@ def before(repo: Path) -> str:
     (repo / "docs/kb/product/app/decision/fee.yml").parent.mkdir(parents=True, exist_ok=True)
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(DECISION)
     ops.run_answer(target, ASKED, "two", "Two is fine", "ai:claude/1", note="for now")
-    writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND])
+    writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
     for text in (FEE, GO, TIMEOUT):
         built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
-                    built.Line(fingerprint(target, text)))
+                    built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
     return commit(repo, "before the kind change")
 
@@ -102,8 +109,10 @@ def test_a_dropped_value_comes_back_to_the_owner(repo: Path, before: str) -> Non
     target = Changed(repo)
     lines = ops.run_migrate(target).value.lines()
     assert f"dropped {GO} effects.on (it held 'product/app/actor/member'): the owner sees this entry as changed" in lines
-    lend = target.read()[1].entries[parse_address(LEND, target.kinds())].fields
-    assert lend["agreed"]["hash"] != fingerprint(target, LEND)  # changed since the owner agreed
+    entries = target.read()[1].entries
+    go, lend = (entries[parse_address(text, target.kinds())].fields for text in (GO, LEND))
+    assert go["agreed"]["hash"] != fingerprint(target, GO)  # changed since the owner agreed
+    assert lend["agreed"]["hash"] == fingerprint(target, LEND)  # a changed row it performs is no change of its meaning
     assert {item.address: item.status for item in ops.run_work(target).value}[GO] is Status.CHANGED
 
 

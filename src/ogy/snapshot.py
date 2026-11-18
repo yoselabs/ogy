@@ -50,7 +50,7 @@ class Snapshot:
     entries: dict[Address, Entry]
     findings: list[Finding]
     _links: LinkIndex | None = field(default=None, repr=False)
-    _prints: dict[tuple[Address, bool], str] = field(default_factory=dict, repr=False)
+    _prints: dict[tuple[Address, str], str] = field(default_factory=dict, repr=False)
     _visiting: set[Address] = field(default_factory=set, repr=False)
 
     @property
@@ -65,10 +65,19 @@ class Snapshot:
             raise KeyError(address.kind)
         return kind
 
-    def fingerprint(self, address: Address, *, proofs: bool = True) -> str:
-        """Memoised. `proofs=False` is the meaning alone, which is what reaches other entries along `=@fingerprint`:
-        a delivery adding a proof upstream must not make everything downstream stale. A cycle contributes the key."""
-        key = (address, proofs)
+    def fingerprint(self, address: Address) -> str:
+        """The meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements, review cards and removed
+        items hold it, so a new proof or a changed dependency never sends an entry back to the owner."""
+        key = (address, "meaning")
+        if key not in self._prints:
+            self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), (), False)
+        return self._prints[key]
+
+    def build_hash(self, address: Address, *, proofs: bool = True) -> str:
+        """What the built record and work left compare: the meaning, the proofs and what the kind's `also` and `reached`
+        paths read. Memoised. `proofs=False` is what reaches other entries along `=@fingerprint`: a delivery adding a proof
+        upstream must not make everything downstream stale. A cycle contributes the key."""
+        key = (address, "build" if proofs else "build-no-proofs")
         if key in self._prints:
             return self._prints[key]
         if address in self._visiting:
@@ -106,7 +115,7 @@ class Snapshot:
             case "=@id":
                 return sorted(item.key for item in reached)
             case "=@fingerprint":
-                return sorted(f"{item}={self.fingerprint(item, proofs=False)}" for item in reached)
+                return sorted(f"{item}={self.build_hash(item, proofs=False)}" for item in reached)
             case _:
                 return sorted(map(str, values))
 

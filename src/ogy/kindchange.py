@@ -125,9 +125,12 @@ class Kept:
         self.dropped = Snapshot(old, changes(snapshot, renames=False)[0].entries, [])
         self.now = changes(snapshot)[0]
 
-    def hash(self, address: Address, given: str) -> str | None:
-        """The fingerprint after the migration when `given` was current and no dropped value touched it, else None."""
+    def hash(self, address: Address, given: str, *, build: bool = False) -> str | None:
+        """The meaning fingerprint (the build hash, for a built line) after the migration when `given` was current and no
+        dropped value touched it, else None."""
         if address not in self.was.entries:
             return None
-        was = self.was.fingerprint(address)
-        return self.now.fingerprint(address) if given == was and self.dropped.fingerprint(address) == was else None
+        def of(snapshot: Snapshot) -> str:
+            return snapshot.build_hash(address) if build else snapshot.fingerprint(address)
+        was = of(self.was)
+        return of(self.now) if given == was and of(self.dropped) == was else None

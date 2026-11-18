@@ -37,7 +37,7 @@ class Shown:
     settles: tuple[str, ...] = ()
     built_file: str | None = None
     built: Line | None = None
-    fingerprint: str = ""
+    build_hash: str = ""
     work: tuple[Work, ...] = ()
 
 
@@ -73,4 +73,4 @@ def show(snapshot: Snapshot, address: Address, record: Mapping[str, Line], work:
     return Shown(address, context(snapshot, address), status(snapshot, address), label(snapshot, address),
                  agreed_of(snapshot, address) or _answered(asking), _decided(settling) if settling else None,
                  own or inherited, not own and bool(inherited), tuple(sorted({*given, *nothing})), f"built/{entry.path}",
-                 record.get(str(address)), snapshot.fingerprint(address), tuple(item for item in work if item.address == str(address)))
+                 record.get(str(address)), snapshot.build_hash(address), tuple(item for item in work if item.address == str(address)))

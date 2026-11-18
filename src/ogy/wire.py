@@ -33,7 +33,7 @@ def findings(found: list[Finding]) -> list[str]:
 
 
 def work(found: list[Work]) -> list[str]:
-    return _table([{"status": str(w.status), "address": w.address, "now": w.fingerprint, "built": w.built or "", "note": w.note}
+    return _table([{"status": str(w.status), "address": w.address, "now": w.build_hash, "built": w.built or "", "note": w.note}
                    for w in found], ["status", "address", "now", "built", "note"])
 
 
@@ -92,6 +92,6 @@ def show(found: Shown) -> list[str]:
         "decided_in": {"decision": str(decided.decision), "in_force": decided.option or "", "by": decided.by,
                        "note": decided.note} if decided else "",
         "came_from": list(found.came_from), "through_decision": found.through_decision, "settles": list(found.settles),
-        "built": {"file": found.built_file, "own": built.own, "covers": list(built.covers), "current": built.own == found.fingerprint,
+        "built": {"file": found.built_file, "own": built.own, "covers": list(built.covers), "current": built.own == found.build_hash,
                   "work": [f"{w.status} {w.note}".strip() for w in found.work]} if built else "",
     })
