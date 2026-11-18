@@ -4,6 +4,7 @@
   avoid:
   - persona
   - role
+  - user
 - id: address
   word: address
   says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
@@ -15,7 +16,7 @@
     hash: ddad087056e8
 - id: agreement
   word: agreement
-  says: A person's yes to a sentence's fingerprint, whoever proposed it; status computed, never stored.
+  says: A person's yes to an entry's sentence, kept with its fingerprint; only people agree.
   avoid:
   - standing
   - ratified
@@ -30,7 +31,7 @@
     hash: 931302e469d2
 - id: answer
   word: answer
-  says: Option chosen by the owner or delegated agent, paraphrased, never quoted; not a guess.
+  says: The option the owner or a delegated agent chose for a decision; newest wins.
   avoid:
   - ratified
   agreed:
@@ -53,7 +54,7 @@
     hash: d58bc0427a6f
 - id: because
   word: because
-  says: 'Links to entries reaching a source: concluded, not said; neither src nor answer.'
+  says: Links to the entries a sentence was concluded from; they must reach a src.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -71,7 +72,7 @@
     hash: 02e3d80f8531
 - id: decision
   word: decision
-  says: A question, its options, guess and answers; beads only mirror it; never a source.
+  says: One question with its options, guess and answers; a tracker only mirrors it.
   avoid:
   - settles
   - ?open
@@ -101,7 +102,7 @@
     hash: 9b5338bf0577
 - id: fingerprint
   word: fingerprint
-  says: Hash of an entry's meaning, notes and src aside; neither commit hash nor version.
+  says: Hash of an entry's meaning fields, without notes and src; not a commit hash.
   agreed:
     at: '2026-11-17T23:39:17+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -110,7 +111,7 @@
     hash: 4a05ec0f562d
 - id: guess
   word: guess
-  says: The AI's option or values and why, built until the owner answers; not theirs.
+  says: The option or values the AI builds on until the owner answers a decision.
   avoid:
   - assumed
   - ?assumed
@@ -122,7 +123,7 @@
     hash: 4430c18105f0
 - id: harm-tag
   word: harm tag
-  says: What a wrong sentence costs (harm:); it ranks review; neither risk score nor gate.
+  says: A kind's label for what a wrong sentence costs; it orders review, blocks nothing.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -151,7 +152,7 @@
     hash: a3b243cdb366
 - id: layer
   word: layer
-  says: 'Top folder: product (what, why) or software (how); holds areas, not question types.'
+  says: 'Top folder holding areas: product (what, why) or software (how it is built).'
   agreed:
     at: '2026-11-18T14:57:15+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -160,7 +161,7 @@
     hash: d3dba0f5f5c6
 - id: 'null'
   word: 'null'
-  says: 'In sets: no, not now or removed; neither a missing field nor a status.'
+  says: "In an option's sets, an address set to null: that entry does not exist."
   avoid:
   - scope
   - rejected
@@ -183,17 +184,6 @@
     from: human
     said: Yes to the rest of the glossary
     hash: b075bec4ea02
-- id: owner
-  word: owner
-  says: The person deciding business questions; an agent only paraphrases them, never answers for them.
-  avoid:
-  - user
-  agreed:
-    at: '2026-11-17T23:49:06+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
-    said: Yes to the rest of the glossary
-    hash: e214c8304276
 - id: part
   word: part
   says: "An entry inside its parent's file, addressed <parent>/<kind>/<key>: a step, an option."
@@ -205,7 +195,7 @@
     hash: 9fd5fc7b6f08
 - id: principle
   word: principle
-  says: A statement decisions are judged against and cite; in constitution/; the owner says values.
+  says: A statement decisions are judged against and cite; the owner's spoken word is values.
   avoid:
   - value-as-principle
   agreed:
@@ -216,7 +206,7 @@
     hash: 5055a02082cc
 - id: question
   word: question
-  says: 'An unanswered decision, listed apart: not an entry state, a sentence or a card.'
+  says: A decision with no answer yet; not an entry's state, not a card.
   avoid:
   - ?open
   - open question
@@ -237,7 +227,7 @@
     hash: 201ffa068daa
 - id: removed-ledger
   word: removed ledger
-  says: 'Append-only removed.yml of an area: snapshots, ids never reused; not Git, log or restore.'
+  says: "An area's append-only removed.yml: each removed entry's snapshot; its id is never reused."
   avoid:
   - tombstone
   - retired
@@ -249,7 +239,7 @@
     hash: 3f2a2a6e38dd
 - id: review-round
   word: review round
-  says: Cards ogy review kept, at most 7, for ogy reply; neither read-back nor land.
+  says: The cards one ogy review showed, kept so ogy reply answers exactly them.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -270,7 +260,7 @@
     hash: 0021903be0d6
 - id: term
   word: term
-  says: 'Glossary word: its line, what to avoid, owner-agreed; neither code name nor kind.'
+  says: A glossary word with its line and words to avoid; the owner agrees each.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -279,7 +269,7 @@
     hash: 1236189be557
 - id: work-left
   word: work left
-  says: 'Still to build: changed fingerprints or dependencies, missing proofs; not tasks or beads.'
+  says: 'Still to build: changed fingerprints or dependencies, missing proofs; not a task list.'
   agreed:
     at: '2026-11-17T23:25:57+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

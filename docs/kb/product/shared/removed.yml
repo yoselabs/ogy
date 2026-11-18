@@ -195,3 +195,25 @@ items:
       from: human
       said: Left the glossary page to the agent; no term changed
       hash: 962b00f055f3
+- id: product/shared/term/owner
+  kind: term
+  parent:
+  title:
+  said: The person deciding business questions; an agent only paraphrases them, never answers for them.
+  why: product/language/decision/terms-are-types
+  replaced_by: product/shared/actor/owner
+  at: 2026-11-18 23:27:02+00:00
+  last_seen: a7992d04c84fff4c52a5dd236d330abb14dd5b3c
+  hash: 08d69e3d9b09
+  ontology: software
+  snapshot:
+    word: owner
+    says: The person deciding business questions; an agent only paraphrases them, never answers for them.
+    avoid:
+    - user
+    agreed:
+      at: '2026-11-17T23:49:06+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Yes to the rest of the glossary
+      hash: e214c8304276
