@@ -1,5 +1,5 @@
 - id: owner
-  says: The person who owns the product and decides its business questions; they speak natural language and never write entries.
+  says: The person who decides the product's business questions, in natural language; never writes entries.
   nature: human
   src:
   - code:src/ogy/writes.py#answer

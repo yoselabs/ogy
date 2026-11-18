@@ -1,5 +1,5 @@
 - id: set-up-a-repository
-  says: A person sets a repository up for ogy once with ogy init; running it again repairs what is missing and overwrites nothing.
+  says: A person sets a repository up for ogy with ogy init; running it again creates what is missing, updates what is outdated and never re-adds what was removed.
   src:
   - code:src/ogy/init.py#init
 - id: doctor
