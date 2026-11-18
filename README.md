@@ -44,7 +44,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `work [area]` | what the built record says is still to do |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
-| `glossary`, `kinds [kind]` | the constitution, then the terms of the product; the kinds of the ontology, or one |
+| `glossary`, `kinds [kind] [--readers]` | the constitution, then the terms of the product; the kinds of the ontology, or one. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it (same kind, id and fingerprint) from a loss |
 | `migrate` | rewrite the entries to the field renames and drops their kinds declare (see "Kind changes"); one checked write that records nothing |

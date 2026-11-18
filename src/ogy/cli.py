@@ -79,8 +79,10 @@ def _asks(commands: Adder) -> None:
         "area", nargs="?", help="only this area")
     _verb(commands, "glossary", "the constitution, then the terms of the product, with what they say",
           "Agents read this first: every principle of the constitution, whole, then every term.")
-    _verb(commands, "kinds", "the kinds of the ontology, or one", "What each kind holds, links to and requires.").add_argument(
-        "kind", nargs="?", help="only this kind")
+    kinds = _verb(commands, "kinds", "the kinds of the ontology, or one", "What each kind holds, links to and requires.")
+    kinds.add_argument("kind", nargs="?", help="only this kind")
+    kinds.add_argument("--readers", action="store_true", help="for each field, what reads it: the fingerprint, requires, flow, "
+                       "settling, links and impact, a named check or printer; or nothing")
     asking = _verb(commands, "review", "what you are asked: at most 7 cards, with a count per area",
                    "SAVES the round (its id is printed) that `reply --round` resolves against.")
     asking.add_argument("area", nargs="?", help="only this area")

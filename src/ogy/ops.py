@@ -27,6 +27,7 @@ from ogy.migrate import Migrated, migrate
 from ogy.model import Address, Finding, area_of, parse_address
 from ogy.ontology import Ontology
 from ogy.overview import Overview
+from ogy.readers import readers_lines
 from ogy.receipts import Work, work_left
 from ogy.relocate import Moved, move
 from ogy.removal import Clock, RemoveRefused
@@ -236,8 +237,10 @@ def run_history(target: Target, text: str, limit: int = 100) -> Run[History]:
     return Run(history(target.repo, target.kb, target.kinds(), target.rev, text, limit), 0)
 
 
-def run_kinds(target: Target, kind: str | None = None) -> Run[list[str]]:
-    return Run(kinds_lines(target.kinds(), kind), 0)
+def run_kinds(target: Target, kind: str | None = None, with_readers: bool = False) -> Run[list[str]]:
+    """The kinds as text; with `with_readers`, what reads each field of them instead."""
+    lines = kinds_lines(target.kinds(), kind)  # also refuses a kind that does not exist
+    return Run(readers_lines(target.kinds(), kind) if with_readers else lines, 0)
 
 
 def run_init(repo: Path, ontology: str | None = None) -> Run[Initialised]:
