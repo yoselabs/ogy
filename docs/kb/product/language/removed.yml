@@ -1,0 +1,200 @@
+format: 1
+items:
+  - id: product/language/decision/entry-wording
+    kind: decision
+    parent:
+    title: The address in the term entry
+    said: The term entry still says its address is area/kind/id. Which wording does the glossary keep?
+    why: product/language/decision/term-shape
+    replaced_by:
+    at: 2026-11-18 23:24:22+00:00
+    last_seen: d7770d7f6173d79c8204a89e88eccc00cdf5d543
+    hash: 19793626796e
+    ontology: software
+    snapshot:
+      title: The address in the term entry
+      question: The term entry still says its address is area/kind/id. Which wording does the glossary keep?
+      context: Found while checking the four terms asked about; same cause.
+      answers:
+      - chose: fable-wording
+        said: Yes, record the proposed wording
+        from: human
+        at: '2026-11-18T11:32:15+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: fable-wording
+        why: The owner chose this on 2026-11-18.
+      options:
+        with-layer:
+          label: <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term
+          sets:
+            product/shared/term/entry:
+              says: Any item with an id in the knowledge base; its address is <layer>/<area>/<kind>/<id>, or glossary/term/<id> for a term.
+        keep:
+          label: 'Keep: area/kind/id'
+          sets:
+            product/shared/term/entry:
+              says: Any item with an id in the knowledge base; its address is area/kind/id.
+        fable-wording:
+          label: One item of one kind with an id that never changes, named by its address
+          sets:
+            product/shared/term/entry:
+              says: One item of a kind with a permanent id; one file may hold many.
+  - id: product/language/decision/part-wording
+    kind: decision
+    parent:
+    title: How a part is addressed now
+    said: The term part still writes its address as area/kind/id/part-kind/key. Which wording does the glossary keep?
+    why: product/language/decision/term-shape
+    replaced_by:
+    at: 2026-11-18 23:24:23+00:00
+    last_seen: d7770d7f6173d79c8204a89e88eccc00cdf5d543
+    hash: 4d0ac84f8129
+    ontology: software
+    snapshot:
+      title: How a part is addressed now
+      question: The term part still writes its address as area/kind/id/part-kind/key. Which wording does the glossary keep?
+      answers:
+      - chose: with-layer
+        said: Yes to both, with the layer
+        from: human
+        at: '2026-11-18T14:57:15+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: with-layer
+        why: The address of a part starts with the layer like any other (src/ogy/model.py Address.part).
+      options:
+        with-layer:
+          label: The parent's full address, then the part's kind and key
+          sets:
+            product/shared/term/part:
+              says: "An entry inside its parent's file, addressed <parent>/<kind>/<key>: a step, an option."
+        keep:
+          label: 'Keep: area/kind/id/part-kind/key'
+          sets:
+            product/shared/term/part:
+              says: An entry that lives inside another entry file and is addressed by its parent address, its kind and its key (area/kind/id/part-kind/key), such as a step of a workflow or an option of a decision.
+  - id: product/language/decision/layer-wording
+    kind: decision
+    parent:
+    title: What the word layer means now
+    said: The term layer still says business, technical or implementation; the layers are now the folders product and software. Which meaning does the glossary keep?
+    why: product/language/decision/term-shape
+    replaced_by:
+    at: 2026-11-18 23:24:24+00:00
+    last_seen: d7770d7f6173d79c8204a89e88eccc00cdf5d543
+    hash: f8189859721a
+    ontology: software
+    snapshot:
+      title: What the word layer means now
+      question: The term layer still says business, technical or implementation; the layers are now the folders product and software. Which meaning does the glossary keep?
+      context: The owner chose mandatory layer folders (software/storage/decision/no-axis-above-area, answer of 2026-11-18); the term was agreed on 2026-11-17 under the old model.
+      answers:
+      - chose: fable-wording
+        said: Yes, record the proposed wording
+        from: human
+        at: '2026-11-18T11:32:15+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: fable-wording
+        why: The owner chose this on 2026-11-18.
+        heard:
+          said: No skipping the product layer to put an area or kind on top
+      options:
+        folders:
+          label: One of the two top folders, product or software
+          sets:
+            product/shared/term/layer:
+              says: One of the two top folders of the knowledge base, product or software, that an entry lives in; each kind lists the layers it may appear in, and the glossary is in none.
+        who-decides:
+          label: 'Keep: who decides an entry (business, technical, implementation)'
+          sets:
+            product/shared/term/layer:
+              says: 'Who decides an entry: business (the owner only), technical (an agent proposes, the owner agrees) or implementation (an agent decides).'
+        fable-wording:
+          label: 'One of the two top folders: product (what and why) or software (how it is built)'
+          sets:
+            product/shared/term/layer:
+              says: 'Top folder: product (what, why) or software (how); holds areas, not question types.'
+  - id: product/language/decision/address-wording
+    kind: decision
+    parent:
+    title: What an address looks like now
+    said: The term address still says area/kind/id; an address is now <layer>/<area>/<kind>/<id>, and a term is glossary/term/<id> with no layer. Which wording does the glossary keep?
+    why: product/language/decision/term-shape
+    replaced_by:
+    at: 2026-11-18 23:24:25+00:00
+    last_seen: d7770d7f6173d79c8204a89e88eccc00cdf5d543
+    hash: 65836b278a45
+    ontology: software
+    snapshot:
+      title: What an address looks like now
+      question: The term address still says area/kind/id; an address is now <layer>/<area>/<kind>/<id>, and a term is glossary/term/<id> with no layer. Which wording does the glossary keep?
+      context: The loader parses <layer>/<area>/<kind>/<id> (src/ogy/model.py parse_address); the term was agreed on 2026-11-17.
+      answers:
+      - chose: fable-wording
+        said: Yes, record the proposed wording
+        from: human
+        at: '2026-11-18T11:32:15+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: fable-wording
+        why: The owner chose this on 2026-11-18.
+        heard:
+          said: No skipping the product layer to put an area or kind on top
+      options:
+        with-layer:
+          label: <layer>/<area>/<kind>/<id>; a term is glossary/term/<id>
+          sets:
+            product/shared/term/address:
+              says: 'The path that names an entry: <layer>/<area>/<kind>/<id>, as in product/review/workflow/review-and-reply; a part continues it with its own kind and key (.../step/apply); a term is glossary/term/<id>, with no layer.'
+        area-first:
+          label: 'Keep: area/kind/id'
+          sets:
+            product/shared/term/address:
+              says: 'The path that names an entry: area/kind/id; a part continues it with its own kind and key, as in ogy/decision/x/option/y.'
+        fable-wording:
+          label: The name of an entry, <layer>/<area>/<kind>/<id>; a part adds its kind and key; a term has no layer or area
+          sets:
+            product/shared/term/address:
+              says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
+  - id: product/language/decision/area-wording
+    kind: decision
+    parent:
+    title: What an area is now
+    said: The term area still gives glossary and ogy as its examples; an area is now the folder under a layer, named by topic. Which wording does the glossary keep?
+    why: product/language/decision/term-shape
+    replaced_by:
+    at: 2026-11-18 23:24:26+00:00
+    last_seen: d7770d7f6173d79c8204a89e88eccc00cdf5d543
+    hash: a9326c9b1749
+    ontology: software
+    snapshot:
+      title: What an area is now
+      question: The term area still gives glossary and ogy as its examples; an area is now the folder under a layer, named by topic. Which wording does the glossary keep?
+      context: ogy check reports an area named like the product as a finding (src/ogy/coverage.py product_areas); the glossary is a fixed folder, not an area under a layer.
+      answers:
+      - chose: fable-wording
+        said: Yes, record the proposed wording
+        from: human
+        at: '2026-11-18T11:32:15+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: fable-wording
+        why: The owner chose this on 2026-11-18.
+      options:
+        topic-folder:
+          label: The folder under a layer that groups entries by topic
+          sets:
+            product/shared/term/area:
+              says: The folder under a layer that groups entries by topic, such as product/review or software/cli; it is named after a topic, never after the product.
+        keep:
+          label: 'Keep: one path segment, such as glossary or ogy'
+          sets:
+            product/shared/term/area:
+              says: One path segment of an address that groups entries into one folder of the knowledge base, such as glossary or ogy.
+        fable-wording:
+          label: The folder under a layer that groups entries by topic, never named after the product
+          sets:
+            product/shared/term/area:
+              says: A topic folder in one layer, never named like the product; not a kind.

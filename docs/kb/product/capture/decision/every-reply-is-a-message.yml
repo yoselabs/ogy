@@ -19,16 +19,6 @@ options:
       software/storage/value/message-digest-length:
         says: The length of the digest in a message's id, after its date.
       software/writes/operation/record-answer:
-      product/shared/term/message:
-        says: One reply of a person or an agent, stored whole and once, never edited; the only kind that entries may cite as a source and that can agree.
-      product/shared/term/answer:
-        says: The owner's choice of one option of a decision, kept with its message and a quote; the one whose message is newest is in force.
-      product/shared/term/agreement:
-        says: A message that says yes to the sentences now on entries, recorded as the shown text and the fingerprint; whether an entry is decided by you, decided by AI or changed since you agreed is computed from it.
-      product/shared/term/src:
-        says: 'The place a sentence came from: a message, a code: link or a doc: link, and nothing else.'
-      product/shared/term/owner:
-        says: The person who decides the business questions of the product; an agent relays the owner's words verbatim and never answers or agrees for them.
   paraphrase:
     label: 'No messages or quotes: an answer and an agreement keep a short paraphrase, who, when and where'
     sets:
@@ -52,15 +42,6 @@ options:
         - software/storage/external/git
         src:
         - code:src/ogy/writes.py#answer
-      product/shared/term/message:
-      product/shared/term/answer:
-        says: Option chosen by the owner or delegated agent, paraphrased, never quoted; not a guess.
-      product/shared/term/agreement:
-        says: A person's yes to a sentence's fingerprint, whoever proposed it; status computed, never stored.
-      product/shared/term/src:
-        says: "A sentence's code: or doc: link; not authority, not a decision, outside the fingerprint."
-      product/shared/term/owner:
-        says: The person deciding business questions; an agent only paraphrases them, never answers for them.
 guess:
   chose: paraphrase
   why: The owner chose it on 2026-11-18, for privacy.
