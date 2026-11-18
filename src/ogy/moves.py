@@ -1,6 +1,7 @@
 """Moves: an entry that changed area keeps its kind and id; nothing records it but Git. `ogy move` writes the new address
 into every entry that names the old one, and `ogy check --base` tells a move from a loss by comparing the two commits:
-an entity gone from one address and present at another with the same kind, id and fingerprint has moved.
+an entry gone from one address and present at exactly one other with the same kind and id has moved; the fingerprint
+only breaks ties.
 
 `rewrite_fields` is the one place that knows which values of an entry are addresses; `renamed` is a snapshot as it reads
 with the moved addresses written in, so an answer may differ from the base only by what a move changed. A kind
@@ -131,9 +132,19 @@ def retyped(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
     return table
 
 
+def _ties(base: Snapshot, now: Snapshot, olds: list[Address], news: list[Address], table: Table) -> dict[Address, Address]:
+    """Several entries of one kind and id gone and arrived: an old and a new pair only when the fingerprint, the moves
+    already found written in, matches for exactly that one pair."""
+    matches = [(old, new) for old in olds for new in news
+               if renamed(base, {**table, old: new}).fingerprint(new) == now.fingerprint(new)]
+    return {old: new for old, new in matches
+            if sum(1 for o, _ in matches if o == old) == 1 and sum(1 for _, n in matches if n == new) == 1}
+
+
 def detect(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
-    """The entities that moved from `base` to `now`: gone from an address and present at exactly one other with the same
-    kind, id and (every move written in) fingerprint. Anything else that is gone is not a move."""
+    """The entries that moved from `base` to `now`. An entry gone from one address with exactly one arrival of the same kind
+    and id has moved, whatever its fingerprint: a changed text is an ordinary change, read as changed since agreed. The
+    fingerprint only breaks ties between several of one kind and id. Anything else that is gone is not a move."""
     arrived: defaultdict[tuple[str, str], list[Address]] = defaultdict(list)
     gone: defaultdict[tuple[str, str], list[Address]] = defaultdict(list)
     for address in now.entries:
@@ -143,10 +154,7 @@ def detect(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
         if address.parent() is None and address not in now.entries:
             gone[(address.kind, address.key)].append(address)
     table = {olds[0]: arrived[key][0] for key, olds in gone.items() if len(olds) == 1 and len(arrived.get(key, [])) == 1}
-    while table:
-        shifted = renamed(base, table)
-        wrong = {old for old, new in table.items() if shifted.fingerprint(new) != now.fingerprint(new)}
-        if not wrong:
-            break
-        table = {old: new for old, new in table.items() if old not in wrong}
+    for key, olds in gone.items():
+        if arrived.get(key) and (len(olds) > 1 or len(arrived[key]) > 1):
+            table |= _ties(base, now, olds, arrived[key], table)
     return table

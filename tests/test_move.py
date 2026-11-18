@@ -11,6 +11,10 @@ from tests.conftest import commit, ogy
 from ogy import cli
 from ogy.mcp_server import build
 from ogy.model import parse_address
+from ogy.moves import detect
+from ogy.ontology import packaged
+from ogy.snapshot import Snapshot
+from ogy.snapshot import build as snapshot_build
 from ogy.target import Target
 
 STEP = "product/app/workflow/borrow/step/ask"
@@ -86,10 +90,21 @@ def test_check_against_the_base_tells_a_move_from_a_loss(repo: Path) -> None:
     assert w(repo, "move", "product/app/workflow/borrow", "product/loans")[0] == cli.OK
     assert base_findings(repo) == ["ok"]
     moved = repo / KB / "product/loans/workflow/borrow.yml"
-    moved.write_text(moved.read_text().replace("A tool is lent.", "A tool is given."))  # moved and changed: not the same entry
-    assert any(line.startswith("removed-unrecorded") and "product/app/workflow/borrow" in line for line in base_findings(repo))
+    moved.write_text(moved.read_text().replace("A tool is lent.", "A tool is given."))  # moved and changed: still a move
+    assert base_findings(repo) == ["ok"]
     moved.unlink()
     assert any(line.startswith("removed-unrecorded") for line in base_findings(repo))
+
+
+def test_a_move_then_an_edit_across_two_commits_is_a_move_and_reads_changed(repo: Path) -> None:
+    agreed(repo)
+    assert w(repo, "move", "product/app/workflow/borrow", "product/loans")[0] == cli.OK
+    commit(repo, "moved")
+    moved = repo / KB / "product/loans/workflow/borrow.yml"
+    moved.write_text(moved.read_text().replace("A tool is lent.", "A tool is given.").replace("The member asks.", "The member begs."))
+    commit(repo, "edited")
+    assert w(repo, "check", "--base", "HEAD~2")[1] == ["ok"]  # the id arrived once: a move, whatever its fingerprint
+    assert "changed since you agreed" in status(repo, "product/loans/workflow/borrow/step/ask")
 
 
 def test_an_actor_moves_and_the_steps_that_name_it_stay_agreed(repo: Path) -> None:
@@ -180,3 +195,14 @@ def test_a_move_into_an_area_without_its_area_entry_is_refused_and_the_area_entr
     assert code == cli.REFUSED and "missing-entry" in lines[0] and "product/elsewhere/area/elsewhere" in lines[0] and tree(repo) == before
     code, lines = w(repo, "move", "product/app/area/app", "product/loans")
     assert code == cli.REFUSED and "does not move" in lines[0]
+
+
+def test_the_fingerprint_breaks_a_tie_between_two_of_one_kind_and_id() -> None:
+    def kb(**areas: str) -> Snapshot:
+        return snapshot_build(packaged(), {f"product/{area}/actors.yml": f"- {{id: member, says: {says}, nature: human}}\n"
+                                           for area, says in areas.items()})
+    base, now = kb(app="A member.", other="Another member."), kb(loans="Another member.", people="A member.")
+    found = detect(base, now)
+    assert {str(old): str(new) for old, new in found.items()} == {
+        "product/app/actor/member": "product/people/actor/member", "product/other/actor/member": "product/loans/actor/member"}
+    assert detect(base, kb(loans="A changed member.", people="Another changed member.")) == {}  # no fingerprint matches: a loss
