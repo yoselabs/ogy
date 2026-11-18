@@ -1,5 +1,6 @@
 kind: heard
 about: "what the owner said that a guess rests on, as a short paraphrase (never a quote), when it leans to an option without choosing it; the review asks \"You said: .... Read as B.\" and one yes records the answer"
+guidance: "A short paraphrase of what the owner said that a guess leans on, never a quote. Use it when the owner's words point to an option without choosing it; one yes in review then records the answer."
 shape: inline
 part_of: guess
 key: heard

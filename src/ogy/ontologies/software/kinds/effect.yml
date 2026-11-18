@@ -1,5 +1,6 @@
 kind: effect
 about: one thing a row changes or tells; the effects of one row happen together or not at all
+guidance: "What a row changes or tells, all together or not at all. `transition` names a transition; `create` and `delete` an entity; `write` an entity, an external or an attribute that is not derived; `count` an attribute; `tell` an actor or an external. A row with effects has an operation performing it."
 shape: inline
 part_of: [choice, case, timeout]
 key: effects

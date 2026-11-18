@@ -81,10 +81,13 @@ def _asks(commands: Adder) -> None:
           "Agents read this first: every principle of the constitution, whole, then the shared terms of each layer, then the terms "
           "of each area. For one area, its terms and the shared ones it reads.").add_argument(
         "area", nargs="?", help="only this area, <layer>/<area>, with the shared terms of its layer (and, in software, of product)")
-    kinds = _verb(commands, "kinds", "the kinds of the ontology, or one", "What each kind holds, links to and requires.")
+    kinds = _verb(commands, "kinds", "the kinds of the ontology, or one", "What each kind is, how to decide when to use it "
+                  "(guidance), what it holds, links to and requires. Read `ogy kinds <kind>` before creating an entry of that kind.")
     kinds.add_argument("kind", nargs="?", help="only this kind")
     kinds.add_argument("--readers", action="store_true", help="for each field, what reads it: the fingerprint, requires, flow, "
                        "settling, links and impact, a named check or printer; or nothing")
+    kinds.add_argument("--map", action="store_true", help="the whole ontology as an indented tree, one line per kind grouped by "
+                       "layer (! required, -> one link, ->> many links, [] a list part, indentation = part of), then its rules")
     asking = _verb(commands, "review", "what you are asked: at most 7 cards, with a count per area",
                    "SAVES the round (its id is printed) that `reply --round` resolves against.")
     asking.add_argument("area", nargs="?", help="only this area")

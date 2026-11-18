@@ -1,5 +1,6 @@
 kind: end
 about: one way a workflow ends
+guidance: "One way a workflow ends, success or failure; a calling step names every end of its callee. Add an end when the outcome differs for whoever waits on it, not for every path."
 shape: inline
 part_of: workflow
 key: ends

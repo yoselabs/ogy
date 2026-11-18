@@ -44,7 +44,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `work [area]` | what the built record says is still to do |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
-| `glossary [layer/area]`, `kinds [kind] [--readers]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too); the kinds of the ontology, or one. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
+| `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too); the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours) and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it (same kind, id and fingerprint) from a loss |
 | `migrate` | rewrite the entries to the field renames, drops and moves out of a fixed folder their kinds declare (see "Kind changes"); one checked write that records nothing |
@@ -175,11 +175,14 @@ A kind declares its graph rules in its file, never in Python: `exactly_one_of`, 
 has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
 then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself) an entry of `kinds` that sets
 none of `without`; an unmet one is `unmet-requirement`. So a workflow with `trigger: schedule` names its `schedule`, an
-attribute of type `one` its `of`, and an effect's `do` names what its `on` may be.
+attribute of type `one` its `of`, and an effect's `do` names what its `on` may be. `ogy kinds --map` prints them all.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
 that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
-A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
+Every kind file carries `guidance:`, a short text on how to decide when to use the kind (for an actor, the variation test:
+different permitted actions make an actor, a recorded move the product reacts to a state, a fact that changes the outcome an
+attribute in a case; a threshold name is never an actor). `by` holds an entry to a rule; `because` cites a principle or a
+decision as the reason. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
 
 ## Where the code lives
 

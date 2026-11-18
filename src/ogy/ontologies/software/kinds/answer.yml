@@ -1,5 +1,6 @@
 kind: answer
 about: "a person (or an agent under their delegation) chose an option; ogy keeps no message and no quote, only a short paraphrase of what was said, who, when and where; the answer with the newest `at` is in force; \"no\" is an answer that chose an option that sets `null`"
+guidance: "Written only by `ogy answer` or `ogy reply`, never by `put`: the owner's choice of an option, with a short paraphrase. A changed mind is a new answer; never edit one. Answer for the owner only under a delegation they gave (`--delegated`)."
 shape: inline
 part_of: decision
 key: answers

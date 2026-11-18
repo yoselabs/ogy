@@ -1,5 +1,6 @@
 kind: value
 about: a number with its unit (an amount, a count, a duration) that someone decides; no literal numbers anywhere else
+guidance: "A number with its unit that someone decides: an amount, a count, a duration. Every number lives here, never in text. A setting that holds it is a config_key that binds it; a rule or a timeout names it."
 shape: list
 file: values.yml
 layers: [product, software]

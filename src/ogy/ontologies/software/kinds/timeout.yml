@@ -1,5 +1,6 @@
 kind: timeout
 about: what happens when the actor does nothing for a time
+guidance: "What happens when the actor does nothing for a decided time, a value. Only an actor step has one; something the system does on a clock is a workflow with trigger `schedule`."
 shape: inline
 part_of: step
 key: timeout

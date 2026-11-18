@@ -1,5 +1,6 @@
 kind: choice
 about: one thing the actor is offered, with one `then`
+guidance: "What an actor may pick at one step, with its `then`. Add `when` when the same screen offers fewer choices while a condition holds (who may see it); keep one choice without `when`. When the path differs by a fact nobody picks, use a system step with cases."
 shape: inline
 part_of: step
 key: choices

@@ -1,5 +1,6 @@
 kind: transition
 about: one allowed move between states of an entity
+guidance: "One allowed move between states of an entity; without `from` the entity is created in `to`. Model a move the product records and reacts to; a plain change of a fact is a `write` to an attribute."
 shape: inline
 part_of: entity
 key: transitions

@@ -22,6 +22,7 @@ from ogy.find import Found, find
 from ogy.graph import Impact, impact
 from ogy.history import History, history
 from ogy.init import Initialised, InitRefused, init
+from ogy.kindmap import map_lines
 from ogy.kindtext import kinds_lines
 from ogy.migrate import Migrated, migrate
 from ogy.model import Address, Finding, area_of, parse_address
@@ -241,9 +242,12 @@ def run_history(target: Target, text: str, limit: int = 100) -> Run[History]:
     return Run(history(target.repo, target.kb, target.kinds(), target.rev, text, limit), 0)
 
 
-def run_kinds(target: Target, kind: str | None = None, with_readers: bool = False) -> Run[list[str]]:
-    """The kinds as text; with `with_readers`, what reads each field of them instead."""
+def run_kinds(target: Target, kind: str | None = None, with_readers: bool = False, as_map: bool = False) -> Run[list[str]]:
+    """The kinds as text (about, guidance, fields, rules); with `with_readers`, what reads each field of them instead; with
+    `as_map`, the whole ontology as an indented tree, then its declared rules."""
     lines = kinds_lines(target.kinds(), kind)  # also refuses a kind that does not exist
+    if as_map:
+        return Run(map_lines(target.kinds()), 0)
     return Run(readers_lines(target.kinds(), kind) if with_readers else lines, 0)
 
 

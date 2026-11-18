@@ -1,5 +1,6 @@
 kind: actor
 about: "whoever uses or operates the product: a person, an AI or a third-party system that invokes a workflow; human: a librarian at the desk; ai: a model that implements a task; program: an MCP client calling a tool"
+guidance: "Different permitted actions make a new actor. A recorded move the product reacts to is a lifecycle state of an entity; the same actions with a different outcome from a fact are an attribute tested in a case. A threshold name (a senior volunteer, a large order) is never an actor. Renaming or adding actors later is normal."
 shape: list
 file: actors.yml
 evidence: none          # who uses the product, not a claim

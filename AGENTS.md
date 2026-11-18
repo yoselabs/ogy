@@ -128,6 +128,9 @@ there; everything else lives in the area that owns it. Change it only through og
   is `word`, `says` (one line of under 15 words) and `avoid`, nothing else; it needs no source. A word one area uses goes in that
   area's glossary, one that two areas use in the `shared` area of their layer. `just ogy status` shows where things
   stand; `just ogy find <words>` searches live and removed entries (search before you propose); `just ogy show <address>` reads one.
+- Before you create an entry of a kind, read `just ogy kinds <kind>`: what it is, its guidance (when to use it rather than its
+  neighbours: an actor, a lifecycle state or an attribute; `by` holds an entry to a rule, `because` cites a principle or a decision
+  as the reason) and its fields. `just ogy kinds --map` prints the whole ontology on one screen, with its rules.
 - Add and change entries with ONE command, `just ogy put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
   (`just ogy put '[{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}]'`). An address that exists is changed (`"field": null` removes a
   field), a new one is added; the whole call is checked together (a decision may come with the entries its options set) and written whole

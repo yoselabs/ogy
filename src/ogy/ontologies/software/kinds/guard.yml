@@ -1,5 +1,6 @@
 kind: guard
 about: a condition checked on entering a workflow or a step; when it does not hold, the work goes to `else`
+guidance: "A condition checked on entering a workflow or a step, often who may enter; when it does not hold the work goes to `else`. A guard refuses entry, a case branches inside a step, a choice's `when` shows fewer choices. A condition may name actors."
 harm: [who-is-allowed]
 shape: entity
 layers: [product, software]

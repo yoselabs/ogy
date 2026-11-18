@@ -1,5 +1,6 @@
 kind: goal
 about: a result the product exists to reach
+guidance: "A result the product exists to reach, in the owner's words. What the product can do is a capability; how one result is reached is a workflow. Keep few goals."
 shape: list
 file: goals.yml
 layers: [product]

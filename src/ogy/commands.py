@@ -81,7 +81,7 @@ def _history(target: Target, args: argparse.Namespace, _: bool) -> Result:
 
 
 def _kinds(target: Target, args: argparse.Namespace, _: bool) -> Result:
-    done = ops.run_kinds(target, args.kind, args.readers)
+    done = ops.run_kinds(target, args.kind, args.readers, args.map)
     return done.verdict, done.value
 
 

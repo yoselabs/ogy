@@ -1,5 +1,6 @@
 kind: guess
 about: what is built while a decision has no answer; an option, or values (`sets`) when the decision has no options; a guess of "no" chooses an option that sets `null`, or sets the address to `null`
+guidance: "What is built while the decision has no answer: the option the AI would choose, and why. With `heard` it rests on what the owner said. A guess is never an answer; the owner confirms it in review."
 shape: inline
 part_of: decision
 key: guess

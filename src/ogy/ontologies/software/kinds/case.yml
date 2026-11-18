@@ -1,5 +1,6 @@
 kind: case
 about: "one condition of a system or calling step; the lowest `order` that matches wins; the case keyed `otherwise` has no `when`"
+guidance: "A branch of a system or calling step: the path differs by a condition. The lowest `order` that matches wins; `otherwise` takes the rest. Use a case when the path differs; use a choice's `when` when the same screen offers fewer choices. A condition may name actors."
 shape: inline
 part_of: step
 key: cases

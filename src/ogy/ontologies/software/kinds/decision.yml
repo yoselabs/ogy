@@ -1,6 +1,7 @@
 kind: decision
 evidence: none          # a decision is a question; its evidence is the answer
 about: one question, its options, the AI's guess and the owner's answers; it settles the fields its options and guess set, and whether an entry exists, and is never a source; business, technical and development (ADR) decisions alike; the only home of a question and its answers (a tracker may mirror them)
+guidance: "A question with options, the AI's guess and the owner's answers: business, technical or an ADR. A proposal becomes a decision before it is acted on; no and not now are options that set `null`. Search first (`ogy find`): a new option goes on the decision that already asks the question."
 shape: entity
 layers: [product, software]
 settling: {}                                         # makes it the kind that settles entries: the keys of its options' `sets` and of the guess's `sets`; names as in kinds.Settling

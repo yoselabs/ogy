@@ -1,5 +1,6 @@
 kind: step
 about: "an actor step (choices, maybe a timeout), a system step (cases or one `then`) or a calling step (calls, cases over the callee's ends); no actor means the product itself"
+guidance: "One place in a workflow: an actor step (choices, maybe a timeout), a system step (cases or one `then`) or a calling step (another workflow, cases over its ends). No actor means the product acts. Start a new step when another actor acts or the product waits."
 shape: inline
 part_of: workflow
 key: steps

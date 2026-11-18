@@ -1,5 +1,6 @@
 kind: term
 about: "a word of the glossary, the one language of the product: an area's words in its glossary.yml, the words two areas use in the area shared of their layer"
+guidance: "A word of the product's one language: `says` in one line under 15 words, and the words to `avoid`. It goes in the glossary of the area that uses it, in `shared` when two areas do. A sentence names an entry with a link, not with a term."
 shape: list
 file: glossary.yml                                   # <layer>/<area>/glossary.yml
 layers: [product, software]

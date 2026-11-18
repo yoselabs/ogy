@@ -10,7 +10,9 @@ Status: **proposed**. The commands this skill names are the ones in the [README]
 batch write for create and update), `guess.heard`, `answer --said --where`, `answer.note` and a required
 `remove --why` are being built and are **untested here**. Steps with no eval behind them are marked untested.
 The skill holds the flow; the ontology (`ogy kinds [kind]`) holds the shapes; `ogy check` holds the lints. Never write
-YAML by hand and never read a spec to learn a shape: ask `ogy kinds`.
+YAML by hand and never read a spec to learn a shape: ask `ogy kinds`. Read `ogy kinds <kind>` before you create the first
+entry of that kind in a session: its guidance says when to use it rather than a neighbour (an actor, a state or an
+attribute; a case or a choice's `when`; `by` or `because`). `ogy kinds --map` shows the whole ontology and its rules (untested).
 
 ## 1. Glossary first
 Run `ogy glossary` before you read code or write a sentence (`ogy glossary <layer>/<area>` for one area and the shared
