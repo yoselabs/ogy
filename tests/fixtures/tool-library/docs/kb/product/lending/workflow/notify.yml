@@ -1,0 +1,47 @@
+says: One member gets one message.
+src:
+- code:src/library/remind.py#notify
+trigger: called
+start: send
+steps:
+  send:
+    says: The mailer takes the message.
+    cases:
+      ok:
+        order: 1
+        when:
+          text: the mailer accepted the message
+          reads:
+          - software/lending/external/mailer
+        then: sent
+        effects:
+        - do: tell
+          on: product/lending/actor/member
+          value: Your tool is late.
+      otherwise:
+        then: failed
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 5198b36ce6e2
+ends:
+  sent:
+    says: The message went out.
+    result: success
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: b50932db1da4
+  failed:
+    says: The message did not go out.
+    result: failure
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 67d29c259dc3

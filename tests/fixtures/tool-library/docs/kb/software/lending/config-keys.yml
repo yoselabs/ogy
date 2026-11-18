@@ -1,0 +1,14 @@
+- id: smtp-host
+  says: The mail server the reminders go through.
+  name: LIBRARY_SMTP_HOST
+  default: localhost
+  used_by:
+  - software/lending/operation/send-reminder
+  src:
+  - code:src/library/remind.py#notify
+- id: remind-every
+  says: How often reminders go out
+  name: LIBRARY_REMIND_DAYS
+  binds: product/lending/value/remind-every
+  src:
+  - code:src/library/remind.py#remind

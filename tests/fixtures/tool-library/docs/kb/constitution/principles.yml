@@ -1,0 +1,11 @@
+- id: members-first
+  says: A member's time comes before the library's convenience.
+  why: The library exists for its members.
+  src:
+  - code:src/library/loans.py#lend
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: a4e39966da73

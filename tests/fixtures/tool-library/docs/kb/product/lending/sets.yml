@@ -1,0 +1,7 @@
+- id: tool-condition
+  says: The condition a tool comes back in.
+  members:
+  - good
+  - damaged
+  src:
+  - code:src/library/loans.py#take_back

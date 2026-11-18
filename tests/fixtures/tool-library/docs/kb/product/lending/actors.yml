@@ -1,0 +1,27 @@
+- id: member
+  says: A person who borrows tools.
+  nature: human
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: abeea224ae57
+- id: owner
+  says: The person who runs the tool library and decides its rules.
+  nature: human
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: 4baae4a2d599
+- id: reminder-bot
+  says: The agent that drafts reminder texts.
+  nature: ai
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: c22d1bbb37ad

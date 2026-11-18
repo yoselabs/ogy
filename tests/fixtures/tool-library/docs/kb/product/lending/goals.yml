@@ -1,0 +1,6 @@
+- id: tools-reach-members
+  says: Members get the tools they need without buying them.
+  for:
+  - product/lending/actor/member
+  src:
+  - code:src/library/loans.py#lend

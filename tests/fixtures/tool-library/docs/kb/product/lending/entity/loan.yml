@@ -1,0 +1,59 @@
+says: One tool lent to one member until it comes back.
+src:
+- code:src/library/loans.py#Loan
+proof:
+- tests/test_loans.py::test_loan_lifecycle
+attrs:
+  tool:
+    says: The tool lent.
+    type: one
+    of: product/lending/entity/tool
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 9b58d8850fad
+  condition:
+    type: one
+    of: product/lending/set/tool-condition
+    optional: true
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 68fc7111925b
+  renewals:
+    type: counter
+    max: product/lending/value/max-loans
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: e4b88b93cb08
+states:
+  open:
+    says: The member has the tool.
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: f5cf9e70a121
+  returned:
+    says: The tool is back.
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: a0a36c1464a8
+transitions:
+  start:
+    to: open
+  return:
+    from:
+    - open
+    to: returned

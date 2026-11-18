@@ -1,0 +1,3 @@
+says: A tool the library owns.
+src:
+- code:src/library/loans.py#Tool

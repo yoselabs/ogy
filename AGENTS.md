@@ -7,6 +7,9 @@
 - Ontology, skill and checker changes: read [README](README.md) "What goes where". Every change names its eval in
   [evals/ledger.md](evals/ledger.md) or says it is untested. Every eval follows [evals/README.md](evals/README.md) and
   updates the ledger and [metrics](evals/metrics.md).
+- A kind file change keeps `tests/test_tool_library.py` green: the tool library fixture (`tests/fixtures/tool-library`, written
+  through ogy) holds every kind and fills every field, with its findings and work written down; a new kind or field goes into
+  it, or into `UNEXERCISED` with why. A rename or a drop is declared in the kind file for `ogy migrate` (README, "Kind changes").
 - Proposed decisions stay proposed until the owner decides. Do not commit, push or publish without the owner's word.
 - Consult and capture sessions (v5, proposed; details in `skills/ogy-capture/SKILL.md`):
   - A proposal becomes a `decision` entry (or a new option of the one that asks that question) before it is acted on.

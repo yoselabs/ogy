@@ -1,0 +1,36 @@
+says: Members with late tools are reminded.
+src:
+- code:src/library/remind.py#remind
+trigger: schedule
+schedule: product/lending/value/remind-every
+start: call
+steps:
+  call:
+    says: The reminder is sent.
+    calls: product/lending/workflow/notify
+    cases:
+      sent:
+        order: 1
+        covers_ends:
+        - product/lending/workflow/notify/end/sent
+        then: done
+      otherwise:
+        covers_ends:
+        - product/lending/workflow/notify/end/failed
+        then: done
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: cbc41471a8be
+ends:
+  done:
+    says: Every late member was reminded.
+    result: success
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 299ffaa0ab99

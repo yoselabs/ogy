@@ -1,0 +1,24 @@
+question: Which mailer sends the reminders?
+structure: true
+options:
+  smtp:
+    label: Plain SMTP
+    sets:
+      software/lending/external/mailer:
+        says: Sends mail over SMTP.
+        pin: smtplib (Python 3.15)
+  service:
+    label: A mail service
+    sets:
+      software/lending/external/mailer:
+        says: Sends mail through a paid service.
+        pin: service API v3
+guess:
+  chose: smtp
+  why: No account and no cost.
+answers:
+- chose: smtp
+  said: Plain SMTP
+  from: human
+  at: '2026-11-24T18:55:00+01:00'
+  where: ai:claude/9b01#44

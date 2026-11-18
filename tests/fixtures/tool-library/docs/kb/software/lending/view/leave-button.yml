@@ -1,0 +1,7 @@
+says: The button that leaves the borrow page without a tool.
+serves:
+- product/lending/workflow/borrow/step/ask
+offers:
+- product/lending/workflow/borrow/step/ask/choice/leave
+src:
+- code:src/library/pages.py#borrow_page

@@ -1,0 +1,5 @@
+says: A late tool costs the late fee for each day or part of a day it is late.
+src:
+- code:src/library/loans.py#late_fee
+proof:
+- tests/test_fee.py::test_late_fee_per_day

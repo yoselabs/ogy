@@ -1,0 +1,26 @@
+says: A returned tool closes its loan.
+src:
+- code:src/library/loans.py#take_back
+trigger: event
+event: product/lending/entity/loan/transition/return
+start: close
+steps:
+  close:
+    says: The library closes the loan.
+    then: closed
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 2cdca4ac02f9
+ends:
+  closed:
+    says: The loan is closed.
+    result: success
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 903a6c93d373

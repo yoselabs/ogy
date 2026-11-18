@@ -1,0 +1,17 @@
+format: 1
+items:
+  - id: product/lending/rule/old-reminder-rule
+    kind: rule
+    parent:
+    title:
+    said: Reminders go out by post.
+    why: Reminders go out by mail now
+    replaced_by:
+    at: 2026-11-18 22:13:11+00:00
+    last_seen: 177dece75b496815be6acb7d6e33fc13c449f58f
+    hash: 7c5b586007c7
+    ontology: software
+    snapshot:
+      says: Reminders go out by post.
+      src:
+      - code:src/library/remind.py#remind

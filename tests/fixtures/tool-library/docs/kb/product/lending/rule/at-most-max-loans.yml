@@ -1,0 +1,3 @@
+says: A member holds at most max-loans tools at once.
+src:
+- code:src/library/loans.py#lend

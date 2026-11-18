@@ -1,0 +1,23 @@
+- id: late-fee
+  title: Late fee
+  says: The fee for each day a tool is late
+  is: 2
+  unit: EUR
+  proof:
+  - tests/test_fee.py::test_late_fee_per_day
+- id: max-loans
+  says: How many tools one member may hold at once.
+  is: 3
+  unit: tools
+  src:
+  - code:src/library/loans.py#lend
+- id: reply-wait
+  says: How long the borrow page waits for the member.
+  is: 2
+  unit: days
+- id: remind-every
+  says: How often reminders go out.
+  is: 1
+  unit: days
+  src:
+  - code:src/library/remind.py#remind

@@ -1,0 +1,31 @@
+- id: loan
+  word: loan
+  says: One tool lent to one member until it comes back.
+  distinct:
+  - a reservation
+  - which holds a tool that is not lent yet
+  avoid:
+  - rental
+  example: Ana's loan of the drill.
+  borrowed: https://en.wikipedia.org/wiki/Loan
+  group: Lending
+  src:
+  - code:src/library/loans.py#Loan
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: 3d5b6be3f864
+- id: member
+  word: member
+  of: product/lending/actor/member
+  group: People
+  src:
+  - code:src/library/loans.py#lend
+  agreed:
+    at: '2026-11-25T09:00:00+01:00'
+    where: ai:claude/9b01#45
+    from: human
+    said: Yes to the cards but the borrow step
+    hash: e72870a061be

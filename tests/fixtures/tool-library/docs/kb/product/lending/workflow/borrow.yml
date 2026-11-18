@@ -1,0 +1,81 @@
+says: A member borrows a tool.
+src:
+- code:src/library/loans.py#lend
+trigger: actor
+start: ask
+realizes: product/lending/capability/lend-tools
+steps:
+  ask:
+    says: The member asks for a tool.
+    actor: product/lending/actor/member
+    choices:
+      borrow:
+        label: Borrow a tool
+        then: record
+        by:
+        - product/lending/rule/late-fee-is-per-day
+      leave:
+        label: Leave
+        then: left
+    timeout:
+      after: product/lending/value/reply-wait
+      then: left
+      by:
+      - product/lending/rule/at-most-max-loans
+      effects:
+      - do: tell
+        on: product/lending/actor/member
+        value: We kept your place for two days.
+  record:
+    says: The library records the loan.
+    cases:
+      full:
+        order: 1
+        when:
+          text: the member holds max-loans tools
+          reads:
+          - product/lending/value/max-loans
+        then: refused
+        by:
+        - product/lending/rule/at-most-max-loans
+      otherwise:
+        then: lent
+        effects:
+        - do: create
+          on: product/lending/entity/loan
+        - do: transition
+          on: product/lending/entity/loan/transition/start
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: f45d8bf7c3ac
+ends:
+  lent:
+    says: The member has the tool.
+    result: success
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: c2301ae65f03
+  refused:
+    says: The member may not borrow now.
+    result: failure
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 365576621a88
+  left:
+    says: The member left without a tool.
+    result: failure
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      from: human
+      said: Yes to the cards but the borrow step
+      hash: 1b8c247af48e

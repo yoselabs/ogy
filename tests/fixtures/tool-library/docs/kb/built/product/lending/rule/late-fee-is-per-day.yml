@@ -1,0 +1,1 @@
+product/lending/rule/late-fee-is-per-day: {own: f96d973dd906, deps: {}, covers: [], sourced: {code:src/library/loans.py#late_fee: 5e6b0847727f}}
