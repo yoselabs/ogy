@@ -1,0 +1,1 @@
+says: Every kind file in the ontology carries a short `guidance:` text, how to decide when to use the kind (for example when a variation is a new actor, an attribute or a lifecycle state; renaming or adding actors later is normal); `ogy kinds <kind>` prints it, and `ogy intro` prints pointers to the `ogy kinds` to read, not every guidance.

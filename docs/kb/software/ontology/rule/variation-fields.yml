@@ -1,0 +1,1 @@
+says: The ontology adds `choice.when` and `attr.derived` only; a `when` condition may name actors; there is no `actor.is` and no `actor.kept_as`; an actor step keeps one unconditional choice; a derived attribute is never written.

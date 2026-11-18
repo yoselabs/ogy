@@ -1,0 +1,24 @@
+question: Where does an agent read how to decide between kinds (when a variation is a new actor, an attribute or a lifecycle state), and what does `ogy intro` print of it?
+structure: true
+options:
+  in-kind-files:
+    label: Every kind file carries a short `guidance:`; `ogy kinds <kind>` prints it; `ogy intro` prints pointers to it
+    sets:
+      software/ontology/rule/kind-guidance:
+        says: Every kind file in the ontology carries a short `guidance:` text, how to decide when to use the kind (for example when a variation is a new actor, an attribute or a lifecycle state; renaming or adding actors later is normal); `ogy kinds <kind>` prints it, and `ogy intro` prints pointers to the `ogy kinds` to read, not every guidance.
+  in-docs:
+    label: Guidance only in docs/guidance.md and the capture skill
+    sets:
+      software/ontology/rule/kind-guidance:
+        says: How to decide between kinds is written only in docs/guidance.md and the capture skill; kind files carry no guidance and `ogy intro` prints none.
+guess:
+  chose: in-kind-files
+  why: The guidance sits next to the shape it explains, ships with the ontology and is read with one `ogy kinds` call; intro stays short with pointers.
+  heard:
+    said: Every kind file gets guidance; intro points to it rather than printing it all.
+answers:
+- chose: in-kind-files
+  said: Every kind file gets guidance; intro points to it rather than printing it all.
+  from: human
+  at: '2026-11-18T21:41:04+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -1,0 +1,26 @@
+question: Which fields does the ontology add to model conditional choices, derived facts and actor variations?
+structure: true
+context: The owner finds the existing ontology has too many fields; a field audit follows (bead under ogy-yy9).
+options:
+  fewer:
+    label: Add `choice.when` and `attr.derived` only; conditions may name actors; no `actor.is` or `actor.kept_as`
+    sets:
+      software/ontology/rule/variation-fields:
+        says: The ontology adds `choice.when` and `attr.derived` only; a `when` condition may name actors; there is no `actor.is` and no `actor.kept_as`; an actor step keeps one unconditional choice; a derived attribute is never written.
+  all-four:
+    label: Add `choice.when`, `attr.derived`, `actor.is` and `actor.kept_as`
+    sets:
+      software/ontology/rule/variation-fields:
+        says: The ontology adds `choice.when`, `attr.derived`, `actor.is` and `actor.kept_as`; a `when` condition may name actors.
+guess:
+  chose: fewer
+  why: Two fields cover the cases the variation test leaves to choices and attributes, and the ontology already has too many fields.
+  heard:
+    said: Fewer fields; add choice.when and attr.derived only, as Fable suggested.
+answers:
+- chose: fewer
+  said: 'Fewer fields: add choice.when and attr.derived only, as Fable suggested.'
+  from: human
+  at: '2026-11-18T21:41:09+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  note: the owner finds the existing ontology has too many fields

@@ -1,0 +1,24 @@
+question: When two kinds of the same thing differ, how does one tell whether the difference is an actor, a lifecycle state or an attribute?
+context: Part of the actor kind's guidance (software/ontology/decision/kind-guidance).
+options:
+  by-what-differs:
+    label: 'Different things they may do: actor; the product records the move and reacts: state; same actions, different outcome from a fact: attribute tested in a case; a name with a threshold is never an actor'
+    sets:
+      software/ontology/rule/variation-test:
+        says: A variation is an actor when they may do different things; a lifecycle state when the product records the move and reacts to it; an attribute tested in a case when they do the same things and a fact changes the outcome. A name with a threshold (a senior volunteer, a large order) is never an actor.
+  actor-per-name:
+    label: Every named variation is its own actor
+    sets:
+      software/ontology/rule/variation-test:
+        says: Every named variation of who uses the product is its own actor.
+guess:
+  chose: by-what-differs
+  why: It asks what differs, so a word in the owner's speech does not become an actor that does nothing different.
+  heard:
+    said: Different permitted actions make an actor, a recorded move the product reacts to makes a state, a fact that changes the outcome makes an attribute; a threshold name is never an actor.
+answers:
+- chose: by-what-differs
+  said: Different permitted actions make an actor, a recorded move the product reacts to a state, a fact changing the outcome an attribute; a threshold name is never an actor.
+  from: human
+  at: '2026-11-18T21:41:07+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -10,14 +10,24 @@ options:
     label: Only terms follow the home rule; an actor lives wherever it was first written
     sets:
       product/language/rule/shared-entries-home:
+  c:
+    label: Only terms, actors and sets follow the home rule; an entry with behaviour or a decision stays in its owning area and is linked
+    sets:
+      product/language/rule/shared-entries-home:
+        says: A term, an actor or a set that one area uses lives in that area; one that two areas use lives at its layer's root; an entry with behaviour or a decision stays in its owning area and others link to it; ogy check enforces it.
 guess:
-  chose: a
-  why: One home rule for every shared entry keeps 'where is it' a single lookup, as glossary-per-layer already does for terms.
+  chose: c
+  why: Words, actors and sets are shared vocabulary; an entry with behaviour or a decision has one owning area, and moving it would split it from its area's flow.
   heard:
-    said: Agreed with A
+    said: Recommended option fine.
 answers:
 - chose: a
   said: Agreed with option A
   from: human
   at: '2026-11-18T19:44:13+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: c
+  said: 'Recommended option fine: only terms, actors and sets go to the layer root; behaviour and decisions stay in their area and are linked.'
+  from: human
+  at: '2026-11-18T21:41:12+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
