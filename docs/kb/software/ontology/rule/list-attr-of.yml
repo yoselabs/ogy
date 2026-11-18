@@ -1,0 +1,1 @@
+says: An attribute of type one names what it holds in `of`; an attribute of type list names `of` when its items are entries or set members, and nothing when they are plain texts.

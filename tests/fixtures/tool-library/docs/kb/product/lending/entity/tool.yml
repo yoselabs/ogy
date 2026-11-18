@@ -1,3 +1,11 @@
 says: A tool the library owns.
 src:
 - code:src/library/loans.py#Tool
+attrs:
+  out:
+    says: The tool is out on a loan.
+    type: flag
+    derived:
+      text: an open loan holds the tool
+      reads:
+      - product/lending/entity/loan

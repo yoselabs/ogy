@@ -59,14 +59,14 @@ class FlowChecker:
         return self.snapshot.entries[address].fields.get(field) is not None
 
     def shape(self, step: Address) -> None:
-        """Actor step: choices (no `when:`), maybe a timeout. Calling step: cases. System step: cases or a plain `then:`."""
+        """Actor step: choices (`requires` keeps one without `when:`), maybe a timeout. Calling step: cases. System step: cases or
+        a plain `then:`."""
         flow, rows = self.flow, self.graph.rows[step]
         choices, cases, timeouts = rows[flow.choice], rows[flow.case], rows[flow.timeout]
         then, calls = self.has(step, flow.then), self.has(step, flow.calls)
         if self.has(step, flow.actor):
-            wrong = not choices or bool(cases) or then or calls or any(self.has(row, flow.when) for row in choices)
-            if wrong:
-                self.add(Problem.STEP_SHAPE, step, "an actor step offers choices (no `when:`) and nothing else")
+            if not choices or bool(cases) or then or calls:
+                self.add(Problem.STEP_SHAPE, step, "an actor step offers choices and nothing else")
             return
         if choices or timeouts:
             self.add(Problem.STEP_SHAPE, step, "only an actor step has choices or a timeout")

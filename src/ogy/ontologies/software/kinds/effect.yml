@@ -7,4 +7,10 @@ holds: list
 fields:
   do: {type: enum, of: [transition, create, delete, write, count, tell], required: true}
   "on": {type: link, to: [transition, entity, attr, actor, external], required: true}
+requires:
+  - {if_equals: {field: do, value: transition}, path: ["on"], kinds: [transition], error: "a transition effect names a transition"}
+  - {if_equals: {field: do, value: [create, delete]}, path: ["on"], kinds: [entity], error: "a create or delete effect names an entity"}
+  - {if_equals: {field: do, value: write}, path: ["on"], kinds: [attr, entity, external], without: [derived], error: "a write effect names an entity, an external or an attribute that is not derived"}
+  - {if_equals: {field: do, value: count}, path: ["on"], kinds: [attr], error: "a count effect names the attribute it counts"}
+  - {if_equals: {field: do, value: tell}, path: ["on"], kinds: [actor, external], error: "a tell effect names an actor or an external"}
 dropped: [value]

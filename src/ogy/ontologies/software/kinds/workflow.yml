@@ -3,6 +3,9 @@ about: a result reached by steps; branching is `then` targets, merging is two ro
 shape: entity
 layers: [product, software]
 flow: {}
+requires:
+  - {if_equals: {field: trigger, value: schedule}, needs_field: schedule, error: "a scheduled workflow names its schedule"}
+  - {if_equals: {field: trigger, value: event}, needs_field: event, error: "a workflow started by an event names the event"}
 fields:
   says: {required: true}                             # the result it reaches
   trigger: {type: enum, of: [actor, schedule, event, called], required: true}

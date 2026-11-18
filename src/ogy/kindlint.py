@@ -2,7 +2,22 @@
 
 from collections.abc import Mapping
 
-from ogy.kinds import ANY, COMMON_FIELDS, FILED, KIND_NAME, LINKING, NAME, RESERVED_AREAS, SHARED_AREA, FieldSpec, FieldType, Kind, Shape
+from ogy.kinds import (
+    ANY,
+    COMMON_FIELDS,
+    FILED,
+    KIND_NAME,
+    LINKING,
+    NAME,
+    RESERVED_AREAS,
+    SHARED_AREA,
+    FieldSpec,
+    FieldType,
+    Holds,
+    Kind,
+    Requirement,
+    Shape,
+)
 
 # Facts the tool computes; no kind may store them (K22).
 STORED_STATE = frozenset({
@@ -109,8 +124,32 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
         if need.if_part is not None and not (need.if_part in kinds and kinds[need.if_part].is_part(name)):
             found.append(f"{name}: requirement if_part names no part kind {need.if_part}")
         found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
+        found += _requirement(kinds, name, kind, need)
     if kind.one_part is not None and kind.one_part.kind not in kinds:
         found.append(f"{name}: one_part names unknown kind {kind.one_part.kind}")
+    return found
+
+
+def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Requirement) -> list[str]:
+    """`if_equals` names a field and, for an enum, its members; `needs_field` a field; each of `without` is a field of one of
+    `kinds`; an item of a list part has no address, so its path starts at one of its link fields and its condition is a field."""
+    found: list[str] = []
+    if (equals := need.if_equals) is not None:
+        spec = kind.fields.get(equals.field)
+        if spec is None:
+            found.append(f"{name}: requirement if_equals names no field {equals.field}")
+        elif spec.type is FieldType.ENUM:
+            found += [f"{name}: requirement if_equals: {value} is no member of {equals.field}" for value in equals.values
+                      if value not in spec.of]
+    if need.needs_field is not None and need.needs_field not in kind.fields:
+        found.append(f"{name}: requirement needs_field names no field {need.needs_field}")
+    found += [f"{name}: requirement without names {field}, no field of {list(need.kinds)}" for field in need.without
+              if not any(field in kinds[target].fields for target in need.kinds if target in kinds)]
+    if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
+        if need.if_part is not None:
+            found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")
+        if need.path and (need.path[0] not in kind.fields or kind.fields[need.path[0]].type not in (FieldType.LINK, FieldType.LINKS)):
+            found.append(f"{name}: the path of an item of a list part starts at one of its link fields")
     return found
 
 

@@ -8,7 +8,7 @@ and `fingerprint.also`, `exactly_one_of` and `one_part`, the names `flow:` and `
 
 from collections.abc import Iterable
 
-from ogy.kinds import ANY, LINKING, Flow, Holds, Kind
+from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement
 from ogy.ontology import Ontology
 from ogy.terms import TEXT_FIELDS
 
@@ -58,6 +58,17 @@ def _walk(found: Reads, kinds: dict[str, Kind], start: str, hops: Iterable[str],
     return set()
 
 
+def _requirement(found: Reads, kinds: dict[str, Kind], name: str, need: Requirement) -> None:
+    """Its condition's field, the field it needs, its path and the `without` fields of the kinds it reaches."""
+    for field in (need.if_set, need.if_equals.field if need.if_equals else None, need.needs_field):
+        if field:
+            _mark(found, name, field, "requires", kinds)
+    _walk(found, kinds, name, need.path, "requires")
+    for target in need.kinds:
+        for field in need.without:
+            _mark(found, target, field, "requires", kinds)
+
+
 def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> None:
     rows = (flow.choice, flow.case, flow.timeout)
     wanted = [(container, flow.start), (container, flow.trigger), *((k, flow.then) for k in (flow.step, *rows)),
@@ -93,9 +104,7 @@ def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
     kinds, found, reached = ontology.kinds, {}, set()
     for name, kind in kinds.items():
         for need in kind.requires:
-            if need.if_set:
-                _mark(found, name, need.if_set, "requires", kinds)
-            _walk(found, kinds, name, need.path, "requires")
+            _requirement(found, kinds, name, need)
         for path in (*kind.fingerprint.also, *kind.fingerprint.reached):
             reached |= _walk(found, kinds, name, path, "fingerprint path")
         for group in kind.exactly_one_of:

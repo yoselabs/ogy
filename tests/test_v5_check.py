@@ -72,7 +72,7 @@ def when(text: str, reads: str) -> dict[str, str | None]:
 
 def test_expr_reads_are_checked_links(kb: Make) -> None:
     assert kb({**when("the fee", "[product/app/value/fee]"), "product/app/values.yml": VALUES}).findings() == set()
-    found = kb({**when("the fee", "[product/app/value/nothing, product/app/actor/member]"), "product/app/values.yml": VALUES}).findings()
+    found = kb({**when("the fee", "[product/app/value/nothing, product/app/workflow/sys]"), "product/app/values.yml": VALUES}).findings()
     assert (Problem.DANGLING_LINK, "product/app/workflow/sys/step/sys/case/go") in found
     assert (Problem.LINK_KIND, "product/app/workflow/sys/step/sys/case/go") in found
 

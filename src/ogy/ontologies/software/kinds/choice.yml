@@ -11,5 +11,6 @@ requires:
   - {if_part: effect, path: ["<-performs"], kinds: [operation], error: "a row with an effect has an operation performing it"}
 fields:
   label: {required: true}
+  when: {type: expr, to: [value, set, entity, attr, state, external, config_key, actor], harm: [who-is-allowed]}   # offered only while it holds; the step keeps one choice without it
   then: {type: link, to: [step, end, workflow], required: true}
   by: {type: links, to: [rule]}

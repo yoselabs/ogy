@@ -90,21 +90,50 @@ class Fingerprint(BaseModel):
     reached: tuple[tuple[str, ...], ...] = ()
 
 
+class Equals(BaseModel):
+    """A condition on a field's value: the entry's `field` is `value`, or one of the values listed."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    field: str
+    value: str | tuple[str, ...]
+
+    @property
+    def values(self) -> tuple[str, ...]:
+        return (self.value,) if isinstance(self.value, str) else self.value
+
+
 class Requirement(BaseModel):
-    """An entry with field `if_set`, or with a part `if_part` (or every entry, without either), reaches `kinds` along `path`."""
+    """When the entry has field `if_set`, a part `if_part` or a field value `if_equals` (every entry, without one), it sets
+    `needs_field`, or it reaches along `path` (none: the entry itself) an entry of `kinds` that sets none of `without`."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     if_set: str | None = None
     if_part: str | None = None
-    path: tuple[str, ...]
-    kinds: tuple[str, ...]
+    if_equals: Equals | None = None
+    needs_field: str | None = None
+    path: tuple[str, ...] = ()
+    kinds: tuple[str, ...] = ()
+    without: tuple[str, ...] = ()
     error: str
 
     @model_validator(mode="after")
     def _one_condition(self) -> Self:
-        if self.if_set is not None and self.if_part is not None:
-            raise ValueError("a requirement has if_set or if_part, not both")
+        if sum(item is not None for item in (self.if_set, self.if_part, self.if_equals)) > 1:
+            raise ValueError("a requirement has one of if_set, if_part and if_equals, not both")
+        if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
+            raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
         return self
+
+    @property
+    def condition(self) -> str:
+        """The condition as words, empty for every entry."""
+        if self.if_set:
+            return f"with {self.if_set}"
+        if self.if_part:
+            return f"with a {self.if_part}"
+        if self.if_equals:
+            return f"with {self.if_equals.field} {'|'.join(self.if_equals.values)}"
+        return ""
 
 
 class OnePart(BaseModel):
@@ -173,6 +202,7 @@ class Kind(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     kind: str
     about: str
+    guidance: str | None = None  # how to decide: when to use this kind rather than its neighbours (`ogy kinds <kind>`)
     shape: Shape
     layers: tuple[str, ...] = ()  # the layer folders this kind may appear in (the folder is the layer's only home)
     area: str | None = None  # entries live only in this fixed folder (the constitution), outside every layer

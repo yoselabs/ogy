@@ -17,6 +17,10 @@ steps:
       leave:
         label: Leave
         then: left
+        when:
+          text: the member is not a staff member
+          reads:
+          - product/lending/actor/member
     timeout:
       after: product/lending/value/reply-wait
       then: left

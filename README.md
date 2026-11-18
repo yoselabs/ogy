@@ -159,13 +159,23 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - Where: `area` (what one area covers).
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `view` and `command`
-  that serve steps; `operation` that performs them; `guard` on entering.
-- What it keeps: `entity` with `attr`, `state` and `transition`; `value` (a number with a unit), `config_key`, `set`.
+  that serve steps; `operation` that performs them; `guard` on entering. A `choice` with `when` is offered only while it
+  holds (the same screen offers fewer choices; a `case` when the path differs); an actor step keeps one choice without it.
+- What it keeps: `entity` with `attr`, `state` and `transition`; `value` (a number with a unit), `config_key`, `set`. An
+  attribute with `derived` is computed from what its expression reads: no `write` effect names it, and it has no `max`
+  and is never `optional`.
+- Conditions (`when` of a case, a guard or a choice; `derived`) may name actors.
 - What it depends on: `external` and its `deviation`s.
 - What is open and what the owner chose: `decision` with `option`, `guess` (and its `heard`) and `answer`.
 - Held to: a row, an external, a workflow, an entity, an attribute or a guard names the rules it is held to with `by`; a
   rule has no `on`. `by` is outside the fingerprint of all but the rows, so adding a rule stales no holder; the pin of an
   external held to a rule is part of the rule's fingerprint (`fingerprint.reached`), so a new pin makes its proofs work again.
+
+A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
+has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
+then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself) an entry of `kinds` that sets
+none of `without`; an unmet one is `unmet-requirement`. So a workflow with `trigger: schedule` names its `schedule`, an
+attribute of type `one` its `of`, and an effect's `do` names what its `on` may be.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
 that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.

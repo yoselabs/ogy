@@ -49,8 +49,7 @@ def _facts(kind: Kind) -> list[str]:
 def _rules(kind: Kind) -> list[str]:
     lines = [f"  exactly one of: {', '.join(group)}" for group in kind.exactly_one_of]
     for need in kind.requires:
-        when = f" when {need.if_set} is set" if need.if_set else f" when it has a {need.if_part}" if need.if_part else ""
-        lines.append(f"  requires{when}: {need.error}")
+        lines.append(f"  requires{' ' + need.condition if need.condition else ''}: {need.error}")
     if kind.one_part:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
     lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
@@ -65,7 +64,7 @@ def kinds_lines(ontology: Ontology, only: str | None = None) -> list[str]:
     for name, kind in sorted(ontology.kinds.items()):
         if only not in (None, name):
             continue
-        lines += [f"{name}: {kind.about}", *_facts(kind)]
+        lines += [f"{name}: {kind.about}", *([f"  guidance: {kind.guidance}"] if kind.guidance else []), *_facts(kind)]
         if kind.fields:
             lines += ["  fields:", *(_field(field, spec) for field, spec in kind.fields.items())]
         lines += [*_rules(kind), ""]
