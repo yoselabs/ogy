@@ -4,18 +4,18 @@ options:
   keep-two:
     label: Keep `message` and `answer`; remove `agree` from the CLI and MCP
     sets:
-      software/cli/rule/message-and-answer-are-public:
+      software/cli/rule/answer-and-reply-are-public:
         says: '`message` and `answer` are public commands for words said outside a review round; `agree` is not a command, a review round is the only road to agreement.'
   keep-all:
     label: Keep all three
     sets:
-      software/cli/rule/message-and-answer-are-public:
+      software/cli/rule/answer-and-reply-are-public:
         says: '`message`, `answer` and `agree` are public commands.'
   answer-only:
     label: 'Only `answer` and `reply`: no `message` and no `agree` command'
     sets:
-      software/cli/rule/message-and-answer-are-public:
-        says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+      software/cli/rule/answer-and-reply-are-public:
+        says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command; a review round is the only road to agreement.'
 guess:
   chose: answer-only
   why: The owner chose it on 2026-11-18, with no messages stored.

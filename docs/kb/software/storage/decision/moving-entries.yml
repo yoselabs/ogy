@@ -1,7 +1,7 @@
 title: How entries leave an area
 structure: true
-question: ogy has no command that moves an entry to another area. remove and put would give a new address, lose the agreements recorded on messages and break the decisions that name it. How do the entries of product/ogy and software/ogy reach topic areas?
-context: Found on 2026-11-18 while splitting the area. Messages are stored in their actor's area (product/ogy) and never edited, so their agreements name the old addresses.
+question: ogy has no command that moves an entry to another area. remove and put would give a new address, lose the agreements on the entry and break the decisions that name it. How do the entries of product/ogy and software/ogy reach topic areas?
+context: 'Found on 2026-11-18 while splitting the area: links, decisions, answers and removed items name the old addresses.'
 options:
   move-command:
     label: 'Build `ogy move`: keeps the id, rewrites links and decision sets, carries agreements and history'
@@ -17,6 +17,11 @@ options:
     sets:
       software/storage/rule/move-keeps-history:
         says: "`ogy move <address> <area>` moves an entry to another area: it keeps the kind and id and, in the same write, names the new address wherever the old one was (links, decisions, the agreed keys and by of messages, answers, the why of removed items); a message's words never change. It writes no removed.yml item: Git keeps the history, and check --base tells a move (same kind, id and fingerprint) from a loss."
+  move-by-kind-and-id:
+    label: Build `ogy move`, which records nothing; check --base tells a move by kind and id, and the fingerprint only breaks ties
+    sets:
+      software/storage/rule/move-keeps-history:
+        says: '`ogy move <address> <area>` moves an entry to another area: it keeps the kind and id and, in the same write, names the new address wherever the old one was (links, decisions, answers, the why of removed items). It writes no removed.yml item: Git keeps the history, and check --base tells a move from a loss: an entry gone with exactly one arrival of the same kind and id has moved; the fingerprint only breaks ties.'
 guess:
   chose: move-leaves-no-record
   why: The owner wants a migration to cause no removals and leave no record per move.
@@ -33,3 +38,9 @@ answers:
   from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: move-by-kind-and-id
+  said: 'Fable: a move is found by kind and id; a changed text is an ordinary change'
+  from: ai
+  at: '2026-11-19T00:30:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/review-delegation

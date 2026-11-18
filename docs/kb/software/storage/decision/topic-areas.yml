@@ -18,6 +18,10 @@ options:
     sets:
       software/storage/rule/areas-by-topic:
         says: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, language, ontology, people. software: cli, mcp, writes, storage, checks, setup, ontology, packaging. No area is named after the product."
+  folders-are-the-list:
+    label: No rule lists the areas; the folders of the tree are the list
+    sets:
+      software/storage/rule/areas-by-topic:
 guess:
   chose: by-topic
   why: Each area then matches one workflow or one part of the code, so review --from code pages one topic at a time; two wide areas would only rename ogy.
@@ -27,3 +31,9 @@ answers:
   from: human
   at: '2026-11-18T11:32:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: folders-are-the-list
+  said: 'Fable: the area list is stale; the tree is the list'
+  from: ai
+  at: '2026-11-19T00:31:25+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: software/ontology/decision/review-delegation

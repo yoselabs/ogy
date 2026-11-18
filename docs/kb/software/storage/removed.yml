@@ -17,3 +17,16 @@ items:
       unit: hex digits
       src:
       - code:src/ogy/writes.py#message
+  - id: software/storage/rule/areas-by-topic
+    kind: rule
+    parent:
+    title:
+    said: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, language, ontology, people. software: cli, mcp, writes, storage, checks, setup, ontology, packaging. No area is named after the product."
+    why: software/storage/decision/topic-areas
+    replaced_by:
+    at: 2026-11-19 00:31:26+01:00
+    last_seen: 50fd192f730c4a4865fdf0e7a3f1b3020f3db5e2
+    hash: 6b570db6dcd8
+    ontology: software
+    snapshot:
+      says: "ogy's own knowledge base groups entries by topic. product: capture, review, removal, checks, setup, inspection, evals, language, ontology, people. software: cli, mcp, writes, storage, checks, setup, ontology, packaging. No area is named after the product."

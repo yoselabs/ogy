@@ -2,10 +2,10 @@ question: Does `ogy remove` always need a reason?
 context: A removal without a reason is a silent drop (Q10).
 options:
   required:
-    label: '`--why` is required: a message or decision address, or plain text; text-only reasons are listed by `dropped`'
+    label: '`--why` is required: a decision address, or plain text; text-only reasons are listed by `dropped`'
     sets:
       product/removal/rule/remove-needs-a-reason:
-        says: '`ogy remove` always needs `--why`: a message or decision address, or plain text; an address stays required when a person had agreed; text-only reasons are listed by `dropped`.'
+        says: '`ogy remove` always needs `--why`: a decision address, or plain text; an address stays required when a person had agreed; text-only reasons are listed by `dropped`.'
   optional:
     label: '`--why` stays optional'
     sets:

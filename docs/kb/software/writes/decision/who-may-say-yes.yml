@@ -2,10 +2,10 @@ question: Who may confirm a sentence or answer a question for the owner?
 context: 'Today any actor with `nature: human` agrees and answers, and the agent sets `--from-owner` (Q13, card E1).'
 options:
   human:
-    label: A human actor confirms; an AI decides for the owner only when the owner says so in a message; a second human actor is a finding
+    label: A human actor confirms; an AI decides for the owner only when the owner says so in an answer to a decision; a second human actor is a finding
     sets:
       software/writes/rule/who-may-say-yes:
-        says: Only a human actor confirms; an AI decides for the owner only when the owner says so explicitly in a message; today a person is written as human, with no name; a second human actor is a finding.
+        says: Only a human actor confirms; an AI decides for the owner only when the owner says so explicitly in an answer to a decision; today a person is written as human, with no name; a second human actor is a finding.
   decides-per-layer:
     label: An actor lists the layers it decides
     sets:

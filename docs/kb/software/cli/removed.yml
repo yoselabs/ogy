@@ -18,3 +18,18 @@ items:
       - product/capture/workflow/store-owner-words/step/store
       src:
       - code:src/ogy/cli.py#_writes
+  - id: software/cli/rule/message-and-answer-are-public
+    kind: rule
+    parent:
+    title:
+    said: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+    why: software/cli/decision/message-and-answer-are-public
+    replaced_by:
+    at: 2026-11-18 23:30:24+00:00
+    last_seen: 50fd192f730c4a4865fdf0e7a3f1b3020f3db5e2
+    hash: 5d5347d6f596
+    ontology: software
+    snapshot:
+      says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+      src:
+      - code:src/ogy/cli.py#_writes

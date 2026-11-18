@@ -1,3 +1,0 @@
-says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
-src:
-- code:src/ogy/cli.py#_writes
