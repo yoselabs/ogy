@@ -108,7 +108,7 @@ steps:
       go:
         label: Borrow
         then: done
-        effects: [{do: tell, "on": product/app/actor/member, value: hello}]
+        effects: [{do: tell, "on": product/app/actor/member}]
     timeout: {after: product/app/value/fee, then: done}
 ends:
   done: {result: success, says: The tool is lent.}

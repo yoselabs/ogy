@@ -76,7 +76,9 @@ class Snapshot:
         self._visiting.add(address)
         try:
             kind = self.kind_of(address)
-            also = [self._along(address, path) for path in kind.fingerprint.also]
+            also: list[object] = [self._along(address, path) for path in kind.fingerprint.also]
+            reached = [[n, found] for n, path in enumerate(kind.fingerprint.reached) if (found := self._along(address, path, True))]
+            also += [["reached", reached]] if reached else []
             entry = self.entries[address]
             self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, proofs)
         finally:
@@ -97,8 +99,9 @@ class Snapshot:
                 found.append([part.key, {k: v for k, v in self.entries[one].fields.items() if k not in notes}])
         return found
 
-    def _along(self, address: Address, path: tuple[str, ...]) -> list[str]:
+    def _along(self, address: Address, path: tuple[str, ...], only_set: bool = False) -> list[str]:
         reached, values = self.links.walk(address, path)
+        values = [value for value in values if value is not None] if only_set else values
         match path[-1] if path else "":
             case "=@id":
                 return sorted(item.key for item in reached)

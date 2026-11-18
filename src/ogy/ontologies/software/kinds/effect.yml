@@ -7,4 +7,4 @@ holds: list
 fields:
   do: {type: enum, of: [transition, create, delete, write, count, tell], required: true}
   "on": {type: link, to: [transition, entity, attr, actor, external], required: true}
-  value: {}                                          # text: what is written or told; never evaluated
+dropped: [value]

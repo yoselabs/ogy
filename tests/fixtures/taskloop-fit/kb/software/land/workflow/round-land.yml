@@ -2,7 +2,7 @@ title: Land phase of a round
 says: Under automatic landing, the oldest passed task a round took is landed or put on hold.
 trigger: called
 start: mode
-src: ["code:src/taskloop/round_land.py#land_passed"]
+src: [code:src/taskloop/round_land.py#land_passed]
 steps:
   mode:
     says: The round reads who lands, from origin's main as fetched now.
@@ -25,7 +25,7 @@ steps:
         then: done
       held:
         covers_ends: [product/land/workflow/land/end/conflict, product/land/workflow/land/end/checks-failed, product/land/workflow/land/end/remote-rejected, product/land/workflow/land/end/branch-moved, product/land/workflow/land/end/claim-lost]
-        effects: [{do: tell, "on": product/land/actor/person, value: "the task is on hold with the cause land:<reason>; one comment says what a person can do"}]
+        effects: [{do: tell, on: product/land/actor/person}]
         then: held
         by: [product/land/rule/held-once]
       retry:
@@ -40,3 +40,5 @@ ends:
   held: {result: failure, says: One task is on hold until a person answers.}
   retried: {result: failure, says: The land could not tell; the next round tries again.}
   waiting: {result: failure, says: The refusal is reported once and the task waits for a person.}
+by:
+- product/land/rule/held-once

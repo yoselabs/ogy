@@ -1,3 +1,2 @@
 says: A land delivers exactly what was checked; the local task branch and origin's task branch are both the checked commit.
-"on": [product/land/workflow/land]
-src: ["code:src/taskloop/land.py#_branch"]
+src: [code:src/taskloop/land.py#_branch]

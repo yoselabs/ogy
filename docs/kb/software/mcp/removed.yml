@@ -1,0 +1,17 @@
+format: 1
+items:
+  - id: software/mcp/external/mcp-clients
+    kind: external
+    parent:
+    title:
+    said: An MCP client, such as Claude Code, that starts ogy mcp from the .mcp.json at the repository root and calls one tool per ogy command over stdio.
+    why: software/ontology/decision/actor-program
+    replaced_by:
+    at: 2026-11-18 22:29:53+00:00
+    last_seen: 3141c04c83392b6167dada710101e2af73273e28
+    hash: 93c815c78783
+    ontology: software
+    snapshot:
+      says: An MCP client, such as Claude Code, that starts ogy mcp from the .mcp.json at the repository root and calls one tool per ogy command over stdio.
+      src:
+      - code:src/ogy/mcp_server.py#build

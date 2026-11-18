@@ -48,6 +48,7 @@ class Decision:
     answers: list[Answer] = field(default_factory=list)
     guess: Entry | None = None
     heard: Entry | None = None  # what the owner said that the guess rests on: {said}
+    names: Settling = field(default_factory=Settling)
 
     @property
     def in_force(self) -> Force | None:
@@ -57,14 +58,14 @@ class Decision:
             return Force(self.options[newest.chose], True, newest.chose, newest.note, newest.who != "human")
         if self.guess is None:
             return None
-        chose, value = self.guess.fields.get("chose"), self.guess.fields.get("value")
+        chose, value = self.guess.fields.get(self.names.chose), self.guess.fields.get(self.names.value)
         if isinstance(chose, str):
             return Force(self.options.get(chose, {}), False, chose)
         return Force(value, False, None) if isinstance(value, dict) else None
 
     def sets_all(self) -> list[Sets]:
-        """Every `sets` of the decision: its options and the guess value."""
-        value = self.guess.fields.get("value") if self.guess else None
+        """Every `sets` of the decision: its options' and the guess's."""
+        value = self.guess.fields.get(self.names.value) if self.guess else None
         return [*self.options.values(), *([value] if isinstance(value, dict) else [])]
 
 
@@ -101,7 +102,7 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
         if address.kind != kind.kind:
             continue
         decision = Decision(address, entry, guess=snapshot.entries.get(address.part(names.guess)),
-                            heard=snapshot.entries.get(address.part(names.guess).part(names.heard)))
+                            heard=snapshot.entries.get(address.part(names.guess).part(names.heard)), names=names)
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}

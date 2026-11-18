@@ -97,8 +97,10 @@ def before(ontology: Ontology) -> Ontology:
     for name, kind in ontology.kinds.items():
         mine = {new: old for old, new in kind.renamed.items()}
         fields = {mine.get(field, field): spec for field, spec in kind.fields.items()} | {old: FieldSpec() for old in kind.dropped}
-        also = tuple(tuple(_hop(hop, back) for hop in path) for path in kind.fingerprint.also)
-        kinds[name] = kind.model_copy(update={"fields": fields, "fingerprint": kind.fingerprint.model_copy(update={"also": also})})
+        also, reached = (tuple(tuple(_hop(hop, back) for hop in path) for path in paths)
+                         for paths in (kind.fingerprint.also, kind.fingerprint.reached))
+        update = {"also": also, "reached": reached}
+        kinds[name] = kind.model_copy(update={"fields": fields, "fingerprint": kind.fingerprint.model_copy(update=update)})
     return Ontology.unchecked(kinds, ontology.layers)
 
 

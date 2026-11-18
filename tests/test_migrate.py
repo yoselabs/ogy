@@ -22,11 +22,12 @@ options:
   two: {label: Two euros, sets: {product/app/value/fee: {is: 2, unit: EUR}}}
 guess: {chose: two, why: Small.}
 """
-# value.unit becomes `per`, effect.value is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
+# value.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
     "value.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: per}\n")],
-    "effect.yml": [("  value: {}", ""), ("", "dropped: [value]\n")],
+    "effect.yml": [('  "on": {type: link, to: [transition, entity, attr, actor, external], required: true}\n', ""),
+                   ("dropped: [value]", 'dropped: [value, "on"]')],
     "answer.yml": [("  note: {note: true}", "  hedge: {note: true}"), ("", "renamed: {note: hedge}\n")],
     "decision.yml": [("settling: {}", "settling: {note: hedge}")],
     "timeout.yml": [('"=unit"', '"=per"')],
@@ -78,7 +79,7 @@ def before(repo: Path) -> str:
 def test_a_kind_change_is_found_until_migrated(repo: Path, before: str) -> None:
     found = {(item.problem, str(item.address), item.detail) for item in ops.run_check(Changed(repo)).value}
     assert (Problem.NEEDS_MIGRATION, FEE, "unit is now per: run `ogy migrate`") in found
-    assert (Problem.NEEDS_MIGRATION, GO, "effects: value was dropped from the kind: run `ogy migrate`") in found
+    assert (Problem.NEEDS_MIGRATION, GO, "effects: on was dropped from the kind: run `ogy migrate`") in found
     assert (Problem.NEEDS_MIGRATION, ASKED, "answers: note is now hedge: run `ogy migrate`") in found
 
 
@@ -98,7 +99,7 @@ def test_a_rename_keeps_agreements_and_built_lines_current(repo: Path, before: s
 def test_a_dropped_value_comes_back_to_the_owner(repo: Path, before: str) -> None:
     target = Changed(repo)
     lines = ops.run_migrate(target).value.lines()
-    assert f"dropped {GO} effects.value (it held 'hello'): the owner sees this entry as changed" in lines
+    assert f"dropped {GO} effects.on (it held 'product/app/actor/member'): the owner sees this entry as changed" in lines
     lend = target.read()[1].entries[parse_address(LEND, target.kinds())].fields
     assert lend["agreed"]["hash"] != fingerprint(target, LEND)  # changed since the owner agreed
     assert {item.address: item.status for item in ops.run_work(target).value}[GO] is Status.CHANGED

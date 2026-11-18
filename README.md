@@ -149,6 +149,9 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - What it keeps: `entity` with `attr`, `state` and `transition`; `value` (a number with a unit), `config_key`, `set`.
 - What it depends on: `external` and its `deviation`s.
 - What is open and what the owner chose: `decision` with `option`, `guess` (and its `heard`) and `answer`.
+- Held to: a row, an external, a workflow, an entity, an attribute or a guard names the rules it is held to with `by`; a
+  rule has no `on`. `by` is outside the fingerprint of all but the rows, so adding a rule stales no holder; the pin of an
+  external held to a rule is part of the rule's fingerprint (`fingerprint.reached`), so a new pin makes its proofs work again.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
 that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.

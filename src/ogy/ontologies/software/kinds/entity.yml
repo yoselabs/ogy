@@ -8,3 +8,4 @@ fingerprint:
   also: [[/attr, "=@fingerprint"], [/state, "=@fingerprint"], [/transition, "=@fingerprint"]]
 fields:
   says: {required: true}
+  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

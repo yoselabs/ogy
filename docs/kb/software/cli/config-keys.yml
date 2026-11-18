@@ -1,13 +1,11 @@
 - id: ontology
-  says: The ontology folder in ogy/ontologies that the repository uses; a --ontology flag overrides it.
+  says: The ontology folder in ogy/ontologies that the repository uses, software when unset; a --ontology flag overrides it.
   name: ontology
-  default: software
   src:
   - code:src/ogy/config.py#KEYS
 - id: rev
-  says: The commit reads see by default, or . for the worktree; a --rev flag overrides it.
+  says: The commit reads see by default, or . for the worktree, which is what an unset rev reads; a --rev flag overrides it.
   name: rev
-  default: .
   src:
   - code:src/ogy/config.py#KEYS
 - id: config-file

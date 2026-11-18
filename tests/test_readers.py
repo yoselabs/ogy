@@ -13,7 +13,7 @@ from ogy.readers import readers
 def test_the_shipped_fields_name_their_readers(ontology: Ontology) -> None:
     found = readers(ontology)
     assert {"flow", "requires", "links and impact", "fingerprint"} <= set(found[("step", "actor")])
-    assert found[("guess", "value")] == ["exactly_one_of", "settling"]
+    assert found[("guess", "sets")] == ["exactly_one_of", "settling"]
     assert "fingerprint path" in found[("external", "pin")]  # an operation that uses the external reads its pin
     assert found[("term", "example")] == [] and found[("area", "distinct")] == []
     assert found[("decision", "context")] == ["check avoided-word"]  # a note: outside every fingerprint

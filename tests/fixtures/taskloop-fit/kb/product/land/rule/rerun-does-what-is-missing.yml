@@ -1,3 +1,2 @@
 says: A rerun of a land does only what is missing; each outside effect is read before it is repeated.
-"on": [product/land/workflow/land]
-src: ["code:src/taskloop/land.py#_resumed"]
+src: [code:src/taskloop/land.py#_resumed]

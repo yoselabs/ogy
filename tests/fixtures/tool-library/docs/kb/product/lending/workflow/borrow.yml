@@ -25,7 +25,6 @@ steps:
       effects:
       - do: tell
         on: product/lending/actor/member
-        value: We kept your place for two days.
   record:
     says: The library records the loan.
     cases:
@@ -79,3 +78,5 @@ ends:
       from: human
       said: Yes to the cards but the borrow step
       hash: 1b8c247af48e
+by:
+- product/lending/rule/at-most-max-loans

@@ -1,17 +1,17 @@
 title: Land candidate
 says: One squash S of a checked commit X onto origin's main at O, numbered within its checks attempt.
-src: ["code:src/taskloop/land_store.py#LandRow"]
+src: [code:src/taskloop/land_store.py#LandRow]
 attrs:
   number: {type: counter}
   origin: {type: text, says: "O, origin's main when S was made."}
-  commit: {type: text, says: "S, the squash commit."}
-  checked: {type: text, says: "X, the commit the checks passed on."}
-  remote-head: {type: text, optional: true, says: "Origin's main as read when the delivery was recorded; it contains S."}
+  commit: {type: text, says: 'S, the squash commit.'}
+  checked: {type: text, says: 'X, the commit the checks passed on.'}
+  remote-head: {type: text, optional: true, says: Origin's main as read when the delivery was recorded; it contains S.}
 states:
   pending: {says: It holds a slot while S is checked.}
   pushable: {says: "S is validated (its tree is X's, or its checks passed) and is neither delivered nor superseded."}
   failed: {says: The checks of S failed.}
-  superseded: {says: "It is history: main moved, it was withdrawn, S is gone, or its task was abandoned."}
+  superseded: {says: 'It is history: main moved, it was withdrawn, S is gone, or its task was abandoned.'}
   delivered: {says: "S is on origin's main, or main already held the change."}
   closed: {says: It is delivered and its task is closed in the tracker.}
 transitions:
@@ -24,3 +24,5 @@ transitions:
   supersede: {from: [pushable], to: superseded}
   deliver: {from: [pushable], to: delivered}
   close: {from: [delivered], to: closed}
+by:
+- software/land/rule/delivery-read-from-origin

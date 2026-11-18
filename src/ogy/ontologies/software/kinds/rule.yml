@@ -1,9 +1,11 @@
 kind: rule
-about: a statement that must stay true; rows name the rules they follow with `by`
+about: a statement that must stay true; the entries held to it name it with `by`
 shape: entity
 layers: [product, software]
 needs_proof: true
-fingerprint: {proofs: true}
+fingerprint:
+  proofs: true
+  reached: [["<-by", "=pin"]]                           # an external held to it changes its pin: its proofs are suspect
 fields:
   says: {required: true}
-  "on": {type: links, to: [entity, workflow, external, capability]}   # what it constrains, when no row follows it
+dropped: ["on"]                                      # the entries held to it name it with `by`

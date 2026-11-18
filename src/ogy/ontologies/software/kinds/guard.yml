@@ -10,3 +10,4 @@ fields:
   "on": {type: link, to: [workflow, step], required: true}
   when: {type: expr, to: [value, set, entity, attr, state, external, config_key], required: true}   # must hold
   else: {type: link, to: [end, step], required: true}
+  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

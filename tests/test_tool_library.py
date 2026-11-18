@@ -26,7 +26,8 @@ UNBUILT = [
     f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{P}/workflow/close-loan/step/close",
     f"{P}/workflow/notify/step/send", f"{P}/workflow/notify/step/send/case/ok", f"{P}/workflow/notify/step/send/case/otherwise",
     f"{P}/workflow/remind/step/call", f"{P}/workflow/remind/step/call/case/otherwise", f"{P}/workflow/remind/step/call/case/sent",
-    f"{S}/command/borrow-cli", f"{S}/config_key/remind-every", f"{S}/external/mailer/deviation/slow-at-night", f"{S}/operation/lend",
+    f"{S}/command/borrow-cli", f"{S}/config_key/remind-every", f"{S}/rule/one-reminder-a-day",
+    f"{S}/external/mailer/deviation/slow-at-night", f"{S}/operation/lend",
     f"{S}/operation/send-reminder", f"{S}/view/leave-button",
 ]
 WORK = {
@@ -36,6 +37,7 @@ WORK = {
     (f"{P}/rule/late-fee-is-per-day", Status.CODE_CHANGED),  # late_fee() changed since the rule was captured from it
     (f"{BORROW}/ask/choice/borrow", Status.CHANGED),  # the rule it is held to (`by`) changed
     (f"{S}/view/borrow-page", Status.DEPENDENCY_CHANGED),  # built against that rule
+    (f"{S}/config_key/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
 }
 # kind.field -> why this knowledge base leaves it empty

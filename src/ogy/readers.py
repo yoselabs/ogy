@@ -98,7 +98,7 @@ def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
             if need.if_set:
                 _mark(found, name, need.if_set, "requires", kinds)
             _walk(found, kinds, name, need.path, "requires")
-        for path in kind.fingerprint.also:
+        for path in (*kind.fingerprint.also, *kind.fingerprint.reached):
             reached |= _walk(found, kinds, name, path, "fingerprint path")
         for group in kind.exactly_one_of:
             for field in group:

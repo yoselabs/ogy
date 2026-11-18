@@ -85,6 +85,9 @@ class Fingerprint(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     proofs: bool = False  # the set of proof test ids: appending a proof (bug triage) makes the entry work again
     also: tuple[tuple[str, ...], ...] = ()
+    # paths that enter it only where they reach a value (an entry without the final field is passed over): a kind that
+    # gains one stales nothing, such as the pins of the externals held to a rule
+    reached: tuple[tuple[str, ...], ...] = ()
 
 
 class Requirement(BaseModel):
@@ -122,7 +125,7 @@ class Settling(BaseModel):
     guess: str = "guess"
     sets: str = "sets"  # field of the option
     chose: str = "chose"  # field of an answer and of a guess
-    value: str = "value"  # field of the guess
+    value: str = "sets"  # field of the guess: the values it gives when it chooses no option
     said: str = "said"  # fields of an answer and of the guess's `heard`: a short paraphrase, never a quote
     who: str = "from"  # field of an answer: human or ai
     at: str = "at"

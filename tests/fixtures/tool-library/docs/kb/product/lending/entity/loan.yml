@@ -33,6 +33,8 @@ attrs:
       from: human
       said: Yes to the cards but the borrow step
       hash: e4b88b93cb08
+    by:
+    - product/lending/rule/at-most-max-loans
 states:
   open:
     says: The member has the tool.
@@ -57,3 +59,5 @@ transitions:
     from:
     - open
     to: returned
+by:
+- product/lending/rule/tools-are-checked-on-return

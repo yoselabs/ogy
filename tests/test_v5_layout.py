@@ -79,7 +79,7 @@ def test_inline_holds_map_list_one(kb: Make) -> None:
     timeout = Address("product", "app", (("workflow", "sign-in"), ("step", "ask"), ("timeout", "")))
     assert timeout in snapshot.entries and str(timeout) == "product/app/workflow/sign-in/step/ask/timeout"
     assert snapshot.resolve(str(timeout)) == timeout
-    assert snapshot.entries[choice].fields["effects"] == [{"do": "tell", "on": "product/app/actor/member", "value": "hello"}]
+    assert snapshot.entries[choice].fields["effects"] == [{"do": "tell", "on": "product/app/actor/member"}]
     assert not any(address.kind == "effect" for address in snapshot.entries)
 
 
@@ -131,7 +131,7 @@ steps:
         label: Sign in
         then: done
         effects:
-          - {do: tell, "on": product/app/actor/member, value: hello}
+          - {do: tell, "on": product/app/actor/member}
     timeout: {after: product/app/value/wait, then: done}
 ends:
   done: {result: success, says: The member is signed in.}

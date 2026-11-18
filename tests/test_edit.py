@@ -94,8 +94,24 @@ def test_fingerprint_follows_fields_that_are_not_notes(editor: Editor, ontology:
 def test_a_parent_fingerprint_follows_its_unkeyed_parts_and_declared_paths(editor: Editor) -> None:
     go = ASK.part("choice", "go")
     before = editor.snapshot().fingerprint(go)
-    editor.update(go, {"effects": [{"do": "tell", "on": "product/app/actor/member", "value": "hi"}]})
+    editor.update(go, {"effects": [{"do": "tell", "on": "product/app/actor/member"}]})
     after = editor.snapshot().fingerprint(go)
     assert after != before
-    editor.update(go, {"effects": [{"do": "tell", "on": "product/app/actor/member", "value": "bye"}]})
+    editor.update(go, {"effects": [{"do": "write", "on": "product/app/actor/member"}]})
     assert editor.snapshot().fingerprint(go) not in {before, after}
+
+
+def test_a_rule_holder_stales_nothing_and_a_pin_makes_the_rule_suspect(editor: Editor) -> None:
+    rule, mailer = Address("software", "app", (("rule", "one-mail"),)), Address("software", "app", (("external", "mailer"),))
+    editor.put(rule, {"says": "One mail a day."})
+    editor.put(mailer, {"says": "Sends mail.", "pin": "smtplib 1"})
+    before = editor.snapshot()
+    editor.update(FLOW, {"by": [str(rule)]})  # a workflow held to it: neither changes
+    editor.update(mailer, {"by": [str(rule)]})  # a pinned external held to it: only the rule changes
+    held = editor.snapshot()
+    assert held.fingerprint(FLOW) == before.fingerprint(FLOW) and held.fingerprint(mailer) == before.fingerprint(mailer)
+    assert held.fingerprint(rule) != before.fingerprint(rule)
+    editor.update(mailer, {"pin": "smtplib 2"})
+    assert editor.snapshot().fingerprint(rule) not in {before.fingerprint(rule), held.fingerprint(rule)}
+    editor.update(mailer, {"by": None})
+    assert editor.snapshot().fingerprint(rule) == before.fingerprint(rule)  # a path that reaches nothing leaves it as it was

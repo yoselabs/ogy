@@ -7,3 +7,5 @@ when:
 else: product/lending/workflow/borrow/end/refused
 src:
 - code:src/library/loans.py#lend
+by:
+- product/lending/rule/late-fee-is-per-day

@@ -1,9 +1,9 @@
 kind: actor
-about: "whoever uses or operates the product: a person, an AI or a third-party system that invokes a workflow; human: a librarian at the desk; ai: a model that implements a task"
+about: "whoever uses or operates the product: a person, an AI or a third-party system that invokes a workflow; human: a librarian at the desk; ai: a model that implements a task; program: an MCP client calling a tool"
 shape: list
 file: actors.yml
 evidence: none          # who uses the product, not a claim
 layers: [product]
 fields:
   says: {required: true}
-  nature: {type: enum, of: [human, ai], required: true}
+  nature: {type: enum, of: [human, ai, program], required: true}

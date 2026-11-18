@@ -9,6 +9,6 @@ requires:
   - {if_set: actor, path: ["<-serves"], kinds: [view, command], error: "an actor step has a view or command that serves it"}
 fields:
   says: {}
-  actor: {type: link, to: [actor, external]}
+  actor: {type: link, to: [actor]}
   then: {type: link, to: [step, end, workflow]}
   calls: {type: link, to: [workflow]}

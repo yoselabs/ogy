@@ -17,7 +17,6 @@ steps:
         effects:
         - do: tell
           on: product/lending/actor/member
-          value: Your tool is late.
       otherwise:
         then: failed
     agreed:

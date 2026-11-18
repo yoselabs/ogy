@@ -1,8 +1,8 @@
 title: Who lands by default
 question: Who lands a task whose checks passed when the repository's settings do not say?
 context: The setting `land` exists with two values. The code takes `manual` when the key is absent.
-src: ["code:src/taskloop/profile.py#Profile"]
+src: [code:src/taskloop/profile.py#Profile]
 options:
-  manual: {label: A person lands each task, sets: {software/land/config_key/land-mode: {default: manual}}}
-  auto: {label: Every round lands one passed task, sets: {software/land/config_key/land-mode: {default: auto}}}
+  manual: {label: A person lands each task, sets: {software/land/config_key/land-mode: {says: "Whether a person lands each passed task or every round lands one; read from origin's main, never from a working tree; when the key is absent, a person lands each task."}}}
+  auto: {label: Every round lands one passed task, sets: {software/land/config_key/land-mode: {says: "Whether a person lands each passed task or every round lands one; read from origin's main, never from a working tree; when the key is absent, every round lands one passed task."}}}
 guess: {chose: manual, why: It is what the code does today.}

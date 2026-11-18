@@ -9,3 +9,4 @@ fields:
   of: {type: link, to: [set, entity]}                # for `one` and `list`: what it holds
   max: {type: link, to: [value]}
   optional: {type: flag}
+  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

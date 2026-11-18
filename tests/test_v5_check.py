@@ -104,8 +104,8 @@ def test_sets_may_say_absent_and_name_entries_that_do_not_exist_yet(kb: Make) ->
     assert kb({"product/app/values.yml": VALUES, "product/app/decision/fee.yml": unborn}).findings() == set()
 
 
-def test_guess_has_one_of_chose_or_value(kb: Make) -> None:
-    both = DECISION.replace("guess: {chose: one,", "guess: {chose: one, value: {product/app/value/fee: {is: 2}},")
+def test_guess_has_one_of_chose_or_sets(kb: Make) -> None:
+    both = DECISION.replace("guess: {chose: one,", "guess: {chose: one, sets: {product/app/value/fee: {is: 2}},")
     assert only(kb({"product/app/values.yml": VALUES, "product/app/decision/fee.yml": both}).findings(),
                 Problem.ONE_OF) == {"product/app/decision/fee/guess"}
 
@@ -140,7 +140,7 @@ def test_the_folder_is_the_layer_and_the_kind_says_which_layers_it_may_appear_in
 
 def test_requirement_applies_when_part_present(kb: Make) -> None:
     plain = CALLEE.replace("called", "actor")
-    effect = plain.replace("a: {order: 1,", "a: {order: 1, effects: [{do: tell, \"on\": product/app/actor/member, value: hi}],")
+    effect = plain.replace("a: {order: 1,", "a: {order: 1, effects: [{do: tell, \"on\": product/app/actor/member}],")
     assert only(kb({"product/app/workflow/callee.yml": effect}).findings(),
                 Problem.UNMET) == {"product/app/workflow/callee/step/only/case/a"}
     assert only(kb({"product/app/workflow/callee.yml": plain}).findings(), Problem.UNMET) == set()

@@ -9,5 +9,4 @@ fields:
   says: {required: true}
   name: {required: true}                             # the setting as written in the file or environment
   binds: {type: link, to: [value, set]}
-  default: {}
-  used_by: {type: links, to: [step, command, operation]}
+dropped: [default, used_by]

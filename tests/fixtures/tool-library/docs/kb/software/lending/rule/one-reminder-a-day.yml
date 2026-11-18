@@ -1,0 +1,3 @@
+says: A member gets at most one reminder mail a day.
+src:
+- code:src/library/remind.py#remind

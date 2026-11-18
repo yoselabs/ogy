@@ -1,3 +1,0 @@
-says: An MCP client, such as Claude Code, that starts ogy mcp from the .mcp.json at the repository root and calls one tool per ogy command over stdio.
-src:
-- code:src/ogy/mcp_server.py#build

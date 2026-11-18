@@ -1,6 +1,6 @@
 question: How long does the borrow page wait for the member?
 guess:
-  value:
+  why: Two days fit a weekend.
+  sets:
     product/lending/value/reply-wait:
       is: 2
-  why: Two days fit a weekend.

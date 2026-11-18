@@ -1,3 +1,2 @@
 says: A task put on hold by a land is not tried again until a person answers.
-"on": [software/land/workflow/round-land]
-src: ["code:src/taskloop/round_land.py#land_passed"]
+src: [code:src/taskloop/round_land.py#land_passed]
