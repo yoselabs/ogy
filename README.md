@@ -47,6 +47,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `glossary`, `kinds [kind]` | the constitution, then the terms of the product; the kinds of the ontology, or one |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it (same kind, id and fingerprint) from a loss |
+| `migrate` | rewrite the entries to the field renames and drops their kinds declare (see "Kind changes"); one checked write that records nothing |
 | `history <address \| layer/area>` | what changed, who said so, what is in force, when it was built; computed from Git |
 | `mcp` | serve all of the above as MCP tools over stdio |
 | `init` | set the repository up (see "Init") |
@@ -110,6 +111,23 @@ entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`.
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
 - A decision with `structure: true` (harm tag `structure`: layout, layers, kinds, paths) is asked on its own card: `yes`, `yes all` and
   `decide` leave it, and `review` says it needs its own letter.
+
+### Kind changes
+
+A kind file may change under a knowledge base that a newer ogy reads. Adding a field changes no fingerprint (an unset field is
+outside it), so nothing goes stale. A rename or a drop is declared in the kind file and kept there until the knowledge bases
+it serves are migrated: `renamed: {old: new}` (the new name is a field of the kind) and `dropped: [old]`. An entry that still
+holds an old name is the finding `needs-migration`. `ogy migrate` writes the migration in one checked write:
+- every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
+  or a guess's `sets` gives an entry of that kind;
+- a pure rename changes no meaning: an agreement or a built line (`own` and `deps`) that was current stays current, its
+  hash re-set to the fingerprint after the rename, as `ogy move` does;
+- a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
+  the entry (and of entries whose fingerprint reads it) are left, so the owner sees it as changed since agreed and it is work;
+- `check --base` reads the base migrated, so a migration commit is no edit of an append-only part. Removed items keep the
+  names they had; nothing is recorded (Git keeps the old names).
+The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type, a renamed kind
+key or a renamed part kind is no declared change: it needs a one-off migration on the write path.
 
 ### MCP
 

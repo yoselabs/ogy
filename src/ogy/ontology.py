@@ -29,6 +29,14 @@ class Ontology:
         if found:
             raise OntologyError("; ".join(found))
 
+    @classmethod
+    def unchecked(cls, kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> Ontology:
+        """The kinds as an older ontology had them, only to fingerprint entries written under it (`kindchange.before`): their
+        rules may name fields under the new names, so they are not linted."""
+        made = cls.__new__(cls)
+        made.kinds, made.layers = dict(kinds), layers
+        return made
+
     def get(self, name: str) -> Kind | None:
         return self.kinds.get(name)
 

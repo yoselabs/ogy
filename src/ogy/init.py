@@ -51,6 +51,9 @@ nothing else at its top. Change it only through ogy (CLI or MCP); never edit its
   never to reorganise. To change an entry's area use `{ogy} move <address> <area>` (`<layer>/<area>` to change the layer too): the id
   and the owner's agreements stay, every address follows in the same write, and nothing is recorded (Git keeps it); never remove
   and put again.
+- A newer ogy may rename or drop a field of a kind (the kind file says `renamed: {{old: new}}` or `dropped: [...]`); `{ogy} check` then
+  reports `needs-migration`. Run `{ogy} migrate`, never a hand edit: it renames in one write and keeps the owner's agreements and the
+  built lines current; a dropped field that held a value is printed, and that entry comes back to the owner as changed.
 - Reads see the worktree by default (`--rev .`); CI reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `{ogy} show <address> --rev HEAD`.
 - Every write is checked; fix what it refuses. Run `{ogy} check` before you hand over: every finding is an error, there are no

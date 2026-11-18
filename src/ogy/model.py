@@ -138,6 +138,7 @@ class Problem(StrEnum):
     BROKEN_LINK = "broken-link"
     PRODUCT_AREA = "product-area"
     MISSING_ENTRY = "missing-entry"
+    NEEDS_MIGRATION = "needs-migration"
 
 
 @dataclass(frozen=True)

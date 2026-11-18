@@ -94,6 +94,11 @@ def _move(target: Target, args: argparse.Namespace, _: bool) -> Result:
     return done.verdict, [str(done.value)]
 
 
+def _migrate(target: Target, _: argparse.Namespace, __: bool) -> Result:
+    done = ops.run_migrate(target)
+    return done.verdict, done.value.lines()
+
+
 def _put(target: Target, args: argparse.Namespace, agent: bool) -> Result:
     if args.file == "-" and agent:  # over MCP stdin is the protocol, not the caller's text
         raise ops.WriteRefused(["--file - reads standard input, which an MCP tool cannot: pass the records"])
@@ -118,5 +123,5 @@ def _reply(target: Target, args: argparse.Namespace, agent: bool) -> Result:
 HANDLERS: dict[str, Handler] = {
     "check": _check, "anchors": _anchors, "status": _status, "show": _show, "find": _find, "impact": _impact, "diagram": _diagram,
     "diff": _diff, "work": _work, "review": _review, "dropped": _dropped, "glossary": _glossary, "history": _history, "kinds": _kinds,
-    "remove": _remove, "move": _move, "put": _put, "answer": _answer, "reply": _reply,
+    "remove": _remove, "move": _move, "migrate": _migrate, "put": _put, "answer": _answer, "reply": _reply,
 }

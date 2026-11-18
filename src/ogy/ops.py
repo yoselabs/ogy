@@ -23,6 +23,7 @@ from ogy.graph import Impact, impact
 from ogy.history import History, history
 from ogy.init import Initialised, InitRefused, init
 from ogy.kindtext import kinds_lines
+from ogy.migrate import Migrated, migrate
 from ogy.model import Address, Finding, area_of, parse_address
 from ogy.ontology import Ontology
 from ogy.overview import Overview
@@ -223,6 +224,12 @@ def run_move(target: Target, text: str, area: str) -> Run[Moved]:
     """Move an entry to another area, keeping its id, kind and agreements, in one atomic, checked write that records nothing."""
     with writes.locked(target, "move"):
         return Run(move(target, text, area), 0)
+
+
+def run_migrate(target: Target) -> Run[Migrated]:
+    """Rewrite the entries to the renames and drops their kinds declare, in one atomic, checked write that records nothing."""
+    with writes.locked(target, "migrate"):
+        return Run(migrate(target), 0)
 
 
 def run_history(target: Target, text: str, limit: int = 100) -> Run[History]:

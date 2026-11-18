@@ -49,7 +49,8 @@ def _rules(kind: Kind) -> list[str]:
         lines.append(f"  requires{when}: {need.error}")
     if kind.one_part:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
-    return lines
+    lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
+    return lines + [f"  dropped: {old} (`ogy migrate`)" for old in kind.dropped]
 
 
 def kinds_lines(ontology: Ontology, only: str | None = None) -> list[str]:

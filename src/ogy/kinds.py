@@ -191,11 +191,18 @@ class Kind(BaseModel):
     requires: tuple[Requirement, ...] = ()
     one_part: OnePart | None = None
     flow: Flow | None = None
+    renamed: dict[str, str] = {}  # old field name -> new: an entry written before holds the old one until `ogy migrate`
+    dropped: tuple[str, ...] = ()  # fields the kind no longer has: `ogy migrate` removes them (a filled one comes back to the owner)
 
     @field_validator("part_of", mode="before")
     @classmethod
     def _parents(cls, value: object) -> object:
         return (value,) if isinstance(value, str) else value
+
+    @property
+    def old_names(self) -> dict[str, str | None]:
+        """Each field name the kind no longer has -> the field it is now, or None when it was dropped."""
+        return {**dict.fromkeys(self.dropped), **self.renamed}
 
     @property
     def holding(self) -> Holds:

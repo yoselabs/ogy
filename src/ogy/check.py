@@ -10,6 +10,7 @@ from ogy.coverage import check_every_area, product_areas
 from ogy.evidencecheck import check_evidence
 from ogy.fieldtypes import fields_problems
 from ogy.flowcheck import check_flows
+from ogy.kindchange import migrated
 from ogy.kinds import COMMON_FIELDS, Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
@@ -45,7 +46,8 @@ class Checker:
     def _fields(self, kind: Kind, entry: Entry) -> None:
         listed = [part for part in self.snapshot.ontology.parts_of(kind.kind) if part.holding is Holds.LIST]
         known = {part.key for part in listed if part.key}
-        for problem, detail in fields_problems(self.snapshot.ontology, {**COMMON_FIELDS, **kind.fields}, entry.fields, known):
+        for problem, detail in fields_problems(self.snapshot.ontology, {**COMMON_FIELDS, **kind.fields}, entry.fields, known,
+                                               old=kind.old_names):
             self._add(problem, entry, detail)
         for part in listed:
             items = entry.fields.get(part.key or "")
@@ -55,7 +57,7 @@ class Checker:
                 self._add(Problem.WRONG_TYPE, entry, f"{part.key} is a list of {part.kind} mappings")
                 continue
             for item in items:
-                for problem, detail in fields_problems(self.snapshot.ontology, part.fields, item):
+                for problem, detail in fields_problems(self.snapshot.ontology, part.fields, item, old=part.old_names):
                     self._add(problem, entry, f"{part.key}: {detail}")
 
     def _layer(self, kind: Kind, entry: Entry) -> None:
@@ -114,7 +116,7 @@ def check(snapshot: Snapshot, source: Source, base: Source | None = None, landin
     findings = list(snapshot.findings) + (product_areas(snapshot, product) if product else [])
     for run in CHECKS:
         findings.extend(run(snapshot, source))
-    older = load(base, snapshot.ontology) if base is not None else None
+    older = migrated(load(base, snapshot.ontology)) if base is not None else None  # the base as `ogy migrate` would write it
     if landing:
         for run in LANDING:
             findings.extend(item for item in run(snapshot, source)

@@ -26,6 +26,7 @@ def problems(kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> list[str]:
         found += _shape(kinds, name, kind) + _per_area(name, kind)
         found += _fields(kinds, name, kind)
         found += _rules(kinds, name, kind)
+        found += _migration(name, kind)
     found += _files(kinds)
     found += _keys(kinds)
     found += _settling(kinds)
@@ -110,6 +111,15 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
         found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
     if kind.one_part is not None and kind.one_part.kind not in kinds:
         found.append(f"{name}: one_part names unknown kind {kind.one_part.kind}")
+    return found
+
+
+def _migration(name: str, kind: Kind) -> list[str]:
+    """A renamed field's old name is no field, its new one is; a dropped field is no field and was not renamed."""
+    found = [f"{name}: renamed {old} is still a field or common to every kind" for old in kind.old_names
+             if old in kind.fields or old in COMMON_FIELDS]
+    found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
+    found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
     return found
 
 

@@ -1,6 +1,6 @@
 """A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare against."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from git_porcelain import GitError, RealRepo
@@ -23,7 +23,7 @@ class Target:
     ontology: str = DEFAULT_ONTOLOGY
 
     def at(self, rev: str) -> Target:
-        return Target(self.repo, self.kb, rev, self.ontology)
+        return replace(self, rev=rev)
 
     def kinds(self) -> Ontology:
         return packaged(self.ontology)

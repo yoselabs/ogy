@@ -117,6 +117,11 @@ def _writes(commands: Adder) -> None:
                    "`check --base` tells it from a loss. One atomic write.")
     moving.add_argument("address", help=ADDRESS)
     moving.add_argument("area", help="the new area, or <layer>/<area> when the layer changes too (the kind must allow it)")
+    _verb(commands, "migrate", "rewrite the entries to the field renames and drops their kinds declare",
+          "A kind file keeps a renamed field's old name (`renamed: {old: new}`) and a dropped one (`dropped: [...]`); an entry that "
+          "holds one is `needs-migration`. Renames every old name (in entries, list parts and `sets`) and keeps current the "
+          "agreements and built lines it only renamed; removes dropped fields and prints each value removed, leaving that "
+          "entry's agreement so the owner sees the change. Records nothing. One atomic write.")
     answering = _verb(commands, "answer", "choose an option of a decision, with a short paraphrase of what the person said",
                       "ogy keeps no message and no quote: the answer is `chose`, `said` (one short line, your paraphrase of what the "
                       "person said, fitted to the decision), `from` (human, or ai with --delegated), `at` and `where`. It applies "

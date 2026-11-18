@@ -91,7 +91,7 @@ def sets_problems(ontology: Ontology, value: object) -> Found:
             found.append((Problem.WRONG_TYPE, f"{key} is a mapping of fields or null"))
         else:
             found += [(problem, f"{key}: {detail}") for problem, detail in
-                      fields_problems(ontology, {**COMMON_FIELDS, **kind.fields}, fields, partial=True)]
+                      fields_problems(ontology, {**COMMON_FIELDS, **kind.fields}, fields, partial=True, old=kind.old_names)]
     return found
 
 
@@ -133,15 +133,20 @@ def value_problems(ontology: Ontology, spec: FieldSpec, value: object) -> Found:
 
 
 def fields_problems(ontology: Ontology, specs: Mapping[str, FieldSpec], data: Mapping[str, object], known: Collection[str] = (),
-                    *, partial: bool = False) -> Found:
-    """Unknown fields, values of the wrong type and, unless `partial`, missing required fields; `known` are part keys."""
+                    *, partial: bool = False, old: Mapping[str, str | None] | None = None) -> Found:
+    """Unknown fields, values of the wrong type and, unless `partial`, missing required fields; `known` are part keys, `old` the
+    names the kind renamed or dropped (`Kind.old_names`), which `ogy migrate` rewrites."""
     found: Found = []
     for name, value in data.items():
         spec = specs.get(name)
         if "?" in name:
             found.append((Problem.BAD_KEY, f"{name}: no key contains `?`"))
         elif spec is None:
-            if name in STORED_STATE:
+            if old and name in old:
+                now = old[name]
+                found.append((Problem.NEEDS_MIGRATION, f"{name} is now {now}: run `ogy migrate`" if now else
+                              f"{name} was dropped from the kind: run `ogy migrate`"))
+            elif name in STORED_STATE:
                 found.append((Problem.STORED_STATE, f"{name} is computed, see `ogy show`"))
             elif name not in known:
                 found.append((Problem.UNKNOWN_FIELD, name))
