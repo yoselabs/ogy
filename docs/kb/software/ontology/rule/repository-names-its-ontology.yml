@@ -1,3 +1,3 @@
-says: A repository names its ontology in ogy.yml; the kinds come from the installed ogy; a repository cannot add kinds for now (software/ontology/decision/repository-kinds).
+says: A repository names its ontology in ogy.yml; the kinds come from the installed ogy.
 src:
 - code:src/ogy/config.py#KEYS

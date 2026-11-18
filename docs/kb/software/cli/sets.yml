@@ -12,10 +12,7 @@
   says: The uri schemes the where of an answer or an agreement may use.
   members:
   - ai
-  - call
-  - jira
   - bd
-  - email
   - file
   src:
   - code:src/ogy/cli.py#WHERE

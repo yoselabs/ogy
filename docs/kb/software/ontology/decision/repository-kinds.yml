@@ -5,7 +5,7 @@ options:
     label: No custom kinds for now; perhaps later
     sets:
       software/ontology/rule/no-repository-kinds:
-        says: A repository cannot define its own kinds; it uses the kinds of the ontology it names. Perhaps later.
+        says: A repository cannot define its own kinds; it uses the kinds of the ontology it names.
   repo-kinds:
     label: A repository extends the ontology with its own kinds
     sets:

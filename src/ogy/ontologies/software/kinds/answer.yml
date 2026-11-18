@@ -11,6 +11,6 @@ fields:
   said: {note: true, required: true}                 # one short line: the AI's paraphrase of what the person said, fitted to the decision; never their words verbatim
   from: {type: enum, of: [human, ai], required: true}   # who chose: a person, or an agent under `delegated`
   at: {type: time, required: true}                   # date, time and timezone offset; the newest is in force
-  where: {type: uri, schemes: [ai, call, jira, bd, email, file], required: true}   # the session, e.g. ai:claude/<session-id>
+  where: {type: uri, schemes: [ai, bd, file], required: true}   # the session, e.g. ai:claude/<session-id>
   note: {note: true}                                 # the person's hedge or condition, paraphrased ("for now", "on condition that ..."); outside the fingerprint
   delegated: {type: link, to: [decision]}            # with `from: ai`: the decision whose human answer let the agent decide this

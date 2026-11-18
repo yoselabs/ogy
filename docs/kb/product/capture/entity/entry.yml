@@ -1,4 +1,4 @@
-says: Any item with an id in the knowledge base; whether the owner agreed to its sentence is computed, never stored.
+says: 'What the product keeps of an entry: its sentence, its sources and whether the owner agreed to the sentence now on it, computed.'
 src:
 - code:src/ogy/status.py#Status
 attrs:

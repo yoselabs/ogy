@@ -5,8 +5,8 @@ trigger: actor
 start: commit
 steps:
   commit:
-    says: A person or an agent commits.
-    actor: product/shared/actor/owner
+    says: Git starts a commit of a person or an agent and runs the hook.
+    actor: software/checks/actor/committer
     choices:
       commit:
         label: Commit

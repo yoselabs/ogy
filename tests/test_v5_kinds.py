@@ -108,7 +108,7 @@ def test_a_kind_names_the_layers_it_may_appear_in() -> None:
     kinds = packaged().kinds
     assert packaged().layers == ("product", "software")
     assert kinds["actor"].layers == LAYERS and kinds["view"].layers == ("software",) and kinds["decision"].layers == LAYERS
-    assert kinds["term"].layers == LAYERS and kinds["term"].moved == ("glossary", "product/shared")
+    assert kinds["term"].layers == LAYERS and kinds["term"].moved is None
 
 
 def test_the_ontology_file_declares_the_layers() -> None:

@@ -6,7 +6,7 @@ options:
     label: "`ogy intro <area>`: constitution, shared words, the area's glossary and map"
     sets:
       software/cli/rule/intro-prints-an-area:
-        says: "`ogy intro <area>` prints the constitution, the words in use in every area, the area's glossary and its map."
+        says: "`ogy intro <area>` prints the constitution, the shared terms of its layer, the area's glossary and its map."
   separate:
     label: No intro; run glossary and show one after the other
     sets:

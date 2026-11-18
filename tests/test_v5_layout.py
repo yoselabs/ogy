@@ -140,9 +140,9 @@ ends:
 
 def test_every_file_under_the_knowledge_base_is_accounted_for(kb: Make) -> None:
     stray = ("README.md", "product/app/notes.txt", "product/app/data.json", "product/app/message/x.md", "glossary/notes.md",
-             "tools/x.yml", "product/removed.yml", "product/app/value/deep/er.yml")
+             "tools/x.yml", "product/removed.yml", "product/app/value/deep/er.yml", "glossary/removed.yml")
     found = kb({**dict.fromkeys(stray, "x\n"), "product/app/removed.yml": "format: 1\nitems: []\n",
-                "glossary/removed.yml": "format: 1\nitems: []\n", "built/anything.json": "{}\n"}).findings()
+                "built/anything.json": "{}\n"}).findings()
     assert {path for problem, path in found if problem is Problem.BAD_PATH} == set(stray)
 
 

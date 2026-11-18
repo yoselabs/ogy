@@ -140,8 +140,7 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
   hash re-set to the fingerprint (a built line's to the build hash) after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
   the entry (and the built lines whose build hash reads it) are left, so the owner sees it as changed since agreed and it is work;
-- a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>` (the term kind:
-  `glossary/terms.yml`). Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
+- a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>`. Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
   removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the
   area that uses it;

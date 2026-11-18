@@ -1,4 +1,4 @@
-says: One question with its options, the AI's guess that is built meanwhile, and the owner's answers.
+says: 'What the product keeps of a decision: its question, whether it is structural, and its answers; its state is computed.'
 src:
 - code:src/ogy/settle.py#Decision
 attrs:

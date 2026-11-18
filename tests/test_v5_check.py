@@ -46,7 +46,7 @@ def test_enum_value_outside_of_is_wrong_type(kb: Make) -> None:
     assert found == {(Problem.WRONG_TYPE, "product/app/actor/member")}
 
 
-@pytest.mark.parametrize(("where", "ok"), [("ai:claude/1#2", True), ("jira:LIB-4", True), ("https://x.test", False),
+@pytest.mark.parametrize(("where", "ok"), [("ai:claude/1#2", True), ("bd:ogy-1", True), ("jira:LIB-4", False), ("https://x.test", False),
                                            ("ai:", False), ("slack:x", False), ("noscheme", False)])
 def test_uri_scheme_must_be_listed(kb: Make, where: str, ok: bool) -> None:
     assert (kb(agreed(where=where)).findings() == set()) is ok

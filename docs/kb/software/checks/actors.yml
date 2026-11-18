@@ -1,0 +1,3 @@
+- id: committer
+  says: Git, running the pre-commit hook when a person or an agent commits.
+  nature: program

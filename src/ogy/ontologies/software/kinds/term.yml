@@ -5,7 +5,6 @@ shape: list
 file: glossary.yml                                   # <layer>/<area>/glossary.yml
 layers: [product, software]
 shared: true                                         # a word two areas use lives in <layer>/shared/glossary.yml
-moved_from: glossary/terms.yml                       # the one global list it was; `ogy migrate` moves it to product/shared
 must_be_agreed: true                                 # agreed in a review round, or proposed by a decision with no answer yet
 evidence: none                                       # it keeps no sources: where a word is used is computed from the sentences
 fields:

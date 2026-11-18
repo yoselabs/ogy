@@ -1,14 +1,16 @@
-"""The reserved area `shared` of each layer: only the kinds marked `shared` live there, and the old fixed folder `glossary/`
-moves there with `ogy migrate`, keeping agreements, links and removed items."""
+"""The reserved area `shared` of each layer: only the kinds marked `shared` live there, and a fixed folder a kind moved out of
+(`moved_from`) moves there with `ogy migrate`, keeping agreements, links and removed items."""
 
 import json
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
 from tests.conftest import Kb, commit, ogy
 
 from ogy import ops, writes
 from ogy.model import Problem
+from ogy.ontology import Ontology, packaged
 from ogy.status import Agreement, agreement
 from ogy.target import Target
 
@@ -22,24 +24,34 @@ def w(repo: Path, *argv: str) -> tuple[int, list[str]]:
     return ogy(repo, "--rev", ".", *argv)
 
 
+@dataclass(frozen=True)
+class Moved(Target):
+    """The repository read by an ogy whose term kind moved out of the fixed folder glossary/ (no shipped kind does now)."""
+
+    def kinds(self) -> Ontology:
+        ontology = packaged()
+        term = ontology.kinds["term"].model_copy(update={"moved_from": "glossary/terms.yml"})
+        return Ontology.unchecked({**ontology.kinds, "term": term}, ontology.layers)
+
+
 def old_glossary(repo: Path) -> str:
     """The layout before: the fixed folder glossary/ with an agreed term, a removed one and a decision that names the term."""
     (repo / KB / "glossary").mkdir()
     (repo / KB / "glossary/terms.yml").write_text(TERMS)
     (repo / KB / "product/app/decision").mkdir(parents=True)
     (repo / KB / "product/app/decision/names.yml").write_text(NAMES)
-    assert w(repo, "remove", "glossary/term/old", "--why", "product/app/decision/names")[0] == 0
-    assert w(repo, "answer", "product/app/decision/names", "drop", "--said", "Drop it", "--where", "ai:claude/1")[0] == 0
-    writes.agree(Target(repo), writes.said("Yes", "ai:claude/1", None), ["glossary/term/fee"])
+    target = Moved(repo)
+    ops.run_remove(target, "glossary/term/old", "product/app/decision/names")
+    ops.run_answer(target, "product/app/decision/names", "drop", "Drop it", "ai:claude/1")
+    writes.agree(target, writes.said("Yes", "ai:claude/1", None), ["glossary/term/fee"])
     return commit(repo, "the old layout")
 
 
-def test_migrate_moves_the_glossary_folder_to_the_shared_area(repo: Path) -> None:
+def test_migrate_moves_a_fixed_folder_to_the_shared_area(repo: Path) -> None:
     base = old_glossary(repo)
-    target = Target(repo)
+    target = Moved(repo)
     assert {(item.problem, str(item.address or item.path)) for item in ops.run_check(target).value} == {
         (Problem.NEEDS_MIGRATION, "glossary/term/fee"), (Problem.NEEDS_MIGRATION, "glossary/removed.yml")}
-    assert w(repo, "move", "glossary/term/fee", "app")[0] == 3  # migrate first
     lines = ops.run_migrate(target).value.lines()
     assert lines[0] == "moved glossary/term/fee to product/shared/term/fee: `ogy move` it to the area that uses it"
     assert not (repo / KB / "glossary").exists() and (repo / KB / "product/shared/area.yml").is_file()
@@ -50,10 +62,10 @@ def test_migrate_moves_the_glossary_folder_to_the_shared_area(repo: Path) -> Non
     assert fee is not None and agreement(snapshot, fee) is Agreement.AGREED
     assert not ops.run_check(target).value and ops.run_migrate(target).value.lines() == ["nothing to migrate"]
     commit(repo, "migrated")
-    assert not ops.run_check(Target(repo, rev="HEAD"), base=base).value  # the base is read migrated: nothing lost
+    assert not ops.run_check(Moved(repo, rev="HEAD"), base=base).value  # the base is read migrated: nothing lost
     assert w(repo, "move", "product/shared/term/fee", "app")[0] == 0
     commit(repo, "the fee is the app's word")
-    assert not ops.run_check(Target(repo, rev="HEAD"), base=base).value
+    assert not ops.run_check(Moved(repo, rev="HEAD"), base=base).value
 
 
 def test_only_terms_actors_and_sets_live_in_the_shared_area(kb: Make) -> None:
