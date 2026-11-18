@@ -25,7 +25,7 @@ So every task either changes what should be true, or acts on the running world w
 
 | Kind | Example | Where it goes |
 |---|---|---|
-| Changes what should be true | a new feature; "the app runs in environment X" | an ontology change; the work follows from the difference between the two versions |
+| Changes what should be true | a new feature; a new limit or rule | an ontology change; the work follows from the difference between the two versions |
 | Something the system does again and again | a nightly database vacuum; a cache clean-up every hour | the ontology, as a workflow with `trigger: schedule` |
 | A one-off act on the running world | "vacuum the database tomorrow"; "flush memcached now" | a plain task, outside the ontology |
 | Reality drifted from the ontology | an outage; a bug | a task to restore what the ontology says; perhaps a rule or a proof was missing, and adding it is an ontology change |
@@ -45,8 +45,9 @@ Imagine the task done and forgotten. If nothing in the ontology becomes false, i
 
 ## Examples
 
-- **Deploy to a new environment.** The environment is part of what should be true (the software layer says where
-  the product runs), so it is an ontology change. Deploying follows from it.
+- **Deploy to a new environment.** The ontology has no environment kind yet: environments are deferred. For now, an
+  environment the product must keep running in is a decision (where it runs, and why) plus the `config_key`s and `value`s
+  it sets; a one-off deploy to it is a plain task.
 - **Vacuum the database tomorrow, once.** Nothing in the ontology becomes false if it is forgotten: a plain task.
 - **Vacuum the database again and again.** A repeated manual task is a sign that a scheduled workflow is missing.
   Add the workflow; the system then does it.
