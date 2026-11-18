@@ -439,7 +439,7 @@
   says: 'Playing the entries back to the owner as plain sentences in three groups: what you said, what we concluded and what we guessed; one yes agrees to a group.'
   group: review
   src:
-  - doc:e1ce8757b0a1:skills/elicit/SKILL.md#6-read-back
+  - doc:61048d84cd375c433ec891246697eb413736ea29:skills/elicit/SKILL.md#6-read-back
   distinct:
   - a review round
   - a summary
