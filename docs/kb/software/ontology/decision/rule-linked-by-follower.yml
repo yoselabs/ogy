@@ -13,6 +13,11 @@ options:
     sets:
       software/ontology/rule/rule-is-linked-by-its-follower:
         says: A rule names what it applies to with `on`, its follower names it with `by`, and check keeps the two in step.
+  held-to:
+    label: '`by` means "is held to this rule", on cases, choices, externals, workflows, entities and attributes; `on` stays dropped'
+    sets:
+      software/ontology/rule/rule-is-linked-by-its-follower:
+        says: "An entry names the rules it is held to with `by` (links to rules): a case, a choice, an external, a workflow, an entity or an attribute (an operation or a capability only when a real rule needs it), as `because` names principles. A rule has no `on`; a rule that nothing names with `by` is an error; `show` and the area map print `by` both ways; a change to an external's pin makes the proofs of the rules it is held to suspect."
 guess:
   chose: follower
   why: One owner per link; show computes the other direction.
@@ -24,4 +29,9 @@ answers:
   said: Probably A
   from: human
   at: '2026-11-18T19:37:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: held-to
+  said: "Accept Fable's pick: entries name the rules they are held to with by, including stores, workflows, entities and attributes."
+  from: human
+  at: '2026-11-18T22:08:21+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -53,3 +53,30 @@ Imagine the task done and forgotten. If nothing in the ontology becomes false, i
 - **A bug.** The ontology already says what should happen; the code does not do it. Fix the code. If nothing caught
   the bug, add the missing rule or proof.
 - **Which database to use.** A question with options: a decision. Its answer changes what should be true.
+
+## Rigid where checked
+
+Principle `rigid-where-checked` (decision `software/ontology/decision/rigid-where-checked`): a fact a check, the work
+(the fingerprint derivation) or impact reads is a field or a link; everything else is a sentence on its entry. `ogy
+init` ships this principle and this section to every repository.
+
+| The fact | Where it goes |
+|---|---|
+| read by a check, the work derivation or impact | a field or a link |
+| read only by a person or an agent | text (`says`) on its entry |
+| text that names another entry | that part becomes a link |
+| a decided number | a value |
+| no kind fits | a rule with links and a proof, never a new kind |
+| a new kind or field | only when it names the check that reads it |
+
+Two ways this fails:
+
+- **All rigid.** The model grows as detailed as the code and lags behind it, like a UML round-trip.
+- **Hybrid.** The text becomes a second, unchecked spec. The guards: text lives only on entries; a sentence that
+  names an entry must be a link; a rule that constrains nothing is an error; a new field comes only when several
+  rules repeat one sentence shape.
+
+Example, a store. Choosing Postgres is a decision plus an external. How fields are stored (a JSON column, a compound
+index, a DynamoDB GSI or LSI) is text on that decision, or code, unless a check must read it. What should be true is
+the requirement: a latency value plus a rule with a timing proof. Moving to DynamoDB then changes the decision and the
+external; the requirement and its proof stay, and the work is what the proof finds no longer true.

@@ -1,0 +1,25 @@
+title: Examples before new kinds
+structure: true
+question: Does the ontology get new kinds for environments, permissions or SLOs, or data fields, now, or first prove the existing kinds on real examples?
+options:
+  examples-first:
+    label: 'No new kinds or data fields yet: one real SLO and one real permission with value, rule and guard; a Postgres to DynamoDB store change as a diff test on a small example kb; two text guards'
+    sets:
+      software/ontology/rule/examples-before-kinds:
+        says: 'No new kinds for environments, permissions or SLOs and no data fields yet. First one real SLO and one real permission are written with the existing kinds (value, rule, guard), a Postgres to DynamoDB store change runs as a diff test on a small example kb, and two text guards are added: a sentence naming an entry must be a link, and a rule that constrains nothing is an error. A field is added only where a check could not read what it needed.'
+  new-kinds:
+    label: Add kinds for environments, permissions and SLOs, and data fields, now
+    sets:
+      software/ontology/rule/examples-before-kinds:
+        says: The ontology adds kinds for environments, permissions and SLOs, and data fields on entities, now.
+guess:
+  chose: examples-first
+  why: Under rigid-where-checked a new kind must name the check that reads it; real examples show which checks fail to read what they need.
+  heard:
+    said: Roll with the proposed smaller next step.
+answers:
+- chose: examples-first
+  said: Roll with the proposed smaller next step.
+  from: human
+  at: '2026-11-18T22:08:19+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

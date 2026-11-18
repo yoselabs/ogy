@@ -16,3 +16,6 @@
     hash: d4a70ec388eb
 - id: layers-split-business-from-technical
   says: The product layer holds what the business decides, the software layer how it is built; every entry belongs to one.
+- id: rigid-where-checked
+  says: 'Rigid where something checks it, text where only a reader needs it: a fact a check, the work or impact reads is a field or link; everything else is a sentence on its entry.'
+  why: An all-rigid model grows as detailed as code and lags behind it; text that a check needs is a second, unchecked spec. Each fact takes the cheapest form that still lets the checks read it.
