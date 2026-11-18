@@ -1,0 +1,23 @@
+title: Who reviews what waits for the owner
+question: Does Fable review the entries waiting for the owner's eye and fix what is wrong, or does the owner review them first?
+context: The knowledge base is a proof of concept; wiping and recreating code, ontology and information costs nothing now.
+options:
+  fable-reviews:
+    label: Fable reviews what waits for the owner and fixes what is wrong; agreements stay the owner's
+    sets:
+      software/ontology/rule/review-delegation:
+        says: Fable reviews the entries waiting for the owner and fixes what is wrong; an agent records each fix's answer under this delegation, and only the owner agrees to a sentence.
+  owner-reviews:
+    label: The owner reviews each waiting entry first
+    sets:
+      software/ontology/rule/review-delegation:
+        says: The owner reviews each waiting entry before any fix.
+guess:
+  chose: fable-reviews
+  why: The owner asked for Fable's review.
+answers:
+- chose: fable-reviews
+  said: Fable reviews what waits for me and fixes what is wrong; change costs nothing now
+  from: human
+  at: '2026-11-19T00:14:13+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
