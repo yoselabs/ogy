@@ -12,6 +12,12 @@ steps:
       remove:
         label: Remove
         then: check
+    agreed:
+      at: '2026-11-19T18:43:39+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven, with CI's check sentence and the answered state corrected
+      hash: cbcded6cf369
   check:
     says: ogy checks that the entry may go, then appends its item and deletes it.
     cases:
@@ -39,3 +45,9 @@ ends:
   refused:
     result: failure
     says: Nothing is written; the refusal says why.
+    agreed:
+      at: '2026-11-19T18:43:39+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven, with CI's check sentence and the answered state corrected
+      hash: 8d068712ca8c

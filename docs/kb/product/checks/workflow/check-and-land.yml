@@ -6,12 +6,18 @@ realizes: product/checks/capability/check-a-land
 start: run
 steps:
   run:
-    says: The agent runs ogy check, CI runs ogy --rev HEAD check, and --landing is added before a land.
+    says: The agent runs ogy check, CI runs ogy check --base against main, and --landing is added before a land.
     actor: product/shared/actor/agent
     choices:
       run:
         label: Check
         then: judge
+    agreed:
+      at: '2026-11-19T18:43:39+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven, with CI's check sentence and the answered state corrected
+      hash: 7109afc8929b
   judge:
     says: ogy reads the commit or the worktree and runs every check.
     cases:

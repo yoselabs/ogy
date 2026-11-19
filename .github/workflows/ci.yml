@@ -17,4 +17,4 @@ jobs:
       - run: just check
       - run: just test
       - name: ogy check
-        run: uv run --frozen --no-sync python -I -m ogy --rev HEAD check --base origin/main
+        run: uv run --frozen --no-sync python -I -m ogy check --base origin/main

@@ -43,3 +43,9 @@ ends:
   refused:
     result: failure
     says: Nothing is stored.
+    agreed:
+      at: '2026-11-19T18:43:39+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven, with CI's check sentence and the answered state corrected
+      hash: 7f6de3ee2c6d
