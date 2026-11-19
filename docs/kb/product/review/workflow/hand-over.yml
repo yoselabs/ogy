@@ -1,7 +1,6 @@
 says: At the end of a session the agent leaves no error it may fix and shows the owner what waits and what no person has seen.
 src:
 - doc:61048d84cd375c433ec891246697eb413736ea29:skills/ogy-capture/SKILL.md#8-check-hand-over-end-the-session
-trigger: actor
 start: check
 steps:
   check:

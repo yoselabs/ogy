@@ -26,10 +26,10 @@ def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> No
     assert named == set(ontology.kinds)
     assert [line for line in lines if not line.startswith(" ")][1:] == [
         "product and software:", "product:", "software:", "constitution/ (fixed folder):", "rules:"]
-    assert "  workflow: !says !trigger(actor|schedule|event|called) schedule->value event->transition !start->step" \
+    assert "  workflow: !says schedule->value event->transition !start->step" \
         " realizes->capability by->>rule" in lines
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
-    assert "  workflow: a scheduled workflow names its schedule" in lines
+    assert "  attr: an attribute of type one names what it holds" in lines
     assert "  case, choice, timeout: a row with an effect has an operation performing it" in lines
     assert 50 <= len(lines) <= 80
 

@@ -1,7 +1,6 @@
 says: An agent or CI checks the knowledge base before it hands over or lands.
 src:
 - code:src/ogy/ops.py#run_check
-trigger: actor
 realizes: product/checks/capability/check-a-land
 start: run
 steps:

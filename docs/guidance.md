@@ -26,7 +26,7 @@ So every task either changes what should be true, or acts on the running world w
 | Kind | Example | Where it goes |
 |---|---|---|
 | Changes what should be true | a new feature; a new limit or rule | an ontology change; the work follows from the difference between the two versions |
-| Something the system does again and again | a nightly database vacuum; a cache clean-up every hour | the ontology, as a workflow with `trigger: schedule` |
+| Something the system does again and again | a nightly database vacuum; a cache clean-up every hour | the ontology, as a workflow with a `schedule` |
 | A one-off act on the running world | "vacuum the database tomorrow"; "flush memcached now" | a plain task, outside the ontology |
 | Reality drifted from the ontology | an outage; a bug | a task to restore what the ontology says; perhaps a rule or a proof was missing, and adding it is an ontology change |
 | Finding out | research, a spike, a consult | a decision: the question, its options and, once found, the answer |

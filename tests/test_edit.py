@@ -12,7 +12,6 @@ from ogy.ontology import Ontology, packaged
 WORKFLOW = """\
 # Why this exists: the owner, 2026-11-16.
 says: A tool is lent.  # the one sentence
-trigger: actor
 start: ask
 steps:
   ask:

@@ -1,7 +1,6 @@
 says: One member gets one message.
 src:
 - code:src/library/remind.py#notify
-trigger: called
 start: send
 steps:
   send:

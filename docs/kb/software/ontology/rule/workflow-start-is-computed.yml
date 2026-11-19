@@ -1,0 +1,3 @@
+says: 'No workflow declares who starts it: an actor on its first step, a schedule, an event, or a then or calls from a started workflow starts it, and a workflow nothing starts is an error.'
+src:
+- code:src/ogy/flowcheck.py#orphans

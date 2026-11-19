@@ -1,17 +1,14 @@
 kind: workflow
 about: a result reached by steps; branching is `then` targets, merging is two rows naming one step
-guidance: "A result reached by steps, started by an actor, a `schedule`, an `event` or a caller (`called`). What the system does again and again is a scheduled workflow; a one-off act is a plain task outside the ontology. Branch with `then`; merge by naming one step from two rows."
+guidance: "A result reached by steps, started by an actor on its first step, a `schedule`, an `event`, or a caller's `then` or `calls`. What the system does again and again is a scheduled workflow; a one-off act is a plain task outside the ontology. Branch with `then`; merge by naming one step from two rows."
 shape: entity
 layers: [product, software]
 flow: {}
-requires:
-  - {if_equals: {field: trigger, value: schedule}, needs_field: schedule, error: "a scheduled workflow names its schedule"}
-  - {if_equals: {field: trigger, value: event}, needs_field: event, error: "a workflow started by an event names the event"}
+dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
   says: {required: true}                             # the result it reaches
-  trigger: {type: enum, of: [actor, schedule, event, called], required: true}
-  schedule: {type: link, to: [value]}                # with trigger schedule
-  event: {type: link, to: [transition]}              # with trigger event
+  schedule: {type: link, to: [value]}                # started on this clock
+  event: {type: link, to: [transition]}              # started when this transition happens; the listener names it, the cause does not
   start: {type: link, to: [step], required: true}
   realizes: {type: link, to: [capability]}
   by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

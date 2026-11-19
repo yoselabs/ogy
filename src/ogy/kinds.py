@@ -170,13 +170,13 @@ class Flow(BaseModel):
 
     Every name is a kind or field of this ontology, so another ontology can rename them; the checks are fixed:
     step shapes, every step reachable from the start, every step reaching an end or a hand-off, every end reached,
-    a calling step naming every end of its callee, the serving views offering every choice, and no orphan container.
+    a calling step naming every end of its callee, the serving views offering every choice, and every container started: a root
+    (an actor on its first step, or a `roots` field set) or led to from a started one.
     """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     start: str = "start"  # container field: the first step
-    trigger: str = "trigger"  # container field: how it starts
-    called: str = "called"  # the trigger value that needs a caller: something must hand off to or call it
+    roots: tuple[str, ...] = ("schedule", "event")  # container fields that start it from outside, as an actor on the first step does
     step: str = "step"
     end: str = "end"
     choice: str = "choice"  # rows of an actor step

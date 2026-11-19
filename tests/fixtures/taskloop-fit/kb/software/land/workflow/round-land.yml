@@ -1,6 +1,5 @@
 title: Land phase of a round
 says: Under automatic landing, the oldest passed task a round took is landed or put on hold.
-trigger: called
 start: mode
 src: [code:src/taskloop/round_land.py#land_passed]
 steps:

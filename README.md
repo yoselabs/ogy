@@ -180,7 +180,7 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
 then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself) an entry of `kinds` that sets
-none of `without`; an unmet one is `unmet-requirement`. So a workflow with `trigger: schedule` names its `schedule`, an
+none of `without`; an unmet one is `unmet-requirement`. So an
 attribute of type `one` its `of`, and an effect's `do` names what its `on` may be. `ogy kinds --map` prints them all.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain

@@ -1,7 +1,6 @@
 says: A returned tool closes its loan.
 src:
 - code:src/library/loans.py#take_back
-trigger: event
 event: product/lending/entity/loan/transition/return
 start: close
 steps:

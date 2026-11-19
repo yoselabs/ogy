@@ -1,7 +1,6 @@
 says: A member borrows a tool.
 src:
 - code:src/library/loans.py#lend
-trigger: actor
 start: ask
 realizes: product/lending/capability/lend-tools
 steps:

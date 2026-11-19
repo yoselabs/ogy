@@ -6,7 +6,6 @@ options:
     sets:
       product/checks/workflow/check:
         says: ogy checks a commit or the worktree and reports what is wrong.
-        trigger: called
   keep:
     label: Keep both workflows whole
     sets:

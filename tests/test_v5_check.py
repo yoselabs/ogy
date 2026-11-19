@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 type Make = Callable[[dict[str, str | None] | None], Kb]
 
 VALUES = "- {id: fee, says: The fee., is: 2, unit: EUR}\n- {id: wait, says: The wait., is: 3, unit: days}\n"
-CALLEE = ("says: Callee.\ntrigger: called\nstart: only\nsteps:\n  only:\n    cases:\n"
+CALLEE = ("says: Callee.\nstart: only\nsteps:\n  only:\n    cases:\n"
           "      a: {order: 1, when: {text: x}, then: good}\n      otherwise: {then: bad}\n"
           "ends:\n  good: {result: success, says: G.}\n  bad: {result: failure, says: B.}\n")
 
@@ -64,7 +64,7 @@ def test_number_is_a_yaml_number_not_text(kb: Make) -> None:
 
 
 def when(text: str, reads: str) -> dict[str, str | None]:
-    flow = ("says: S.\ntrigger: actor\nstart: sys\nsteps:\n  sys:\n    cases:\n"
+    flow = ("says: S.\nstart: sys\nsteps:\n  sys:\n    cases:\n"
             f"      go: {{order: 1, when: {{text: {text}, reads: {reads}}}, then: done}}\n"
             "      otherwise: {then: done}\nends:\n  done: {result: success, says: D.}\n")
     return {"product/app/workflow/sys.yml": flow}
@@ -150,7 +150,7 @@ def test_requirement_applies_when_part_present(kb: Make) -> None:
 
 
 def test_actor_step_with_one_timeout(kb: Make) -> None:
-    flow = ("says: S.\ntrigger: actor\nstart: ask\nsteps:\n  ask:\n    actor: product/app/actor/member\n"
+    flow = ("says: S.\nstart: ask\nsteps:\n  ask:\n    actor: product/app/actor/member\n"
             "    choices:\n      go: {label: Go, then: done}\n")
     flow += "    timeout: {after: product/app/value/wait, then: done}\nends:\n  done: {result: success, says: D.}\n"
     base = {"product/app/workflow/sign-in.yml": flow, "product/app/values.yml": VALUES}
@@ -161,7 +161,7 @@ def test_actor_step_with_one_timeout(kb: Make) -> None:
 
 
 def calling(covers: str) -> dict[str, str | None]:
-    flow = ("says: C.\ntrigger: actor\nstart: call\nsteps:\n  call:\n    calls: product/app/workflow/callee\n    cases:\n"
+    flow = ("says: C.\nstart: call\nsteps:\n  call:\n    calls: product/app/workflow/callee\n    cases:\n"
             f"      a: {{covers_ends: {covers}, then: done}}\nends:\n  done: {{result: success, says: D.}}\n")
     return {"product/app/workflow/caller.yml": flow, "product/app/workflow/callee.yml": CALLEE}
 
@@ -173,14 +173,20 @@ def test_calling_step_covers_every_callee_end(kb: Make) -> None:
     assert found == {(Problem.UNCOVERED_END, "product/app/workflow/caller/step/call")}
 
 
-def test_called_workflow_needs_a_caller(kb: Make) -> None:
-    alone = kb({"product/app/workflow/callee.yml": CALLEE}).findings()
+def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> None:
+    alone = kb({"product/app/workflow/callee.yml": CALLEE}).findings(started=True)
     assert alone == {(Problem.ORPHAN, "product/app/workflow/callee")}
-    assert kb(calling("[product/app/workflow/callee/end/good, product/app/workflow/callee/end/bad]")).findings() == set()
+    both = calling("[product/app/workflow/callee/end/good, product/app/workflow/callee/end/bad]")
+    assert kb(both).findings(started=True) == {(Problem.ORPHAN, "product/app/workflow/caller"),
+                                               (Problem.ORPHAN, "product/app/workflow/callee")}  # a caller nothing starts
+    caller = both["product/app/workflow/caller.yml"] or ""
+    timed = {**both, "product/app/values.yml": VALUES,
+             "product/app/workflow/caller.yml": caller.replace("says: C.\n", "says: C.\nschedule: product/app/value/fee\n")}
+    assert kb(timed).findings(started=True) == set()
 
 
 def cases(first: str, second: str) -> dict[str, str | None]:
-    flow = ("says: S.\ntrigger: actor\nstart: sys\nsteps:\n  sys:\n    cases:\n"
+    flow = ("says: S.\nstart: sys\nsteps:\n  sys:\n    cases:\n"
             f"      a: {{{first}, when: {{text: a}}, then: done}}\n      b: {{{second}, when: {{text: b}}, then: done}}\n"
             "      otherwise: {then: done}\nends:\n  done: {result: success, says: D.}\n")
     return {"product/app/workflow/sys.yml": flow}
@@ -195,14 +201,14 @@ def test_cases_are_ordered_by_data(kb: Make) -> None:
 
 
 def test_unreachable_step_and_unreached_end(kb: Make) -> None:
-    flow = ("says: S.\ntrigger: actor\nstart: a\nsteps:\n  a: {then: done}\n  lost: {then: done}\n"
+    flow = ("says: S.\nstart: a\nsteps:\n  a: {then: done}\n  lost: {then: done}\n"
                            "ends:\n  done: {result: success, says: D.}\n  never: {result: failure, says: N.}\n")
     found = kb({"product/app/workflow/w.yml": flow}).findings()
     assert found == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost"), (Problem.END_UNREACHED, "product/app/workflow/w/end/never")}
 
 
 def test_guard_else_reaches_an_end(kb: Make) -> None:
-    flow = ("says: S.\ntrigger: actor\nstart: a\nsteps:\n  a: {then: done}\nends:\n  done: {result: success, says: D.}\n"
+    flow = ("says: S.\nstart: a\nsteps:\n  a: {then: done}\nends:\n  done: {result: success, says: D.}\n"
             "  denied: {result: failure, says: N.}\n")
     guard = "says: Allowed.\n\"on\": product/app/workflow/w/step/a\nwhen: {text: ok}\nelse: product/app/workflow/w/end/denied\n"
     assert kb({"product/app/workflow/w.yml": flow, "product/app/guard/g.yml": guard}).findings() == set()

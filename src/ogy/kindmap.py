@@ -69,7 +69,8 @@ def _flow_rules(name: str, flow: Flow) -> list[str]:
             f"  {name} (flow): a calling {flow.step} names every {flow.end} of its callee in `{flow.covers}`",
             f"  {name} (flow): the {' and '.join(item + 's' for item in flow.servers)} serving a {flow.step} offer every "
             f"{flow.choice} between them",
-            f"  {name} (flow): a {name} with {flow.trigger} `{flow.called}` is called or handed off to"]
+            f"  {name} (flow): every {name} is started: an {flow.actor} on its first {flow.step}, a "
+            f"{' or '.join(flow.roots)}, or led to from a started {name}"]
 
 
 def map_lines(ontology: Ontology) -> list[str]:

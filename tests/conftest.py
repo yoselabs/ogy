@@ -21,7 +21,6 @@ AGREED = "{at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1', from: human, s
 SIGN_IN = """\
 says: A member is signed in.
 because: [product/app/actor/member]
-trigger: actor
 start: ask
 steps:
   ask:
@@ -60,11 +59,12 @@ class Kb:
         shutil.copytree(self.source.root, home / KB_DIR)
         return home
 
-    def findings(self, evidence: bool = False, landing: bool = False) -> set[tuple[Problem, str]]:
-        """The findings; `no-evidence` only with `evidence=True`, so a test of one rule does not carry a `src` on every entry."""
+    def findings(self, evidence: bool = False, landing: bool = False, started: bool = False) -> set[tuple[Problem, str]]:
+        """The findings; `no-evidence` only with `evidence=True` and `orphan` (nothing starts a workflow) only with
+        `started=True`, so a test of one rule does not carry a `src` on every entry or a root for every workflow."""
         found = check(self.snapshot, self.source, landing=landing)
-        return {(item.problem, str(item.address) if item.address else item.path) for item in found
-                if evidence or item.problem is not Problem.NO_EVIDENCE}
+        hidden = {problem for problem, shown in ((Problem.NO_EVIDENCE, evidence), (Problem.ORPHAN, started)) if not shown}
+        return {(item.problem, str(item.address) if item.address else item.path) for item in found if item.problem not in hidden}
 
 
 @pytest.fixture
@@ -99,7 +99,6 @@ FILES = {
     "docs/kb/product/app/workflow/borrow.yml": """\
 says: A tool is lent.
 src: ['code:app.py#lend']
-trigger: actor
 start: ask
 steps:
   ask:

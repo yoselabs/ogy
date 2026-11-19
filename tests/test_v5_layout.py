@@ -120,7 +120,6 @@ def test_locate_is_pure(ontology: Ontology) -> None:
 
 SIGN_IN_CHANGED = """\
 says: A member is signed in.
-trigger: actor
 start: ask
 steps:
   ask:

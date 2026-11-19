@@ -1,7 +1,6 @@
 says: A commit that changes the knowledge base is made only when ogy check passes on the staged tree.
 src:
 - code:src/ogy/init.py#HOOK
-trigger: actor
 start: commit
 steps:
   commit:

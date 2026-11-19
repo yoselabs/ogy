@@ -1,7 +1,6 @@
 says: ogy checks a commit or the worktree and reports what is wrong.
 src:
 - code:src/ogy/ops.py#run_check
-trigger: called
 start: judge
 steps:
   judge:

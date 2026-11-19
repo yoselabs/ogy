@@ -1,6 +1,5 @@
 title: Land a task
 says: The task's checked change is on origin's main as one commit and the task is closed in the tracker.
-trigger: actor
 start: ask
 realizes: product/land/capability/land-a-task
 src: [code:src/taskloop/land.py#land]

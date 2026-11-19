@@ -139,16 +139,33 @@ class FlowChecker:
                 self.add(Problem.END_UNREACHED, end, "no reachable step ends here")
 
 
+def _top(address: Address) -> Address:
+    while (parent := address.parent()) is not None:
+        address = parent
+    return address
+
+
+def _root(snapshot: Snapshot, flow: Flow, address: Address) -> bool:
+    """Started from outside: an actor on its first step, or a `roots` field (a schedule, an event) set."""
+    if any(snapshot.entries[address].fields.get(name) for name in flow.roots):
+        return True
+    return any(link(snapshot, start, flow.actor) for start in link(snapshot, address, flow.start))
+
+
 def orphans(snapshot: Snapshot, flow: Flow, kind: str) -> list[Finding]:
-    """A workflow that is only ever called (trigger `called`) and that nothing hands off to or calls."""
-    found: list[Finding] = []
-    for address in sorted(snapshot.entries):
-        if address.kind != kind or snapshot.entries[address].fields.get(flow.trigger) != flow.called:
-            continue
-        callers = [source for field in (flow.then, flow.calls) for source in snapshot.links.backward(address, field)]
-        if not callers:
-            found.append(Finding(Problem.ORPHAN, snapshot.entries[address].path, "nothing hands off to or calls it", address))
-    return found
+    """Who starts a workflow is computed, never declared: a root, or led to (`then`, `calls`) from a started workflow.
+    Two workflows that only lead to each other are not started."""
+    flows = [address for address in sorted(snapshot.entries) if address.kind == kind and address.parent() is None]
+    started = {address for address in flows if _root(snapshot, flow, address)}
+    grown = True
+    while grown:
+        led = {address for address in flows if address not in started and any(
+            _top(source) in started for field in (flow.then, flow.calls) for source in snapshot.links.backward(address, field))}
+        started |= led
+        grown = bool(led)
+    return [Finding(Problem.ORPHAN, snapshot.entries[address].path, "nothing starts it: no actor on its first step, no "
+                    f"{' or '.join(flow.roots)}, and no started workflow leads to it", address)
+            for address in flows if address not in started]
 
 
 def check_flows(snapshot: Snapshot, _source: Source) -> list[Finding]:

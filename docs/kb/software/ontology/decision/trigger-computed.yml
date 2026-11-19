@@ -1,0 +1,22 @@
+structure: true
+question: Does a workflow declare who starts it (trigger actor, schedule, event or called), or is it computed from the links?
+context: 'Owner 2026-11-19, after the password-reset example: trigger called is generic, and every value repeats a fact that already lives elsewhere (the first step actor, the schedule or event field, the callers links). Fable advised dropping it; no new kind, the event stays the transition the listener names.'
+options:
+  computed:
+    label: Drop trigger; a workflow is started by an actor on its first step, a schedule, an event or a started caller; one nothing starts is an error
+    sets:
+      software/ontology/rule/workflow-start-is-computed:
+        says: 'No workflow declares who starts it: an actor on its first step, a schedule, an event, or a then or calls from a started workflow starts it, and a workflow nothing starts is an error.'
+  declared:
+    label: Keep trigger on every workflow
+    sets:
+      software/ontology/rule/workflow-start-is-computed:
+guess:
+  chose: computed
+  why: The owner said to drop it.
+answers:
+- chose: computed
+  said: Yes, drop trigger; who starts a workflow is computed
+  from: human
+  at: '2026-11-19T20:24:14+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

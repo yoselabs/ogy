@@ -1,7 +1,6 @@
 says: An MCP client calls an ogy tool and gets what the same CLI command returns.
 src:
 - code:src/ogy/mcp_server.py#_run
-trigger: actor
 start: call
 steps:
   call:

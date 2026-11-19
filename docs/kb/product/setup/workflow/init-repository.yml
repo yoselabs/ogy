@@ -1,7 +1,6 @@
 says: A person makes a repository ready for ogy.
 src:
 - code:src/ogy/init.py#init
-trigger: actor
 realizes: product/setup/capability/set-up-a-repository
 start: run
 steps:

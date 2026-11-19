@@ -1,7 +1,6 @@
 says: An agent turns words, documents or code into entries through one checked write.
 src:
 - code:src/ogy/put.py#put
-trigger: actor
 realizes: product/capture/capability/write-entries
 start: read-glossary
 steps:

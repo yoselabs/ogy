@@ -22,7 +22,6 @@ attrs:
 """
 STEP = """\
 says: S.
-trigger: actor
 start: ask
 steps:
   ask:
@@ -44,14 +43,6 @@ def unmet(kb: Make, changes: dict[str, str | None]) -> set[str]:
 
 def test_the_good_files_meet_every_requirement(kb: Make) -> None:
     assert kb({**SERVED, "product/app/workflow/ask.yml": STEP}).findings() == set()
-
-
-def test_a_trigger_value_needs_its_field(kb: Make) -> None:
-    flow = STEP.replace("trigger: actor", "trigger: schedule")
-    assert unmet(kb, {**SERVED, "product/app/workflow/ask.yml": flow}) == {"product/app/workflow/ask"}
-    timed = flow.replace("trigger: schedule", "trigger: schedule\nschedule: product/app/value/every")
-    values = {"product/app/values.yml": "- {id: every, says: Every day., is: 1, unit: day}\n"}
-    assert unmet(kb, {**SERVED, **values, "product/app/workflow/ask.yml": timed}) == set()
 
 
 def test_an_actor_step_keeps_one_choice_without_when(kb: Make) -> None:

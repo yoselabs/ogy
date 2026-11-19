@@ -1,7 +1,6 @@
 says: An agent reads the knowledge base without changing it.
 src:
 - code:src/ogy/ops.py#run_impact
-trigger: actor
 realizes: product/inspection/capability/inspect
 start: read
 steps:

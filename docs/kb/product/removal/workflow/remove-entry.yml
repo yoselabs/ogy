@@ -1,7 +1,6 @@
 says: An agent removes an entry with a reason, and ogy records it in the removed ledger before deleting it.
 src:
 - code:src/ogy/removal.py#remove
-trigger: actor
 realizes: product/removal/capability/remove-with-reason
 start: ask
 steps:

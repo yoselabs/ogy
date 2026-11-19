@@ -1,7 +1,6 @@
 says: Members with late tools are reminded.
 src:
 - code:src/library/remind.py#remind
-trigger: schedule
 schedule: product/lending/value/remind-every
 start: call
 steps:
