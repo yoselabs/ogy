@@ -51,12 +51,18 @@ iorlas-brainstorm).
 One form, shared with `ogy review` (letters, the recommendation first, "yes" accepts it):
 ```
 Q<n>. <short title>
+   Why it comes up: <what happened or what is missing, so the card reads alone>
    <the question, with the gap and its sources in one line>
    A. <option>   (recommended: <one-line reason>)
+      then <what becomes true under A>
    B. <option>
+      then <what becomes true under B>
    Settles: <the gaps this answers>
    Reply: yes | Q<n> b | <n>: <words> | no <n> | later
 ```
+- Each card reads alone, out of the chat: why it comes up, the question, and every option with what it makes true.
+  Never show only the recommended or the in-force option; for a delegated answer, show what the owner chose before and
+  what the agent changed (owner, 2026-11-19).
 - Word each card so "yes" accepts the recommendation (from grilling). Every card is a stored `decision` with its
   guess (see `ogy-capture` section 4); do not ask what is not stored.
 - If the owner's answers are short, switch to two options (from iorlas-brainstorm).

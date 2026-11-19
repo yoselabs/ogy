@@ -111,12 +111,17 @@ def _card(label: str, card: Card) -> list[str]:
     harm = str(card.harm).replace("-", " ") if card.harm else ""
     notes = [text for text in (harm, f"{card.dependants} depend on it" if card.dependants else "") if text]
     lines = [f"{label}. {card.kind}  {card.address}" + (f"  ({'; '.join(notes)})" if notes else "")]
+    if card.context:
+        lines.append(f"   Why it comes up: {card.context}")
     lines.append(f"   {card.word}: {card.text}" if card.word else f"   {card.text}")
     if card.avoid:
         lines.append(f"   not: {'; '.join(card.avoid)}")
-    for letter, (key, text) in zip(string.ascii_uppercase, card.options, strict=False):
+    for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
         mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
         lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))
+        lines += [f"      then {line}" for line in (card.then[index] if index < len(card.then) else ())]
+    if card.earlier:
+        lines.append(f"   {card.earlier}")
     if card.harm is Harm.STRUCTURE:
         lines.append(f"   Structural: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
     if card.kind == "question" and not card.options:

@@ -238,3 +238,13 @@ def evidence_findings(snapshot: Snapshot) -> set[tuple[str, str]]:
     """No-evidence findings: a person's yes is evidence of its own."""
     return {(str(i.problem), str(i.address)) for i in check(snapshot, WorktreeSource(V5, "")) if i.problem is Problem.NO_EVIDENCE
             and str(i.address) == FEE}
+
+
+def test_a_question_card_reads_alone_with_why_and_what_each_option_makes_true() -> None:
+    body = decision()
+    path = next(iter(body))
+    body[path] = body[path].replace("question: How much?\n", "question: How much?\ncontext: Members asked for a lower fee.\n")
+    card = queue(snap(body))[0]
+    assert card.context == "Members asked for a lower fee."
+    assert dict(zip((key for key, _ in card.options), card.then, strict=True)) == {
+        "two": (f"{FEE}: is = 2",), "one": (f"{FEE}: is = 1",)}

@@ -51,6 +51,9 @@ class Card:
     evidence: str = ""  # what stands behind it: "From docs: ...", the guess's reason
     word: str = ""  # a term card: the word (the sentence is its meaning)
     avoid: tuple[str, ...] = ()  # a term card: the words it is not
+    context: str = ""  # a decision card: why the question comes up, so the card reads on its own
+    then: tuple[tuple[str, ...], ...] = ()  # a decision card: what each option (same order as `options`) makes true
+    earlier: str = ""  # a delegated card: the owner's own earlier answer, which the agent's answer replaced
 
 
 @dataclass(frozen=True)
@@ -163,10 +166,40 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     guess = force.option if decision.answers and force else decision.guess.fields.get("chose") if decision.guess else None
     keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
     said = decision.heard.fields.get("said") if decision.heard and not decision.answers else None
-    options = tuple((key, str(snapshot.entries[decision.address.part("option", key)].fields.get("label", key))) for key in keys)
+    parts = [snapshot.entries[decision.address.part("option", key)].fields for key in keys]
+    options = tuple((key, str(fields.get("label", key))) for key, fields in zip(keys, parts, strict=True))
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
                 decision.entry.text("question") or "", guess if isinstance(guess, str) else "",
-                snapshot.fingerprint(decision.address), options, said if isinstance(said, str) else "", _reason(decision))
+                snapshot.fingerprint(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
+                context=decision.entry.text("context") or "", then=tuple(_then(fields.get("sets")) for fields in parts),
+                earlier=_earlier(decision) if kind == "delegated" else "")
+
+
+def _then(sets: object) -> tuple[str, ...]:
+    """What an option makes true, one line per entry it sets: its sentence, its other fields, or that it does not exist."""
+    if not isinstance(sets, dict):
+        return ()
+    lines: list[str] = []
+    for target, fields in sets.items():
+        if not isinstance(fields, dict):
+            lines.append(f"{target} does not exist")
+            continue
+        says = fields.get("says")
+        rest = ", ".join(f"{name} = {value}" for name, value in fields.items() if name != "says")
+        lines.append(f"{target}: {says}" if isinstance(says, str) else f"{target}")
+        if rest:
+            lines[-1] += ("; " if isinstance(says, str) else ": ") + rest
+    return tuple(lines)
+
+
+def _earlier(decision: Decision) -> str:
+    """For a delegated answer: the owner's own last answer before it, when it chose another option."""
+    force = decision.in_force
+    dated = [item for _, item in sorted(((item.at, index), item) for index, item in enumerate(decision.answers) if item.at is not None)]
+    human = [item for item in dated if item.who == "human"]
+    if not human or force is None or human[-1].chose == force.option:
+        return ""
+    return f"You chose {human[-1].chose} earlier; an agent changed it: {dated[-1].said}"
 
 
 def _says(snapshot: Snapshot, address: Address) -> str:
