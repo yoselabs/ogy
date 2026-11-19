@@ -1,4 +1,4 @@
-says: The agent records what the owner said as an answer, with a short paraphrase, before its next action.
+says: The agent records the owner's choice as an answer on its decision, with a short paraphrase of what the owner said.
 src:
 - code:src/ogy/writes.py#answer
 trigger: actor
@@ -19,7 +19,7 @@ steps:
       said: Agreed to the seven capture and hand-over sentences
       hash: 70eab885cded
   keep:
-    says: ogy appends the answer to its decision.
+    says: ogy appends the answer to its decision and applies what the chosen option sets.
     cases:
       not-relayed:
         order: 1

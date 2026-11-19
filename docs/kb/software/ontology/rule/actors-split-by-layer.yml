@@ -1,1 +1,3 @@
 says: Business actors live in the product layer and technical actors (a scheduler, CI, a system calling us) in the software layer; no field marks the difference.
+because:
+- constitution/principle/layers-split-business-from-technical

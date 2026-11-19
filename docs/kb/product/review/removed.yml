@@ -1,0 +1,105 @@
+format: 1
+items:
+  - id: product/review/entity/decision/attr/question
+    kind: attr
+    parent:
+      address: product/review/entity/decision
+      key: attrs
+      position: 0
+    title:
+    said: The question.
+    why: product/review/decision/decision-entity
+    replaced_by:
+    at: 2026-11-19 18:11:57+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: 9ace5beb3a26
+    ontology: software
+    snapshot:
+      type: text
+      says: The question.
+  - id: product/review/entity/decision/attr/structure
+    kind: attr
+    parent:
+      address: product/review/entity/decision
+      key: attrs
+      position: 0
+    title:
+    said: A structural decision; it is asked on its own card and no accept-all answers it.
+    why: product/review/decision/decision-entity
+    replaced_by:
+    at: 2026-11-19 18:11:58+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: 06cd6e5ae3e9
+    ontology: software
+    snapshot:
+      type: flag
+      says: A structural decision; it is asked on its own card and no accept-all answers it.
+  - id: product/review/entity/decision/attr/answers
+    kind: attr
+    parent:
+      address: product/review/entity/decision
+      key: attrs
+      position: 0
+    title:
+    said: The owner's answers; the newest by its time is in force.
+    why: product/review/decision/decision-entity
+    replaced_by:
+    at: 2026-11-19 18:11:59+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: 45e048e122b7
+    ontology: software
+    snapshot:
+      type: list
+      says: The owner's answers; the newest by its time is in force.
+  - id: product/review/entity/decision/transition/answer-again
+    kind: transition
+    parent:
+      address: product/review/entity/decision
+      key: transitions
+      position: 1
+    title:
+    said:
+    why: 'Fable review 2026-11-19 (owner delegated): nothing drives it; answer now also starts from answered'
+    replaced_by:
+    at: 2026-11-19 18:12:11+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: 99ff7e4683ad
+    ontology: software
+    snapshot:
+      from:
+      - answered
+      to: answered
+  - id: product/review/entity/review-round/transition/forget
+    kind: transition
+    parent:
+      address: product/review/entity/review-round
+      key: transitions
+      position: 1
+    title:
+    said:
+    why: 'Fable review 2026-11-19 (owner delegated): a forgotten round is a deleted file; the value rounds-kept says it'
+    replaced_by:
+    at: 2026-11-19 18:12:12+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: b8fd1e86bd7e
+    ontology: software
+    snapshot:
+      from:
+      - kept
+      to: forgotten
+  - id: product/review/entity/review-round/state/forgotten
+    kind: state
+    parent:
+      address: product/review/entity/review-round
+      key: states
+      position: 1
+    title:
+    said: Newer rounds pushed it out; a reply that names it finds nothing.
+    why: 'Fable review 2026-11-19 (owner delegated): a forgotten round is a deleted file; the value rounds-kept says it'
+    replaced_by:
+    at: 2026-11-19 18:12:13+00:00
+    last_seen: e717ef9458fc201f653dc4c65af1b810dc777b4e
+    hash: 2689bc14cdc9
+    ontology: software
+    snapshot:
+      says: Newer rounds pushed it out; a reply that names it finds nothing.

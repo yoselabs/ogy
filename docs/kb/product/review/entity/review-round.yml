@@ -4,7 +4,7 @@ src:
 attrs:
   id:
     type: text
-    says: r and six hex digits of the digest of the cards
+    says: The short id that ogy review prints and a reply names.
   everything:
     type: flag
     says: The round was shown with --all, so a bare yes is refused.
@@ -21,12 +21,6 @@ states:
       from: human
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: 41d83fa392cb
-  forgotten:
-    says: Newer rounds pushed it out; a reply that names it finds nothing.
 transitions:
   save:
     to: kept
-  forget:
-    from:
-    - kept
-    to: forgotten
