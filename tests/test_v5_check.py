@@ -193,7 +193,8 @@ def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> Non
 
 def cases(first: str, second: str) -> dict[str, str | None]:
     flow = ("says: S.\nstart: sys\nsteps:\n  sys:\n    cases:\n"
-            f"      a: {{{first}, when: {{text: a, reads: [product/app/actor/member]}}, then: done}}\n      b: {{{second}, when: {{text: b, reads: [product/app/actor/member]}}, then: done}}\n"
+            f"      a: {{{first}, when: {{text: a, reads: [product/app/actor/member]}}, then: done}}\n"
+            f"      b: {{{second}, when: {{text: b, reads: [product/app/actor/member]}}, then: done}}\n"
             "      otherwise: {then: done}\nends:\n  done: {result: success, says: D.}\n")
     return {"product/app/workflow/sys.yml": flow}
 
