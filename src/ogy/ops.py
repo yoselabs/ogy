@@ -255,10 +255,11 @@ def run_init(repo: Path, ontology: str | None = None) -> Run[Initialised]:
     return Run(init(repo, ontology), 0)
 
 
-def run_put(target: Target, records: list[Mapping[object, object]]) -> Run[list[put.Put]]:
-    """Add or change one or many entries in one atomic, checked write; the batch is put back when it breaks the knowledge base."""
+def run_put(target: Target, records: list[Mapping[object, object]], why: str | None = None) -> Run[list[put.Put]]:
+    """Add or change one or many entries in one atomic, checked write; the batch is put back when it breaks the knowledge base.
+    Parts a record drops are recorded as removed, with `why`."""
     with writes.locked(target, "put"):
-        return Run(put.put(target, records), 0)
+        return Run(put.put(target, records, why), 0)
 
 
 def run_answer(target: Target, decision: str, option: str, said: str, where: str, at: str | None = None, who: str = "human",

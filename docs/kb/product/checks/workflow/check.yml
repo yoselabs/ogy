@@ -1,0 +1,23 @@
+says: ogy checks a commit or the worktree and reports what is wrong.
+src:
+- code:src/ogy/ops.py#run_check
+trigger: called
+start: judge
+steps:
+  judge:
+    says: ogy checks the commit or the worktree it was pointed at.
+    cases:
+      findings:
+        order: 1
+        when:
+          text: the check reports a finding
+        then: blocked
+      otherwise:
+        then: clean
+ends:
+  clean:
+    result: success
+    says: No finding.
+  blocked:
+    result: failure
+    says: The findings are printed and the exit code is 1.

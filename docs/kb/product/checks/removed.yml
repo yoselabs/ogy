@@ -1,0 +1,37 @@
+format: 1
+items:
+  - id: product/checks/workflow/check-and-land/step/judge/case/findings
+    kind: case
+    parent:
+      address: product/checks/workflow/check-and-land/step/judge
+      key: cases
+      position: 0
+    title:
+    said:
+    why: product/checks/decision/one-check-workflow
+    replaced_by:
+    at: 2026-11-19 20:11:52+01:00
+    last_seen: edc8041cddc1506f4d20ca762ac43e005982c12a
+    hash: 03a34b653a23
+    ontology: software
+    snapshot:
+      order: 1
+      when:
+        text: the check reports a finding
+      then: blocked
+  - id: product/checks/workflow/check-and-land/step/judge/case/otherwise
+    kind: case
+    parent:
+      address: product/checks/workflow/check-and-land/step/judge
+      key: cases
+      position: 1
+    title:
+    said:
+    why: product/checks/decision/one-check-workflow
+    replaced_by:
+    at: 2026-11-19 20:11:52+01:00
+    last_seen: edc8041cddc1506f4d20ca762ac43e005982c12a
+    hash: 6845e164a647
+    ontology: software
+    snapshot:
+      then: clean

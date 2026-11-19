@@ -10,7 +10,7 @@ steps:
     choices:
       commit:
         label: Commit
-        then: check
+        then: skip
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -18,20 +18,27 @@ steps:
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 251acf4754cf
   check:
-    says: The hook writes the staged tree as a commit and runs ogy --rev <that commit> check.
+    says: The hook writes the staged tree as a commit and runs the shared check on it.
+    calls: product/checks/workflow/check
+    cases:
+      clean:
+        covers_ends:
+        - product/checks/workflow/check/end/clean
+        then: committed
+      blocked:
+        covers_ends:
+        - product/checks/workflow/check/end/blocked
+        then: refused
+  skip:
+    says: A commit that changes nothing under docs/kb is not checked.
     cases:
       untouched:
         order: 1
         when:
           text: the commit changes nothing under docs/kb
         then: committed
-      findings:
-        order: 2
-        when:
-          text: ogy check reports a finding
-        then: refused
       otherwise:
-        then: committed
+        then: check
 ends:
   committed:
     result: success

@@ -8,15 +8,16 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 
 import any_yaml
+from git_porcelain import head
 
-from ogy import near, removed
+from ogy import near, removal, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import fields_problems
 from ogy.kinds import COMMON_FIELDS, NAME, Holds, Kind, Shape
 from ogy.model import Address, parse_address
 from ogy.snapshot import Snapshot
 from ogy.target import Target
-from ogy.writes import Data, WriteRefused, commit
+from ogy.writes import Data, WriteRefused, commit, utc_now
 
 KEYS = ("address", "kind", "layer", "area", "id")
 
@@ -137,8 +138,10 @@ def _try(snapshot: Snapshot, record: Mapping[object, object]) -> Address | None:
         return None
 
 
-def put(target: Target, records: list[Mapping[object, object]]) -> list[Put]:
-    """Add or change every record in one atomic, checked write (the lock is held); parents are written before their parts."""
+def put(target: Target, records: list[Mapping[object, object]], why: str | None = None) -> list[Put]:
+    """Add or change every record in one atomic, checked write (the lock is held); parents are written before their parts.
+    A record that drops parts (`cases: null`, a part left out) needs `why`: each dropped part gets its removed.yml item in the
+    same write, so a reshaped step loses nothing silently."""
     editor = Editor(target.repo, target.kb, target.kinds())
     snapshot = editor.snapshot()
     ordered = sorted(_checked(target, snapshot, records), key=lambda item: len(item[0].path))
@@ -147,6 +150,29 @@ def put(target: Target, records: list[Mapping[object, object]]) -> list[Put]:
     def act(ed: Editor) -> None:
         for address, fields, new in ordered:
             ed.put(address, fields) if new else ed.update(address, fields)
+        _record_dropped(target, snapshot, ed.snapshot(), [address for address, _, _ in ordered], why)
 
     commit(target, lambda _: [address for address, _, _ in ordered], act)
     return done
+
+
+def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: list[Address], why: str | None) -> None:
+    """The parts under the records' addresses that the batch dropped, each recorded in its area's removed.yml."""
+    dropped = [address for address in before.entries if address not in after.entries and address not in roots
+               and any(address.home == root.home and address.path[:len(root.path)] == root.path for root in roots)]
+    dropped = [address for address in dropped if address.parent() not in dropped  # a dropped part takes its own parts
+               and before.kind_of(address).holding is Holds.MAP]  # a single part is a field of its parent: its change shows there
+    if not dropped:
+        return
+    if not why or not why.strip():
+        raise WriteRefused([f"the batch drops {', '.join(map(str, dropped))}: give --why (a decision address, or plain words)"])
+    at, seen = utc_now(), head(target.repo)
+    items = [removal.build_item(before, address, why, None, at, seen, target.ontology) for address in dropped]
+    problems = removed.check_why(items, removal.known_addresses(before))
+    if problems:
+        raise WriteRefused([f"{problem.code}: {problem.detail}" for problem in problems])
+    for address, item in zip(dropped, items, strict=True):
+        try:
+            removed.append(target.repo / target.kb, address.home, item, lambda new: removal.snapshot_problems(before, new))
+        except removed.RemovedError as error:
+            raise WriteRefused([str(error)]) from error

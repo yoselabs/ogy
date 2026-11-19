@@ -1,7 +1,6 @@
 says: Runs every check on a snapshot of a commit or the worktree, against a base commit when there is one.
 performs:
-- software/checks/workflow/pre-commit-check/step/check/case/findings
-- product/checks/workflow/check-and-land/step/judge/case/findings
+- product/checks/workflow/check/step/judge/case/findings
 uses:
 - software/storage/external/git
 src:

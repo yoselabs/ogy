@@ -15,3 +15,57 @@ items:
     says: An area named like the repository is a warning in check and status, never a finding, and it never changes the exit code.
     src:
     - code:src/ogy/coverage.py#area_warnings
+- id: software/checks/workflow/pre-commit-check/step/check/case/untouched
+  kind: case
+  parent:
+    address: software/checks/workflow/pre-commit-check/step/check
+    key: cases
+    position: 0
+  title:
+  said:
+  why: product/checks/decision/one-check-workflow
+  replaced_by:
+  at: 2026-11-19 20:11:52+01:00
+  last_seen: edc8041cddc1506f4d20ca762ac43e005982c12a
+  hash: cfc430128d72
+  ontology: software
+  snapshot:
+    order: 1
+    when:
+      text: the commit changes nothing under docs/kb
+    then: committed
+- id: software/checks/workflow/pre-commit-check/step/check/case/findings
+  kind: case
+  parent:
+    address: software/checks/workflow/pre-commit-check/step/check
+    key: cases
+    position: 1
+  title:
+  said:
+  why: product/checks/decision/one-check-workflow
+  replaced_by:
+  at: 2026-11-19 20:11:52+01:00
+  last_seen: edc8041cddc1506f4d20ca762ac43e005982c12a
+  hash: f4f9e34771ed
+  ontology: software
+  snapshot:
+    order: 2
+    when:
+      text: ogy check reports a finding
+    then: refused
+- id: software/checks/workflow/pre-commit-check/step/check/case/otherwise
+  kind: case
+  parent:
+    address: software/checks/workflow/pre-commit-check/step/check
+    key: cases
+    position: 2
+  title:
+  said:
+  why: product/checks/decision/one-check-workflow
+  replaced_by:
+  at: 2026-11-19 20:11:52+01:00
+  last_seen: edc8041cddc1506f4d20ca762ac43e005982c12a
+  hash: 395ea22aa265
+  ontology: software
+  snapshot:
+    then: committed

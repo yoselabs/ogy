@@ -112,6 +112,7 @@ def _writes(commands: Adder) -> None:
                     "checked together: a decision and the entries its options set may come in one call. Nothing is written "
                     "when any record is refused.")
     putting.add_argument("records", nargs="*", metavar="records", help="a JSON or YAML mapping or array of mappings")
+    putting.add_argument("--why", help="why the parts a record drops are removed: a decision address, or plain words")
     putting.add_argument("--file", help="a file of records (- for standard input)")
     removing = _verb(commands, "remove", "delete an entry and record it in its area's removed.yml", "Always changes the worktree.")
     removing.add_argument("address", help=ADDRESS)

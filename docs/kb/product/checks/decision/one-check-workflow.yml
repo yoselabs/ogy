@@ -1,0 +1,22 @@
+question: check-and-land and pre-commit-check both run the check and refuse on findings. Is the shared part one called workflow?
+context: 'Owner 2026-11-19, after the password-reset example: callers own their way in (who starts it, the hook skipping untouched commits); the shared part is written once and called.'
+options:
+  split:
+    label: One called workflow check; check-and-land and pre-commit-check call it
+    sets:
+      product/checks/workflow/check:
+        says: ogy checks a commit or the worktree and reports what is wrong.
+        trigger: called
+  keep:
+    label: Keep both workflows whole
+    sets:
+      product/checks/workflow/check:
+guess:
+  chose: split
+  why: The owner said to go as discussed.
+answers:
+- chose: split
+  said: 'Go as discussed: the shared check is one called workflow'
+  from: human
+  at: '2026-11-19T20:12:04+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

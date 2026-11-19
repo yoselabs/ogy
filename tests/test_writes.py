@@ -280,3 +280,15 @@ def test_an_answer_removes_a_state_after_the_transition_that_links_to_it(repo: P
     assert code == cli.OK, lines
     code, lines = w(repo, "answer", "product/app/decision/loan-close", "drop", "--said", "Loans never close", *SAID)
     assert code == cli.OK and f"removed {entity}/state/closed" in lines and f"removed {entity}/transition/close" in lines, lines
+
+
+def test_a_put_that_drops_parts_needs_a_why_and_records_each(repo: Path) -> None:
+    step = "product/app/workflow/borrow/step/ask"
+    assert w(repo, "put", json.dumps({"address": f"{step}/choice/skip", "label": "Skip", "then": "done"}))[0] == cli.OK
+    record = json.dumps({"address": step, "choices": {"go": {"label": "Borrow", "then": "done"}}})
+    code, lines = w(repo, "put", record)
+    assert code == cli.REFUSED and f"drops {step}/choice/skip" in lines[0] and "--why" in lines[0], lines
+    code, lines = w(repo, "put", record, "--why", "Nobody skips")
+    assert code == cli.OK, lines
+    removed_yml = (repo / "docs/kb/product/app/removed.yml").read_text()
+    assert f"{step}/choice/skip" in removed_yml and "Nobody skips" in removed_yml
