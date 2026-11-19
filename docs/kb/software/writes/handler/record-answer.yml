@@ -1,0 +1,7 @@
+says: 'Appends an answer to its decision: the option chosen, a short paraphrase of what was said, who, when and where.'
+performs:
+- product/capture/workflow/store-owner-words/step/keep/case/otherwise
+uses:
+- software/storage/dependency/git
+src:
+- code:src/ogy/writes.py#answer

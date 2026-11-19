@@ -1,0 +1,18 @@
+kind: setting
+was: {kind: config_key, file: config-keys.yml}
+about: a real setting the product reads; the quantity or enum it falls back to is its `default`
+guidance: "A real setting the product reads from a file or the environment, under its name. Its `default` is the quantity (or enum) it falls back to: the decided number lives there. A decided limit nobody configures is only a quantity."
+like: "a configuration setting (Django, VS Code): a named knob read from a file or the environment"
+unlike: "a quantity, the decided number a setting defaults to; a handler's parameter"
+shape: list
+sentence: says
+file: settings.yml
+layers: [software]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  says: {required: true}
+  name: {required: true}                             # the setting as written in the file or environment
+  default: {type: link, to: [quantity, enum]}
+renamed: {binds: default}
+dropped: [used_by]

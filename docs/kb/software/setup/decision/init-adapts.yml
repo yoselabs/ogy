@@ -10,11 +10,10 @@ options:
     sets:
       software/setup/rule/init-adapts:
         says: The starter actors owner and agent are built in and read from the installed package; `ogy init` writes no actor entries and only repairs what is missing.
-guess:
+proposal:
   chose: adaptive
   why: Ordinary entries can be renamed, agreed and removed like any other; a built-in would be a second source of actors.
-  heard:
-    said: init creates what is missing and migrates what exists.
+  heard: init creates what is missing and migrates what exists.
 answers:
 - chose: adaptive
   said: init creates what is missing and migrates what exists.

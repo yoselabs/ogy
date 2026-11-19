@@ -12,7 +12,7 @@ options:
     sets:
       software/ontology/rule/review-delegation:
         says: The owner reviews each waiting entry before any fix.
-guess:
+proposal:
   chose: fable-reviews
   why: The owner asked for Fable's review.
 answers:

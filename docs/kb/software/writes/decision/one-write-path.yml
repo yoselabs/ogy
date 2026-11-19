@@ -11,7 +11,7 @@ options:
     sets:
       software/writes/rule/one-write-path:
         says: Entries are created with `ogy new` (also from a file) and changed with `ogy set`.
-guess:
+proposal:
   chose: put
   why: One path is easier to learn and to check than two.
 answers:

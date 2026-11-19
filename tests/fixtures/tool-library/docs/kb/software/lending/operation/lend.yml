@@ -1,9 +1,0 @@
-says: Records a loan and tells the member when the page times out.
-performs:
-- product/lending/workflow/borrow/step/ask/choice/borrow
-- product/lending/workflow/borrow/step/ask/timeout
-- product/lending/workflow/borrow/step/record/case/otherwise
-uses:
-- software/lending/external/mailer
-src:
-- code:src/library/loans.py#lend

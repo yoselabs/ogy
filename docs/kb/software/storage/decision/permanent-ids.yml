@@ -11,7 +11,7 @@ options:
     sets:
       software/storage/rule/id-is-permanent:
         says: An id changes when the entry is renamed.
-guess:
+proposal:
   chose: permanent
   why: Links, answers and removed items must keep naming the same entry.
 answers:

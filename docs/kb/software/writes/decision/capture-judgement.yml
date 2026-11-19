@@ -12,7 +12,7 @@ options:
     sets:
       software/writes/rule/capture-judges-critically:
         says: When an agent captures a product's knowledge, it asks the owner before trimming or correcting anything.
-guess:
+proposal:
   chose: agent-judges
   why: The owner said so.
 answers:

@@ -11,7 +11,7 @@ options:
     sets:
       product/review/rule/no-n-keeps-the-sentence-built:
         says: '`no N` removes the sentence at once.'
-guess:
+proposal:
   chose: question-opens
   why: The owner's no is a question to answer well, not a deletion; the agent asks "what instead?" in the same turn.
 answers:

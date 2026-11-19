@@ -1,0 +1,7 @@
+says: Checks every record of a batch together, writes the parents before their parts and puts every file back when the write adds an error.
+performs:
+- product/capture/workflow/capture-entries/step/check/case/otherwise
+uses:
+- software/storage/dependency/git
+src:
+- code:src/ogy/put.py#put

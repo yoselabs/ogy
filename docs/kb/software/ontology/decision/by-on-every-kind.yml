@@ -8,7 +8,7 @@ options:
     label: The 8 kinds plus command, view, operation and capability
   keep:
     label: Keep the 8
-guess:
+proposal:
   chose: common
   why: A rule may hold any entry.
 answers:

@@ -13,11 +13,10 @@ options:
     sets:
       software/storage/rule/address-keeps-the-area:
         says: 'An address has no area: <layer>/<kind>/<id>; an id is unique within its layer.'
-guess:
+proposal:
   chose: keep
   why: The area is how a reader finds an entry and how files are laid out; the owner calls it a must.
-  heard:
-    said: The area must stay in the address
+  heard: The area must stay in the address
 answers:
 - chose: keep
   said: The area must stay in the address

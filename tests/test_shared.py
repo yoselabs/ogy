@@ -70,18 +70,18 @@ def test_migrate_moves_a_fixed_folder_to_the_shared_area(repo: Path) -> None:
 
 def test_only_terms_actors_and_sets_live_in_the_shared_area(kb: Make) -> None:
     shared = {"product/shared/actors.yml": "- {id: owner, says: The owner., nature: human}\n",
-              "product/shared/sets.yml": "- {id: colours, says: The colours., members: [red]}\n",
+              "product/shared/enums.yml": "- {id: colours, says: The colours., members: [red]}\n",
               "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
               "software/shared/area.yml": "says: What two software areas use.\n",
               "software/shared/actors.yml": "- {id: ci, says: The CI runner., nature: program}\n"}
     assert not {item for item in kb(shared).findings() if item[0] is Problem.BAD_PATH}
-    found = kb({"product/shared/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n"}).findings()
-    assert (Problem.BAD_PATH, "product/shared/values.yml") in found
+    found = kb({"product/shared/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n"}).findings()
+    assert (Problem.BAD_PATH, "product/shared/quantities.yml") in found
 
 
 def test_a_move_into_the_shared_area_needs_a_shared_kind(repo: Path) -> None:
     assert w(repo, "put", json.dumps({"address": "product/shared/area/shared", "says": "What two areas use."}))[0] == 0
-    code, lines = w(repo, "move", "product/app/value/fee", "shared")
+    code, lines = w(repo, "move", "product/app/quantity/fee", "shared")
     assert code == 3 and "holds only what two areas use" in lines[0]
     assert w(repo, "move", "product/app/actor/member", "shared")[0] == 0
 

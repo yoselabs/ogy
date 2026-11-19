@@ -29,25 +29,25 @@ ASK = FLOW.part("step", "ask")
 def editor(tmp_path: Path) -> Editor:
     (tmp_path / "docs/kb/product/app/workflow").mkdir(parents=True)
     (tmp_path / "docs/kb/product/app/workflow/borrow.yml").write_text(WORKFLOW)
-    (tmp_path / "docs/kb/product/app/values.yml").write_text("- {id: fee, says: The fee., is: 2, unit: EUR}\n")
+    (tmp_path / "docs/kb/product/app/quantities.yml").write_text("- {id: fee, says: The fee., is: 2, unit: EUR}\n")
     return Editor(tmp_path, "docs/kb", packaged())
 
 
 def test_put_adds_entity_list_item_and_parts(editor: Editor) -> None:
     editor.put(Address("product", "app", (("actor", "member"),)), {"says": "A person.", "nature": "human"})
-    editor.put(Address("product", "app", (("value", "late"),)), {"says": "Late.", "is": 1, "unit": "days"})
-    editor.put(ASK.part("timeout"), {"after": "product/app/value/late", "then": "done"})
+    editor.put(Address("product", "app", (("quantity", "late"),)), {"says": "Late.", "is": 1, "unit": "days"})
+    editor.put(ASK.part("timeout"), {"after": "product/app/quantity/late", "then": "done"})
     editor.put(ASK.part("choice", "stay"), {"label": "Stay", "then": "done"})
     snapshot = editor.snapshot()
     assert {str(address) for address in snapshot.entries} >= {
-        "product/app/actor/member", "product/app/value/late", "product/app/workflow/borrow/step/ask/timeout",
+        "product/app/actor/member", "product/app/quantity/late", "product/app/workflow/borrow/step/ask/timeout",
         "product/app/workflow/borrow/step/ask/choice/stay"}
-    assert snapshot.entries[Address("product", "app", (("value", "late"),))].path == "product/app/values.yml"
+    assert snapshot.entries[Address("product", "app", (("quantity", "late"),))].path == "product/app/quantities.yml"
     assert snapshot.findings == []
 
 
 def test_update_sets_and_removes_fields(editor: Editor) -> None:
-    fee = Address("product", "app", (("value", "fee"),))
+    fee = Address("product", "app", (("quantity", "fee"),))
     editor.update(fee, {"is": 3})
     assert editor.snapshot().entries[fee].fields["is"] == 3
     editor.update(fee, {"unit": None})
@@ -58,9 +58,9 @@ def test_update_sets_and_removes_fields(editor: Editor) -> None:
 
 def test_remove_deletes_the_entry_wherever_it_lives(editor: Editor) -> None:
     editor.remove(ASK.part("choice", "go"))
-    editor.remove(Address("product", "app", (("value", "fee"),)))
+    editor.remove(Address("product", "app", (("quantity", "fee"),)))
     entries = editor.snapshot().entries
-    assert ASK.part("choice", "go") not in entries and Address("product", "app", (("value", "fee"),)) not in entries and ASK in entries
+    assert ASK.part("choice", "go") not in entries and Address("product", "app", (("quantity", "fee"),)) not in entries and ASK in entries
     editor.remove(FLOW)
     assert not (editor.root / "docs/kb/product/app/workflow/borrow.yml").exists()
 
@@ -77,7 +77,7 @@ def test_yaml_1_2_reads_on_as_a_word() -> None:
 
 
 def test_fingerprint_follows_fields_that_are_not_notes(editor: Editor, ontology: Ontology) -> None:
-    fee = Address("product", "app", (("value", "fee"),))
+    fee = Address("product", "app", (("quantity", "fee"),))
     before = editor.snapshot().fingerprint(fee)
     editor.update(fee, {"title": "The late fee", "src": ["code:src/x.py#fee"], "proof": None})
     assert editor.snapshot().fingerprint(fee) == before
@@ -101,17 +101,17 @@ def test_a_parent_fingerprint_follows_its_unkeyed_parts_and_declared_paths(edito
 
 
 def test_a_rule_holder_stales_nothing_and_a_pin_makes_the_rule_suspect(editor: Editor) -> None:
-    rule, mailer = Address("software", "app", (("rule", "one-mail"),)), Address("software", "app", (("external", "mailer"),))
+    rule, mailer = Address("software", "app", (("rule", "one-mail"),)), Address("software", "app", (("dependency", "mailer"),))
     editor.put(rule, {"says": "One mail a day."})
     editor.put(mailer, {"says": "Sends mail.", "pin": "smtplib 1"})
     before = editor.snapshot()
-    editor.update(FLOW, {"by": [str(rule)]})  # a workflow held to it: neither changes
-    editor.update(mailer, {"by": [str(rule)]})  # a pinned external held to it: only the rule changes
+    editor.update(FLOW, {"satisfies": [str(rule)]})  # a workflow held to it: neither changes
+    editor.update(mailer, {"satisfies": [str(rule)]})  # a pinned external held to it: only the rule changes
     held = editor.snapshot()
     assert held.build_hash(FLOW) == before.build_hash(FLOW) and held.build_hash(mailer) == before.build_hash(mailer)
     assert held.build_hash(rule) != before.build_hash(rule)
     editor.update(mailer, {"pin": "smtplib 2"})
     assert editor.snapshot().build_hash(rule) not in {before.build_hash(rule), held.build_hash(rule)}
-    editor.update(mailer, {"by": None})
+    editor.update(mailer, {"satisfies": None})
     assert editor.snapshot().build_hash(rule) == before.build_hash(rule)  # a path that reaches nothing leaves it as it was
     assert editor.snapshot().fingerprint(rule) == before.fingerprint(rule)  # a pin never changes the rule's meaning

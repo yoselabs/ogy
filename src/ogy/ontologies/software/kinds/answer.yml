@@ -1,6 +1,8 @@
 kind: answer
 about: "a person (or an agent under their delegation) chose an option; ogy keeps no message and no quote, only a short paraphrase of what was said, who, when and where; the answer with the newest `at` is in force; \"no\" is an answer that chose an option that sets `null`"
 guidance: "Written only by `ogy answer` or `ogy reply`, never by `put`: the owner's choice of an option, with a short paraphrase. A changed mind is a new answer; never edit one. Answer for the owner only under a delegation they gave (`--delegated`)."
+like: "an ADR's decision outcome: the option the owner chose, with when and where"
+unlike: "a quote or a message: ogy keeps only a short paraphrase"
 shape: inline
 part_of: decision
 key: answers
@@ -11,6 +13,6 @@ fields:
   chose: {type: link, to: [option], required: true}
   said: {note: true, required: true}                 # one short line: the AI's paraphrase of what the person said, fitted to the decision; never their words verbatim
   at: {type: time, required: true}                   # date, time and timezone offset; the newest is in force
-  where: {type: uri, schemes: [ai, bd, file], required: true}   # the session, e.g. ai:claude/<session-id>
+  where: {type: uri, schemes: [ai, bd, path], required: true}   # the session, e.g. ai:claude/<session-id>
   note: {note: true}                                 # the person's hedge or condition, paraphrased ("for now", "on condition that ..."); outside the fingerprint
   delegated: {type: link, to: [decision]}            # an agent answered, under the person's answer to this decision; without it a person answered

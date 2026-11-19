@@ -11,7 +11,7 @@ options:
     sets:
       software/mcp/rule/mcp-is-the-ogy-mcp-command:
         says: The MCP server is a separate executable.
-guess:
+proposal:
   chose: subcommand
   why: One entry point to install and to name in .mcp.json.
 answers:

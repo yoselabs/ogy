@@ -14,7 +14,7 @@ TERMS = ("- {id: land, word: land, says: To finish a delivery., avoid: [merge, c
 SLOT = "- {id: slot, word: slot, says: A place to work., src: [doc:<rev>:docs/spec.md#work]}\n"  # a word two areas use
 SPEC = "# Spec\n\n## Land\n\nLand is finishing.\n\n## Work\n\nA slot is a place.\n"
 PROPOSES = ("question: Name it?\noptions:\n  a: {{label: A, sets: {{product/app/term/{word}: {{says: {says}}}}}}}\n"
-            "guess: {{chose: a, why: b}}\n")
+            "proposal: {{chose: a, why: b}}\n")
 SAYS = {"land": "To finish a delivery.", "gate": "The check before a land."}
 
 
@@ -82,7 +82,7 @@ def test_review_from_docs_yes_with_numbers(repo: Path) -> None:
 
 def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
     (repo / "docs/kb/product/app/capabilities.yml").write_text(
-        "- {id: borrow, says: A member borrows., because: product/app/value/fee, src: [code:src/x.py#f]}\n")
+        "- {id: borrow, says: A member borrows., because: product/app/quantity/fee, src: [code:src/x.py#f]}\n")
     (repo / "src").mkdir()
     (repo / "src/x.py").write_text("def f():\n    pass\n")
     lines = w(repo, "review", "--from", "code")[1]
@@ -92,10 +92,11 @@ def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
 
 
 def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Path) -> None:
-    decision = "question: How much?\noptions:\n  low: {label: Low, sets: {product/app/value/fee: {is: 1}}}\n"
+    decision = "question: How much?\noptions:\n  low: {label: Low, sets: {product/app/quantity/fee: {is: 1}}}\n"
     (repo / "docs/kb/product/app/decision").mkdir()
-    (repo / "docs/kb/product/app/decision/fee.yml").write_text(decision + "  high: {label: High, sets: {product/app/value/fee: {is: 2}}}\n"
-                                                  "guess: {chose: high, why: fees are small}\n")
+    (repo / "docs/kb/product/app/decision/fee.yml").write_text(
+        decision + "  high: {label: High, sets: {product/app/quantity/fee: {is: 2}}}\n"
+        "proposal: {chose: high, why: fees are small}\n")
     lines = w(repo, "review")[1]
     text = "\n".join(lines)
     assert lines[0].startswith("round r") and "1 questions open · 0 answered by you | entries:" in lines[1]
@@ -108,7 +109,7 @@ def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Pat
 def test_a_decision_reads_answered_by_you_with_the_date(repo: Path) -> None:
     (repo / "docs/kb/product/app/decision").mkdir()
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(PROPOSES.format(word="x", says="Said.").replace("product/app/term/x",
-                                                                                                               "product/app/value/fee")
+                                                                                                               "product/app/quantity/fee")
                                                   .replace("says: Said.", "is: 3"))
     done = w(repo, "answer", "product/app/decision/fee", "a", "--said", "Option a", "--where", "ai:claude/1",
              "--at", "2026-11-12T10:05:00+01:00")

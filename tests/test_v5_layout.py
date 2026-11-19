@@ -39,16 +39,17 @@ def test_the_layer_level_cannot_be_skipped(kb: Make) -> None:
     """The ontology declares `<layer>/<area>/<kind>/<id>`; the area or the kind at the top, or an unknown layer, is `bad-path`."""
     value = "- {id: fee, says: The fee., is: 2, unit: EUR}\n"
     flow = GOOD["product/app/workflow/sign-in.yml"]
-    skipped = {"app/values.yml": value, "app/workflow/sign-in-2.yml": flow, "workflow/sign-in-3.yml": flow, "values.yml": value,
-               "tech/app/values.yml": value, "product/values.yml": value, "product/workflow/sign-in-4.yml": flow}
+    skipped = {"app/quantities.yml": value, "app/workflow/sign-in-2.yml": flow, "workflow/sign-in-3.yml": flow, "quantities.yml": value,
+               "tech/app/quantities.yml": value, "product/quantities.yml": value, "product/workflow/sign-in-4.yml": flow}
     found = kb(skipped).findings()
     assert {(problem, path) for problem, path in found if problem is Problem.BAD_PATH} == {(Problem.BAD_PATH, path) for path in skipped}
 
 
 def test_a_bad_path_says_what_is_wanted(ontology: Ontology) -> None:
     assert "no layer (product, software)" in str(locate(ontology, "app/workflow/x.yml"))
-    assert "holds areas" in str(locate(ontology, "product/values.yml"))
-    assert locate(ontology, "product/app/values.yml") is not None and not isinstance(locate(ontology, "product/app/values.yml"), str)
+    assert "holds areas" in str(locate(ontology, "product/quantities.yml"))
+    place = locate(ontology, "product/app/quantities.yml")
+    assert place is not None and not isinstance(place, str)
 
 
 def test_reserved_files_are_not_entry_files(kb: Make) -> None:
@@ -114,7 +115,7 @@ def test_duplicate_id_in_list_file(kb: Make) -> None:
 
 
 def test_locate_is_pure(ontology: Ontology) -> None:
-    assert locate(ontology, "product/app/value/x.yml") == "no entity kind 'value'"
+    assert locate(ontology, "product/app/quantity/x.yml") == "no file kind 'quantity'"
     assert "no layer" in str(locate(ontology, "notes.txt"))  # no file is ignored
 
 
@@ -131,7 +132,7 @@ steps:
         then: done
         effects:
           - {do: tell, "on": product/app/actor/member}
-    timeout: {after: product/app/value/wait, then: done}
+    timeout: {after: product/app/quantity/wait, then: done}
 ends:
   done: {result: success, says: The member is signed in.}
 """
@@ -139,7 +140,7 @@ ends:
 
 def test_every_file_under_the_knowledge_base_is_accounted_for(kb: Make) -> None:
     stray = ("README.md", "product/app/notes.txt", "product/app/data.json", "product/app/message/x.md", "glossary/notes.md",
-             "tools/x.yml", "product/removed.yml", "product/app/value/deep/er.yml", "glossary/removed.yml")
+             "tools/x.yml", "product/removed.yml", "product/app/quantity/deep/er.yml", "glossary/removed.yml")
     found = kb({**dict.fromkeys(stray, "x\n"), "product/app/removed.yml": "format: 1\nitems: []\n",
                 "built/anything.json": "{}\n"}).findings()
     assert {path for problem, path in found if problem is Problem.BAD_PATH} == set(stray)
@@ -153,7 +154,7 @@ def test_an_area_entry_is_its_area_yml_and_its_id_is_the_folder(kb: Make, ontolo
 
 
 def test_an_area_folder_without_its_area_yml_is_missing_entry_and_a_fixed_folder_is_no_area(kb: Make) -> None:
-    found = kb({"product/app/area.yml": None, "software/loans/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
+    found = kb({"product/app/area.yml": None, "software/loans/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
                 "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings()
     assert {item for item in found if item[0] is Problem.MISSING_ENTRY} == {
         (Problem.MISSING_ENTRY, "product/app/area/app"), (Problem.MISSING_ENTRY, "software/loans/area/loans")}

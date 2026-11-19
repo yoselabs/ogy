@@ -16,7 +16,7 @@ options:
     sets:
       product/ontology/rule/shipped-ontology-is-named-software:
         says: The shipped ontology is named requirements.
-guess:
+proposal:
   chose: software
   why: It describes a software product, not only its requirements.
 answers:

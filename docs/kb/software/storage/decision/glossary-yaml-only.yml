@@ -21,11 +21,10 @@ options:
     sets:
       software/storage/rule/glossary-is-yaml-only:
         says: The glossary is YAML only; no glossary document is generated or kept.
-guess:
+proposal:
   chose: yaml-per-area
   why: The files mirror the areas, so reading the folder reads the same model.
-  heard:
-    said: A glossary file per area
+  heard: A glossary file per area
 answers:
 - chose: yaml-only
   said: Use the YAML glossary file

@@ -20,7 +20,7 @@ from ogy.relocate import rename_all
 from ogy.retype import Retype, applied, retype
 from ogy.snapshot import Snapshot, build, kb_paths
 from ogy.target import Target
-from ogy.writes import commit, files
+from ogy.writes import commit, files, findings_after
 
 
 @dataclass(frozen=True)
@@ -104,16 +104,6 @@ def _retyped(target: Target) -> tuple[dict[str, str | None], Snapshot | None, li
     return changed, build(before(ontology), {rel: raw[rel] for rel in kb_paths(raw)}), sorted(pairs)
 
 
-def _write(target: Target, changed: dict[str, str | None]) -> None:
-    root = target.repo / target.kb
-    for rel, text in changed.items():
-        if text is None:
-            (root / rel).unlink()
-        else:
-            (root / rel).parent.mkdir(parents=True, exist_ok=True)
-            atomic_write_text(root / rel, text)
-
-
 def migrate(target: Target) -> Migrated:
     """Write the migration of the worktree (the lock is held); refuses, writing nothing, when it leaves a new error."""
     retyped, was, pairs = _retyped(target)
@@ -127,13 +117,20 @@ def migrate(target: Target) -> Migrated:
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
     if not found and not table and not tidied and not retyped:
         return Migrated([], [], [], [])
-    kept = Kept(snapshot, was, lambda text: work.address(text, back=True))
+    kept = Kept(snapshot, was, (lambda text: work.address(text, back=True)) if was else str)
     agreed = _agreements(snapshot, kept)
     lines: list[str] = []
     moved: list[tuple[Address, Address]] = []
 
     def act(ed: Editor) -> None:
-        _write(target, retyped)
+        for rel, text in retyped.items():
+            if text is None:
+                (root / rel).unlink()
+                if not any((root / rel).parent.iterdir()):
+                    (root / rel).parent.rmdir()  # an old kind's folder it left empty
+            else:
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                atomic_write_text(root / rel, text)
         for address, entry in snapshot.entries.items():
             now = {**after.entries[address].fields, **({snapshot.ontology.roles.agreed: agreed[address]} if address in agreed else {})}
             update = {name: now.get(name) for name in {*entry.fields, *now} if now.get(name) != entry.fields.get(name)}
@@ -144,5 +141,6 @@ def migrate(target: Target) -> Migrated:
 
     touched = sorted({change.address for change in found} | set(agreed) | set(tidied))
     names = renamer(table) if table else work.address
-    written = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, names)
+    known = findings_after(target, retyped) if retyped else None
+    written = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, names, known)
     return Migrated(found, sorted(agreed), lines, written, moved, pairs)

@@ -1,0 +1,30 @@
+question: Which harm tags does the ontology keep?
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `who-is-allowed` becomes `authorization`, the mainstream word; `moves-money` goes, as no kind or field carries it (harmony review, leftovers). The order stays: structure, tells-outside, irreversible, authorization."
+options:
+  rename:
+    label: authorization for who-is-allowed; moves-money goes
+    sets:
+      product/review/enum/harm-tags:
+        members:
+        - structure
+        - tells-outside
+        - irreversible
+        - authorization
+  keep:
+    label: Keep the five tags
+    sets:
+      product/review/enum/harm-tags:
+        members:
+        - structure
+        - moves-money
+        - tells-outside
+        - irreversible
+        - who-is-allowed
+proposal:
+  chose: rename
+  why: A tag nothing carries ranks nothing.
+answers:
+- chose: rename
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:34:06+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

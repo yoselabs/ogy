@@ -21,11 +21,10 @@ options:
     sets:
       product/language/rule/glossary-is-an-ontology-kind:
         says: The glossary is the term kind of the ontology; the owner must agree to each term.
-guess:
+proposal:
   chose: kind-per-area
   why: The glossary stays a kind of the ontology; only its home changes to one per area.
-  heard:
-    said: Glossaries one to one with an area
+  heard: Glossaries one to one with an area
 answers:
 - chose: kind
   said: The glossary belongs in the ontology

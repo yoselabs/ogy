@@ -1,12 +1,12 @@
 - id: check-the-kb
   says: ogy reports every problem of the knowledge base, or of one area, and exits 1 when there is one.
-  serves:
-  - product/checks/goal/kb-checked-in-git
   src:
   - code:src/ogy/check.py#check
+  realizes:
+  - product/checks/goal/kb-checked-in-git
 - id: check-a-land
   says: With --landing, ogy also reports what blocks a land only, the terms the owner has not agreed to; with a base commit, also what that commit forbids changing.
-  serves:
-  - product/checks/goal/kb-checked-in-git
   src:
   - code:src/ogy/check.py#LANDING
+  realizes:
+  - product/checks/goal/kb-checked-in-git

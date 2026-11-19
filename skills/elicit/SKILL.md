@@ -37,7 +37,7 @@ iorlas-brainstorm).
 - Before you write a decision, look for an earlier one that asks the same question and for an earlier removal of the
   same thing. Add an option to the old decision; do not open a second one (untested).
 - Structure (layout, layers, kinds, paths): before recommending to remove or change it, search the owner's earlier answers
-  (`ogy find`, `ogy history`); a conflict goes into the decision's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....". "Unused in captures" is never by
+  (`ogy find`, `ogy history`); a conflict goes into the proposal's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....". "Unused in captures" is never by
   itself a reason to remove structure the owner asked for. A structural decision (`structure: true`) is asked on its own
   card, never in an accept-all (`yes`, `yes all`, `decide`).
 
@@ -67,7 +67,7 @@ Q<n>. <short title>
   reset, an admin page of users, an event that starts a flow. Draw it (before and after) and map it to the owner's
   product in a table (owner, 2026-11-19: a familiar product makes the model easy to absorb).
 - Word each card so "yes" accepts the recommendation (from grilling). Every card is a stored `decision` with its
-  guess (see `ogy-capture` section 4); do not ask what is not stored.
+  proposal (see `ogy-capture` section 4); do not ask what is not stored.
 - If the owner's answers are short, switch to two options (from iorlas-brainstorm).
 - If the owner is in the chat, ask the round. If the owner is away, send the round and the read-back as one message.
 
@@ -83,7 +83,7 @@ Q<n>. <short title>
   never theirs verbatim. `ogy reply "<grammar line>" --said "<paraphrase>" --where <session>` for a round (natural words:
   give your reading as the grammar line), `ogy answer <decision> <option> --said "<paraphrase>" --where <session>` for a
   choice outside a round (one sentence deciding several questions: one `answer` per decision). What leans without
-  choosing goes to `guess.heard` as a paraphrase, never into prose.
+  choosing goes to `proposal.heard` as a paraphrase, never into prose.
   Words that fit two options, or a bare `no`, are asked again at once, while the owner is there (untested).
 - Answers reshape the tree. Recompute the frontier, then ask the next round.
 - Never answer for the owner and never change an answer they gave. A reversal is a new answer with its own paraphrase,

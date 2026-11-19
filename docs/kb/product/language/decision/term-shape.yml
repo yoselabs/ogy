@@ -13,11 +13,10 @@ options:
     sets:
       product/language/rule/term-is-compressed:
         says: A term holds its word, says or of, distinct, avoid, example, borrowed and group.
-guess:
+proposal:
   chose: compressed
   why: Most words need little or no description; a short line keeps the glossary cheap to load.
-  heard:
-    said: One line under 15 words is acceptable
+  heard: One line under 15 words is acceptable
 answers:
 - chose: compressed
   note: acceptable, not ideal

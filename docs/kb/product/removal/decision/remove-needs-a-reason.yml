@@ -11,7 +11,7 @@ options:
     sets:
       product/removal/rule/remove-needs-a-reason:
         says: '`ogy remove` takes an optional `--why`.'
-guess:
+proposal:
   chose: required
   why: Nothing may be dropped without a stated reason a person can read.
 answers:

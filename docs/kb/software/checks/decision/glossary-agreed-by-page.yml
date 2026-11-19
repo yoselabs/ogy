@@ -11,7 +11,7 @@ options:
     sets:
       software/checks/rule/glossary-agreed-by-page:
         says: Every term of a captured glossary is an error until the owner agrees to all of them.
-guess:
+proposal:
   chose: by-page
   why: The agent cannot agree for the owner, and a page of terms is a reply the owner can give in one word.
 answers:

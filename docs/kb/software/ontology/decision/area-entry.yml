@@ -10,11 +10,10 @@ options:
     label: 'No area entry: an area is only a folder'
     sets:
       software/ontology/rule/area-entry:
-guess:
+proposal:
   chose: area-yml
   why: An agent starting on an area needs one sentence of what belongs there and what does not; one small file per area holds it, with nothing to prove or agree.
-  heard:
-    said: Fine with it
+  heard: Fine with it
 answers:
 - chose: area-yml
   said: Fine with an area entry

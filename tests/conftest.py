@@ -100,7 +100,7 @@ FILES = {
     **{f"docs/kb/{rel}": text for rel, text in AREAS.items()},
     "app.py": CODE,
     "docs/kb/product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human, src: ['code:app.py#lend']}\n",
-    "docs/kb/product/app/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: ['code:app.py#lend']}\n",
+    "docs/kb/product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: ['code:app.py#lend']}\n",
     "docs/kb/software/app/view/page.yml": (
         "says: The page.\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"),
     "docs/kb/product/app/workflow/borrow.yml": """\
@@ -116,11 +116,11 @@ steps:
         label: Borrow
         then: done
         effects: [{do: tell, "on": product/app/actor/member}]
-    timeout: {after: product/app/value/fee, then: done}
+    timeout: {after: product/app/quantity/fee, then: done}
 ends:
   done: {result: success, says: The tool is lent.}
 """,
-    "docs/kb/software/app/operation/lend.yml": (
+    "docs/kb/software/app/handler/lend.yml": (
         "says: Lends.\nperforms: [product/app/workflow/borrow/step/ask/choice/go]\nsrc: ['code:app.py#lend']\n"),
 }
 

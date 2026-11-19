@@ -1,6 +1,6 @@
 - id: eval-suite
   says: An eval compares two arms that differ in one thing, runs each several times, renames the runs blind, splits them into scorer groups of two runs per arm and records the result in the ledger and the metrics.
-  serves:
-  - product/evals/goal/changes-are-measured
   src:
   - code:evals/blind.py#main
+  realizes:
+  - product/evals/goal/changes-are-measured

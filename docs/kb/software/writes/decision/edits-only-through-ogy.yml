@@ -11,7 +11,7 @@ options:
     sets:
       software/writes/rule/agents-edit-only-through-ogy:
         says: An agent may edit the YAML files directly and run ogy check.
-guess:
+proposal:
   chose: through-ogy
   why: Every write is checked and put back on failure.
 answers:

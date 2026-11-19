@@ -148,12 +148,12 @@ class Settling(BaseModel):
     sets: str  # field of the option
     chose: str  # field of an answer and of a guess
     value: str  # field of the guess: the values it gives when it chooses no option
-    said: str  # fields of an answer and of the guess's `heard`: a short paraphrase, never a quote
+    said: str  # field of an answer: a short paraphrase of what the person said, never a quote
     at: str
     where: str
     note: str
     delegated: str
-    heard: str  # the part of a guess: what the owner said that it rests on
+    heard: str  # field of the guess: what the owner said that it rests on, a short paraphrase, never a quote
     context: str  # field of the settling kind: why the question comes up, so its card reads on its own
     why: str  # field of the guess: the reason for it
 
@@ -250,6 +250,8 @@ class Kind(BaseModel):
     flow: Flow | None = None
     was: Was | None = None  # the kind's old name: its entries keep it until `ogy migrate`
     renamed: dict[str, str] = {}  # old field name -> new: an entry written before holds the old one until `ogy migrate`
+    revalued: dict[str, dict[str, dict[str, str | bool | None]]] = {}  # field -> old value -> the fields it now is (None removes)
+    folded: dict[str, str] = {}  # field that held a part's mapping -> the part's one field whose value it now holds
     dropped: tuple[str, ...] = ()  # fields the kind no longer has: `ogy migrate` removes them (a filled one comes back to the owner)
 
     @field_validator("part_of", mode="before")

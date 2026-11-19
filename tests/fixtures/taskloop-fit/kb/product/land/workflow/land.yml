@@ -2,239 +2,422 @@ title: Land a task
 says: The task's checked change is on origin's main as one commit and the task is closed in the tracker.
 start: ask
 realizes: product/land/capability/land-a-task
-src: [code:src/taskloop/land.py#land]
+src:
+- code:src/taskloop/land.py#land
 steps:
   ask:
     says: The person asks for a land of one task.
     actor: product/land/actor/person
-    src: [code:src/taskloop/land.py#LandRequest]
+    src:
+    - code:src/taskloop/land.py#LandRequest
     choices:
-      land: {label: Land the task, then: resume}
-      accept: {label: Land the task and accept what it changes in the gate, then: resume}
-      no-change: {label: Record the task as landed because main already holds its change, then: resume}
-      withdraw: {label: Give up the validated candidate, then: withdraw}
-      summary: {label: Show what a land would do, then: summarize}
+      land:
+        label: Land the task
+        then: resume
+      accept:
+        label: Land the task and accept what it changes in the gate
+        then: resume
+      no-change:
+        label: Record the task as landed because main already holds its change
+        then: resume
+      withdraw:
+        label: Give up the validated candidate
+        then: withdraw
+      summary:
+        label: Show what a land would do
+        then: summarize
   resume:
     says: The latest candidate of the task decides where the land goes on.
-    src: [code:src/taskloop/land.py#_resumed]
+    src:
+    - code:src/taskloop/land.py#_resumed
     cases:
       checks-failed:
         order: 1
-        when: {text: "the task's latest checks attempt did not conclude passed, or is not released, or is abandoned; with no-change any conclusion passes", reads: [software/land/entity/land-candidate]}
+        when:
+          text: the task's latest checks attempt did not conclude passed, or is not released, or is abandoned; with no-change any conclusion passes
+          reads:
+          - software/land/entity/land-candidate
         then: refused
       implement-not-done:
         order: 2
-        when: {text: "the task's current attempt is not a done implement attempt", reads: [software/claim/external/bd]}
+        when:
+          text: the task's current attempt is not a done implement attempt
+          reads:
+          - software/claim/dependency/bd
         then: refused
       agent-push-bar-missing:
         order: 3
-        when: {text: "the Git configuration in this process's environment carries the agent's push bar", reads: [software/land/external/origin]}
+        when:
+          text: the Git configuration in this process's environment carries the agent's push bar
+          reads:
+          - software/land/dependency/origin
         then: refused
       closed:
         order: 11
-        when: {text: the latest candidate is closed, reads: [software/land/entity/land-candidate/state/closed]}
+        when:
+          text: the latest candidate is closed
+          reads:
+          - software/land/entity/land-candidate/state/closed
         then: landed
       delivered:
         order: 12
-        when: {text: the latest candidate is delivered, reads: [software/land/entity/land-candidate/state/delivered]}
+        when:
+          text: the latest candidate is delivered
+          reads:
+          - software/land/entity/land-candidate/state/delivered
         then: close
-      otherwise: {then: continue}
+      otherwise:
+        then: continue
   continue:
     says: Nothing is delivered yet; the candidate is validated, delivered, or made.
-    src: [code:src/taskloop/land.py#_delivered]
+    src:
+    - code:src/taskloop/land.py#_delivered
     cases:
       branch-moved:
         order: 1
-        when: {text: "the local or origin's task branch is no longer X; not asked with no-change or withdraw", reads: [software/land/external/origin]}
+        when:
+          text: the local or origin's task branch is no longer X; not asked with no-change or withdraw
+          reads:
+          - software/land/dependency/origin
         then: branch-moved
       claim-lost:
         order: 2
-        when: {text: "the tracker no longer shows the task in progress and assigned to the factory's actor", reads: [software/claim/external/bd]}
+        when:
+          text: the tracker no longer shows the task in progress and assigned to the factory's actor
+          reads:
+          - software/claim/dependency/bd
         then: claim-lost
       pending:
         order: 11
-        when: {text: the latest candidate is pending, reads: [software/land/entity/land-candidate/state/pending]}
+        when:
+          text: the latest candidate is pending
+          reads:
+          - software/land/entity/land-candidate/state/pending
         then: validate
       pushable:
         order: 12
-        when: {text: the latest candidate is pushable, reads: [software/land/entity/land-candidate/state/pushable]}
+        when:
+          text: the latest candidate is pushable
+          reads:
+          - software/land/entity/land-candidate/state/pushable
         then: deliver
-      otherwise: {then: squash}
+      otherwise:
+        then: squash
   squash:
     says: Origin's main is fetched and S is made from X on top of it, in Git objects only.
-    src: [code:src/taskloop/land.py#_made]
+    src:
+    - code:src/taskloop/land.py#_made
     cases:
       conflict:
         order: 1
-        when: {text: X does not merge onto origin's main, reads: [software/land/external/origin]}
+        when:
+          text: X does not merge onto origin's main
+          reads:
+          - software/land/dependency/origin
         then: conflict
       no-change-unconfirmed:
         order: 2
-        when: {text: the tree of S is the tree of origin's main and the person did not choose no-change, reads: [software/land/external/origin]}
+        when:
+          text: the tree of S is the tree of origin's main and the person did not choose no-change
+          reads:
+          - software/land/dependency/origin
         then: no-change
       no-change-confirmed:
         order: 3
-        when: {text: the tree of S is the tree of origin's main and the person chose no-change, reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/insert-delivered}]
+        when:
+          text: the tree of S is the tree of origin's main and the person chose no-change
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/insert-delivered
         then: close
       changes-under-no-change:
         order: 4
-        when: {text: the person chose no-change and S changes origin's main, reads: [software/land/external/origin]}
+        when:
+          text: the person chose no-change and S changes origin's main
+          reads:
+          - software/land/dependency/origin
         then: refused
       gate-changed:
         order: 5
-        when: {text: S changes the gate and the person did not accept that, reads: [software/land/entity/land-candidate]}
+        when:
+          text: S changes the gate and the person did not accept that
+          reads:
+          - software/land/entity/land-candidate
         then: gate-changed
-        src: [code:src/taskloop/land_target.py#gated]
+        src:
+        - code:src/taskloop/land_target.py#gated
       same-tree:
         order: 6
-        when: {text: the tree of S is the tree of X and main's required check names are those the checks ran, reads: [software/land/entity/land-candidate]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/insert-pushable}]
+        when:
+          text: the tree of S is the tree of X and main's required check names are those the checks ran
+          reads:
+          - software/land/entity/land-candidate
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/insert-pushable
         then: deliver
       otherwise:
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/insert-pending}]
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/insert-pending
         then: validate
   validate:
     says: The required checks run on S in a free slot, in the land's own process.
-    src: [code:src/taskloop/land_check.py#validated]
+    src:
+    - code:src/taskloop/land_check.py#validated
     cases:
       claim-lost:
         order: 1
-        when: {text: the claim renewal made before the checks says the claim is lost, reads: [software/claim/external/bd]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/fail}]
+        when:
+          text: the claim renewal made before the checks says the claim is lost
+          reads:
+          - software/claim/dependency/bd
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/fail
         then: checks-failed
       passed:
         order: 2
-        when: {text: every required check passed on S, reads: [software/land/entity/land-candidate]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/pass}]
+        when:
+          text: every required check passed on S
+          reads:
+          - software/land/entity/land-candidate
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/pass
         then: deliver
       failed:
         order: 3
-        when: {text: a required check failed on S, reads: [software/land/entity/land-candidate]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/fail}]
+        when:
+          text: a required check failed on S
+          reads:
+          - software/land/entity/land-candidate
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/fail
         then: checks-failed
-      otherwise: {then: unavailable}
+      otherwise:
+        then: unavailable
   deliver:
     says: Origin's main is read and compared with S and O.
-    src: [code:src/taskloop/land_push.py#_step]
+    src:
+    - code:src/taskloop/land_push.py#_step
     cases:
       on-origin:
         order: 1
-        when: {text: "origin's main is S, or its fetched tip contains S", reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/deliver}]
+        when:
+          text: origin's main is S, or its fetched tip contains S
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/deliver
         then: close
-        by: [software/land/rule/delivery-read-from-origin]
+        satisfies:
+        - software/land/rule/delivery-read-from-origin
       gone:
         order: 2
-        when: {text: S is no longer in the repository, reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/supersede}]
+        when:
+          text: S is no longer in the repository
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/supersede
         then: again
       moved:
         order: 3
-        when: {text: origin's main is neither O nor contains S, reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/supersede}]
+        when:
+          text: origin's main is neither O nor contains S
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/supersede
         then: again
-      otherwise: {then: push}
+      otherwise:
+        then: push
   again:
     says: Main moved under the land; a new candidate is made on the moved main at most once per invocation.
-    src: [code:src/taskloop/land_push.py#deliver]
+    src:
+    - code:src/taskloop/land_push.py#deliver
     cases:
       first:
         order: 1
-        when: {text: this invocation has made no candidate yet, reads: [software/land/entity/land-candidate]}
+        when:
+          text: this invocation has made no candidate yet
+          reads:
+          - software/land/entity/land-candidate
         then: squash
-      otherwise: {then: unavailable}
+      otherwise:
+        then: unavailable
   push:
     says: S is pushed to origin's main.
-    src: [code:src/taskloop/land_push.py#_pushed]
+    src:
+    - code:src/taskloop/land_push.py#_pushed
     cases:
       otherwise:
-        effects: [{do: tell, on: software/land/external/origin}]
+        effects:
+        - do: tell
+          on: software/land/dependency/origin
         then: push-answer
-        by: [software/land/rule/never-forced]
+        satisfies:
+        - software/land/rule/never-forced
   push-answer:
     says: The remote's answer to the push decides.
-    src: [code:src/taskloop/land_push.py#_step]
+    src:
+    - code:src/taskloop/land_push.py#_step
     cases:
       accepted:
         order: 1
-        when: {text: the remote accepted the push, reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/deliver}]
+        when:
+          text: the remote accepted the push
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/deliver
         then: close
       raced:
         order: 2
         when:
           text: the remote rejected the push, origin's main is no longer O, and fewer passes than the delivery rounds were made
-          reads: [software/land/external/origin, software/land/value/delivery-rounds]
+          reads:
+          - software/land/dependency/origin
+          - software/land/quantity/delivery-rounds
         then: deliver
       policy:
         order: 3
-        when: {text: the remote rejected the push and origin's main is still O, reads: [software/land/external/origin]}
+        when:
+          text: the remote rejected the push and origin's main is still O
+          reads:
+          - software/land/dependency/origin
         then: remote-rejected
-      otherwise: {then: unavailable}
+      otherwise:
+        then: unavailable
   close:
     says: The task is closed in the person's local tracker as the factory's actor.
-    src: [code:src/taskloop/land_close.py#closed]
+    src:
+    - code:src/taskloop/land_close.py#closed
     cases:
       otherwise:
-        effects: [{do: tell, on: software/claim/external/bd}]
+        effects:
+        - do: tell
+          on: software/claim/dependency/bd
         then: close-answer
-        by: [product/land/rule/push-then-close, product/land/rule/tracker-never-synced]
+        satisfies:
+        - product/land/rule/push-then-close
+        - product/land/rule/tracker-never-synced
   close-answer:
     says: The tracker's answer to the close decides.
-    src: [code:src/taskloop/land_close.py#_refused]
+    src:
+    - code:src/taskloop/land_close.py#_refused
     cases:
       closed:
         order: 1
-        when: {text: 'the tracker closed the task, or it was closed already', reads: [software/claim/external/bd]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/close}]
+        when:
+          text: the tracker closed the task, or it was closed already
+          reads:
+          - software/claim/dependency/bd
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/close
         then: landed
       claim-lost:
         order: 2
-        when: {text: the tracker refused because the factory's actor no longer holds the task, reads: [software/claim/external/bd]}
+        when:
+          text: the tracker refused because the factory's actor no longer holds the task
+          reads:
+          - software/claim/dependency/bd
         then: claim-lost
       blocked:
         order: 3
-        when: {text: 'the tracker refused because of open children or blockers, or it has no such task', reads: [software/claim/external/bd]}
+        when:
+          text: the tracker refused because of open children or blockers, or it has no such task
+          reads:
+          - software/claim/dependency/bd
         then: refused
-      otherwise: {then: unavailable}
+      otherwise:
+        then: unavailable
   withdraw:
     says: The person gives up a validated candidate that is not delivered.
-    src: [code:src/taskloop/land_push.py#withdraw]
+    src:
+    - code:src/taskloop/land_push.py#withdraw
     cases:
       nothing:
         order: 1
-        when: {text: the task has no pushable candidate, reads: [software/land/entity/land-candidate/state/pushable]}
+        when:
+          text: the task has no pushable candidate
+          reads:
+          - software/land/entity/land-candidate/state/pushable
         then: refused
       on-origin:
         order: 2
-        when: {text: "origin's main is S, or its fetched tip contains S", reads: [software/land/external/origin]}
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/deliver}]
+        when:
+          text: origin's main is S, or its fetched tip contains S
+          reads:
+          - software/land/dependency/origin
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/deliver
         then: delivered-unclosed
-        by: [software/land/rule/delivery-read-from-origin]
+        satisfies:
+        - software/land/rule/delivery-read-from-origin
       otherwise:
-        effects: [{do: transition, on: software/land/entity/land-candidate/transition/supersede}]
+        effects:
+        - do: transition
+          on: software/land/entity/land-candidate/transition/supersede
         then: withdrawn
   summarize:
     says: S is made in Git objects only and the facts of the land are shown; nothing is recorded, pushed or closed.
-    src: [code:src/taskloop/land.py#_summary]
+    src:
+    - code:src/taskloop/land.py#_summary
     cases:
-      otherwise: {then: reported}
+      otherwise:
+        then: reported
 ends:
-  landed: {result: success, says: S is on origin's main and the task is closed locally; the tracker is not synced.}
-  delivered-unclosed: {result: success, says: "S was found on origin's main, so nothing was withdrawn; the task is still open."}
-  withdrawn: {result: success, says: The candidate is given up; the task may be abandoned or landed again.}
-  reported: {result: success, says: The person has the facts of the land; nothing changed.}
-  conflict: {result: failure, says: X does not merge onto origin's main; nothing was recorded.}
-  checks-failed: {result: failure, says: The checks of S failed though they passed on X; nothing was pushed.}
-  remote-rejected: {result: failure, says: Origin refused the push by its own policy; the candidate stays validated.}
-  branch-moved: {result: failure, says: The task branch is no longer the checked commit.}
-  claim-lost: {result: failure, says: The tracker no longer shows the task in progress for the factory's actor.}
-  gate-changed: {result: failure, says: S changes the gate; only the person can accept that.}
-  no-change: {result: failure, says: Main already holds the change; only the person can record the task as landed.}
-  refused: {result: failure, says: The land was refused for a reason a person has to act on; nothing further changed.}
-  unavailable: {result: failure, says: Something could not be read or reached; nothing further changed and a rerun is safe.}
-by:
+  landed:
+    result: success
+    says: S is on origin's main and the task is closed locally; the tracker is not synced.
+  delivered-unclosed:
+    result: success
+    says: S was found on origin's main, so nothing was withdrawn; the task is still open.
+  withdrawn:
+    result: success
+    says: The candidate is given up; the task may be abandoned or landed again.
+  reported:
+    result: success
+    says: The person has the facts of the land; nothing changed.
+  conflict:
+    result: failure
+    says: X does not merge onto origin's main; nothing was recorded.
+  checks-failed:
+    result: failure
+    says: The checks of S failed though they passed on X; nothing was pushed.
+  remote-rejected:
+    result: failure
+    says: Origin refused the push by its own policy; the candidate stays validated.
+  branch-moved:
+    result: failure
+    says: The task branch is no longer the checked commit.
+  claim-lost:
+    result: failure
+    says: The tracker no longer shows the task in progress for the factory's actor.
+  gate-changed:
+    result: failure
+    says: S changes the gate; only the person can accept that.
+  no-change:
+    result: failure
+    says: Main already holds the change; only the person can record the task as landed.
+  refused:
+    result: failure
+    says: The land was refused for a reason a person has to act on; nothing further changed.
+  unavailable:
+    result: failure
+    says: Something could not be read or reached; nothing further changed and a rerun is safe.
+satisfies:
 - product/land/rule/lands-what-was-checked
 - product/land/rule/rerun-does-what-is-missing
 - product/land/rule/push-then-close

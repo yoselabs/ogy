@@ -1,7 +1,7 @@
 says: 'What the product keeps of an entry: its sentence, its sources and whether the owner agreed to the sentence now on it, computed.'
 src:
 - code:src/ogy/status.py#Status
-attrs: {}
+attributes: {}
 states:
   nobody-agreed:
     says: No person agreed to the sentence yet.

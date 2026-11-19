@@ -1,6 +1,8 @@
 kind: command
 about: a command line or API call that serves actor steps
-guidance: "A command line or API call that serves actor steps, as a view serves a screen; `offers` lists the choices when it offers only some. The code that does the work behind a row is an operation."
+guidance: "A command line or API call that serves actor steps, as a view serves a screen; `offers` lists the choices when it offers only some. The code that does the work behind a row is a handler."
+like: "a command line or an API call that serves actor steps"
+unlike: "a CQRS command message; the handler behind a row"
 shape: file
 sentence: says
 layers: [software]

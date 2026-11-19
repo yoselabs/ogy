@@ -12,11 +12,20 @@ options:
     sets:
       software/ontology/rule/list-attr-of:
         says: An attribute of type one or list names what it holds in `of`; a list of plain texts names the entity or set that describes them.
-guess:
+  of-and-many:
+    label: An attribute names entries in `of` or has a plain `type`, never both; the flag `many` makes either a list (decision attribute-types)
+    sets:
+      software/ontology/rule/list-attr-of:
+        says: An attribute that holds entries names them in `of`; one that holds plain values has a `type`; `many` makes either a list.
+proposal:
   chose: one-only
   why: A list of hashes or sources has no entity to name, and inventing one adds kinds of entries nobody asked for.
 answers:
 - chose: one-only
   said: Took every recommendation of Fable's revised round
   at: '2026-11-19T17:47:11+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: of-and-many
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:34:29+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

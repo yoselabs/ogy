@@ -7,8 +7,8 @@ import pytest
 from ogy import built
 from ogy.built import BuiltError, Line
 
-SRC = "product/library/values.yml"
-FEE = "product/library/value/late-fee"
+SRC = "product/library/quantities.yml"
+FEE = "product/library/quantity/late-fee"
 
 
 def line(own: str = "1d8551a51abd", deps: dict[str, str] | None = None, covers: tuple[str, ...] = (),
@@ -17,21 +17,21 @@ def line(own: str = "1d8551a51abd", deps: dict[str, str] | None = None, covers: 
 
 
 def test_stamp_writes_one_flow_line_per_address_sorted(tmp_path: Path) -> None:
-    built.stamp(tmp_path, SRC, "product/library/value/b", line("1234", covers=("src/a.py",), sourced={"code:x": "ff"}))
-    built.stamp(tmp_path, SRC, FEE, line(deps={"product/library/value/b": "1234"}))
+    built.stamp(tmp_path, SRC, "product/library/quantity/b", line("1234", covers=("src/a.py",), sourced={"code:x": "ff"}))
+    built.stamp(tmp_path, SRC, FEE, line(deps={"product/library/quantity/b": "1234"}))
     text = (tmp_path / "built" / SRC).read_text()
     b_line, fee_line = text.splitlines()
-    assert fee_line.startswith(f"{FEE}: {{own: 1d8551a51abd, deps: {{product/library/value/b: '1234'}}")
-    assert b_line == "product/library/value/b: {own: '1234', deps: {}, covers: [src/a.py], sourced: {code:x: ff}}"
-    assert built.read(tmp_path, SRC)["product/library/value/b"].covers == ("src/a.py",)
+    assert fee_line.startswith(f"{FEE}: {{own: 1d8551a51abd, deps: {{product/library/quantity/b: '1234'}}")
+    assert b_line == "product/library/quantity/b: {own: '1234', deps: {}, covers: [src/a.py], sourced: {code:x: ff}}"
+    assert built.read(tmp_path, SRC)["product/library/quantity/b"].covers == ("src/a.py",)
 
 
 def test_unstamp_deletes_line_and_empty_file(tmp_path: Path) -> None:
     built.stamp(tmp_path, SRC, FEE, line())
-    built.stamp(tmp_path, SRC, "product/library/value/b", line("bb"))
+    built.stamp(tmp_path, SRC, "product/library/quantity/b", line("bb"))
     built.unstamp(tmp_path, SRC, FEE)
-    assert list(built.read(tmp_path, SRC)) == ["product/library/value/b"]
-    built.unstamp(tmp_path, SRC, "product/library/value/b")
+    assert list(built.read(tmp_path, SRC)) == ["product/library/quantity/b"]
+    built.unstamp(tmp_path, SRC, "product/library/quantity/b")
     assert not (tmp_path / "built" / SRC).exists()
 
 
@@ -44,9 +44,9 @@ def test_work_left_reads_the_built_record() -> None:
 def test_removed_entry_is_work_until_line_deleted(tmp_path: Path) -> None:
     built.stamp(tmp_path, SRC, FEE, line())
     record = built.read_all(tmp_path)
-    assert built.removal_work(record, ["product/library/value/other"]) == [FEE]
+    assert built.removal_work(record, ["product/library/quantity/other"]) == [FEE]
     built.unstamp(tmp_path, SRC, FEE)
-    assert built.removal_work(built.read_all(tmp_path), ["product/library/value/other"]) == []
+    assert built.removal_work(built.read_all(tmp_path), ["product/library/quantity/other"]) == []
 
 
 def test_changed_symbol_is_reported() -> None:

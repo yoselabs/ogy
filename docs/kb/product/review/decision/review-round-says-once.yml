@@ -17,7 +17,7 @@ options:
         says: The round is in the Git directory and a reply may name it.
       product/review/entity/review-round/transition/save:
         to: kept
-guess:
+proposal:
   chose: keep
   why: Kept until the owner answers.
 answers:

@@ -1,5 +1,0 @@
-- id: land-mode
-  says: Whether a person lands each passed task or every round lands one; read from origin's main, never from a working tree; when the key is absent, a person lands each task.
-  name: land
-  binds: software/land/set/land-mode
-  src: [code:src/taskloop/land_mode.py#land_mode]

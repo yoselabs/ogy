@@ -8,7 +8,7 @@ options:
     label: No, but the status says chosen by you in the decision
   keep:
     label: Keep as it is
-guess:
+proposal:
   chose: agrees
   why: The owner chose that exact text.
 answers:

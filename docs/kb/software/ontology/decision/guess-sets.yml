@@ -11,7 +11,7 @@ options:
     label: Keep guess.value
     sets:
       software/ontology/rule/guess-sets:
-guess:
+proposal:
   chose: sets
   why: One shape, one name; `value` also names a kind.
 answers:

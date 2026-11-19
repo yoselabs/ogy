@@ -27,11 +27,10 @@ options:
         why: An all-rigid model grows as detailed as code and lags behind it; text that a check needs is a second, unchecked spec. Each fact takes the cheapest form that still lets the checks read it.
       software/ontology/rule/rigid-where-checked:
         says: Text naming another entry makes that part a link; a decided number is a value; when no kind fits, a rule with links and a proof, never a new kind; a new kind or field names the check that reads it. `ogy init` ships the principle rigid-where-checked and docs/guidance.md ("Rigid where checked") to every repository.
-guess:
+proposal:
   chose: hybrid
   why: Checks, the work and impact need rigid facts; everything else as fields makes the model as detailed as code and it lags.
-  heard:
-    said: Adopt the hybrid; the test goes into the constitution and the guide, for every ontology, shipped with init.
+  heard: Adopt the hybrid; the test goes into the constitution and the guide, for every ontology, shipped with init.
 answers:
 - chose: hybrid
   said: Adopt the hybrid; the test goes into the constitution and the guide, for every ontology, shipped with init.

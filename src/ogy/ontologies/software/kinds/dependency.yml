@@ -1,0 +1,14 @@
+kind: dependency
+was: {kind: external}
+about: a library or service the product depends on and does not own
+guidance: "A library or service the product depends on and does not own; `pin` says which version. Its surprises are workarounds; the rules it is held to are named with `satisfies`. Choosing it is a decision; the dependency records it. A system that calls us is an actor."
+like: "a package or service dependency: something we call and do not own"
+unlike: "a UML dependency arrow; a system that calls us, which is an actor"
+harm: [tells-outside]
+shape: file
+sentence: says
+layers: [software]
+fields:
+  says: {required: true}                             # what it provides
+  pin: {}
+dropped: [terms]

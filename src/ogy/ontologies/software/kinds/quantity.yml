@@ -1,0 +1,16 @@
+kind: quantity
+was: {kind: value, file: values.yml}
+about: a number with its unit (an amount, a count, a duration) that someone decides; no literal numbers anywhere else
+guidance: "A number with its unit that someone decides: an amount, a count, a duration. Every number lives here, never in text. A setting that holds it names it as its default; a rule or a timeout names it."
+like: "an ISO 80000 quantity value: a number times a unit, decided once"
+unlike: "a measured reading or a running count, which are attributes; a DDD value object"
+shape: list
+sentence: says
+file: quantities.yml
+layers: [product, software]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  says: {required: true}                             # what the quantity is, without the number
+  is: {type: number, required: true}
+  unit: {required: true}

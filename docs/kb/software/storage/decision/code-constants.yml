@@ -4,22 +4,22 @@ options:
   knobs-only:
     label: Keep rounds-kept, history-limit and near-addresses; cut the four code constants
     sets:
-      software/storage/value/fingerprint-length:
-      software/storage/value/source-hash-length:
-      software/storage/value/round-digest-length:
-      software/storage/value/removed-ledger-format:
+      software/storage/quantity/fingerprint-length:
+      software/storage/quantity/source-hash-length:
+      software/storage/quantity/round-digest-length:
+      software/storage/quantity/removed-ledger-format:
   keep-all:
     label: Keep all seven
     sets:
-      software/storage/value/fingerprint-length:
+      software/storage/quantity/fingerprint-length:
         is: 12
-      software/storage/value/source-hash-length:
+      software/storage/quantity/source-hash-length:
         is: 12
-      software/storage/value/round-digest-length:
+      software/storage/quantity/round-digest-length:
         is: 6
-      software/storage/value/removed-ledger-format:
+      software/storage/quantity/removed-ledger-format:
         is: 1
-guess:
+proposal:
   chose: keep-all
   why: Kept until the owner answers.
 answers:

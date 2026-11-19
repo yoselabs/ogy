@@ -44,7 +44,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `work [area]` | what the built record says is still to do |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
-| `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too); the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours) and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
+| `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too), then for the whole glossary each kind's like and unlike line; the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours), what it is like and unlike, and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences, then each kind's like and unlike line. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it from a loss: an entry gone with exactly one arrival of the same kind and id has moved, whatever its text (a changed text reads "changed since you agreed"); the fingerprint only breaks ties |
 | `migrate` | rewrite the entries to the field renames, drops and moves out of a fixed folder their kinds declare (see "Kind changes"); one checked write that records nothing |
@@ -79,19 +79,19 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   review cards and removed items hold it. The build hash adds the proofs and what the kind's `fingerprint.also` and
   `fingerprint.reached` paths read; only the built record and work left compare it. A new proof or a changed dependency is
   work, never a question for the owner.
-- Once a decision has an answer, its guess is inert: nothing compares it with the answer and nobody rewrites it. A decision an
+- Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
-- A guess that rests on what the owner said carries a paraphrase: `guess.heard: {said}`. The review card reads
+- A proposal that rests on what the owner said carries a paraphrase: `proposal.heard`, one line, never a quote. The review card reads
   "You said (paraphrased): .... Read as B." and one `yes` records the answer, chosen option B.
 - `ogy review` keeps the cards it showed as a round, by id (the last 10, in the Git directory).
   `ogy reply --round <id>` resolves against that round (required over MCP; on the CLI the newest round is the default): `yes`, `yes 1 3`, `2: <new sentence>` (replaces and agrees), `no 4` (the sentence becomes a
-  question; why, paraphrased, goes in `--said`), `Q1 b` (option B or its key), `later`, `yes all` (or `decide`: every question gets its recommended option, the guess, a decision an agent answered under delegation
+  question; why, paraphrased, goes in `--said`), `Q1 b` (option B or its key), `later`, `yes all` (or `decide`: every question gets its recommended option, the proposal, a decision an agent answered under delegation
   gets a person's answer for the option in force, and
   every card is agreed to; a card that changed stays in the queue and is reported; a structural decision stays too, see Layout). A bare `yes` to a round shown with `--all` is
   refused: name the cards, or spell `yes all`. A card whose entry changed since it was shown is refused and stays in
   the queue. Natural words ("Fine, go ahead, I suppose.") are read by the agent as a grammar line (`yes`), with the hedge
   in `--note`; the words themselves are not stored. A bare `yes` (or `yes Q2`) also confirms
-  questions whose guess rests on what the owner said (`heard`), except a structural decision. `ogy review` prints, before the reply line,
+  questions whose proposal rests on what the owner said (`heard`), except a structural decision. `ogy review` prints, before the reply line,
   what a bare `yes` will change.
 - Who confirms (E1, for now): a person, written `from: human`, no name; the actor `human` (`nature: human`) says who they are:
   `ogy put '{"address": "product/<area>/actor/human", "says": "...", "nature": "human"}'`. An actor says who uses the
@@ -114,7 +114,7 @@ names a shipped ontology, or a folder on disk when it holds a `/` (relative to t
 in which every name differs.
 `docs/kb/constitution/principles.yml` holds the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
 `<layer>/<area>/<file>`; a single kind: one entry in `<layer>/<area>/<file>` whose id is the area), the layer being `product` or `software`.
-Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `distinct`, what belongs in a neighbouring area): the kind
+Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `unlike`, what belongs in a neighbouring area): the kind
 declares `every_area`, so an area folder without it is `missing-entry`, and a write into a new area brings it in the same call. It needs
 no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folder
 `constitution/` is no area. An area or kind at the top, or an unknown layer, is `bad-path`. A folder that holds only its `removed.yml`
@@ -122,8 +122,8 @@ is an area no more.
 - The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. A term is compressed: `word`, `says` (one
   line of under 15 words, else `term-too-long`) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
   from the sentences. Each layer has the reserved area `shared`, a
-  normal area with its `area.yml`: a term, an actor or a set that two areas use lives there (`product/shared/glossary.yml`,
-  `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, set and area)
+  normal area with its `area.yml`: a term, an actor or an enum that two areas use lives there (`product/shared/glossary.yml`,
+  `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, enum and area)
   may live there; any other is `bad-path`, and `ogy move` into `shared` refuses it. Which shared entry fewer than two areas use is
   not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
@@ -139,22 +139,28 @@ entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`.
 
 A kind file may change under a knowledge base that a newer ogy reads. Adding a field changes no fingerprint (an unset field is
 outside it), so nothing goes stale. A rename or a drop is declared in the kind file and kept there until the knowledge bases
-it serves are migrated: `renamed: {old: new}` (the new name is a field of the kind) and `dropped: [old]`. An entry that still
+it serves are migrated: `renamed: {old: new}` (the new name is a field of the kind) and `dropped: [old]`; a common field renamed
+in `ontology.yml` says `renamed: {old: new}` there. A renamed kind says what it was, `was: {kind, file, key}` (its old name, and
+its old list file or part key when those changed). A value given a new form says `revalued: {field: {old value: {field: new
+value or null}}}`, and a part folded into a field `folded: {field: inner field}`. An entry that still
 holds an old name is the finding `needs-migration`. `ogy migrate` writes the migration in one checked write:
 - every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
-  or a guess's `sets` gives an entry of that kind;
+  or a proposal's `sets` gives an entry of that kind; a revalued or folded value takes its new form;
 - a pure rename changes no meaning: an agreement or a built line (`own` and `deps`) that was current stays current, its
   hash re-set to the fingerprint (a built line's to the build hash) after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
   the entry (and the built lines whose build hash reads it) are left, so the owner sees it as changed since agreed and it is work;
+- a renamed kind (`ogy.retype`): its entries move to the new folder, list file or part key, and every address that names
+  them is rewritten (links, `sets` keys, `reads`, the built record; removed items keep the names they had); `check` reports a
+  file that still holds an old kind name as `needs-migration`, and the agreements and built lines stay current;
 - a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>`. Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
   removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the
   area that uses it;
 - `check --base` reads the base migrated, so a migration commit is no edit of an append-only part. Removed items keep the
   names they had; nothing is recorded (Git keeps the old names).
-The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type, a renamed kind
-key or a renamed part kind is no declared change: it needs a one-off migration on the write path.
+The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type is no declared
+change: it needs a one-off migration on the write path.
 
 ### MCP
 
@@ -172,29 +178,32 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - Where: `area` (what one area covers).
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `view` and `command`
-  that serve steps; `operation` that performs them. A refusal is a `case` that leads to a failure end. A `choice` with `when` is offered only while it
+  that serve steps; `handler` that performs them. A refusal is a `case` that leads to a failure end. A `choice` with `when` is offered only while it
   holds (the same screen offers fewer choices; a `case` when the path differs); an actor step keeps one choice without it.
-- What it keeps: `entity` with `attr`, `state` and `transition`; `value` (a number with a unit), `config_key`, `set`. An
+- What it keeps: `entity` with `attribute`, `state` and `transition`; `quantity` (a number with a unit), `setting` (its
+  `default` a quantity), `enum`. An attribute has a plain `type` or names what it holds in `of`; `many` makes a list. An
   attribute with `derived` is computed from what its expression reads: no `write` effect names it, and it has no `max`
   and is never `optional`.
 - Conditions (`when` of a case or a choice; `derived`) may name actors.
-- What it depends on: `external` and its `deviation`s.
-- What is open and what the owner chose: `decision` with `option`, `guess` (and its `heard`) and `answer`.
-- Held to: any entry names the rules it is held to with `by`; a
-  rule has no `on`. `by` is outside the build hash of all but the rows, so adding a rule stales no holder; the pin of an
-  external held to a rule is part of the rule's build hash (`fingerprint.reached`), so a new pin makes its proofs work again.
+- What it depends on: `dependency` and its `workaround`s.
+- What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
+- Held to: any entry names the rules it is held to with `satisfies`; a
+  rule has no `on`. `satisfies` is outside the build hash of all but the rows, so adding a rule stales no holder; the pin of a
+  dependency held to a rule is part of the rule's build hash (`fingerprint.reached`), so a new pin makes its proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
 then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself) an entry of `kinds` that sets
 none of `without`; an unmet one is `unmet-requirement`. So an
-attribute of type `one` its `of`, and an effect's `do` names what its `on` may be. `ogy kinds --map` prints them all.
+effect's `do` names what its `on` may be. `ogy kinds --map` prints them all.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
 that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
 Every kind file carries `guidance:`, a short text on how to decide when to use the kind (for an actor, the variation test:
 different permitted actions make an actor, a recorded move the product reacts to a state, a fact that changes the outcome an
-attribute in a case; a threshold name is never an actor). `by` holds an entry to a rule; `because` cites a principle or a
+attribute in a case; a threshold name is never an actor), and `like` and `unlike`, one line each: the mainstream notion
+the kind matches and the ones of the same name it does not mean (`ogy kinds`, `--map` and `ogy glossary` print them).
+`satisfies` holds an entry to a rule; `because` cites a principle or a
 decision as the reason. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
 
 ## Where the code lives

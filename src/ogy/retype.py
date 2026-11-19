@@ -80,7 +80,8 @@ class Retype:
         if isinstance(value, str):
             return self.address(value)
         if isinstance(value, list):
-            return [self._value(item) for item in value]
+            value[:] = [self._value(item) for item in value]
+            return value
         if isinstance(value, dict):
             return self._mapping(value, {})
         return value
@@ -95,10 +96,14 @@ class Retype:
         return data
 
     def _parts(self, part: Kind, value: object) -> object:
+        """The parts under one key, renamed in place (a mapping or a list keeps its YAML style)."""
         if part.holding is Holds.MAP and isinstance(value, dict):
-            return {key: self.entry(part, item) for key, item in value.items()}
+            for key, item in value.items():
+                value[key] = self.entry(part, item)
+            return value
         if part.holding is Holds.LIST and isinstance(value, list):
-            return [self.entry(part, item) for item in value]
+            value[:] = [self.entry(part, item) for item in value]
+            return value
         return self.entry(part, value)
 
     def entry(self, kind: Kind, data: object) -> object:
@@ -120,7 +125,8 @@ class Retype:
         if kind is None:
             done = self._value(data)
         elif kind.shape is Shape.LIST and isinstance(data, list):
-            done = [self.entry(kind, item) for item in data]
+            data[:] = [self.entry(kind, item) for item in data]
+            done = data
         else:
             done = self.entry(kind, data)
         after = any_yaml.dump(done)

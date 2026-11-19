@@ -1,6 +1,8 @@
 kind: workflow
 about: a result reached by steps; branching is `then` targets, merging is two rows naming one step
 guidance: "A result reached by steps, started by an actor on its first step, a `schedule`, an `event`, or a caller's `then` or `calls`. What the system does again and again is a scheduled workflow; a one-off act is a plain task outside the ontology. Branch with `then`; merge by naming one step from two rows."
+like: "a BPMN process: a result reached by steps"
+unlike: "a CI pipeline outside the product; a one-off task"
 shape: file
 sentence: says
 layers: [product, software]
@@ -25,7 +27,7 @@ flow:                                                # makes it a graph: the kin
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
   says: {required: true}                             # the result it reaches
-  schedule: {type: link, to: [value]}                # started on this clock
+  schedule: {type: link, to: [quantity]}                # started on this clock
   event: {type: link, to: [transition]}              # started when this transition happens; the listener names it, the cause does not
   start: {type: link, to: [step], required: true}
   realizes: {type: link, to: [capability]}

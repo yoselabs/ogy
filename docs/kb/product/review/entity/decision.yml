@@ -1,7 +1,7 @@
 says: A decision as the product follows it, from a waiting question to an answered one.
 src:
 - code:src/ogy/settle.py#Decision
-attrs: {}
+attributes: {}
 states:
   question-waiting:
     says: No answer yet; the guess is built.

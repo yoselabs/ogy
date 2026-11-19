@@ -23,7 +23,7 @@ options:
     sets:
       software/ontology/rule/constitution-is-one-folder:
         says: 'The constitution is one fixed folder, constitution/: entries of the kind principle at constitution/principle/<id>, agreed only by the owner, cited by decisions as their reason and printed whole to every agent. It has no tags or sub-lists; agent operating rules (worktrees, gates, caps) stay in AGENTS.md, skills and linters.'
-guess:
+proposal:
   chose: one-folder
   why: In the simulation about half the principles bind both layers; a split per layer duplicates them and agents in one layer miss the other's. One short list keeps one address per principle.
 answers:

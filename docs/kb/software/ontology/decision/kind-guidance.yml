@@ -11,11 +11,10 @@ options:
     sets:
       software/ontology/rule/kind-guidance:
         says: How to decide between kinds is written only in docs/guidance.md and the capture skill; kind files carry no guidance and `ogy intro` prints none.
-guess:
+proposal:
   chose: in-kind-files
   why: The guidance sits next to the shape it explains, ships with the ontology and is read with one `ogy kinds` call; intro stays short with pointers.
-  heard:
-    said: Every kind file gets guidance; intro points to it rather than printing it all.
+  heard: Every kind file gets guidance; intro points to it rather than printing it all.
 answers:
 - chose: in-kind-files
   said: Every kind file gets guidance; intro points to it rather than printing it all.

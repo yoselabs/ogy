@@ -11,7 +11,7 @@ options:
     sets:
       software/packaging/rule/ogy-is-one-package-for-now:
         says: ogy is a generic engine and the software ontology is separate from the start.
-guess:
+proposal:
   chose: one-package
   why: No part of the engine has needed to stay free of the ontology so far.
 answers:

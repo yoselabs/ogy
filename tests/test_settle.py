@@ -13,9 +13,9 @@ from ogy.status import Agreement, Label, Status, agreement, evidence, label, que
 V5 = Path(__file__).parent / "fixtures"
 ONTOLOGY = packaged()
 VALUES = "- {id: fee, says: The fee., is: 2, unit: EUR}\n- {id: wait, says: The wait., is: 3, unit: days}\n"
-OPTIONS = "  one: {label: One, sets: {product/app/value/fee: {is: 1}}}\n  two: {label: Two, sets: {product/app/value/fee: {is: 2}}}\n"
-GUESS = "guess: {chose: two, why: because}\n"
-FEE = "product/app/value/fee"
+OPTIONS = "  one: {label: One, sets: {product/app/quantity/fee: {is: 1}}}\n  two: {label: Two, sets: {product/app/quantity/fee: {is: 2}}}\n"
+GUESS = "proposal: {chose: two, why: because}\n"
+FEE = "product/app/quantity/fee"
 ACTORS = "- {id: member, says: A person who borrows., nature: human}\n"
 
 
@@ -29,7 +29,7 @@ def answer(at: str, chose: str, who: str = "human", more: str = "") -> str:
 
 
 def snap(*parts: dict[str, str], values: str = VALUES) -> Snapshot:
-    files = {"product/app/actors.yml": ACTORS, "product/app/values.yml": values}
+    files = {"product/app/actors.yml": ACTORS, "product/app/quantities.yml": values}
     for part in parts:
         files.update(part)
     return build(ONTOLOGY, files)
@@ -57,21 +57,21 @@ def test_good_decision_has_no_findings() -> None:
 
 
 def test_options_set_the_same_slots() -> None:
-    options = OPTIONS + "  three: {label: Three, sets: {product/app/value/wait: {is: 1}}}\n"
+    options = OPTIONS + "  three: {label: Three, sets: {product/app/quantity/wait: {is: 1}}}\n"
     assert problems(snap(decision(options))) == {("uneven-options", "product/app/decision/fee")}
-    fields = OPTIONS + "  three: {label: Three, sets: {product/app/value/fee: {says: x}}}\n"
+    fields = OPTIONS + "  three: {label: Three, sets: {product/app/quantity/fee: {says: x}}}\n"
     assert problems(snap(decision(fields))) == {("uneven-options", "product/app/decision/fee")}
 
 
 def test_sets_may_say_absent() -> None:
-    options = OPTIONS + "  no: {label: No, sets: {product/app/value/fee: null}}\n"
+    options = OPTIONS + "  no: {label: No, sets: {product/app/quantity/fee: null}}\n"
     assert problems(snap(decision(options))) == set()
 
 
 def test_one_decision_per_slot() -> None:
     other = decision(name="fee2")
     assert problems(snap(decision(), other)) == {("two-homes", "product/app/decision/fee2")}
-    absent = decision("  no: {label: No, sets: {product/app/value/fee: null}}\n", "guess: {chose: no, why: x}\n", name="gone")
+    absent = decision("  no: {label: No, sets: {product/app/quantity/fee: null}}\n", "proposal: {chose: no, why: x}\n", name="gone")
     wait = decision(OPTIONS.replace("fee", "wait").replace("is: 1", "is: 3").replace("is: 2", "is: 3"), name="wait")
     assert problems(snap(decision(), wait)) == set()
     assert ("two-homes", "product/app/decision/gone") in problems(snap(decision(), absent))
@@ -99,7 +99,7 @@ def test_entry_must_equal_option_in_force() -> None:
 
 
 def test_absent_in_force_means_no_entry() -> None:
-    no = decision("  no: {label: No, sets: {product/app/value/fee: null}}\n", "guess: {chose: no, why: x}\n")
+    no = decision("  no: {label: No, sets: {product/app/quantity/fee: null}}\n", "proposal: {chose: no, why: x}\n")
     assert problems(snap(no)) == {("not-in-force", "product/app/decision/fee")}
     assert problems(snap(no, values="- {id: wait, says: The wait., is: 3, unit: days}\n")) == set()
     assert problems(snap(decision(), values="- {id: wait, says: The wait., is: 3, unit: days}\n")) == {("not-in-force",
@@ -113,7 +113,8 @@ def test_unanswered_decision_needs_a_guess() -> None:
 def test_an_answer_chooses_the_option_and_agrees_to_no_sentence() -> None:
     silent = snap(decision(answers=answer("2026-11-12T10:00:00+01:00", "two")))
     assert problems(silent) == set() and status(silent, silent.resolve(FEE)) is Status.NOBODY
-    no = decision(OPTIONS + "  no: {label: No, sets: {product/app/value/fee: null}}\n", answers=answer("2026-11-12T10:00:00+01:00", "no"))
+    no = decision(OPTIONS + "  no: {label: No, sets: {product/app/quantity/fee: null}}\n",
+                  answers=answer("2026-11-12T10:00:00+01:00", "no"))
     assert problems(snap(no, values="- {id: wait, says: x, is: 3, unit: days}\n")) == set()
 
 
@@ -175,7 +176,7 @@ def test_only_ai_decided_entries_are_cards() -> None:
     values = ("- {id: fee, says: The fee., is: 2, unit: EUR, src: [\"code:src/a.py#f\"]}\n"
               "- {id: wait, says: The wait., is: 3, unit: days}\n")
     cards = queue(snap(values=values))
-    assert [(card.kind, str(card.address)) for card in cards if card.address.kind == "value"] == [("yes", "product/app/value/wait")]
+    assert [(card.kind, str(card.address)) for card in cards if card.address.kind == "quantity"] == [("yes", "product/app/quantity/wait")]
     assert "product/app/actor/member" in {str(card.address) for card in cards}
     cards = queue(agreed_kb())
     assert FEE not in {str(card.address) for card in cards}
@@ -190,7 +191,7 @@ def test_queue_lists_questions_first_and_at_most_seven() -> None:
 def test_example_tool_library_is_settled(ontology: Ontology) -> None:
     source = WorktreeSource(V5, "example-tool-library")
     snapshot = load(source, ontology)
-    fee = snapshot.resolve("product/library/value/late-fee")
+    fee = snapshot.resolve("product/library/quantity/late-fee")
     assert check_decisions(snapshot, source) == [] and fee is not None
     assert status(snapshot, fee) is Status.BY_YOU
     assert queue(snapshot) == []  # the owner agreed to the owner actor
@@ -213,16 +214,16 @@ def test_an_answer_note_and_paraphrase_are_outside_the_fingerprint() -> None:
 
 
 def test_a_guess_that_rests_on_the_owner_keeps_a_paraphrase() -> None:
-    heard = decision(guess="guess: {chose: two, why: because, heard: {said: Two seems right}}\n")
+    heard = decision(guess="proposal: {chose: two, why: because, heard: Two seems right}\n")
     assert problems(snap(heard)) == set() and decisions(snap(heard))[0].heard is not None
-    quoted = decision(guess="guess: {chose: two, why: because, heard: {message: product/app/message/a, quote: Two}}\n")
+    quoted = decision(guess="proposal: {chose: two, why: because, heard: {message: product/app/message/a, quote: Two}}\n")
     found = {(str(i.problem), str(i.address)) for i in check(snap(quoted), WorktreeSource(V5, ""))}
-    assert ("unknown-field", "product/app/decision/fee/guess/heard") in found
+    assert ("wrong-type", "product/app/decision/fee/proposal") in found  # a paraphrase is one line of text, never a quote
 
 
 def test_an_agent_answers_only_under_a_persons_answer() -> None:
-    gave = ("question: Who decides the fee?\noptions:\n  agent: {label: The agent, sets: {product/app/value/wait: {is: 3}}}\n"
-            "guess: {chose: agent, why: x}\n")
+    gave = ("question: Who decides the fee?\noptions:\n  agent: {label: The agent, sets: {product/app/quantity/wait: {is: 3}}}\n"
+            "proposal: {chose: agent, why: x}\n")
     person = {"product/app/decision/fees-delegated.yml": gave + "answers:\n" + answer("2026-11-11T10:00:00+01:00", "agent")}
     nobody = {"product/app/decision/fees-delegated.yml": gave}
     delegated = ", delegated: product/app/decision/fees-delegated"

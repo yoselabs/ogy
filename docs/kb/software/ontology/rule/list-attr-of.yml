@@ -1,1 +1,6 @@
-says: An attribute of type one names what it holds in `of`; an attribute of type list names nothing.
+says: An attribute that holds entries names them in `of`; one that holds plain values has a `type`; `many` makes either a list.
+agreed:
+  at: '2026-11-20T00:34:29+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  said: 'Yes, all: mainstream renames'
+  hash: 4ac6ad0d3f1e

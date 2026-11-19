@@ -11,7 +11,7 @@ options:
     label: Keep trigger on every workflow
     sets:
       software/ontology/rule/workflow-start-is-computed:
-guess:
+proposal:
   chose: computed
   why: The owner said to drop it.
 answers:

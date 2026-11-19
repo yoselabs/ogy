@@ -67,8 +67,8 @@ def test_removal_without_item(ontology: Ontology) -> None:
 
 def test_removed_item_may_not_change(ontology: Ontology) -> None:
     now = snap(ontology)
-    old = Ledger("product/app", 1, (removal("product/app/value/a"), removal("product/app/value/b")))
-    appended = Ledger("product/app", 1, (*old.items, removal("product/app/value/c")))
+    old = Ledger("product/app", 1, (removal("product/app/quantity/a"), removal("product/app/quantity/b")))
+    appended = Ledger("product/app", 1, (*old.items, removal("product/app/quantity/c")))
     edited = Ledger("product/app", 1, (dataclasses.replace(old.items[0], said="x"), old.items[1]))
     assert check_base(now, now, {"product/app": appended}, {"product/app": old}) == []
     found = check_base(now, now, {"product/app": edited}, {"product/app": old})
@@ -77,18 +77,18 @@ def test_removed_item_may_not_change(ontology: Ontology) -> None:
 
 
 def test_read_ledgers_reads_removed_files(kb: MakeKb) -> None:
-    text = ("format: 1\nitems:\n  - {id: product/app/value/a, kind: value, parent: null, title: null, said: null, why: null,"
+    text = ("format: 1\nitems:\n  - {id: product/app/quantity/a, kind: quantity, parent: null, title: null, said: null, why: null,"
             " replaced_by: null, at: '2026-11-18T09:12:00+01:00', last_seen: " + "a" * 40 + ", hash: " + "b" * 12
             + ", ontology: v5, snapshot: {says: A}}\n")
     ledgers, problems = read_ledgers(kb({"product/app/removed.yml": text}).source)
     assert problems == []
-    assert [item.id for item in ledgers["product/app"].items] == ["product/app/value/a"]
+    assert [item.id for item in ledgers["product/app"].items] == ["product/app/quantity/a"]
     unknown, problems = read_ledgers(kb({"product/app/removed.yml": "format: 9\nitems: []\n"}).source)
     assert unknown == {} and [item.code for item in problems] == ["bad-removed"]
 
 
 def test_a_kind_the_ontology_renamed_is_followed_and_nothing_else_may_change(ontology: Ontology) -> None:
-    other = "question: Who?\noptions:\n  a: {label: A, sets: {}}\nguess: {chose: a, why: x}\n"
+    other = "question: Who?\noptions:\n  a: {label: A, sets: {}}\nproposal: {chose: a, why: x}\n"
     delegated = DECISION.replace("where: 'bd:x'", "where: 'bd:x', delegated: product/app/decision/d2")
     retired = delegated.replace("/decision/d2", "/question/d2")  # a kind this ontology no longer has
     base = snap(ontology, {"product/app/decision/d1.yml": retired})

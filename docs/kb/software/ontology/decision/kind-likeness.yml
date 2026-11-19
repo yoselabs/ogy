@@ -1,0 +1,15 @@
+question: Does each kind say which mainstream notion it is like and which of the same name it is not?
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19), from Fable's like/unlike table in that session: each kind file gets one line `like` and one line `unlike`; `ogy kinds <kind>`, `ogy kinds --map` and `ogy glossary` print them, so an agent maps a kind to what it knows before it writes one."
+options:
+  lines:
+    label: like and unlike, one line each, printed by kinds, the map and the glossary
+  none:
+    label: No such lines
+proposal:
+  chose: lines
+  why: An agent's prior knowledge is the cheapest guidance; the unlike line stops the near miss.
+answers:
+- chose: lines
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:34:23+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

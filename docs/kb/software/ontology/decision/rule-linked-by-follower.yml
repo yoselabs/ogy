@@ -33,11 +33,10 @@ options:
     sets:
       software/ontology/rule/rule-is-linked-by-its-follower:
         says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`; a rule that nothing names with `by` is an error.
-guess:
+proposal:
   chose: follower
   why: One owner per link; show computes the other direction.
-  heard:
-    said: Probably A
+  heard: Probably A
 answers:
 - chose: follower
   note: tentative

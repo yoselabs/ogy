@@ -11,7 +11,7 @@ options:
     sets:
       software/storage/rule/removed-item-keeps-snapshot:
         says: A removed.yml item holds a fixed envelope (id, kind, parent, title, said, why, replaced_by, at, last_seen, hash, ontology) and a verbatim snapshot of the entry as it was; the snapshot is checked only when appended.
-guess:
+proposal:
   chose: envelope-and-snapshot
   why: The snapshot lets a person or an agent find and place the entry again without Git.
 answers:

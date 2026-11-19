@@ -11,7 +11,7 @@ options:
     sets:
       software/packaging/rule/ogy-holds-business-logic-only:
         says: ogy holds its own technical helpers.
-guess:
+proposal:
   chose: in-shelf
   why: The owner wants shelf packages adjusted or created when needed.
 answers:

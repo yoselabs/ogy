@@ -1,0 +1,18 @@
+kind: proposal
+was: {kind: guess, key: guess}
+about: what is built while a decision has no answer; an option, or values (`sets`) when the decision has no options; a proposal of "no" chooses an option that sets `null`, or sets the address to `null`
+guidance: "What is built while the decision has no answer: the option the AI would choose, and why. `heard` is what the owner said that it rests on, a short paraphrase, never a quote; one yes in review then records the answer. A proposal is never an answer."
+like: "an ADR with status proposed: what is built until the owner answers"
+unlike: "an answer: nobody said yes to it"
+shape: inline
+part_of: decision
+key: proposal
+holds: one
+exactly_one_of: [[chose, sets]]
+fields:
+  chose: {type: link, to: [option]}
+  sets: {type: sets}                                 # {address: {field: value} | null}, as in option.sets
+  why: {note: true, required: true}
+  heard: {note: true}                                # one short line: the AI's paraphrase of what the owner said, never a quote
+renamed: {value: sets}
+folded: {heard: said}                                # the part heard {said} is now this text field (`ogy migrate`)

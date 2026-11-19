@@ -26,11 +26,10 @@ options:
     sets:
       product/language/rule/glossary-homes:
         says: Each area has its own glossary.yml. A term that a second area uses moves to the glossary.yml of its layer's reserved area `shared` (product/shared/glossary.yml) and leaves its area; a term lives in one place only.
-guess:
+proposal:
   chose: per-area
   why: An agent working on one area loads only that area's words and the shared ones; one home per term keeps 'is this word taken' a single lookup.
-  heard:
-    said: Per area is simple to use
+  heard: Per area is simple to use
 answers:
 - chose: one-list
   said: Unsure about a glossary per layer; one list for now

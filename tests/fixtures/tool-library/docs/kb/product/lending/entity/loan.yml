@@ -3,34 +3,32 @@ src:
 - code:src/library/loans.py#Loan
 proof:
 - tests/test_loans.py::test_loan_lifecycle
-attrs:
+attributes:
   tool:
     says: The tool lent.
-    type: one
     of: product/lending/entity/tool
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
-      hash: 9b58d8850fad
+      hash: 09709b02565c
   condition:
-    type: one
-    of: product/lending/set/tool-condition
+    of: product/lending/enum/tool-condition
     optional: true
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
-      hash: 68fc7111925b
+      hash: e67ffa6362d8
   renewals:
     type: number
-    max: product/lending/value/max-loans
+    max: product/lending/quantity/max-loans
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
       hash: e4b88b93cb08
-    by:
+    satisfies:
     - product/lending/rule/at-most-max-loans
 states:
   open:
@@ -54,5 +52,5 @@ transitions:
     from:
     - open
     to: returned
-by:
+satisfies:
 - product/lending/rule/tools-are-checked-on-return

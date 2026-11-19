@@ -12,11 +12,10 @@ options:
     sets:
       software/cli/rule/show-area-is-a-map:
         says: Each area has a generated index file that lists its entries and their links; a person reads that file.
-guess:
+proposal:
   chose: map
   why: One command reads the area from the entries themselves; a generated file is a second copy that drifts.
-  heard:
-    said: Liked the map
+  heard: Liked the map
 answers:
 - chose: map
   said: Liked the area map

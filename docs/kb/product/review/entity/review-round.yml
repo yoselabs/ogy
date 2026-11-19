@@ -1,7 +1,7 @@
 says: Saved by id in the Git directory, where a reply finds it.
 src:
 - code:src/ogy/rounds.py#Round
-attrs:
+attributes:
   id:
     type: text
     says: The short id that ogy review prints and a reply names.
@@ -9,7 +9,7 @@ attrs:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
-      hash: cdf66f8b2e4b
+      hash: d0ac71281d85
   everything:
     type: flag
     says: The round was shown with --all, so a bare yes is refused.
@@ -17,15 +17,16 @@ attrs:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
-      hash: 88b07473e5d9
+      hash: 7b13919ea25c
   cards:
-    type: list
+    type: text
     says: 'Each card as shown: its label, the address, the sentence and its fingerprint.'
-    max: product/review/value/cards-per-round
+    max: product/review/quantity/cards-per-round
     agreed:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
-      hash: 8307329dff76
+      hash: 43d1f55f38e6
+    many: true
 states: {}
 transitions: {}

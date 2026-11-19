@@ -1,6 +1,8 @@
 kind: view
 about: a screen that serves actor steps; navigation between screens is computed from the flow
-guidance: "A screen that serves actor steps; `offers` lists the choices when it offers only some. A command line or API call is a command; the work behind a choice is an operation."
+guidance: "A screen that serves actor steps; `offers` lists the choices when it offers only some. A command line or API call is a command; the work behind a choice is a handler."
+like: "a screen or page that serves actor steps"
+unlike: "an MVC view template; a database view"
 shape: file
 sentence: says
 layers: [software]

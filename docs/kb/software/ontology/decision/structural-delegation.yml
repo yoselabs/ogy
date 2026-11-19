@@ -12,11 +12,10 @@ options:
     sets:
       software/ontology/rule/structural-delegation:
         says: The owner answers each of the four structural questions of the ontology review on its own card.
-guess:
+proposal:
   chose: fable-decides
   why: The owner said Fable may decide them.
-  heard:
-    said: Let Fable decide the four structural questions
+  heard: Let Fable decide the four structural questions
 answers:
 - chose: fable-decides
   said: Let Fable decide the four structural questions

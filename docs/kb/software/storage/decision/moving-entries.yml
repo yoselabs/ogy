@@ -22,11 +22,10 @@ options:
     sets:
       software/storage/rule/move-keeps-history:
         says: A move keeps the kind and id, names the new address wherever the old one was in the same write, and is never a removal.
-guess:
+proposal:
   chose: move-leaves-no-record
   why: The owner wants a migration to cause no removals and leave no record per move.
-  heard:
-    said: Migrations never cause removals
+  heard: Migrations never cause removals
 answers:
 - chose: move-command
   said: Yes, a move command

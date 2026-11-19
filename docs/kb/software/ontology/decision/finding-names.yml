@@ -1,0 +1,15 @@
+question: Do findings and work statuses say what happened in plain words?
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `orphan` becomes `never-started` (a workflow nothing starts); `broken-link` becomes `link-to-removed` where the target was removed (`dangling-link` stays for an address that resolves nowhere); the work status `dependency changed` becomes `input changed`, as a dependency is now a kind."
+options:
+  rename:
+    label: never-started, link-to-removed, input changed
+  keep:
+    label: Keep orphan, broken-link and dependency changed
+proposal:
+  chose: rename
+  why: dependency is now a kind; orphan and broken-link named the symptom, not what happened.
+answers:
+- chose: rename
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:34:18+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

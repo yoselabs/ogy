@@ -11,7 +11,7 @@ options:
     sets:
       software/writes/rule/null-in-sets-is-no:
         says: An entry carries a field that says it is not done, later or removed.
-guess:
+proposal:
   chose: null-in-sets
   why: The owner's answer then picks that option, and nothing needs a new field.
 answers:

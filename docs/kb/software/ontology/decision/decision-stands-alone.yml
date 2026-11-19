@@ -8,7 +8,7 @@ options:
     label: Yes, and sort the 60 mirror rules now
   always-sets:
     label: No; every decision keeps setting an entry
-guess:
+proposal:
   chose: alone
   why: One sentence per choice.
 answers:

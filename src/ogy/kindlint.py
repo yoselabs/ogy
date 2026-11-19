@@ -158,6 +158,8 @@ def _migration(declared: Declared, name: str, kind: Kind) -> list[str]:
              if old in kind.fields or old in declared.common]
     found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
     found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
+    found += [f"{name}: revalued or folded {field}, which is no field" for field in (*kind.revalued, *kind.folded)
+              if field not in kind.fields]
     return found
 
 
@@ -243,7 +245,7 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
     wanted = [(settling.option, settling.sets), (settling.answer, settling.chose), (settling.answer, settling.said),
               (settling.answer, settling.at), (settling.answer, settling.where),
               (settling.guess, settling.chose), (settling.guess, settling.value), (name, settling.context),
-              (settling.guess, settling.why)]
+              (settling.guess, settling.why), (settling.guess, settling.heard)]
     found += [f"{name}: settling names no field {kind}.{field}" for kind, field in wanted if not _field_of(kinds, kind, field)]
     return found
 

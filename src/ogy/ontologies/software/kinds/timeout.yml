@@ -1,6 +1,8 @@
 kind: timeout
 about: what happens when the actor does nothing for a time
-guidance: "What happens when the actor does nothing for a decided time, a value. Only an actor step has one; something the system does on a clock is a workflow with a `schedule`."
+guidance: "What happens when the actor does nothing for a decided time, a quantity. Only an actor step has one; something the system does on a clock is a workflow with a `schedule`."
+like: "a BPMN timer event on an actor's wait"
+unlike: "a schedule: something the system does on a clock is a workflow"
 shape: inline
 part_of: step
 key: timeout
@@ -8,9 +10,9 @@ holds: one
 needs_proof: true
 fingerprint:
   proofs: true
-  also: [[by, "=@fingerprint"], [after, "=is"], [after, "=unit"]]
+  also: [[satisfies, "=@fingerprint"], [after, "=is"], [after, "=unit"]]
 requires:
-  - {if_part: effect, path: ["<-performs"], kinds: [operation], error: "a row with an effect has an operation performing it"}
+  - {if_part: effect, path: ["<-performs"], kinds: [handler], error: "a row with an effect has a handler performing it"}
 fields:
-  after: {type: link, to: [value], required: true}
+  after: {type: link, to: [quantity], required: true}
   then: {type: link, to: [step, end, workflow], required: true}

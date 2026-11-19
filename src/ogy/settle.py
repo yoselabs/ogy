@@ -48,7 +48,12 @@ class Decision:
     options: dict[str, Sets] = field(default_factory=dict)
     answers: list[Answer] = field(default_factory=list)
     guess: Entry | None = None
-    heard: Entry | None = None  # what the owner said that the guess rests on: {said}
+
+    @property
+    def heard(self) -> str | None:
+        """What the owner said that the guess rests on, paraphrased: the guess's `heard` field."""
+        value = self.guess.fields.get(self.names.heard) if self.guess else None
+        return value if isinstance(value, str) and value.strip() else None
 
     @property
     def in_force(self) -> Force | None:
@@ -108,8 +113,7 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
     for address, entry in sorted(snapshot.entries.items()):
         if address.kind != kind.kind:
             continue
-        decision = Decision(address, entry, names, guess=snapshot.entries.get(address.part(names.guess)),
-                            heard=snapshot.entries.get(address.part(names.guess).part(names.heard)))
+        decision = Decision(address, entry, names, guess=snapshot.entries.get(address.part(names.guess)))
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}

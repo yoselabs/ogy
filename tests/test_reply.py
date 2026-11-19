@@ -35,9 +35,9 @@ def round_of(lines: list[str]) -> str:
 def asked(repo: Path) -> Path:
     """Two sentences decided by AI (cards 1 and 2) and one unanswered decision (Q1), reviewed."""
     for ident, says in (("a-cap", "A member can borrow."), ("b-cap", "A member can return.")):
-        assert put(repo, f"product/app/capability/{ident}", says=says, because=["product/app/value/fee"])[0] == cli.OK
+        assert put(repo, f"product/app/capability/{ident}", says=says, because=["product/app/quantity/fee"])[0] == cli.OK
     code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS),
-                      guess={"chose": "two", "why": "a guess"})
+                      proposal={"chose": "two", "why": "a guess"})
     assert code == cli.OK, lines
     code, lines = w(repo, "review")
     assert code == cli.OK, lines
@@ -92,7 +92,7 @@ def test_reply_no_turns_a_sentence_into_a_question(asked: Path) -> None:
 def test_reply_chooses_an_option_by_letter_or_key(asked: Path) -> None:
     code, lines = r(asked, "Q1 b")  # the guess ("two") is A, the other option B
     assert code == cli.OK and lines == ["Q1 b: product/app/decision/fee-amount answered: one"], lines
-    assert "is: 1" in (asked / "docs/kb/product/app/values.yml").read_text()
+    assert "is: 1" in (asked / "docs/kb/product/app/quantities.yml").read_text()
     assert w(asked, "check") == (cli.OK, ["ok"])
 
 
@@ -189,8 +189,8 @@ def test_review_help_says_it_saves_a_round(capsys: pytest.CaptureFixture[str]) -
 @pytest.fixture
 def heard(repo: Path) -> Path:
     """One question whose guess rests on what the owner said, paraphrased."""
-    cited = {"chose": "two", "why": "the owner leaned to two", "heard": {"said": "Two euros seem plenty"}}
-    code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), guess=cited)
+    cited = {"chose": "two", "why": "the owner leaned to two", "heard": "Two euros seem plenty"}
+    code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), proposal=cited)
     assert code == cli.OK, lines
     return repo
 

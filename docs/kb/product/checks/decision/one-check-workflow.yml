@@ -10,7 +10,7 @@ options:
     label: Keep both workflows whole
     sets:
       product/checks/workflow/check:
-guess:
+proposal:
   chose: split
   why: The owner said to go as discussed.
 answers:

@@ -1,4 +1,5 @@
 - id: land-a-task
   says: Land one checked task - squash it onto origin's main, check the result again when it differs, push it and close the task.
-  serves: [product/land/goal/delivered-once]
-  src: ["code:src/taskloop/land.py#land"]
+  src: [code:src/taskloop/land.py#land]
+  realizes:
+  - product/land/goal/delivered-once

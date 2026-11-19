@@ -11,7 +11,7 @@ options:
     sets:
       software/checks/rule/old-names-hang-on-a-term:
         says: The glossary holds a list of old words that no sentence may use.
-guess:
+proposal:
   chose: drop
   why: Plain words clash with ordinary sentences; a distinctive word like lane can hang on one term.
 answers:

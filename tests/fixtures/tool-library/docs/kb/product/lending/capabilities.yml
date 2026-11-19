@@ -1,8 +1,8 @@
 - id: lend-tools
   says: The library lends a tool to a member and takes it back.
-  serves:
-  - product/lending/goal/tools-reach-members
   src:
   - code:src/library/loans.py#lend
   because:
   - constitution/principle/members-first
+  realizes:
+  - product/lending/goal/tools-reach-members

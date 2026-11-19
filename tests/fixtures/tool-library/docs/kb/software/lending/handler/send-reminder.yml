@@ -1,0 +1,7 @@
+says: Hands one reminder to the mailer.
+performs:
+- product/lending/workflow/notify/step/send/case/ok
+uses:
+- software/lending/dependency/mailer
+src:
+- code:src/library/remind.py#notify

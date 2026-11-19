@@ -67,6 +67,18 @@ class _Pass:
                 out[name] = self._value(spec, value, address, f"{where}{name}.")
             else:
                 out[name] = value
+        return self._reshaped(kind, out, address, where) if self.renames else out
+
+    def _reshaped(self, kind: Kind, out: Data, address: Address, where: str) -> Data:
+        """A folded part becomes the one value it held; an old value becomes the fields it now is (None removes one)."""
+        for name, inner in kind.folded.items():
+            if isinstance(value := out.get(name), dict):
+                self.found.append(Change(address, where + name, f"{name} ({inner})", value))
+                out[name] = value.get(inner)
+        for name, values in kind.revalued.items():
+            if isinstance(value := out.get(name), str) and (now := values.get(value)) is not None:
+                self.found.append(Change(address, f"{where}{name} {value}", ", ".join(f"{k} {v}" for k, v in now.items()), value))
+                out = {k: v for k, v in {**out, **now}.items() if v is not None}
         return out
 
     def _value(self, spec: FieldSpec, value: object, address: Address, where: str) -> object:
@@ -112,13 +124,14 @@ def _spec(spec: FieldSpec, kinds: Mapping[str, str]) -> FieldSpec:
     return spec.model_copy(update={"to": tuple(kinds.get(name, name) for name in spec.to)}) if spec.to else spec
 
 
-def before(ontology: Ontology) -> Ontology:
+def before(ontology: Ontology, kinds_too: bool = True) -> Ontology:
     """The kinds as they were before their declared renames and drops: a renamed field under its old name, a dropped one back
-    as text, a renamed kind under its old name, file and key (`was`), and a renamed common field under its old name. A
-    fingerprint path names a renamed field or part kind by its old name too (the renames of every kind, as paths cross kinds)."""
+    as text, a renamed common field under its old name and, with `kinds_too` (files that still hold the old kind names), a
+    renamed kind under its old name, file and key (`was`). A fingerprint path names a renamed field or part kind by its old name
+    too (the renames of every kind, as paths cross kinds)."""
     common = {new: old for old, new in ontology.declared.renamed.items()}
     back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()}
-    names = {kind.kind: kind.was.kind for kind in ontology.kinds.values() if kind.was}
+    names = {kind.kind: kind.was.kind for kind in ontology.kinds.values() if kind.was and kinds_too}
     kinds: dict[str, Kind] = {}
     for name, kind in ontology.kinds.items():
         mine = {new: old for old, new in kind.renamed.items()}
@@ -129,7 +142,7 @@ def before(ontology: Ontology) -> Ontology:
         printed = kind.fingerprint.model_copy(update={"also": also, "reached": reached})
         update: dict[str, object] = {"fields": fields, "fingerprint": printed,
                                      "part_of": tuple(names.get(parent, parent) for parent in kind.part_of)}
-        if kind.was:
+        if kind.was and kinds_too:
             update |= {"kind": kind.was.kind, "file": kind.was.file or kind.file, "key": kind.was.key or kind.key}
         kinds[names.get(name, name)] = kind.model_copy(update=update)
     declared = ontology.declared.model_copy(update={"common": {common.get(field, field): _spec(spec, names)
@@ -142,7 +155,7 @@ class Kept:
     `snapshot` the same files under the new kind names (`ogy.retype`); `back` gives a new address its old one."""
 
     def __init__(self, snapshot: Snapshot, old: Snapshot | None = None, back: Callable[[str], str] = str) -> None:
-        was = old or Snapshot(before(snapshot.ontology), snapshot.entries, [])
+        was = old or Snapshot(before(snapshot.ontology, kinds_too=False), snapshot.entries, [])
         self.back, self.was = back, was
         self.dropped = Snapshot(was.ontology, changes(was, renames=False)[0].entries, [])
         self.now = changes(snapshot)[0]

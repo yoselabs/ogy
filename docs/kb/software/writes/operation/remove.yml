@@ -1,7 +1,0 @@
-says: Appends the removed item to the area's removed.yml, then deletes the entry; a removal that stopped between the two writes is finished on the next run.
-performs:
-- product/removal/workflow/remove-entry/step/check/case/otherwise
-uses:
-- software/storage/external/git
-src:
-- code:src/ogy/removal.py#remove

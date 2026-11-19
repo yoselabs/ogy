@@ -16,7 +16,7 @@ options:
     sets:
       software/checks/rule/proposed-word-blocks-its-change:
         says: A proposed word never blocks; it waits like any question.
-guess:
+proposal:
   chose: change-only
   why: The owner left it to the agent; one agent's naming question then stops no parallel task and the word cannot land first.
 answers:

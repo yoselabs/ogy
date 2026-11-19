@@ -54,6 +54,9 @@ def _rules(kind: Kind) -> list[str]:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
     lines += [f"  was: {kind.was.kind} (`ogy migrate`)"] if kind.was else []
     lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
+    lines += [f"  revalued: {field} {old} is now {', '.join(f'{k} {v}' for k, v in now.items())} (`ogy migrate`)"
+              for field, values in kind.revalued.items() for old, now in values.items()]
+    lines += [f"  folded: {field} held a part, now its {inner} (`ogy migrate`)" for field, inner in kind.folded.items()]
     return lines + [f"  dropped: {old} (`ogy migrate`)" for old in kind.dropped]
 
 

@@ -1,0 +1,7 @@
+says: Applies each item of a reply to its round under the write lock, and refuses a card whose entry changed since it was shown.
+performs:
+- product/review/workflow/review-and-reply/step/apply/case/otherwise
+uses:
+- software/storage/dependency/git
+src:
+- code:src/ogy/reply.py#reply

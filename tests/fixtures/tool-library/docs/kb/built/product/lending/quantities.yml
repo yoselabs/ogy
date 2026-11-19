@@ -1,0 +1,1 @@
+product/lending/quantity/late-fee: {own: e8a4f7893415, deps: {}, covers: [src/library/loans.py], sourced: {}}

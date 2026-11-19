@@ -15,7 +15,7 @@ options:
         - product/review/workflow/review-and-reply/step/reply
         src:
         - code:src/ogy/render.py#render_review
-guess:
+proposal:
   chose: none
   why: A view is a screen; the printed round is the output of the command review, which already serves the step.
 answers:

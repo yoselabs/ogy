@@ -180,3 +180,29 @@ def test_the_flow_and_the_kind_printers_follow_the_toy_names(toy: Path) -> None:
     assert "move.caption: check avoided-word, fingerprint, printer diagram, printer review" in lines
     code, lines = w(toy, "kinds", "--map")
     assert code == cli.OK and lines[0].endswith("every kind also takes heading, source, reason, held_by, tests, accepted")
+
+
+def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path_factory: pytest.TempPathFactory) -> None:
+    """The toy ontology renames its kind norm to canon (`was`) and its common field held_by to bound_by (`renamed`)."""
+    folder = tmp_path_factory.mktemp("toy-renamed")
+    for item in (TOY / "kinds").iterdir():
+        text = item.read_text().replace("[norm, person]", "[canon, person]")
+        name = "canon" if item.name == "norm.yml" else item.stem
+        text = text.replace("kind: norm\n", "kind: canon\nwas: {kind: norm}\n")
+        (folder / "kinds").mkdir(exist_ok=True)
+        (folder / "kinds" / f"{name}.yml").write_text(text)
+    declared = (TOY / "ontology.yml").read_text().replace("  held_by: {type: links, to: [norm], note: true}",
+                                                         "  bound_by: {type: links, to: [canon], note: true}")
+    (folder / "ontology.yml").write_text(declared.replace("roles:", "renamed: {held_by: bound_by}\nroles:"))
+    journey = toy / "docs/kb/business/shop/journey/buy.yml"
+    journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
+    run_git(toy, *IDENTITY, "commit", "-qam", "held to the limit")
+    (toy / "ogy.yml").write_text(f"ontology: {folder}\n")
+    found = w(toy, "check")[1]
+    assert any(line.startswith("needs-migration: business/shop/norm/limit.yml") for line in found)
+    assert any("held_by is now bound_by" in line for line in found)
+    assert w(toy, "migrate")[0] == cli.OK and w(toy, "check")[1][0] == "ok"
+    bought = read(toy, "business/shop/journey/buy.yml")
+    assert isinstance(bought, dict) and bought["bound_by"] == ["business/shop/canon/limit"] and "held_by" not in bought
+    assert (toy / "docs/kb/business/shop/canon/limit.yml").is_file() and not (toy / "docs/kb/business/shop/norm").exists()
+    assert "business/shop/canon/limit" in (toy / f"docs/kb/{LIMIT}.yml").read_text()  # the ruling gives the new address

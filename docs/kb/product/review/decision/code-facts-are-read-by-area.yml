@@ -21,7 +21,7 @@ options:
     sets:
       product/review/rule/code-facts-are-read-by-area:
         says: Facts read from code rest until an agent changes one; the owner reads them on request as cards, one area at a time (`review --from code <area>`).
-guess:
+proposal:
   chose: rest
   why: Facts nobody chose are not decisions of anyone; reading them is the owner's choice.
 answers:

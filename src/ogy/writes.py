@@ -77,12 +77,14 @@ def _area(rel: str) -> str:
 
 
 def commit(target: Target, touched: Callable[[Snapshot], list[Address]], act: Callable[[Editor], object],
-           moved: Callable[[str], str] = str) -> list[str]:
+           moved: Callable[[str], str] = str, known: set[tuple[str, str, str]] | None = None) -> list[str]:
     """Run `act` on the worktree (the lock is held). A finding that is new and concerns the files changed, their areas, or the
     entries `touched` names (with the decisions that settle them), puts everything back and refuses; a finding an entry had
-    before it moved (`moved` gives the new address) is not new. Returns the files changed."""
+    before it moved (`moved` gives the new address) is not new, nor is one of `known` (`findings_after`). Returns the files
+    changed."""
     editor = Editor(target.repo, target.kb, target.kinds())
-    before, known = files(target), {_key(item, moved) for item in worktree_findings(target)}
+    before = files(target)
+    known = known if known is not None else {_key(item, moved) for item in worktree_findings(target)}
     try:
         act(editor)
         after = files(target)
@@ -99,6 +101,22 @@ def commit(target: Target, touched: Callable[[Snapshot], list[Address]], act: Ca
         restore(target, before)
         raise WriteRefused([str(item) for item in new])
     return [f"{target.kb}/{rel}".lstrip("/") for rel in changed]
+
+
+def findings_after(target: Target, changed: Mapping[str, str | None]) -> set[tuple[str, str, str]]:
+    """The findings of the worktree with `changed` written (`{path: text}`, None deletes), as keys; the files are put back. A
+    file a kind rename moves is read nowhere before it moves, so what it held is known only after (`ogy migrate`)."""
+    before, base = files(target), target.repo / target.kb
+    try:
+        for rel, text in changed.items():
+            if text is None:
+                (base / rel).unlink()
+            else:
+                (base / rel).parent.mkdir(parents=True, exist_ok=True)
+                atomic_write_text(base / rel, text)
+        return {_key(item) for item in worktree_findings(target)}
+    finally:
+        restore(target, before)
 
 
 @dataclass(frozen=True)

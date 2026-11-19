@@ -11,7 +11,7 @@ options:
     sets:
       software/cli/rule/no-why-command:
         says: ogy has a `why <address>` command that prints who decided an entry, and when.
-guess:
+proposal:
   chose: no
   why: No real use has asked for it yet.
 answers:

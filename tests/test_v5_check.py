@@ -60,8 +60,8 @@ def test_time_needs_date_time_and_offset(kb: Make, at: str, ok: bool) -> None:
 
 
 def test_number_is_a_yaml_number_not_text(kb: Make) -> None:
-    found = kb({"product/app/values.yml": '- {id: fee, says: The fee., is: "2", unit: EUR}\n'}).findings()
-    assert found == {(Problem.WRONG_TYPE, "product/app/value/fee")}
+    found = kb({"product/app/quantities.yml": '- {id: fee, says: The fee., is: "2", unit: EUR}\n'}).findings()
+    assert found == {(Problem.WRONG_TYPE, "product/app/quantity/fee")}
 
 
 def when(text: str, reads: str) -> dict[str, str | None]:
@@ -72,48 +72,49 @@ def when(text: str, reads: str) -> dict[str, str | None]:
 
 
 def test_expr_reads_are_checked_links(kb: Make) -> None:
-    assert kb({**when("the fee", "[product/app/value/fee]"), "product/app/values.yml": VALUES}).findings() == set()
-    found = kb({**when("the fee", "[product/app/value/nothing, product/app/workflow/sys]"), "product/app/values.yml": VALUES}).findings()
+    assert kb({**when("the fee", "[product/app/quantity/fee]"), "product/app/quantities.yml": VALUES}).findings() == set()
+    reads = "[product/app/quantity/nothing, product/app/workflow/sys]"
+    found = kb({**when("the fee", reads), "product/app/quantities.yml": VALUES}).findings()
     assert (Problem.DANGLING_LINK, "product/app/workflow/sys/step/sys/case/go") in found
     assert (Problem.LINK_KIND, "product/app/workflow/sys/step/sys/case/go") in found
 
 
 def test_expr_text_is_not_parsed(kb: Make) -> None:
-    assert kb({**when('"2 >= ((( and or"', "[product/app/actor/member]"), "product/app/values.yml": VALUES}).findings() == set()
+    assert kb({**when('"2 >= ((( and or"', "[product/app/actor/member]"), "product/app/quantities.yml": VALUES}).findings() == set()
 
 
 def test_a_condition_that_reads_nothing_is_wrong(kb: Make) -> None:
-    found = kb({**when("the member is new", "[]"), "product/app/values.yml": VALUES}).findings()
+    found = kb({**when("the member is new", "[]"), "product/app/quantities.yml": VALUES}).findings()
     assert (Problem.WRONG_TYPE, "product/app/workflow/sys/step/sys/case/go") in found
 
 
 DECISION = """\
 question: How much?
 options:
-  one: {label: Two, sets: {product/app/value/fee: {is: 2}}}
-  none: {label: None, sets: {product/app/value/fee: null}}
-guess: {chose: one, why: Small.}
+  one: {label: Two, sets: {product/app/quantity/fee: {is: 2}}}
+  none: {label: None, sets: {product/app/quantity/fee: null}}
+proposal: {chose: one, why: Small.}
 """
 
 
 def test_sets_names_declared_fields_of_real_entries(kb: Make) -> None:
-    base = {"product/app/values.yml": VALUES, "product/app/decision/fee.yml": DECISION}
+    base = {"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": DECISION}
     assert kb(base).findings() == set()
-    wrong = DECISION.replace("{is: 2}", "{is: low, colour: red}").replace("product/app/value/fee: null", "nothing/at/all: null")
+    wrong = DECISION.replace("{is: 2}", "{is: low, colour: red}").replace("product/app/quantity/fee: null", "nothing/at/all: null")
     found = kb({**base, "product/app/decision/fee.yml": wrong}).findings()
     assert only(found, Problem.WRONG_TYPE) == {"product/app/decision/fee/option/one", "product/app/decision/fee/option/none"}
     assert only(found, Problem.UNKNOWN_FIELD) == {"product/app/decision/fee/option/one"}
 
 
 def test_sets_may_say_absent_and_name_entries_that_do_not_exist_yet(kb: Make) -> None:
-    unborn = DECISION.replace("product/app/value/fee", "product/app/value/new-fee").replace("chose: one", "chose: none")
-    assert kb({"product/app/values.yml": VALUES, "product/app/decision/fee.yml": unborn}).findings() == set()
+    unborn = DECISION.replace("product/app/quantity/fee", "product/app/quantity/new-fee").replace("chose: one", "chose: none")
+    assert kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": unborn}).findings() == set()
 
 
 def test_guess_has_one_of_chose_or_sets(kb: Make) -> None:
-    both = DECISION.replace("guess: {chose: one,", "guess: {chose: one, sets: {product/app/value/fee: {is: 2}},")
-    assert only(kb({"product/app/values.yml": VALUES, "product/app/decision/fee.yml": both}).findings(),
-                Problem.ONE_OF) == {"product/app/decision/fee/guess"}
+    both = DECISION.replace("proposal: {chose: one,", "proposal: {chose: one, sets: {product/app/quantity/fee: {is: 2}},")
+    assert only(kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": both}).findings(),
+                Problem.ONE_OF) == {"product/app/decision/fee/proposal"}
 
 
 def test_agreed_entry_shape(kb: Make) -> None:
@@ -137,7 +138,7 @@ def test_common_fields(kb: Make) -> None:
 
 
 def test_the_folder_is_the_layer_and_the_kind_says_which_layers_it_may_appear_in(kb: Make) -> None:
-    both = {"software/app/values.yml": VALUES, "product/app/decision/fee.yml": DECISION, "software/app/decision/fee.yml": DECISION}
+    both = {"software/app/quantities.yml": VALUES, "product/app/decision/fee.yml": DECISION, "software/app/decision/fee.yml": DECISION}
     assert only(kb(both).findings(), Problem.BAD_LAYER) == set()  # a value and a decision may be in either layer
     goal = "- {id: lend, says: Members borrow tools.}\n"
     view = "says: The page.\nserves: [product/app/workflow/sign-in/step/ask]\n"
@@ -153,14 +154,14 @@ def test_requirement_applies_when_part_present(kb: Make) -> None:
                 Problem.UNMET) == {"product/app/workflow/callee/step/only/case/a"}
     assert only(kb({"product/app/workflow/callee.yml": plain}).findings(), Problem.UNMET) == set()
     operation = "says: Sends.\nperforms: [product/app/workflow/callee/step/only/case/a]\n"
-    assert kb({"product/app/workflow/callee.yml": effect, "software/app/operation/send.yml": operation}).findings() == set()
+    assert kb({"product/app/workflow/callee.yml": effect, "software/app/handler/send.yml": operation}).findings() == set()
 
 
 def test_actor_step_with_one_timeout(kb: Make) -> None:
     flow = ("says: S.\nstart: ask\nsteps:\n  ask:\n    actor: product/app/actor/member\n"
             "    choices:\n      go: {label: Go, then: done}\n")
-    flow += "    timeout: {after: product/app/value/wait, then: done}\nends:\n  done: {result: success, says: D.}\n"
-    base = {"product/app/workflow/sign-in.yml": flow, "product/app/values.yml": VALUES}
+    flow += "    timeout: {after: product/app/quantity/wait, then: done}\nends:\n  done: {result: success, says: D.}\n"
+    base = {"product/app/workflow/sign-in.yml": flow, "product/app/quantities.yml": VALUES}
     assert kb(base).findings() == set()
     system = flow.replace("    actor: product/app/actor/member\n    choices:\n      go: {label: Go, then: done}\n", "    then: done\n")
     assert only(kb({**base, "product/app/workflow/sign-in.yml": system}).findings(),
@@ -187,8 +188,8 @@ def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> Non
     assert kb(both).findings(started=True) == {(Problem.NEVER_STARTED, "product/app/workflow/caller"),
                                                (Problem.NEVER_STARTED, "product/app/workflow/callee")}  # a caller nothing starts
     caller = both["product/app/workflow/caller.yml"] or ""
-    timed = {**both, "product/app/values.yml": VALUES,
-             "product/app/workflow/caller.yml": caller.replace("says: C.\n", "says: C.\nschedule: product/app/value/fee\n")}
+    timed = {**both, "product/app/quantities.yml": VALUES,
+             "product/app/workflow/caller.yml": caller.replace("says: C.\n", "says: C.\nschedule: product/app/quantity/fee\n")}
     assert kb(timed).findings(started=True) == set()
 
 

@@ -32,7 +32,7 @@ options:
         word: card
       product/shared/term/glossary:
         word: glossary
-guess:
+proposal:
   chose: distinctions
   why: Plain words (option, agent, skill, capture, card) and names of things (ogy, knowledge base, glossary) carry no meaning beyond English; 30 distinct terms are easier to agree to and to follow.
 answers:

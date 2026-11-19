@@ -1,3 +1,3 @@
 says: The MCP server ogy mcp, which serves every command but init and mcp as a tool over stdio.
-distinct:
+unlike:
 - 'the commands themselves: cli'

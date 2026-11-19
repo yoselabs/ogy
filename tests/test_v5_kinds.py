@@ -30,12 +30,12 @@ def load(*texts: str) -> None:
 
 def test_software_kinds_load() -> None:
     ontology = packaged()
-    assert len(ontology.kinds) == 31 and "message" not in ontology.kinds
+    assert len(ontology.kinds) == 30 and "message" not in ontology.kinds
     assert ontology.kinds["term"].area is None and ontology.kinds["principle"].area == "constitution"
-    assert {name for name, kind in ontology.kinds.items() if kind.shared} == {"term", "actor", "set", "area"}
+    assert {name for name, kind in ontology.kinds.items() if kind.shared} == {"term", "actor", "enum", "area"}
     assert ontology.settling_kind() is ontology.kinds["decision"]
     assert ontology.kinds["effect"].holding is Holds.LIST
-    assert ontology.kinds["guess"].holding is Holds.ONE
+    assert ontology.kinds["proposal"].holding is Holds.ONE
     assert ontology.kinds["step"].holding is Holds.MAP
 
 
@@ -106,7 +106,7 @@ def test_list_kind_declares_its_file_once() -> None:
     ontology = packaged()
     files = [kind.file for kind in ontology.kinds.values() if kind.shape is Shape.LIST]
     assert len(files) == len(set(files)) == 8
-    assert ontology.file_kind("values.yml") is ontology.kinds["value"]
+    assert ontology.file_kind("quantities.yml") is ontology.kinds["quantity"]
 
 
 def test_a_kind_names_the_layers_it_may_appear_in() -> None:

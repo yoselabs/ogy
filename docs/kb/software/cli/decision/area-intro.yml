@@ -12,11 +12,10 @@ options:
     sets:
       software/cli/rule/intro-prints-an-area:
         says: There is no intro command; an agent runs `ogy glossary` and `ogy show <layer>/<area>` one after the other.
-guess:
+proposal:
   chose: intro
   why: One call loads exactly what work on one area needs.
-  heard:
-    said: Liked the intro
+  heard: Liked the intro
 answers:
 - chose: intro
   said: Liked the area intro

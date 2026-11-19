@@ -1,0 +1,7 @@
+says: Runs every check on a snapshot of a commit or the worktree, against a base commit when there is one.
+performs:
+- product/checks/workflow/check/step/judge/case/findings
+uses:
+- software/storage/dependency/git
+src:
+- code:src/ogy/check.py#check
