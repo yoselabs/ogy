@@ -126,7 +126,7 @@ def current(snapshot: Snapshot, addresses: list[Address]) -> dict[str, str]:
 
 
 def stamp(editor: Editor, words: Said, hashes: Mapping[str, str]) -> None:
-    """Record on each entry the person's yes to the fingerprint given: `agreed: {at, where, from: human, said, hash}`."""
+    """Record on each entry the person's yes to the fingerprint given: `agreed: {at, where, said, hash}`."""
     for text, fingerprint in hashes.items():
         address = editor.snapshot().resolve(text)
         assert address is not None
@@ -208,8 +208,9 @@ def _delegation(snapshot: Snapshot, words: Said, delegated: str | None) -> str |
 
 def answer(target: Target, decision_text: str, option: str, words: Said, delegated: str | None = None,
            now: Clock = utc_now) -> Answered:
-    """A person (or an agent under `delegated`) chose an option: append the answer and apply the option's `sets`. The choice
-    is the whole answer: it agrees to no sentence the person did not see; only a review round's `yes` does (`reply`)."""
+    """A person (or an agent under `delegated`) chose an option: append the answer and apply the option's `sets`. A person's
+    answer also agrees to the entries the option sets, as their cards show them (decision answer-agrees-shown); an agent's
+    agrees to nothing."""
     editor = Editor(target.repo, target.kb, target.kinds())
     snapshot = editor.snapshot()
     proof = _delegation(snapshot, words, delegated)
@@ -227,6 +228,9 @@ def answer(target: Target, decision_text: str, option: str, words: Said, delegat
         held = snapshot.entries[found.address].fields.get("answers")
         ed.update(found.address, {"answers": [*(held if isinstance(held, list) else []), item]})
         changed, gone = _apply(target, ed, found, option, now)
+        if words.who == "human" and changed:
+            after = ed.snapshot()
+            stamp(ed, words, {text: after.fingerprint(address) for text in changed if (address := after.resolve(text)) is not None})
         outcome.append(Answered(found.address, option, changed, gone))
 
     commit(target, lambda snap: [found.address, *(a for text in found.options[option] if (a := snap.resolve(text)))], act)

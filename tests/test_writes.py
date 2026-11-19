@@ -144,7 +144,7 @@ def test_new_set_agree_and_message_are_gone(repo: Path) -> None:
 SAID = ("--where", "ai:claude/1", "--at", "2026-11-12T10:05:00+01:00")
 
 
-def test_answer_keeps_a_paraphrase_who_when_and_where_and_chooses_the_option(decided: Path) -> None:
+def test_answer_keeps_a_paraphrase_when_and_where_and_agrees_to_what_it_sets(decided: Path) -> None:
     code, lines = w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One euro is enough", *SAID)
     assert code == cli.OK, lines
     assert lines == ["product/app/decision/fee-amount: answered one", "set product/app/value/fee"]
@@ -154,7 +154,7 @@ def test_answer_keeps_a_paraphrase_who_when_and_where_and_chooses_the_option(dec
                               "where": "ai:claude/1"}
     assert not list((decided / "docs/kb").rglob("message")) and w(decided, "check") == (cli.OK, ["ok"])
     shown = w(decided, "show", "product/app/value/fee")[1]
-    assert any("nobody agreed: from your words" in line for line in shown)  # the person never saw the sentence of the entry
+    assert any("decided by you" in line for line in shown)  # the answer agrees to what the option sets, as its card showed it
     assert "You said (paraphrased): One euro is enough" in w(decided, "show", "product/app/decision/fee-amount")[1]
 
 
