@@ -116,6 +116,10 @@ def _card(label: str, card: Card) -> list[str]:
     lines.append(f"   {card.word}: {card.text}" if card.word else f"   {card.text}")
     if card.avoid:
         lines.append(f"   not: {'; '.join(card.avoid)}")
+    if card.members:
+        lines.append(f"   one yes agrees to {len(card.members)}:")
+        lines += [f"   - {str(address).removeprefix(str(card.address) + '/') if address != card.address else 'itself'}: {text}"
+                  for address, text, _ in card.members]
     for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
         mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
         lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))

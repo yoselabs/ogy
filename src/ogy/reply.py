@@ -70,6 +70,17 @@ def _card(found: Round, label: str, entry: bool) -> Shown:
     return card
 
 
+def _one(found: Round, label: str) -> Shown:
+    """The card `2: <sentence>` or `no 2` acts on: one entry, never a parent's card of several."""
+    card = _card(found, label, True)
+    if len(card.members) > 1:
+        raise WriteRefused([f"card {label} lists {len(card.members)} entries: say which and in what words; the agent changes it"])
+    if card.members:
+        address, fingerprint = card.members[0]
+        return card.model_copy(update={"address": address, "fingerprint": fingerprint})
+    return card
+
+
 def _sentence_field(target: Target, address: str) -> str:
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     found = snapshot.resolve(address)
@@ -156,8 +167,14 @@ def _yes(target: Target, found: Round, words: Said, group: str | None) -> str:
     confirmed = [_confirm(target, found, label, words) for label in wanted]
     if not cards and confirmed:
         return "; ".join(confirmed)
-    agree(target, words, [c.address for c in cards], {c.address: c.fingerprint for c in cards})
-    return "; ".join([*confirmed, f"agreed to {len(cards)} sentence(s)"])
+    return "; ".join([*confirmed, f"agreed to {_agree(target, words, cards)} sentence(s)"])
+
+
+def _agree(target: Target, words: Said, cards: list[Shown]) -> int:
+    """Agree to every card's entry, or to every entry a parent's card lists, at the fingerprint shown; returns how many."""
+    hashes = {address: fingerprint for card in cards for address, fingerprint in (card.members or ((card.address, card.fingerprint),))}
+    agree(target, words, list(hashes), hashes)
+    return len(hashes)
 
 
 def _recommended(decision: Decision | None) -> object:
@@ -191,8 +208,7 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
             answer(target, card.address, chose, words)
             done.append(f"{card.address} answered: {chose}")
     if fresh:
-        agree(target, words, [c.address for c in fresh], {c.address: c.fingerprint for c in fresh})
-        done.append(f"agreed to {len(fresh)} sentence(s)")
+        done.append(f"agreed to {_agree(target, words, fresh)} sentence(s)")
     if not done:
         raise WriteRefused(kept or [f"round {found.id} has nothing to accept"])
     return "; ".join([*done, *(f"not done: {why}" for why in kept)])
@@ -215,12 +231,12 @@ def _apply(target: Target, found: Round, words: Said, item: str) -> str:
         everything = match.group(2) or (match.group(1) or "").lower() == "all"
         return _accept_all(target, found, words) if everything else _yes(target, found, words, match.group(1))
     if match := CHANGE.fullmatch(item):
-        card = _card(found, match.group(1), True)
+        card = _one(found, match.group(1))
         _fresh(target, card)
         _change(target, words, card, match.group(2))
         return f"{card.address} now says what you wrote, and is agreed"
     if match := NO.fullmatch(item):
-        card = _card(found, match.group(1), True)
+        card = _one(found, match.group(1))
         _fresh(target, card)
         return f"{card.address} is now a question: {_reconsider(target, words, card)}"
     if match := CHOOSE.fullmatch(item):

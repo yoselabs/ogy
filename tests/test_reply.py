@@ -247,3 +247,16 @@ def test_a_rewritten_card_then_yes_agrees_to_the_others(asked: Path) -> None:
     code, lines = r(asked, "1: A member can borrow for 30 days., yes")
     assert code == cli.OK and not any("refused" in line or "changed since" in line for line in lines), lines
     assert all("decided by you" in status(asked, f"product/app/capability/{k}") for k in ("a-cap", "b-cap"))
+
+
+def test_a_workflow_is_one_card_and_one_yes_agrees_to_its_parts(repo: Path) -> None:
+    lines = w(repo, "review")[1]
+    head = next(line for line in lines if line.endswith("product/app/workflow/borrow") or "product/app/workflow/borrow  (" in line)
+    label = head.split(".")[0]
+    assert not any("product/app/workflow/borrow/step/" in line for line in lines if line[:1].isdigit())  # parts are not cards
+    text = "\n".join(lines)
+    assert "one yes agrees to" in text and "- step/ask:" in text
+    code, out = r(repo, f"{label}: A new sentence.", "--round", round_of(lines))
+    assert code != cli.OK and "lists" in "\n".join(out), out
+    assert r(repo, f"yes {label}", "--round", round_of(lines))[0] == cli.OK
+    assert "decided by you" in status(repo, "product/app/workflow/borrow/step/ask")

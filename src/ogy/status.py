@@ -54,6 +54,7 @@ class Card:
     context: str = ""  # a decision card: why the question comes up, so the card reads on its own
     then: tuple[tuple[str, ...], ...] = ()  # a decision card: what each option (same order as `options`) makes true
     earlier: str = ""  # a delegated card: the owner's own earlier answer, which the agent's answer replaced
+    members: tuple[tuple[Address, str, str], ...] = ()  # a parent's card: each waiting entry, sentence, fingerprint
 
 
 @dataclass(frozen=True)
@@ -251,4 +252,34 @@ def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
     def order(card: Card) -> tuple[int, int, str]:
         return rank(card.harm), -card.dependants, str(card.address)
 
-    return [*sorted(questions, key=order), *sorted(cards, key=order)][:limit]
+    return [*sorted(questions, key=order), *sorted(_by_parent(snapshot, cards, count), key=order)][:limit]
+
+
+def _top(address: Address) -> Address:
+    while (parent := address.parent()) is not None:
+        address = parent
+    return address
+
+
+def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int]) -> list[Card]:
+    """One card per workflow or entity: its waiting parts (and itself, when waiting) are listed on it, and one yes agrees to
+    them all (product/review/rule/one-card-per-parent). A card of an entry with no parts stays as it is."""
+    groups: dict[Address, list[Card]] = {}
+    alone: list[Card] = []
+    for card in cards:
+        top = _top(card.address)
+        if top in snapshot.entries and (top != card.address or snapshot.ontology.parts_of(top.kind)):
+            groups.setdefault(top, []).append(card)
+        else:
+            alone.append(card)
+    for top, members in groups.items():
+        if [card.address for card in members] == [top]:
+            alone.append(members[0])
+            continue
+        members.sort(key=lambda card: (card.address != top, str(card.address)))
+        kind = "changed" if any(card.kind == "changed" for card in members) else "yes"
+        worst = min((card.harm for card in members), key=rank, default=None)
+        alone.append(Card(kind, top, worst, count.get(top, 0), _says(snapshot, top), fingerprint=snapshot.fingerprint(top),
+                          evidence=evidence(snapshot, top),
+                          members=tuple((card.address, card.text, card.fingerprint) for card in members)))
+    return alone

@@ -32,6 +32,7 @@ class Shown(BaseModel):
     fingerprint: str
     options: tuple[str, ...] = ()
     structure: bool = False  # a structural decision: it needs its own letter, a bare `yes` and `yes all` leave it
+    members: tuple[tuple[str, str], ...] = ()  # a parent's card: the address and fingerprint of each entry one yes agrees to
 
 
 class Round(BaseModel):
@@ -51,7 +52,8 @@ def labelled(cards: list[Card]) -> list[tuple[str, Card]]:
 
 def make(cards: list[Card], everything: bool) -> Round:
     shown = tuple(Shown(label=label, kind=card.kind, address=str(card.address), shown=card.text, fingerprint=card.fingerprint,
-                        options=tuple(key for key, _ in card.options), structure=card.harm is Harm.STRUCTURE)
+                        options=tuple(key for key, _ in card.options), structure=card.harm is Harm.STRUCTURE,
+                        members=tuple((str(address), fingerprint) for address, _, fingerprint in card.members))
                   for label, card in labelled(cards))
     body = Round(id="", everything=everything, cards=shown).model_dump_json()
     return Round(id="r" + digest_text(body, length=6), everything=everything, cards=shown)
