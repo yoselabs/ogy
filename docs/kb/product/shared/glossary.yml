@@ -5,15 +5,21 @@
   - persona
   - role
   - user
+  agreed:
+    at: '2026-11-19T20:31:06+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: e0e105851d2f
 - id: address
   word: address
   says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
   agreed:
-    at: '2026-11-18T14:57:15+01:00'
+    at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to both
-    hash: ddad087056e8
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 4443e949c79b
 - id: agreement
   word: agreement
   says: A person's yes to an entry's sentence, kept with its fingerprint; only people agree.
@@ -24,22 +30,22 @@
   - signed
   - sign
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: 931302e469d2
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 7134976463cc
 - id: answer
   word: answer
   says: The option the owner or a delegated agent chose for a decision; newest wins.
   avoid:
   - ratified
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: d123c5c5a242
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 917fc583e0bf
 - id: area
   word: area
   says: A topic folder in one layer, never named like the product; not a kind.
@@ -47,29 +53,29 @@
   - subject
   - product axis
   agreed:
-    at: '2026-11-18T14:57:15+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to both
-    hash: d58bc0427a6f
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: a257fac816cd
 - id: because
   word: because
   says: Links to the entries a sentence was concluded from; the chain must reach evidence.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 3db734241ef2
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 4b751bc81a57
 - id: constitution
   word: constitution
   says: 'The fixed folder constitution/: every principle, printed whole to every agent first.'
   agreed:
-    at: '2026-11-18T17:33:54+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to all four
-    hash: 02e3d80f8531
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 0113cfa7a3b8
 - id: decision
   word: decision
   says: One question with its options, guess and answers; a tracker only mirrors it.
@@ -77,38 +83,38 @@
   - settles
   - ?open
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: 42e0de35613d
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: f0f45bda213e
 - id: entry
   word: entry
   says: One item of a kind with a permanent id; one file may hold many.
   agreed:
-    at: '2026-11-18T14:57:15+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to both
-    hash: 7540b4620ddf
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 874c5332c2ee
 - id: evidence
   word: evidence
   says: "What grounds an entry: src, a decision, a person's yes or because; not proof."
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 9b5338bf0577
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 69d52f39c830
 - id: fingerprint
   word: fingerprint
   says: Hash of an entry's meaning fields, without notes and src; not a commit hash.
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: 4a05ec0f562d
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 63f7127003f0
 - id: guess
   word: guess
   says: The option or values the AI builds on until the owner answers a decision.
@@ -116,49 +122,49 @@
   - assumed
   - ?assumed
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: 4430c18105f0
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: a288ca325260
 - id: harm-tag
   word: harm tag
   says: A kind's label for what a wrong sentence costs; it orders review, blocks nothing.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: a0635ecd717a
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 3aea06c24ada
 - id: id
   word: id
   says: An entry's permanent name in its kind and area, never reused; unlike its title.
   avoid:
   - slug
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: c0ab0c866083
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 7dc3dfd1f500
 - id: kind
   word: kind
   says: A sort of entry; its file lists fields, links, checks; not a field type.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: a3b243cdb366
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 69fcc2cee13e
 - id: layer
   word: layer
   says: 'Top folder holding areas: product (what, why) or software (how it is built).'
   agreed:
-    at: '2026-11-18T14:57:15+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to both
-    hash: d3dba0f5f5c6
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: d9850da652f5
 - id: 'null'
   word: 'null'
   says: "In an option's sets, an address set to null: that entry does not exist."
@@ -168,42 +174,42 @@
   - non_goal
   - disposal
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: a98b61dc80ed
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: f043f5054a6e
 - id: ontology
   word: ontology
   says: Kind files saying what entries may be; not the knowledge base, not a plugin.
   avoid:
   - schema
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: b075bec4ea02
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 974b0b74d780
 - id: part
   word: part
   says: "An entry inside its parent's file, addressed <parent>/<kind>/<key>: a step, an option."
   agreed:
-    at: '2026-11-18T15:01:29+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes
-    hash: 9fd5fc7b6f08
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 1f3db5d72ac7
 - id: principle
   word: principle
   says: A statement decisions are judged against and cite; the owner calls them values.
   avoid:
   - value-as-principle
   agreed:
-    at: '2026-11-18T17:33:54+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to all four
-    hash: 5055a02082cc
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: eb217092bd47
 - id: question
   word: question
   says: A decision with no answer yet; not an entry's state, not a card.
@@ -211,20 +217,20 @@
   - ?open
   - open question
   agreed:
-    at: '2026-11-17T23:39:17+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Left the glossary page to the agent; no term changed
-    hash: 8a3f30293642
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 2e792e702432
 - id: read-back
   word: read-back
   says: Entries played back as said, concluded, guessed; neither a summary nor a review round.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 201ffa068daa
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 823fb37341e6
 - id: removed-ledger
   word: removed ledger
   says: "An area's append-only removed.yml: each removed entry's snapshot; its id is never reused."
@@ -232,20 +238,20 @@
   - tombstone
   - retired
   agreed:
-    at: '2026-11-17T23:25:57+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Tentative yes to the glossary page
-    hash: 3f2a2a6e38dd
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: ea4048181080
 - id: review-round
   word: review round
   says: The cards one ogy review showed, kept so ogy reply answers exactly them.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 17a2f342d65b
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 8bcbb5fd00b8
 - id: src
   word: src
   says: "A sentence's code: or doc: link; not authority, not a decision, outside the fingerprint."
@@ -253,29 +259,35 @@
   - origin
   - provenance
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 0021903be0d6
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: b0717c587d90
 - id: term
   word: term
   says: A glossary word with its line and words to avoid; the owner agrees each.
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 1236189be557
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 0fee644ea978
 - id: work-left
   word: work left
   says: 'Still to build: changed fingerprints or dependencies, missing proofs; not a task list.'
   agreed:
-    at: '2026-11-17T23:25:57+01:00'
+    at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Tentative yes to the glossary page
-    hash: 3efac8d876ca
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 228e972fda31
 - id: review-card
   word: card
   says: 'One numbered item of a review round: a question or a sentence to agree.'
+  agreed:
+    at: '2026-11-19T20:32:19+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 281f3d1b5c4c

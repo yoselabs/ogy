@@ -5,20 +5,20 @@
   - meta
   - receipts inside entries
   agreed:
-    at: '2026-11-17T23:25:57+01:00'
+    at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Tentative yes to the glossary page
-    hash: ca3674d31c1b
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 4f4b601c8106
 - id: proof
   word: proof
   says: A test, path.py::function, showing a rule or value holds in code; not evidence.
   agreed:
-    at: '2026-11-17T23:25:57+01:00'
+    at: '2026-11-19T20:33:03+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Tentative yes to the glossary page
-    hash: 521d810d9391
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: 5928cd128489
 - id: software-ontology
   word: software ontology
   says: ogy's shipped ontology for software, named in ogy.yml; never copied, no plugin, not requirements-only.
@@ -26,8 +26,8 @@
   - v5
   - requirements ontology
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T20:33:03+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: a826e886cd01
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: edde3ccfa8a7

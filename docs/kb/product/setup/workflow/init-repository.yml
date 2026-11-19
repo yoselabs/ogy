@@ -55,11 +55,11 @@ ends:
     result: success
     says: ogy.yml, the constitution file, the shared area of the first layer, the ontology's starting principle and actors, the ogy block in AGENTS.md (and in CLAUDE.md when it exists), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
     agreed:
-      at: '2026-11-19T19:50:03+01:00'
+      at: '2026-11-19T20:31:06+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       from: human
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: c0802d4f3226
+      said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+      hash: 1ac50930e364
   reported:
     result: success
     says: The person reads what is missing, and the exit code is 1 when something is.
