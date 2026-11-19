@@ -1,0 +1,22 @@
+question: The term review-round and the entity review-round say the same sentence, and the entity's one state kept is moved by nothing. Fold the state into the entity's sentence?
+context: 'Fable review 2026-11-19: a lifecycle of one state is no lifecycle; the term owns the meaning.'
+options:
+  fold:
+    label: The term keeps the meaning; the entity says how a round is saved; state kept and transition save go
+    sets:
+      product/review/entity/review-round:
+        says: Saved by id in the Git directory, where a reply finds it.
+      product/review/entity/review-round/state/kept:
+      product/review/entity/review-round/transition/save:
+  keep:
+    label: Keep as is
+    sets:
+      product/review/entity/review-round:
+        says: The cards one ogy review showed, kept by id so that a reply resolves against what the owner saw.
+      product/review/entity/review-round/state/kept:
+        says: The round is in the Git directory and a reply may name it.
+      product/review/entity/review-round/transition/save:
+        to: kept
+guess:
+  chose: keep
+  why: Kept until the owner answers.

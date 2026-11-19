@@ -19,6 +19,14 @@ options:
         why: What the checks cannot read cannot be kept true.
       software/ontology/rule/rigid-where-checked:
         says: Every fact is a field or a link; a fact with no field gets a new field or kind.
+  hybrid-how-only:
+    label: Hybrid, with the rule holding only the how-tos; the principle says why
+    sets:
+      constitution/principle/rigid-where-checked:
+        says: A fact that a check, work left or impact reads is a field or a link; a fact only a reader needs is text on its entry.
+        why: An all-rigid model grows as detailed as code and lags behind it; text that a check needs is a second, unchecked spec. Each fact takes the cheapest form that still lets the checks read it.
+      software/ontology/rule/rigid-where-checked:
+        says: Text naming another entry makes that part a link; a decided number is a value; when no kind fits, a rule with links and a proof, never a new kind; a new kind or field names the check that reads it. `ogy init` ships the principle rigid-where-checked and docs/guidance.md ("Rigid where checked") to every repository.
 guess:
   chose: hybrid
   why: Checks, the work and impact need rigid facts; everything else as fields makes the model as detailed as code and it lags.
