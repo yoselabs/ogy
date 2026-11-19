@@ -1,5 +1,5 @@
 question: Does the review area keep an entity `decision`, whose attributes repeat the decision kind file and the term?
-context: 'Fable review 2026-11-19: nothing links to it; question, structure and answers are the fields of kinds/decision.yml.'
+context: 'Fable review 2026-11-19, corrected: the workflow store-owner-words moves a decision from waiting to answered (a transition), so the entity has a real lifecycle; only its attributes question, structure and answers repeat kinds/decision.yml.'
 options:
   remove:
     label: Remove it; the kind file and the term say it
@@ -10,6 +10,11 @@ options:
     sets:
       product/review/entity/decision:
         says: 'What the product keeps of a decision: its question, whether it is structural, and its answers; its state is computed.'
+  trim:
+    label: Keep the entity and its lifecycle; remove only its three attributes, which repeat the kind file
+    sets:
+      product/review/entity/decision:
+        says: A decision as the product follows it, from a waiting question to an answered one.
 guess:
   chose: keep
   why: Kept until the owner answers.
