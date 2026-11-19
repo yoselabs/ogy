@@ -56,16 +56,6 @@ class Evidence(StrEnum):
     NONE = "none"
 
 
-class Harm(StrEnum):
-    """What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in."""
-
-    STRUCTURE = "structure"  # the layout, layers, kinds or paths: asked on its own card, never inside a bulk accept
-    MOVES_MONEY = "moves-money"
-    TELLS_OUTSIDE = "tells-outside"
-    IRREVERSIBLE = "irreversible"
-    WHO_IS_ALLOWED = "who-is-allowed"
-
-
 class FieldSpec(BaseModel):
     """One field of a kind. Every declared field is meaning and enters the fingerprint unless it is a `note`."""
 
@@ -76,7 +66,7 @@ class FieldSpec(BaseModel):
     schemes: tuple[str, ...] = ()  # uri schemes
     note: bool = False
     required: bool = False
-    harm: tuple[Harm, ...] = ()  # what a wrong value of this field costs, for an entry that sets it
+    harm: tuple[str, ...] = ()  # what a wrong value of this field costs, for an entry that sets it (tags of `harms`)
 
 
 class Fingerprint(BaseModel):
@@ -213,7 +203,7 @@ class Kind(BaseModel):
     needs_proof: bool = False  # entries count as work until built
     must_be_agreed: bool = False
     asked: bool = True  # false: its sentence is never put to the owner, so it gets no review card and needs no agreement
-    harm: tuple[Harm, ...] = ()  # what a wrong sentence of this kind costs; read by the review queue
+    harm: tuple[str, ...] = ()  # what a wrong sentence of this kind costs (tags of `harms`); read by the review queue
     append_only: bool = False
     evidence: Evidence | None = None
     holds: Holds | None = None
@@ -240,11 +230,9 @@ class Kind(BaseModel):
         return {**dict.fromkeys(self.dropped), **self.renamed}
 
     @property
-    def moved(self) -> tuple[str, str] | None:
-        """(the fixed folder the entries were kept in, the home `ogy migrate` moves them to: the first layer's `shared`)."""
-        if self.moved_from is None or not self.layers:
-            return None
-        return self.moved_from.split("/", 1)[0], f"{self.layers[0]}/{SHARED_AREA}"
+    def moved_folder(self) -> str | None:
+        """The fixed folder the entries were kept in before they moved into the layers (`ogy migrate` moves them)."""
+        return self.moved_from.split("/", 1)[0] if self.moved_from is not None and self.layers else None
 
     @property
     def holding(self) -> Holds:
@@ -271,16 +259,4 @@ class Kind(BaseModel):
 NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")  # an area, an id, a local key
 KIND_NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 RESERVED_AREAS = (KINDS_DIR, "built")
-SHARED_AREA = "shared"  # the area of every layer that holds what two of its areas use; only `shared` kinds live there
-ONTOLOGY_FILE = "ontology.yml"  # beside `kinds/`: the layers every entry lives under
-
-# Fields every entry may carry, all outside the fingerprint. `src` says where a sentence came from; `agreed` is the person's
-# yes to it in a review round (written only by `reply`).
-COMMON_FIELDS: dict[str, FieldSpec] = {
-    "title": FieldSpec(note=True),
-    "src": FieldSpec(type=FieldType.TEXTS, note=True),
-    "because": FieldSpec(type=FieldType.LINKS, to=(ANY,)),
-    "by": FieldSpec(type=FieldType.LINKS, to=("rule",), note=True),  # the rules it is held to; a note
-    "proof": FieldSpec(type=FieldType.TEXTS),
-    "agreed": FieldSpec(type=FieldType.AGREED, note=True),
-}
+ONTOLOGY_FILE = "ontology.yml"  # beside `kinds/`: the layers, common fields, harms and evidence (`declared`)

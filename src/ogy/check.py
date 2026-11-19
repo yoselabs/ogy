@@ -12,7 +12,7 @@ from ogy.evidencecheck import check_evidence
 from ogy.fieldtypes import fields_problems
 from ogy.flowcheck import check_flows
 from ogy.kindchange import migrated
-from ogy.kinds import COMMON_FIELDS, Holds, Kind
+from ogy.kinds import Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
@@ -48,7 +48,7 @@ class Checker:
     def _fields(self, kind: Kind, entry: Entry) -> None:
         listed = [part for part in self.snapshot.ontology.parts_of(kind.kind) if part.holding is Holds.LIST]
         known = {part.key for part in listed if part.key}
-        for problem, detail in fields_problems(self.snapshot.ontology, {**COMMON_FIELDS, **kind.fields}, entry.fields, known,
+        for problem, detail in fields_problems(self.snapshot.ontology, self.snapshot.ontology.specs(kind), entry.fields, known,
                                                old=kind.old_names):
             self._add(problem, entry, detail)
         for part in listed:
@@ -66,8 +66,9 @@ class Checker:
         layer = entry.address.layer
         if layer and entry.address.parent() is None and layer not in kind.layers:
             self._add(Problem.BAD_LAYER, entry, f"{kind.kind} may live in the layers {list(kind.layers)}, not {layer}")
-        if not layer and kind.moved is not None and entry.address.parent() is None:
-            self._add(Problem.NEEDS_MIGRATION, entry, f"{kind.kind} moved from {kind.moved_from} to {kind.moved[1]}/{kind.file} and "
+        if not layer and (folder := kind.moved_folder) is not None and entry.address.parent() is None:
+            home = self.snapshot.ontology.moved_homes()[folder]
+            self._add(Problem.NEEDS_MIGRATION, entry, f"{kind.kind} moved from {kind.moved_from} to {home}/{kind.file} and "
                       "then to the area that uses it: run `ogy migrate`, then `ogy move`")
 
     def _links(self, entry: Entry) -> None:

@@ -12,7 +12,7 @@ from ogy.snapshot import Snapshot
 from ogy.status import Status, agreed_hashes, status
 from ogy.verdict import NotFound
 
-SENTENCE = ("says", "question", "label", "word", "title")
+SENTENCE = ("says", "question", "label", "word")
 REMOVED = "removed"
 STATES = {Status.QUESTION: "question", Status.CHANGED: "changed", Status.BY_YOU: "you", Status.NOBODY: "nobody"}
 
@@ -38,7 +38,7 @@ def _live(snapshot: Snapshot, parent: str | None, cites: Address | None) -> list
             continue
         if parent is not None and str(address.parent()) != parent:
             continue
-        says = next((text for name in SENTENCE if (text := entry.text(name))), "")
+        says = next((text for name in (*SENTENCE, snapshot.ontology.roles.title) if (text := entry.text(name))), "")
         if address in asked:
             state = "question" if not asked[address].answers else "you"
         else:

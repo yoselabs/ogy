@@ -13,7 +13,6 @@ from tests.test_writes import OPTIONS, put, w
 
 from ogy import cli
 from ogy.coverage import product_areas, uncovered
-from ogy.kinds import Harm
 from ogy.model import Problem
 from ogy.ontology import packaged
 
@@ -38,7 +37,8 @@ def structural(repo: Path) -> Path:
 
 
 def test_the_structure_tag_is_a_harm_of_the_decision_kind() -> None:
-    assert Harm.STRUCTURE in list(Harm) and packaged().kinds["decision"].fields["structure"].harm == (Harm.STRUCTURE,)
+    ontology = packaged()
+    assert "structure" in ontology.declared.asked_alone and ontology.kinds["decision"].fields["structure"].harm == ("structure",)
 
 
 def test_review_says_a_structural_question_needs_its_own_letter_and_what_a_bare_yes_changes(structural: Path) -> None:

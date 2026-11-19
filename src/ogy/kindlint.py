@@ -2,15 +2,14 @@
 
 from collections.abc import Mapping
 
+from ogy.declared import Declared
 from ogy.kinds import (
     ANY,
-    COMMON_FIELDS,
     FILED,
     KIND_NAME,
     LINKING,
     NAME,
     RESERVED_AREAS,
-    SHARED_AREA,
     FieldSpec,
     FieldType,
     Holds,
@@ -19,31 +18,27 @@ from ogy.kinds import (
     Shape,
 )
 
-# Facts the tool computes; no kind may store them (K22).
-STORED_STATE = frozenset({
-    "open", "assumed", "origin", "status", "author", "agreement", "built", "covers", "sourced", "in", "retired",
-    "accepted_by", "renamed_from", "actors", "subject", "id", "settles", "settled_by", "came_from", "removed",
-    "replaced_by", "superseded", "superseded_by", "deprecated", "restored", "scope", "history", "changelog", "last_seen",
-})
-SENTENCE_NAMES = frozenset({"states", "means", "holds", "does", "provides", "shows", "goal"})  # the sentence is `says` (K25)
 REMOVED_FILE = "removed.yml"
 
 
-def problems(kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> list[str]:
+def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
     found: list[str] = []
-    fixed = {kind.area for kind in kinds.values() if kind.area} | {moved[0] for kind in kinds.values() if (moved := kind.moved)}
+    layers = declared.layers
+    fixed = {kind.area for kind in kinds.values() if kind.area} | {kind.moved_folder for kind in kinds.values() if kind.moved_folder}
     found += [f"layer {layer!r} is no valid folder name" for layer in layers
-              if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed or layer == SHARED_AREA]
+              if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed or layer == declared.shared.area]
+    if not NAME.match(declared.shared.area) or declared.shared.area in RESERVED_AREAS:
+        found.append(f"shared area {declared.shared.area!r} is no valid area name")
     if not layers:
         found.append("the ontology declares no layers")
     for name, kind in kinds.items():
         found += [f"{name}: layer {layer!r} is not a layer of the ontology" for layer in kind.layers if layer not in layers]
         found += _shape(kinds, name, kind) + _per_area(name, kind)
-        found += _fields(kinds, name, kind)
+        found += _fields(kinds, declared, name, kind)
         found += _rules(kinds, name, kind)
-        found += _migration(name, kind) + _moved(name, kind)
+        found += _migration(declared, name, kind) + _moved(name, kind)
     found += _files(kinds)
-    found += _keys(kinds)
+    found += _keys(kinds, declared)
     found += _settling(kinds)
     found += _link_direction(kinds)
     return found
@@ -86,16 +81,17 @@ def _per_area(name: str, kind: Kind) -> list[str]:
     return found
 
 
-def _fields(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
-    found: list[str] = []
+def _fields(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -> list[str]:
+    found = [f"{name}: harm {tag} is no harm of the ontology" for tag in kind.harm if tag not in declared.harms]
     for field, spec in kind.fields.items():
         where = f"{name}.{field}"
-        if field in COMMON_FIELDS or field == "id":
+        if field in declared.common or field == "id":
             found.append(f"{where}: common to every kind")
-        if field in STORED_STATE:
+        if field in declared.reserved.computed:
             found.append(f"{where}: {field} is computed, never stored")
-        if field in SENTENCE_NAMES:
-            found.append(f"{where}: the sentence is `says`")
+        if field in declared.reserved.sentence:
+            found.append(f"{where}: another name for a sentence; the kind names its sentence field")
+        found += [f"{where}: harm {tag} is no harm of the ontology" for tag in spec.harm if tag not in declared.harms]
         if "?" in field or any("?" in member for member in spec.of):
             found.append(f"{where}: no name contains `?`")
         found += _spec(kinds, where, spec)
@@ -153,10 +149,10 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
     return found
 
 
-def _migration(name: str, kind: Kind) -> list[str]:
+def _migration(declared: Declared, name: str, kind: Kind) -> list[str]:
     """A renamed field's old name is no field, its new one is; a dropped field is no field and was not renamed."""
     found = [f"{name}: renamed {old} is still a field or common to every kind" for old in kind.old_names
-             if old in kind.fields or old in COMMON_FIELDS]
+             if old in kind.fields or old in declared.common]
     found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
     found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
     return found
@@ -195,7 +191,7 @@ def _files(kinds: Mapping[str, Kind]) -> list[str]:
     return found
 
 
-def _keys(kinds: Mapping[str, Kind]) -> list[str]:
+def _keys(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
     """Under one parent, part keys are distinct, are no field of the parent and contain no `?`."""
     found: list[str] = []
     for parent, owner in kinds.items():
@@ -205,7 +201,7 @@ def _keys(kinds: Mapping[str, Kind]) -> list[str]:
                 continue
             if "?" in kind.key:
                 found.append(f"{name}: no name contains `?`")
-            if kind.key in keys or kind.key in owner.fields or kind.key in COMMON_FIELDS:
+            if kind.key in keys or kind.key in owner.fields or kind.key in declared.common:
                 found.append(f"{name}: key {kind.key!r} is already used inside {parent}")
             keys[kind.key] = name
     return found

@@ -10,9 +10,9 @@ from dataclasses import dataclass, field
 
 from ogy import built, removed
 from ogy.edit import Editor
+from ogy.fieldtypes import AGREED_HASH
 from ogy.kindchange import Change, Kept, changes, moved_table
-from ogy.kinds import SHARED_AREA, Shape
-from ogy.layout import SHARED_SAYS
+from ogy.kinds import Shape
 from ogy.model import Address
 from ogy.moves import renamer
 from ogy.relocate import rename_all
@@ -42,10 +42,10 @@ class Migrated:
 def _agreements(snapshot: Snapshot, kept: Kept) -> dict[Address, dict[str, object]]:
     found: dict[Address, dict[str, object]] = {}
     for address, entry in snapshot.entries.items():
-        agreed = entry.fields.get("agreed")
-        given = agreed.get("hash") if isinstance(agreed, dict) else None
+        agreed = entry.fields.get(snapshot.ontology.roles.agreed)
+        given = agreed.get(AGREED_HASH) if isinstance(agreed, dict) else None
         if isinstance(agreed, dict) and isinstance(given, str) and (now := kept.hash(address, given)) not in (None, given):
-            found[address] = {**agreed, "hash": now}
+            found[address] = {**agreed, AGREED_HASH: now}
     return found
 
 
@@ -75,9 +75,9 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
         moved.append((address, new))
     area = next(kind for kind in snapshot.ontology.kinds.values() if kind.every_area and kind.shape is Shape.SINGLE)
     for home in table.values():
-        here = Address(home.layer, home.area, ((area.kind, SHARED_AREA),))
+        here = Address(home.layer, home.area, ((area.kind, snapshot.ontology.shared),))
         if here not in snapshot.entries:
-            ed.put(here, {"says": SHARED_SAYS})
+            ed.put(here, {"says": snapshot.ontology.declared.shared.says})
     rename_all(ed, target, snapshot, table)
     root = target.repo / target.kb
     for old, new in table.items():
@@ -105,7 +105,7 @@ def migrate(target: Target) -> Migrated:
 
     def act(ed: Editor) -> None:
         for address, entry in snapshot.entries.items():
-            now = {**after.entries[address].fields, **({"agreed": agreed[address]} if address in agreed else {})}
+            now = {**after.entries[address].fields, **({snapshot.ontology.roles.agreed: agreed[address]} if address in agreed else {})}
             update = {name: now.get(name) for name in {*entry.fields, *now} if now.get(name) != entry.fields.get(name)}
             if update:
                 ed.update(address, update, snap=snapshot)

@@ -26,17 +26,18 @@ def _plain(value: object) -> object:
     return value.isoformat() if isinstance(value, datetime) else value
 
 
-def fingerprint(kind: Kind, entry: Entry, parts: Sequence[object] = (), also: Sequence[object] = (), proofs: bool = True) -> str:
+def fingerprint(kind: Kind, entry: Entry, parts: Sequence[object] = (), also: Sequence[object] = (), proofs: str | None = None) -> str:
     """A short hash of the entry's kind, its fields that are set and are not notes, and the content of its unkeyed parts.
 
     `src` and the other common fields are outside it, and so is a field the entry leaves unset: a kind that gains a field
-    changes no fingerprint. A kind may add the set of its proof ids and values reached along link paths (`also`)."""
+    changes no fingerprint. A kind may add the set of its proof ids (`proofs`: the common field that holds them) and values
+    reached along link paths (`also`)."""
     payload: dict[str, object] = {"kind": kind.kind, **{name: _plain(entry.fields[name]) for name, spec in sorted(kind.fields.items())
                                                         if not spec.note and entry.fields.get(name) is not None}}
     if parts:
         payload["parts"] = list(parts)
     if kind.fingerprint.proofs and proofs:
-        payload["proofs"] = sorted(set(link_values(entry.fields.get("proof"))))
+        payload["proofs"] = sorted(set(link_values(entry.fields.get(proofs))))
     if also:
         payload["also"] = list(also)
     return digest(payload, length=FINGERPRINT_LENGTH)
@@ -70,7 +71,7 @@ class Snapshot:
         items hold it, so a new proof or a changed dependency never sends an entry back to the owner."""
         key = (address, "meaning")
         if key not in self._prints:
-            self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), (), False)
+            self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), ())
         return self._prints[key]
 
     def build_hash(self, address: Address, *, proofs: bool = True) -> str:
@@ -89,7 +90,7 @@ class Snapshot:
             reached = [[n, found] for n, path in enumerate(kind.fingerprint.reached) if (found := self._along(address, path, True))]
             also += [["reached", reached]] if reached else []
             entry = self.entries[address]
-            self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, proofs)
+            self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, self.ontology.roles.proof if proofs else None)
         finally:
             self._visiting.discard(address)
         return self._prints[key]

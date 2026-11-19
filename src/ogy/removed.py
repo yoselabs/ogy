@@ -339,15 +339,15 @@ def is_address(why: str | None) -> bool:
     return why is not None and ADDRESSY.fullmatch(why) is not None
 
 
-def check_why(items: Iterable[Item], known: Collection[str]) -> list[Problem]:
+def check_why(items: Iterable[Item], known: Collection[str], agreed: str) -> list[Problem]:
     """R5: a `why` shaped like an address names a live decision (`known`) or a removed item; any other is plain words.
-    An item whose snapshot a person agreed to (`agreed`) needs an address, not plain words or none."""
+    An item whose snapshot a person agreed to (its common field `agreed`) needs an address, not plain words or none."""
     items = list(items)
     seen = {*known, *(i.id for i in items)}
     out = [Problem("removed-without-why", i.id, f"why {i.why} is no decision")
            for i in items if is_address(i.why) and i.why not in seen]
     return out + [Problem("removed-without-why", i.id, "a person agreed to it, so why is the address of a decision")
-                  for i in items if not is_address(i.why) and isinstance(i.snapshot.get("agreed"), dict)]
+                  for i in items if not is_address(i.why) and isinstance(i.snapshot.get(agreed), dict)]
 
 
 def check_replacements(items: Iterable[Item], live: Collection[str]) -> list[Problem]:

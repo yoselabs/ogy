@@ -7,7 +7,6 @@ from ogy import rounds
 from ogy.find import Found
 from ogy.graph import Context, Impact
 from ogy.history import History
-from ogy.kinds import Harm
 from ogy.model import Finding
 from ogy.overview import Overview
 from ogy.receipts import Work
@@ -126,7 +125,7 @@ def _card(label: str, card: Card) -> list[str]:
         lines += [f"      then {line}" for line in (card.then[index] if index < len(card.then) else ())]
     if card.earlier:
         lines.append(f"   {card.earlier}")
-    if card.harm is Harm.STRUCTURE:
+    if card.alone:
         lines.append(f"   Structural: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
     if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")
@@ -151,12 +150,12 @@ def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
     """What a bare `yes` will change, and what it leaves for a letter of its own: the same rule as `reply`."""
     keys = {label: [key for key, _ in card.options] for label, card in cards}
     confirms = [f"{label} as {string.ascii_uppercase[keys[label].index(card.guess)]}" for label, card in cards
-                if card.kind not in rounds.ENTRY_CARDS and card.harm is not Harm.STRUCTURE and card.heard and card.guess in keys[label]]
+                if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.guess in keys[label]]
     agrees = [label for label, card in cards if card.kind in rounds.ENTRY_CARDS]
     will = [*([f"confirm {', '.join(confirms)}"] if confirms else []),
             *([f"agree to {len(agrees)} sentence(s) ({', '.join(agrees)})"] if agrees else [])]
     lines = [f"A bare `yes` will: {'; '.join(will)}." if will else "A bare `yes` changes nothing."]
-    own = [label for label, card in cards if card.harm is Harm.STRUCTURE]
+    own = [label for label, card in cards if card.alone]
     return lines + ([f"Structural, not covered by yes or yes all: {', '.join(own)}; each needs its own letter."] if own else [])
 
 

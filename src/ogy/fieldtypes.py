@@ -3,8 +3,7 @@
 from collections.abc import Callable, Collection, Mapping
 from datetime import datetime
 
-from ogy.kindlint import STORED_STATE
-from ogy.kinds import COMMON_FIELDS, FieldSpec, FieldType
+from ogy.kinds import FieldSpec, FieldType
 from ogy.model import Problem, parse_address
 from ogy.ontology import Ontology
 
@@ -91,11 +90,19 @@ def sets_problems(ontology: Ontology, value: object) -> Found:
             found.append((Problem.WRONG_TYPE, f"{key} is a mapping of fields or null"))
         else:
             found += [(problem, f"{key}: {detail}") for problem, detail in
-                      fields_problems(ontology, {**COMMON_FIELDS, **kind.fields}, fields, partial=True, old=kind.old_names)]
+                      fields_problems(ontology, ontology.specs(kind), fields, partial=True, old=kind.old_names)]
     return found
 
 
-AGREED_KEYS = frozenset({"at", "where", "said", "hash"})  # only a person agrees, so who agreed is not a field
+AGREED_HASH = "hash"  # the key of an agreement that holds the fingerprint agreed to
+
+
+def agreed_keys(ontology: Ontology) -> frozenset[str]:
+    """The keys of an agreement: the settling kind's answer `at`, `where` and `said`, and the hash. Only a person agrees, so
+    who agreed is not a key."""
+    settler = ontology.settling_kind()
+    names = settler.settling if settler else None
+    return frozenset({AGREED_HASH, *((names.at, names.where, names.said) if names else ())})
 
 
 def _answer_spec(ontology: Ontology, name: str) -> FieldSpec | None:
@@ -106,15 +113,20 @@ def _answer_spec(ontology: Ontology, name: str) -> FieldSpec | None:
 
 
 def agreed_problems(ontology: Ontology, value: object) -> Found:
-    """`{at, where, said, hash}`: a person's yes in a review round, `hash` the fingerprint agreed to."""
-    shape = f"{{at, where, said, hash: {FINGERPRINT_LENGTH} hex}}"
-    if not isinstance(value, dict) or set(value) != AGREED_KEYS:
+    """`{at, where, said, hash}` (in the settling kind's names): a person's yes in a review round, `hash` the fingerprint agreed to."""
+    settler = ontology.settling_kind()
+    names = settler.settling if settler else None
+    if names is None:
+        return [(Problem.WRONG_TYPE, "is no field: the ontology has no settling kind to name its keys")]
+    shape = f"{{{names.at}, {names.where}, {names.said}, {AGREED_HASH}: {FINGERPRINT_LENGTH} hex}}"
+    if not isinstance(value, dict) or set(value) != agreed_keys(ontology):
         return [(Problem.WRONG_TYPE, f"is {shape}")]
-    fingerprint, said = value["hash"], value["said"]
+    fingerprint, said = value[AGREED_HASH], value[names.said]
     found: Found = [] if isinstance(fingerprint, str) and len(fingerprint) == FINGERPRINT_LENGTH and set(fingerprint) <= HEX else [
-        (Problem.WRONG_TYPE, f"hash is {FINGERPRINT_LENGTH} hex")]
-    found += [] if isinstance(said, str) and said.strip() else [(Problem.WRONG_TYPE, "said is a short paraphrase of what the person said")]
-    for name in ("at", "where"):
+        (Problem.WRONG_TYPE, f"{AGREED_HASH} is {FINGERPRINT_LENGTH} hex")]
+    found += [] if isinstance(said, str) and said.strip() else [
+        (Problem.WRONG_TYPE, f"{names.said} is a short paraphrase of what the person said")]
+    for name in (names.at, names.where):
         spec = _answer_spec(ontology, name)
         if spec is not None and not _simple(spec, value[name]):
             found.append((Problem.WRONG_TYPE, f"{name} is {_expected(spec)}"))
@@ -145,7 +157,7 @@ def fields_problems(ontology: Ontology, specs: Mapping[str, FieldSpec], data: Ma
                 now = old[name]
                 found.append((Problem.NEEDS_MIGRATION, f"{name} is now {now}: run `ogy migrate`" if now else
                               f"{name} was dropped from the kind: run `ogy migrate`"))
-            elif name in STORED_STATE:
+            elif name in ontology.declared.reserved.computed:
                 found.append((Problem.STORED_STATE, f"{name} is computed, see `ogy show`"))
             elif name not in known:
                 found.append((Problem.UNKNOWN_FIELD, name))

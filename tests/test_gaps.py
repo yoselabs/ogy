@@ -10,7 +10,7 @@ from tests.conftest import AGREED, GOOD, SOURCE, Kb, commit, ogy
 
 from ogy import cli, ops, removal
 from ogy.history import delivery_commit
-from ogy.kinds import FieldSpec, Harm
+from ogy.kinds import FieldSpec
 from ogy.mcp_server import build
 from ogy.model import Problem
 from ogy.ontology import Ontology, packaged
@@ -68,11 +68,11 @@ def test_proof_is_path_and_function(kb: MakeKb) -> None:
 def test_harm_may_be_declared_on_a_field(kb: MakeKb) -> None:
     ontology = packaged()
     value = ontology.kinds["value"]
-    kinds = {**ontology.kinds, "value": value.model_copy(update={"fields": {**value.fields, "is": FieldSpec(harm=(Harm.MOVES_MONEY,))}})}
+    kinds = {**ontology.kinds, "value": value.model_copy(update={"fields": {**value.fields, "is": FieldSpec(harm=("moves-money",))}})}
     base = kb({"product/app/values.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: [" + SOURCE + "]}\n"})
-    loaded = load(base.source, Ontology(kinds, ontology.layers))
+    loaded = load(base.source, Ontology(kinds, ontology.declared))
     fee = next(a for a in loaded.entries if a.kind == "value")
-    assert harm(loaded, fee) is Harm.MOVES_MONEY
+    assert harm(loaded, fee) == "moves-money"
     assert harm(base.snapshot, fee) is None
 
 

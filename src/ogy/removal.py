@@ -50,7 +50,7 @@ def snapshot_problems(base: Snapshot, item: Item) -> list[str]:
         found.append("snapshot differs from the entry in the base")
     if item.hash != base.fingerprint(address):
         found.append(f"hash is not the fingerprint {base.fingerprint(address)}")
-    if item.title != shot.get("title") or item.said != (shot.get("says") or shot.get("question")):
+    if item.title != shot.get(base.ontology.roles.title) or item.said != (shot.get("says") or shot.get("question")):
         found.append("title or said differs from the snapshot")
     return found
 
@@ -90,7 +90,7 @@ def build_item(snapshot: Snapshot, address: Address, why: str | None, replaced_b
     if parent is not None:
         siblings = [a for a in snapshot.entries if a.parent() == parent and a.kind == address.kind]
         where = Parent(str(parent), snapshot.kind_of(address).key or "", siblings.index(address))
-    title, says = fields.get("title"), fields.get("says") or fields.get("question")
+    title, says = fields.get(snapshot.ontology.roles.title), fields.get("says") or fields.get("question")
     return Item(str(address), address.kind, where, title if isinstance(title, str) else None, says if isinstance(says, str) else None,
                 why, replaced_by, at, last_seen, snapshot.fingerprint(address), ontology,
                 entry_snapshot(snapshot, address))
@@ -113,7 +113,7 @@ def remove(root: Path, kb: str, ontology: Ontology, name: str, text: str, why: s
     if snapshot.kind_of(address).holding is Holds.ONE and address.parent() is not None:
         reasons.append(f"{address} is the single {address.kind} of its parent: change it, or remove the parent")
     item = build_item(snapshot, address, why, to, now, last_seen, name)
-    problems = removed.check_why([item], known_addresses(snapshot))
+    problems = removed.check_why([item], known_addresses(snapshot), snapshot.ontology.roles.agreed)
     problems += removed.check_replacements([item], [str(a) for a in snapshot.entries])
     reasons += [f"{p.code}: {p.detail}" for p in problems]
     if reasons:

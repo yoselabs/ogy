@@ -1,8 +1,10 @@
-"""Evidence items of `src`: `code:<path>#<symbol>` and `doc:<commit>:<path>#<anchor>`, checked and hashed.
+"""Evidence items of `src` in the schemes the ontology declares (`evidence:` in `ontology.yml`), such as `code:<path>#<symbol>`
+and `doc:<commit>:<path>#<anchor>`, checked and hashed by the reader each scheme names.
 
-A `doc:` link pins a Git revision: the file may be deleted later, its history stays."""
+A pinned scheme names a Git revision: the file may be deleted later, its history stays."""
 
 import re
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -10,11 +12,12 @@ import py_symbols
 from any_markdown import find, outline
 from content_digest import digest_text
 
+from ogy.declared import Reader, Scheme
 from ogy.model import Problem
 from ogy.near import hint
 
 
-class Reader(Protocol):
+class Read(Protocol):
     """Repository path (and a commit, for a pinned `doc:`) -> text, None when the file does not exist."""
 
     def __call__(self, path: str, rev: str | None = None) -> str | None: ...
@@ -33,41 +36,51 @@ class EvidenceProblem:
 
 @dataclass(frozen=True)
 class Link:
-    scheme: str  # "code" or "doc"
+    scheme: str  # a scheme of the ontology's `evidence:`
+    reads: Reader
     path: str
     fragment: str  # the symbol or the anchor
-    rev: str | None = None  # the commit a `doc:` link is pinned to
+    rev: str | None = None  # the commit a pinned link names
 
 
-def parse_link(item: str) -> Link | EvidenceProblem | None:
-    """A `code:`/`doc:` item as a Link, a bad-src problem when malformed, None when it is another kind of item."""
-    scheme, sep, rest = item.partition(":")
-    if not sep or scheme not in ("code", "doc"):
+def form(name: str, scheme: Scheme) -> str:
+    """How an item of the scheme is written."""
+    fragment = "symbol" if scheme.reads is Reader.SYMBOL else "anchor"
+    return f"{name}:{'<commit>:' if scheme.pinned else ''}<path>#<{fragment}>"
+
+
+def parse_link(item: str, schemes: Mapping[str, Scheme]) -> Link | EvidenceProblem | None:
+    """An evidence item as a Link, a bad-src problem when malformed, None when it names no scheme of `schemes`."""
+    name, sep, rest = item.partition(":")
+    scheme = schemes.get(name) if sep else None
+    if scheme is None:
         return None
     path, hash_sep, fragment = rest.partition("#")
     rev, pinned, tail = path.partition(":")
-    if scheme == "doc":
+    if scheme.pinned:
         if not pinned or not _COMMIT.fullmatch(rev):
-            return EvidenceProblem(Problem.BAD_SRC, item, "doc: pins a Git revision: doc:<commit>:<repo path>#<anchor>")
+            return EvidenceProblem(Problem.BAD_SRC, item, f"{name}: pins a Git revision: {name}:<commit>:<repo path>#<anchor>")
         path = tail
     if not path or not hash_sep or not fragment or path.startswith("/") or ".." in path.split("/"):
-        return EvidenceProblem(Problem.BAD_SRC, item, f"{scheme}: needs <repo path>#<{'symbol' if scheme == 'code' else 'anchor'}>")
-    return Link(scheme, path, fragment, rev if scheme == "doc" else None)
+        what = "symbol" if scheme.reads is Reader.SYMBOL else "anchor"
+        return EvidenceProblem(Problem.BAD_SRC, item, f"{name}: needs <repo path>#<{what}>")
+    return Link(name, scheme.reads, path, fragment, rev if scheme.pinned else None)
 
 
-def check_item(item: str, read: Reader) -> EvidenceProblem | None:
+def check_item(item: str, read: Read, schemes: Mapping[str, Scheme]) -> EvidenceProblem | None:
     """The problem with one `src` item, or None."""
-    link = parse_link(item)
+    link = parse_link(item, schemes)
     if isinstance(link, EvidenceProblem):
         return link
     if link is None:
-        return EvidenceProblem(Problem.BAD_SRC, item, "src is code:<path>#<symbol> or doc:<commit>:<path>#<anchor>")
+        return EvidenceProblem(Problem.BAD_SRC, item, f"src is {' or '.join(form(name, s) for name, s in schemes.items())}")
     text = read(link.path, link.rev)
-    return _check_doc(item, link, text) if link.scheme == "doc" else _check_code(item, link, text)
+    files = schemes[link.scheme].files
+    return _check_doc(item, link, text, files) if link.reads is Reader.SECTION else _check_code(item, link, text, files)
 
 
-def _check_doc(item: str, link: Link, text: str | None) -> EvidenceProblem | None:
-    if text is None or not link.path.endswith(".md"):
+def _check_doc(item: str, link: Link, text: str | None, files: tuple[str, ...]) -> EvidenceProblem | None:
+    if text is None or not link.path.endswith(files):
         return EvidenceProblem(Problem.MISSING_DOC, item, f"no Markdown file {link.path} at {link.rev}")
     if section_hash(text, link.fragment) is None:
         near = hint(link.fragment, (anchor for anchor, _, _ in anchors(text)))
@@ -76,9 +89,9 @@ def _check_doc(item: str, link: Link, text: str | None) -> EvidenceProblem | Non
     return None
 
 
-def _check_code(item: str, link: Link, text: str | None) -> EvidenceProblem | None:
-    if not link.path.endswith(".py"):
-        return EvidenceProblem(Problem.BAD_SRC, item, "code: links to Python files only")
+def _check_code(item: str, link: Link, text: str | None, files: tuple[str, ...]) -> EvidenceProblem | None:
+    if not link.path.endswith(files):
+        return EvidenceProblem(Problem.BAD_SRC, item, f"{link.scheme}: links to {', '.join(files)} files only")
     if text is None:
         return EvidenceProblem(Problem.MISSING_CODE, item, f"no file {link.path}")
     if symbol_hash(text, link.fragment) is None:
@@ -86,19 +99,19 @@ def _check_code(item: str, link: Link, text: str | None) -> EvidenceProblem | No
     return None
 
 
-def check_items(items: list[str], read: Reader) -> list[EvidenceProblem]:
-    return [problem for item in items if (problem := check_item(item, read)) is not None]
+def check_items(items: list[str], read: Read, schemes: Mapping[str, Scheme]) -> list[EvidenceProblem]:
+    return [problem for item in items if (problem := check_item(item, read, schemes)) is not None]
 
 
-def receipt(item: str, read: Reader) -> str | None:
-    """The `sourced` hash of a `code:` or `doc:` item now, None when it cannot be found."""
-    link = parse_link(item)
+def receipt(item: str, read: Read, schemes: Mapping[str, Scheme]) -> str | None:
+    """The `sourced` hash of an evidence item now, None when it cannot be found."""
+    link = parse_link(item, schemes)
     if not isinstance(link, Link):
         return None
     text = read(link.path, link.rev)
     if text is None:
         return None
-    return symbol_hash(text, link.fragment) if link.scheme == "code" else section_hash(text, link.fragment)
+    return symbol_hash(text, link.fragment) if link.reads is Reader.SYMBOL else section_hash(text, link.fragment)
 
 
 def symbol_hash(source: str, symbol: str) -> str | None:

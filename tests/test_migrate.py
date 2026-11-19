@@ -45,7 +45,7 @@ def changed(changes: dict[str, list[tuple[str, str]]] = CHANGES) -> Ontology:
             assert old in text, (item.name, old)
             text = text.replace(old, new) if old else text + new
         texts[f"kinds/{item.name}"] = text
-    return parse_kinds(texts, packaged().layers)
+    return parse_kinds(texts, packaged().declared)
 
 
 @dataclass(frozen=True)

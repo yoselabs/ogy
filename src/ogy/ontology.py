@@ -6,8 +6,10 @@ from importlib.resources import files
 import any_yaml
 from pydantic import ValidationError
 
+from ogy import declared as declaring
+from ogy.declared import Declared, Roles
 from ogy.kindlint import problems
-from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, Kind
+from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind
 from ogy.verdict import Unusable
 
 DEFAULT_ONTOLOGY = "software"
@@ -20,22 +22,44 @@ class OntologyError(Unusable):
 
 
 class Ontology:
-    """All kinds of one ontology and the layers its entries live under, checked against each other."""
+    """All kinds of one ontology and what its `ontology.yml` declares, checked against each other."""
 
-    def __init__(self, kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> None:
+    def __init__(self, kinds: Mapping[str, Kind], declared: Declared) -> None:
         self.kinds = dict(kinds)
-        self.layers = layers
-        found = problems(self.kinds, layers)
+        self.declared = declared
+        found = declaring.problems(declared) + problems(self.kinds, declared)
         if found:
             raise OntologyError("; ".join(found))
 
     @classmethod
-    def unchecked(cls, kinds: Mapping[str, Kind], layers: tuple[str, ...]) -> Ontology:
+    def unchecked(cls, kinds: Mapping[str, Kind], declared: Declared) -> Ontology:
         """The kinds as an older ontology had them, only to fingerprint entries written under it (`kindchange.before`): their
         rules may name fields under the new names, so they are not linted."""
         made = cls.__new__(cls)
-        made.kinds, made.layers = dict(kinds), layers
+        made.kinds, made.declared = dict(kinds), declared
         return made
+
+    @property
+    def layers(self) -> tuple[str, ...]:
+        return self.declared.layers
+
+    @property
+    def common(self) -> dict[str, FieldSpec]:
+        """The fields every entry may carry beside its kind's."""
+        return self.declared.common
+
+    @property
+    def roles(self) -> Roles:
+        return self.declared.roles
+
+    @property
+    def shared(self) -> str:
+        """The reserved area of every layer that holds what two of its areas use."""
+        return self.declared.shared.area
+
+    def specs(self, kind: Kind) -> dict[str, FieldSpec]:
+        """Every field an entry of `kind` may carry: the common ones and the kind's."""
+        return {**self.common, **kind.fields}
 
     def get(self, name: str) -> Kind | None:
         return self.kinds.get(name)
@@ -54,8 +78,9 @@ class Ontology:
         return frozenset({kind.area for kind in self.kinds.values() if kind.area} | set(self.moved_homes()))
 
     def moved_homes(self) -> dict[str, str]:
-        """Each fixed folder a kind moved out of -> the home `ogy migrate` moves its entries and its removed ledger to."""
-        return dict(kind.moved for kind in self.kinds.values() if kind.moved)
+        """Each fixed folder a kind moved out of -> the home `ogy migrate` moves its entries and its removed ledger to: the
+        shared area of the kind's first layer."""
+        return {kind.moved_folder: f"{kind.layers[0]}/{self.shared}" for kind in self.kinds.values() if kind.moved_folder}
 
     def moved_kind(self, rel: str) -> Kind | None:
         """The kind whose entries the fixed-folder file `rel` held before they moved into the layers."""
@@ -65,8 +90,8 @@ class Ontology:
         return next((kind for kind in self.kinds.values() if kind.settling is not None), None)
 
 
-def parse_kinds(texts: Mapping[str, str], layers: tuple[str, ...]) -> Ontology:
-    """Build an ontology from `{kinds/<name>.yml: text}` and its layers."""
+def parse_kinds(texts: Mapping[str, str], declared: Declared) -> Ontology:
+    """Build an ontology from `{kinds/<name>.yml: text}` and its `ontology.yml`."""
     kinds: dict[str, Kind] = {}
     for path, text in sorted(texts.items()):
         name = path.rsplit("/", 1)[-1].removesuffix(".yml")
@@ -74,16 +99,15 @@ def parse_kinds(texts: Mapping[str, str], layers: tuple[str, ...]) -> Ontology:
             kinds[name] = Kind.model_validate(any_yaml.read(text))
         except ValidationError as error:
             raise OntologyError(f"{path}: {error}") from error
-    return Ontology(kinds, layers)
+    return Ontology(kinds, declared)
 
 
-def parse_layers(text: str) -> tuple[str, ...]:
-    """The layers of an `ontology.yml`."""
-    data = any_yaml.read(text)
-    layers = data.get("layers") if isinstance(data, Mapping) else None
-    if not isinstance(layers, (list, tuple)) or not all(isinstance(layer, str) for layer in layers) or set(data) != {"layers"}:
-        raise OntologyError(f"{ONTOLOGY_FILE} holds exactly `layers`, a list of folder names")
-    return tuple(layers)
+def parse_declared(text: str) -> Declared:
+    """An `ontology.yml`."""
+    try:
+        return Declared.model_validate(any_yaml.read(text))
+    except ValidationError as error:
+        raise OntologyError(f"{ONTOLOGY_FILE}: {error}") from error
 
 
 def packaged(name: str = DEFAULT_ONTOLOGY) -> Ontology:
@@ -93,4 +117,4 @@ def packaged(name: str = DEFAULT_ONTOLOGY) -> Ontology:
     if not folder.is_dir() or not root.joinpath(ONTOLOGY_FILE).is_file():
         raise OntologyError(f"no ontology named {name!r}")
     texts = {f"{KINDS_DIR}/{item.name}": item.read_text() for item in folder.iterdir() if item.name.endswith(".yml")}
-    return parse_kinds(texts, parse_layers(root.joinpath(ONTOLOGY_FILE).read_text()))
+    return parse_kinds(texts, parse_declared(root.joinpath(ONTOLOGY_FILE).read_text()))

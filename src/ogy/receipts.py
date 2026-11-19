@@ -1,7 +1,8 @@
 """Work left: what the built record says is still to do (loader-changes section 5, B1 to B3).
 
 An entry of a kind that `needs_proof` is work until its built line matches it now; an address with a line and no entry is
-removal work until the line is deleted; an entry whose `code:` or `doc:` source changed since it was captured is listed.
+removal work until the line is deleted; an entry whose evidence (a symbol, a document section) changed since it was captured is
+listed.
 """
 
 from collections.abc import Mapping
@@ -10,6 +11,7 @@ from enum import StrEnum
 
 from ogy import built, evidence, removed
 from ogy.built import Line
+from ogy.declared import Reader
 from ogy.model import parse_address
 from ogy.snapshot import Snapshot
 
@@ -60,15 +62,23 @@ def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, r
     return found
 
 
-def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Reader) -> list[Work]:
+def _reads(snapshot: Snapshot, item: str) -> Reader | None:
+    scheme = snapshot.ontology.declared.scheme_of(item)
+    return scheme.reads if scheme else None
+
+
+def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Read) -> list[Work]:
     """B3: the symbol or the document section now is not the one the entry was captured from."""
     live = {str(a) for a in snapshot.entries}
-    now = {text: {link: evidence.receipt(link, read) or "" for link in line.sourced} for text, line in record.items() if text in live}
-    return [Work(text, Status.DOC_CHANGED if link.startswith("doc:") else Status.CODE_CHANGED, "", record[text].own, link)
+    schemes = snapshot.ontology.declared.evidence
+    now = {text: {link: evidence.receipt(link, read, schemes) or "" for link in line.sourced}
+           for text, line in record.items() if text in live}
+    return [Work(text, Status.DOC_CHANGED if _reads(snapshot, link) is Reader.SECTION else Status.CODE_CHANGED, "", record[text].own,
+                 link)
             for text, links in built.sourced_changes(record, now).items() for link in links]
 
 
-def work_left(snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Reader,
+def work_left(snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read,
               ledger: Mapping[str, removed.Item] | None = None) -> list[Work]:
     """Unbuilt and changed entries, removal work, and sources that changed since capture."""
     return [*_unbuilt(snapshot, record), *_gone(record, snapshot, ledger or {}), *_sourced(record, snapshot, read)]

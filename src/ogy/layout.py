@@ -8,14 +8,13 @@ from dataclasses import dataclass
 
 import any_yaml
 
-from ogy.kinds import FILED, NAME, SHARED_AREA, Holds, Kind, Shape
+from ogy.kinds import FILED, NAME, Holds, Kind, Shape
 from ogy.model import Address, Entry, Finding, Problem
 from ogy.ontology import Ontology
 
 SUFFIX = ".yml"
 BUILT_DIR = "built"  # the tool-written built record: read by its owner, never by this reader
 REMOVED_FILE = "removed.yml"  # a home's removed ledger: a core file, not an entry file
-SHARED_SAYS = "What two or more areas of this layer use: their shared terms, actors and sets."  # the `shared` area's own entry
 
 
 @dataclass(frozen=True)
@@ -83,9 +82,9 @@ def _misplaced(ontology: Ontology, kind: Kind, layer: str, area: str) -> str | N
     marked `shared` in the area `shared`."""
     if (kind.area or "") != (area if not layer else ""):
         return f"{kind.kind} lives only in the folder {kind.area}" if kind.area else f"{kind.kind} lives under a layer, not in {area}/"
-    if area == SHARED_AREA and layer and not kind.shared:
+    if area == ontology.shared and layer and not kind.shared:
         allowed = ", ".join(sorted(name for name, other in ontology.kinds.items() if other.shared))
-        return f"the area {SHARED_AREA} holds only what two areas use ({allowed}); {kind.kind} lives in the area that owns it"
+        return f"the area {ontology.shared} holds only what two areas use ({allowed}); {kind.kind} lives in the area that owns it"
     return None
 
 

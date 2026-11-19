@@ -16,7 +16,7 @@ address under the old folder renamed, as `ogy move` renames (`moved_table`); `mi
 from collections.abc import Mapping
 from dataclasses import dataclass
 
-from ogy.fieldtypes import AGREED_KEYS
+from ogy.fieldtypes import agreed_keys
 from ogy.kinds import FieldSpec, FieldType, Holds, Kind
 from ogy.model import Address, Entry, parse_address
 from ogy.moves import renamed
@@ -34,9 +34,6 @@ class Change:
     field: str  # where in the entry: `unit`, `answers.said`, `sets.<address>.unit`
     new: str | None
     value: object
-
-
-AGREED = "agreed"  # the common field of a person's yes
 
 
 class _Pass:
@@ -61,8 +58,9 @@ class _Pass:
             if name in listed and isinstance(value, list):
                 part = listed[name]
                 out[name] = [self.fields(part, item, address, f"{where}{name}.") if isinstance(item, dict) else item for item in value]
-            elif name == AGREED and isinstance(value, dict) and set(value) - AGREED_KEYS and self.drops:
-                out[name] = {key: item for key, item in value.items() if key in AGREED_KEYS}
+            elif name == self.ontology.roles.agreed and isinstance(value, dict) and set(value) - (keys := agreed_keys(self.ontology)) \
+                    and self.drops:
+                out[name] = {key: item for key, item in value.items() if key in keys}
                 self.tidied += 1
             elif (spec := kind.fields.get(name)) is not None:
                 out[name] = self._value(spec, value, address, f"{where}{name}.")
@@ -121,7 +119,7 @@ def before(ontology: Ontology) -> Ontology:
                          for paths in (kind.fingerprint.also, kind.fingerprint.reached))
         update = {"also": also, "reached": reached}
         kinds[name] = kind.model_copy(update={"fields": fields, "fingerprint": kind.fingerprint.model_copy(update=update)})
-    return Ontology.unchecked(kinds, ontology.layers)
+    return Ontology.unchecked(kinds, ontology.declared)
 
 
 class Kept:

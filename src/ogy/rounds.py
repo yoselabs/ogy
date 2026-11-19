@@ -11,7 +11,6 @@ from content_digest import digest_text
 from git_porcelain import git_dir
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from ogy.kinds import Harm
 from ogy.status import Card
 
 FOLDER = "ogy-rounds"
@@ -52,7 +51,7 @@ def labelled(cards: list[Card]) -> list[tuple[str, Card]]:
 
 def make(cards: list[Card], everything: bool) -> Round:
     shown = tuple(Shown(label=label, kind=card.kind, address=str(card.address), shown=card.text, fingerprint=card.fingerprint,
-                        options=tuple(key for key, _ in card.options), structure=card.harm is Harm.STRUCTURE,
+                        options=tuple(key for key, _ in card.options), structure=card.alone,
                         members=tuple((str(address), fingerprint) for address, _, fingerprint in card.members))
                   for label, card in labelled(cards))
     body = Round(id="", everything=everything, cards=shown).model_dump_json()

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 
-from ogy.kinds import Harm
+from ogy.declared import Reader, Scheme
 from ogy.links import link_items, resolve
 from ogy.model import Address
 from ogy.settle import Decision, decision_of, decisions, moment, settles
@@ -41,7 +41,7 @@ class Card:
 
     kind: str  # question, delegated, yes (decided by AI) or changed
     address: Address
-    harm: Harm | None
+    harm: str | None  # the worst harm tag
     dependants: int
     text: str = ""  # the question, or the sentence asked about
     guess: str = ""  # the option the AI guessed, for a question; the option in force, for a delegated decision
@@ -55,6 +55,7 @@ class Card:
     then: tuple[tuple[str, ...], ...] = ()  # a decision card: what each option (same order as `options`) makes true
     earlier: str = ""  # a delegated card: the owner's own earlier answer, which the agent's answer replaced
     members: tuple[tuple[Address, str, str], ...] = ()  # a parent's card: each waiting entry, sentence, fingerprint
+    alone: bool = False  # its harm is asked alone (`asked_alone`): its own letter, never inside a bulk accept
 
 
 @dataclass(frozen=True)
@@ -70,7 +71,7 @@ class Agreed:
 
 def agreed_of(snapshot: Snapshot, address: Address) -> Agreed | None:
     """The entry's own `agreed`, when it is well formed."""
-    item = snapshot.entries[address].fields.get("agreed")
+    item = snapshot.entries[address].fields.get(snapshot.ontology.roles.agreed)
     if not isinstance(item, dict) or not isinstance(fingerprint := item.get("hash"), str) or (when := moment(item.get("at"))) is None:
         return None
     said, where = item.get("said"), item.get("where")
@@ -95,14 +96,19 @@ def agreement(snapshot: Snapshot, address: Address, hashes: dict[str, str] | Non
 
 
 def label(snapshot: Snapshot, address: Address) -> Label:
-    """First match wins: an answered decision that settles it, a `doc:` link, a `code:` link, else decided by AI."""
-    items = [item for item in snapshot.entries[address].fields.get("src") or [] if isinstance(item, str)]
+    """First match wins: an answered decision that settles it, a document section, a code symbol, else decided by AI."""
     asking = decision_of(decisions(snapshot), address)
     if asking is not None and asking.answers:  # the owner chose the option that sets it; they have not read the sentence back
         return Label.WORDS
-    if any(item.startswith("doc:") for item in items):
-        return Label.DOCS
-    return Label.CODE if any(item.startswith("code:") for item in items) else Label.AI
+    read = {scheme.reads for _, scheme in sources(snapshot, address)}
+    return Label.DOCS if Reader.SECTION in read else Label.CODE if Reader.SYMBOL in read else Label.AI
+
+
+def sources(snapshot: Snapshot, address: Address) -> list[tuple[str, Scheme]]:
+    """The entry's evidence items, each with its scheme."""
+    items = snapshot.entries[address].fields.get(snapshot.ontology.roles.src) or []
+    declared = snapshot.ontology.declared
+    return [(item, scheme) for item in items if isinstance(item, str) and (scheme := declared.scheme_of(item)) is not None]
 
 
 def status(snapshot: Snapshot, address: Address, hashes: dict[str, str] | None = None) -> Status:
@@ -123,11 +129,16 @@ def status(snapshot: Snapshot, address: Address, hashes: dict[str, str] | None =
             return Status.NOBODY
 
 
-def harm(snapshot: Snapshot, address: Address) -> Harm | None:
+def harm(snapshot: Snapshot, address: Address) -> str | None:
     """The worst harm the entry's kind declares, or a field it sets declares (`harm:` in the kind file); None when none."""
     kind, fields = snapshot.kind_of(address), snapshot.entries[address].fields
     found = [*kind.harm, *(h for name, spec in kind.fields.items() if fields.get(name) is not None for h in spec.harm)]
-    return min(found, default=None, key=list(Harm).index)
+    return min(found, default=None, key=snapshot.ontology.declared.rank)
+
+
+def asked_alone(snapshot: Snapshot, tag: str | None) -> bool:
+    """A card of this harm is asked on its own, never inside a bulk accept."""
+    return tag is not None and tag in snapshot.ontology.declared.asked_alone
 
 
 def dependants(snapshot: Snapshot) -> dict[Address, int]:
@@ -139,10 +150,6 @@ def dependants(snapshot: Snapshot) -> dict[Address, int]:
             if target is not None and target != address:
                 sources.setdefault(target, set()).add(address)
     return {target: len(found) for target, found in sources.items()}
-
-
-def rank(tag: Harm | None) -> int:
-    return list(Harm).index(tag) if tag is not None else len(Harm)
 
 
 def delegated(decision: Decision) -> bool:
@@ -162,7 +169,7 @@ def _reason(decision: Decision) -> str:
 
 def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], kind: str) -> Card:
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
-    tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=rank)
+    tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=snapshot.ontology.declared.rank)
     force = decision.in_force
     guess = force.option if decision.answers and force else decision.guess.fields.get("chose") if decision.guess else None
     keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
@@ -173,7 +180,7 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
                 decision.entry.text("question") or "", guess if isinstance(guess, str) else "",
                 snapshot.fingerprint(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
                 context=decision.entry.text("context") or "", then=tuple(_then(fields.get("sets")) for fields in parts),
-                earlier=_earlier(decision) if kind == "delegated" else "")
+                earlier=_earlier(decision) if kind == "delegated" else "", alone=asked_alone(snapshot, tags[0] if tags else None))
 
 
 def _then(sets: object) -> tuple[str, ...]:
@@ -209,9 +216,8 @@ def _says(snapshot: Snapshot, address: Address) -> str:
 
 def evidence(snapshot: Snapshot, address: Address) -> str:
     """What stands behind an entry's sentence, in a line: the owner's answer, the document or code it came from, or nothing."""
-    items = [item for item in snapshot.entries[address].fields.get("src") or [] if isinstance(item, str)]
-    shown = next((item for item in items if item.startswith(("doc:", "code:"))), None)
-    source = f"; {'from docs' if shown.startswith('doc:') else 'from code'}: {shown}" if shown else ""
+    shown, scheme = next(iter(sources(snapshot, address)), (None, None))
+    source = f"; {'from docs' if scheme.reads is Reader.SECTION else 'from code'}: {shown}" if shown and scheme else ""
     asking = decision_of(decisions(snapshot), address)
     force = asking.in_force if asking is not None and asking.answers else None
     if asking is not None and force is not None and force.by_answer:
@@ -228,7 +234,8 @@ def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Addr
     fields = snapshot.entries[address].fields
     avoid = fields.get("avoid") or []
     word = str(fields.get("word") or "") if address.kind == "term" else ""
-    return Card(kind, address, harm(snapshot, address), count.get(address, 0), _says(snapshot, address),
+    tag = harm(snapshot, address)
+    return Card(kind, address, tag, count.get(address, 0), _says(snapshot, address), alone=asked_alone(snapshot, tag),
                 fingerprint=snapshot.fingerprint(address), evidence=evidence(snapshot, address), word=word,
                 avoid=tuple(str(item) for item in avoid) if word and isinstance(avoid, list) else ())
 
@@ -250,7 +257,7 @@ def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
                 cards.append(entry_card(snapshot, "yes", address, count))
 
     def order(card: Card) -> tuple[int, int, str]:
-        return rank(card.harm), -card.dependants, str(card.address)
+        return snapshot.ontology.declared.rank(card.harm), -card.dependants, str(card.address)
 
     return [*sorted(questions, key=order), *sorted(_by_parent(snapshot, cards, count), key=order)][:limit]
 
@@ -278,8 +285,9 @@ def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int])
             continue
         members.sort(key=lambda card: (card.address != top, str(card.address)))
         kind = "changed" if any(card.kind == "changed" for card in members) else "yes"
-        worst = min((card.harm for card in members), key=rank, default=None)
+        worst = min((card.harm for card in members), key=snapshot.ontology.declared.rank, default=None)
         alone.append(Card(kind, top, worst, count.get(top, 0), _says(snapshot, top), fingerprint=snapshot.fingerprint(top),
+                          alone=asked_alone(snapshot, worst),
                           evidence=evidence(snapshot, top),
                           members=tuple((card.address, card.text, card.fingerprint) for card in members)))
     return alone

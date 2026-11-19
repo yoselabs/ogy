@@ -10,7 +10,8 @@ renamed in the ontology is found the same way, from Git alone (`retyped`): nothi
 from collections import defaultdict
 from collections.abc import Callable, Mapping
 
-from ogy.kinds import COMMON_FIELDS, FieldSpec, FieldType, Holds, Kind
+from ogy.fieldtypes import AGREED_HASH
+from ogy.kinds import FieldSpec, FieldType, Holds, Kind
 from ogy.model import Address, Entry, parse_address
 from ogy.ontology import Ontology
 from ogy.snapshot import Snapshot
@@ -68,7 +69,7 @@ def _value(ontology: Ontology, spec: FieldSpec, value: object, rename: Rename) -
 def rewrite_fields(ontology: Ontology, kind: Kind, fields: Mapping[str, object], rename: Rename) -> Data:
     """The fields with every address in them renamed: link fields, `reads`, the keys of `sets`, and the items of the
     `holds: list` parts (answers and guesses too). Words are never touched."""
-    specs = {**COMMON_FIELDS, **kind.fields}
+    specs = ontology.specs(kind)
     found: Data = {name: _value(ontology, spec, value, rename) if (spec := specs.get(name)) else value for name, value in fields.items()}
     for part in ontology.parts_of(kind.kind):
         items = fields.get(part.key or "")
@@ -80,8 +81,8 @@ def rewrite_fields(ontology: Ontology, kind: Kind, fields: Mapping[str, object],
 def rehash(before: Snapshot, after: Snapshot, was: Address, now: Address, agreed: object) -> object:
     """An entry's `agreed` that was current in `before` (at `was`) set to the fingerprint the entry has in `after` (at `now`):
     a move changes the fingerprint of what links to the moved entry, not what the person agreed to."""
-    if isinstance(agreed, dict) and was in before.entries and now in after.entries and agreed.get("hash") == before.fingerprint(was):
-        return {**agreed, "hash": after.fingerprint(now)}
+    if isinstance(agreed, dict) and was in before.entries and now in after.entries and agreed.get(AGREED_HASH) == before.fingerprint(was):
+        return {**agreed, AGREED_HASH: after.fingerprint(now)}
     return agreed
 
 
@@ -97,9 +98,9 @@ def renamed(snapshot: Snapshot, table: Table) -> Snapshot:
         entries[new] = Entry(new, entry.path, rewrite_fields(ontology, snapshot.kind_of(address), entry.fields, rename))
     shifted = Snapshot(ontology, dict(entries), [])
     for address, entry in snapshot.entries.items():
-        if isinstance(agreed := entry.fields.get("agreed"), dict):
+        if isinstance(agreed := entry.fields.get(name := ontology.roles.agreed), dict):
             new = parse_address(rename(str(address)), ontology) or address
-            entries[new] = Entry(new, entry.path, {**entries[new].fields, "agreed": rehash(snapshot, shifted, address, new, agreed)})
+            entries[new] = Entry(new, entry.path, {**entries[new].fields, name: rehash(snapshot, shifted, address, new, agreed)})
     return Snapshot(ontology, entries, [])
 
 

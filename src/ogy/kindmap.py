@@ -1,11 +1,11 @@
 """`ogy kinds --map`: the whole ontology on one screen. One line per kind, grouped by the layers it may live in, its parts
 indented under it; then the rules the kind files declare, as sentences. Read from the kind files; nothing is kept."""
 
-from ogy.kinds import COMMON_FIELDS, FieldSpec, FieldType, Flow, Holds, Kind, Shape
+from ogy.kinds import FieldSpec, FieldType, Flow, Holds, Kind, Shape
 from ogy.ontology import Ontology
 
 LEGEND = ("! required, -> one link, ->> many links (an expression: the links it reads), [] a list part, (a|b) enum members, "
-          f"indentation = part of; every kind also takes {', '.join(COMMON_FIELDS)}")
+          "indentation = part of; every kind also takes ")
 MANY = frozenset({FieldType.LINKS, FieldType.EXPR})
 
 
@@ -74,7 +74,7 @@ def _flow_rules(name: str, flow: Flow) -> list[str]:
 
 
 def map_lines(ontology: Ontology) -> list[str]:
-    lines, shown = [LEGEND], set[str]()
+    lines, shown = [LEGEND + ", ".join(ontology.common)], set[str]()
     for title, kinds in _groups(ontology):
         lines.append(f"{title}:")
         for kind in kinds:

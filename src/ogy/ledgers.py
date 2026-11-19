@@ -29,8 +29,9 @@ def _citers(snapshot: Snapshot, ids: Collection[str]) -> list[tuple[str, str]]:
     for address, entry in snapshot.entries.items():
         reported = {item.text for item in link_items(snapshot.ontology, entry)
                     if resolve(snapshot.ontology, snapshot.entries, address, item).problem is Problem.DANGLING_LINK}
-        reported |= {text for text in link_values(entry.fields.get("src")) if ":" not in text and parse_address(text, snapshot.ontology)}
-        named = [item.text for item in link_items(snapshot.ontology, entry)] + list(link_values(entry.fields.get("src")))
+        sources = link_values(entry.fields.get(snapshot.ontology.roles.src))
+        reported |= {text for text in sources if ":" not in text and parse_address(text, snapshot.ontology)}
+        named = [item.text for item in link_items(snapshot.ontology, entry)] + list(sources)
         for text in (text for text in named if text not in reported):
             gone = next((i for i in ids if text == i or text.startswith(i + "/")), None)
             if gone is not None and snapshot.resolve(text) is None:
@@ -42,7 +43,7 @@ def check_ledgers(snapshot: Snapshot, source: Source) -> list[Finding]:
     ledgers, problems = read_ledgers(source)
     items = [item for ledger in ledgers.values() for item in ledger.items]
     live = [str(address) for address in snapshot.entries]
-    problems += removed.find_reuse(items, live) + removed.check_why(items, known_addresses(snapshot))
+    problems += removed.find_reuse(items, live) + removed.check_why(items, known_addresses(snapshot), snapshot.ontology.roles.agreed)
     problems += removed.check_replacements(items, live) + removed.check_links(_citers(snapshot, [i.id for i in items]), items)
     moved = [Finding(Problem.NEEDS_MIGRATION, f"{home}/{REMOVED_FILE}", f"{home}/ is no home any more: run `ogy migrate`, which "
                      f"moves its removed items to {new}/{REMOVED_FILE}") for home, new in snapshot.ontology.moved_homes().items()

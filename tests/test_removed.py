@@ -95,15 +95,15 @@ def test_agreed_entry_needs_why_as_an_address_and_plain_words_do_for_the_rest() 
                                                               "said": "Fine", "hash": HASH}}
     agreed = make(why=None, snapshot=yes)
     items = [agreed, make("product/land/decision/d2", why="product/land/decision/gone")]
-    assert {p.address for p in removed.check_why(items, ["product/land/decision/d1"])} == {STEP, "product/land/decision/d2"}
+    assert {p.address for p in removed.check_why(items, ["product/land/decision/d1"], "agreed")} == {STEP, "product/land/decision/d2"}
     plain = make(why="we no longer lend tools", snapshot=yes)
-    assert [p.address for p in removed.check_why([plain], [])] == [STEP]  # plain words for what a person agreed to
-    assert removed.check_why([make(why="we no longer lend tools")], []) == []
+    assert [p.address for p in removed.check_why([plain], [], "agreed")] == [STEP]  # plain words for what a person agreed to
+    assert removed.check_why([make(why="we no longer lend tools")], [], "agreed") == []
     assert removed.is_address("product/land/decision/d1") and not removed.is_address("we no longer lend") and not removed.is_address(None)
-    assert removed.check_why([make(why=None)], []) == []
-    assert removed.check_why([make()], ["product/land/decision/d1"]) == []
+    assert removed.check_why([make(why=None)], [], "agreed") == []
+    assert removed.check_why([make()], ["product/land/decision/d1"], "agreed") == []
     assert removed.check_why([make(why="product/land/decision/d2"), make("product/land/decision/d2", why="product/land/decision/d2")],
-                             []) == []
+                             [], "agreed") == []
 
 
 def test_replaced_by_chain_reaches_live_entry() -> None:

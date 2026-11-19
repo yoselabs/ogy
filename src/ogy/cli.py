@@ -17,7 +17,7 @@ __all__ = ["FINDINGS", "NOT_FOUND", "OK", "REFUSED", "USAGE", "Result", "main", 
 
 OK, FINDINGS, USAGE, REFUSED, NOT_FOUND = Verdict.OK, Verdict.FINDINGS, Verdict.USAGE, Verdict.REFUSED, Verdict.NOT_FOUND
 ADDRESS = "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]"
-WHERE = "a uri: ai:, bd: or file:"
+WHERE = "a uri of a scheme the answer kind accepts (`ogy kinds <answer kind>` lists them), e.g. ai:claude/<session-id>"
 AT = "ISO 8601 with a UTC offset (default: now)"
 SAID = "one short line: your paraphrase of what the person said, plain and fitted to the decision; never their words verbatim"
 type Adder = Callable[..., argparse.ArgumentParser]  # `add_subparsers().add_parser`

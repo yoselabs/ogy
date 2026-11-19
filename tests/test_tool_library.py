@@ -10,7 +10,7 @@ from pathlib import Path
 from ogy.base import read_ledgers
 from ogy.built import read_source
 from ogy.check import check
-from ogy.kinds import COMMON_FIELDS, Holds
+from ogy.kinds import Holds
 from ogy.ontology import packaged
 from ogy.receipts import Status, work_left
 from ogy.snapshot import Snapshot, load
@@ -80,4 +80,4 @@ def test_every_kind_and_field_is_exercised_or_listed() -> None:
     wanted = {f"{name}.{field}" for name, kind in ontology.kinds.items() for field in kind.fields}
     assert sorted(wanted - found - set(UNEXERCISED)) == []
     assert sorted(set(UNEXERCISED) & found) == []  # a field the fixture now fills leaves the list
-    assert set(COMMON_FIELDS) <= {name.split(".")[1] for name in found}  # title, src, because, proof, agreed
+    assert set(ontology.common) <= {name.split(".")[1] for name in found}  # title, src, because, proof, agreed

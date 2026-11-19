@@ -7,7 +7,6 @@ checks, T4 and T5 take what another module computed, T6 reads the decisions, `gl
 import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
-from ogy.kinds import SHARED_AREA
 from ogy.model import Address, Entry, Finding, Problem, link_values
 from ogy.settle import decisions
 from ogy.snapshot import Snapshot
@@ -131,7 +130,7 @@ def glossary_homes(snapshot: Snapshot, home: str | None = None) -> list[str]:
     area (`<layer>/<area>`), the `shared` areas of its layer and of the layers before it (a software area reads product's
     too), then the area itself."""
     layers = snapshot.ontology.layers
-    shared = [f"{layer}/{SHARED_AREA}" for layer in layers]
+    shared = [f"{layer}/{snapshot.ontology.shared}" for layer in layers]
     if home is None:
         return [*shared, *sorted({entry.address.home for entry in terms(snapshot)} - set(shared))]
     seen = shared[:layers.index(home.split("/")[0]) + 1]

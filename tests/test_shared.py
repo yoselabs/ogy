@@ -31,7 +31,7 @@ class Moved(Target):
     def kinds(self) -> Ontology:
         ontology = packaged()
         term = ontology.kinds["term"].model_copy(update={"moved_from": "glossary/terms.yml"})
-        return Ontology.unchecked({**ontology.kinds, "term": term}, ontology.layers)
+        return Ontology.unchecked({**ontology.kinds, "term": term}, ontology.declared)
 
 
 def old_glossary(repo: Path) -> str:

@@ -1,10 +1,13 @@
 """The kind language: what a kind file may say and what the loader refuses."""
 
-import pytest
+from importlib.resources import files
 
-from ogy.kinds import FieldType, Holds, Shape
+import pytest
+from tests.conftest import declared
+
+from ogy.kinds import ONTOLOGY_FILE, FieldType, Holds, Shape
 from ogy.model import Address, Entry
-from ogy.ontology import OntologyError, packaged, parse_kinds, parse_layers
+from ogy.ontology import OntologyError, packaged, parse_declared, parse_kinds
 from ogy.snapshot import fingerprint
 
 ACTOR = "kind: actor\nabout: who uses it\nshape: list\nfile: actors.yml\nlayers: [product]\nfields:\n  nature: {}\n"
@@ -20,7 +23,7 @@ def load(*texts: str) -> None:
     kinds = {"kinds/actor.yml": ACTOR}
     for text in texts:
         kinds[f"kinds/{text.split()[1]}.yml"] = text
-    parse_kinds(kinds, LAYERS)
+    parse_kinds(kinds, declared(*LAYERS))
 
 
 def test_software_kinds_load() -> None:
@@ -60,7 +63,7 @@ def test_software_kinds_load() -> None:
     (ENTITY + "area: Not_An_Area\n", "no valid area name"),
     (ENTITY + "area: built\n", "no valid area name"),
     (ENTITY + "fields:\n  status: {}\n", "computed, never stored"),
-    (ENTITY + "fields:\n  does: {}\n", "the sentence is `says`"),
+    (ENTITY + "fields:\n  does: {}\n", "another name for a sentence"),
     (ENTITY + "fields:\n  ok?: {}\n", "no name contains"),
     (ENTITY + "fields:\n  a: {type: enum, of: ['yes?']}\n", "no name contains"),
     (ENTITY + "requires:\n  - {if_set: a, if_part: b, path: [], kinds: [], error: x}\n", "not both"),
@@ -87,7 +90,7 @@ def test_link_has_one_direction() -> None:
 def test_part_kind_with_several_parents() -> None:
     other = PARENT.replace("parent", "other")
     both = PART.replace("part_of: parent", "part_of: [parent, other]")
-    ontology = parse_kinds({"kinds/parent.yml": PARENT, "kinds/other.yml": other, "kinds/part.yml": both}, LAYERS)
+    ontology = parse_kinds({"kinds/parent.yml": PARENT, "kinds/other.yml": other, "kinds/part.yml": both}, declared(*LAYERS))
     assert [kind.kind for kind in ontology.parts_of("parent")] == ["part"] == [kind.kind for kind in ontology.parts_of("other")]
 
 
@@ -108,18 +111,31 @@ def test_a_kind_names_the_layers_it_may_appear_in() -> None:
     kinds = packaged().kinds
     assert packaged().layers == ("product", "software")
     assert kinds["actor"].layers == LAYERS and kinds["view"].layers == ("software",) and kinds["decision"].layers == LAYERS
-    assert kinds["term"].layers == LAYERS and kinds["term"].moved is None
+    assert kinds["term"].layers == LAYERS and kinds["term"].moved_folder is None
 
 
 def test_the_ontology_file_declares_the_layers() -> None:
-    assert parse_layers("layers: [product, software]\n") == ("product", "software")
-    for text in ("layers: product\n", "layers: []\nextra: 1\n", "[a]\n", "layers: [1]\n"):
-        with pytest.raises(OntologyError, match="holds exactly `layers`"):
-            parse_layers(text)
+    text = files("ogy").joinpath("ontologies", "software", ONTOLOGY_FILE).read_text()
+    assert parse_declared(text).layers == ("product", "software")
+    for bad in ("layers: product\n", text + "extra: 1\n", "[a]\n", text.replace("layers: [product, software]", "layers: [1]")):
+        with pytest.raises(OntologyError, match=ONTOLOGY_FILE):
+            parse_declared(bad)
     for layers, why in (((), "declares no layers"), (("Product",), "no valid folder name"), (("kinds",), "no valid folder name"),
-                        (("glossary",), "no valid folder name")):
+                        (("glossary",), "no valid folder name"), (("shared",), "no valid folder name")):
         with pytest.raises(OntologyError, match=why):
-            parse_kinds({"kinds/actor.yml": ACTOR.replace("[product]", "[]"), "kinds/principle.yml": FIXED}, layers)
+            texts = {"kinds/actor.yml": ACTOR.replace("[product]", "[]"), "kinds/principle.yml": FIXED}
+            parse_kinds(texts, declared().model_copy(update={"layers": layers}))
+
+
+def test_the_ontology_file_names_what_the_engine_reads() -> None:
+    found = packaged().declared
+    assert found.roles.agreed in found.common and found.harms[0] == "structure" and found.rank(None) == len(found.harms)
+    for change, why in (({"asked_alone": ("nope",)}, "asked_alone: nope is no harm"),
+                        ({"roles": found.roles.model_copy(update={"src": "source"})}, "roles: src names no common field source")):
+        with pytest.raises(OntologyError, match=why):
+            parse_kinds({"kinds/actor.yml": ACTOR}, found.model_copy(update=change))
+    with pytest.raises(OntologyError, match="harm late is no harm"):
+        parse_kinds({"kinds/actor.yml": ACTOR + "  late: {harm: [late]}\n"}, found)
 
 
 def test_inline_holds_map_list_one() -> None:

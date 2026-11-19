@@ -4,6 +4,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import pytest
+from tests.conftest import declared
 
 from ogy.model import Problem
 from ogy.ontology import OntologyError, parse_kinds
@@ -80,4 +81,4 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: entity\nfields:\n  a: {
 ])
 def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, message: str) -> None:
     with pytest.raises(OntologyError, match=message):
-        parse_kinds({"kinds/thing.yml": HEAD + f"requires:\n  - {requires}\n"}, ("product",))
+        parse_kinds({"kinds/thing.yml": HEAD + f"requires:\n  - {requires}\n"}, declared("product"))

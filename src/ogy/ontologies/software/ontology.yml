@@ -5,3 +5,28 @@
 #   <folder>/<file>                    a kind that names a fixed folder with `area` (the glossary, the constitution)
 # A kind lists the layers it may appear in (`layers:`); the folder is the layer's only home.
 layers: [product, software]
+shared:                                              # the reserved area of every layer: what two of its areas use
+  area: shared
+  says: "What two or more areas of this layer use: their shared terms, actors and sets."
+# Fields every entry may carry beside its kind's. `src` says where a sentence came from; `agreed` is the person's yes to it in
+# a review round (written only by `reply`).
+common:
+  title: {note: true}
+  src: {type: texts, note: true}
+  because: {type: links, to: [any]}
+  by: {type: links, to: [rule], note: true}          # the rules it is held to; a note
+  proof: {type: texts}
+  agreed: {type: agreed, note: true}
+roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what
+# What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in.
+harms: [structure, moves-money, tells-outside, irreversible, who-is-allowed]
+asked_alone: [structure]                             # the layout, layers, kinds or paths: its own card, never inside a bulk accept
+evidence:                                            # the schemes of `src` items
+  code: {reads: symbol, files: [.py]}                # code:<path>#<symbol>
+  doc: {reads: section, files: [.md], pinned: true}  # doc:<commit>:<path>#<anchor>
+proof: {files: [.py]}                                # <path>.py::<function>
+reserved:
+  computed: [open, assumed, origin, status, author, agreement, built, covers, sourced, in, retired, accepted_by, renamed_from,
+             actors, subject, id, settles, settled_by, came_from, removed, replaced_by, superseded, superseded_by, deprecated,
+             restored, scope, history, changelog, last_seen]    # facts the tool computes; no kind may store them (K22)
+  sentence: [states, means, holds, does, provides, shows, goal]  # a kind names its sentence with `sentence:` (K25)

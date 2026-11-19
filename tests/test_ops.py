@@ -8,7 +8,6 @@ import pytest
 from tests.conftest import Kb, commit, ogy
 
 from ogy import cli, ops
-from ogy.kinds import Harm
 from ogy.model import Problem
 from ogy.ontology import Ontology, parse_kinds
 from ogy.review import dropped, review
@@ -61,9 +60,9 @@ def test_harm_is_read_from_the_kind_files(kb: MakeKb, ontology: Ontology) -> Non
     snapshot = kb(None).snapshot
     assert harm(snapshot, snapshot.resolve("product/app/actor/member") or snapshot_error()) is None
     text = "kind: risky\nabout: x\nharm: [irreversible, moves-money]\nshape: entity\nlayers: [product]\nfields:\n  says: {}\n"
-    kinds = parse_kinds({"kinds/risky.yml": text}, ontology.layers)
+    kinds = parse_kinds({"kinds/risky.yml": text}, ontology.declared)
     risky = build(kinds, {"product/app/risky/x.yml": "says: x\n"})
-    assert harm(risky, next(iter(risky.entries))) is Harm.MOVES_MONEY
+    assert harm(risky, next(iter(risky.entries))) == "moves-money"
 
 
 def snapshot_error() -> None:

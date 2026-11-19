@@ -21,4 +21,4 @@
   - irreversible
   - who-is-allowed
   src:
-  - code:src/ogy/kinds.py#Harm
+  - code:src/ogy/declared.py#Declared.harms

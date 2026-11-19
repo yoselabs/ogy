@@ -10,6 +10,7 @@ from git_porcelain import run_git
 
 from ogy import cli
 from ogy.check import check
+from ogy.declared import Declared
 from ogy.model import Problem
 from ogy.ontology import Ontology, packaged
 from ogy.snapshot import Snapshot, load
@@ -65,6 +66,12 @@ class Kb:
         found = check(self.snapshot, self.source, landing=landing)
         hidden = {problem for problem, shown in ((Problem.NO_EVIDENCE, evidence), (Problem.ORPHAN, started)) if not shown}
         return {(item.problem, str(item.address) if item.address else item.path) for item in found if item.problem not in hidden}
+
+
+def declared(*layers: str) -> Declared:
+    """The software ontology's `ontology.yml`, with other layers when given: for a few kinds written in a test."""
+    found = packaged().declared
+    return found.model_copy(update={"layers": layers}) if layers else found
 
 
 @pytest.fixture

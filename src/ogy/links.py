@@ -3,7 +3,7 @@
 from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 
-from ogy.kinds import ANY, COMMON_FIELDS, FieldType, Holds
+from ogy.kinds import ANY, FieldType, Holds
 from ogy.model import Address, Entry, Problem, link_values, parse_address
 from ogy.ontology import Ontology
 
@@ -40,8 +40,7 @@ def link_items(ontology: Ontology, entry: Entry) -> Iterator[LinkItem]:
     kind = ontology.get(entry.address.kind)
     if kind is None:
         return
-    specs = {**COMMON_FIELDS, **kind.fields}
-    for name, spec in specs.items():
+    for name, spec in ontology.specs(kind).items():
         for text in _values(spec.type, entry.fields.get(name)) if spec.to else ():
             yield LinkItem(name, text, spec.to)
     for part in ontology.parts_of(kind.kind):

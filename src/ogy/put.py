@@ -13,7 +13,7 @@ from git_porcelain import head
 from ogy import near, removal, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import fields_problems
-from ogy.kinds import COMMON_FIELDS, NAME, Holds, Kind, Shape
+from ogy.kinds import NAME, Holds, Kind, Shape
 from ogy.model import Address, parse_address
 from ogy.snapshot import Snapshot
 from ogy.target import Target
@@ -108,8 +108,8 @@ def _checked(target: Target, snapshot: Snapshot, records: list[Mapping[object, o
                 raise WriteRefused([f"no kind {address.kind} (see `kinds`)"])
             if kind.append_only or kind.holding is Holds.LIST:
                 raise WriteRefused([f"{address} is written once: {kind.kind} is added through its own command (`answer`)"])
-            if "agreed" in fields:
-                raise WriteRefused([f"{address}: agreed is a person's yes, written only by `reply` to a review round"])
+            if (agreed := snapshot.ontology.roles.agreed) in fields:
+                raise WriteRefused([f"{address}: {agreed} is a person's yes, written only by `reply` to a review round"])
             if held := [part.key for part in snapshot.ontology.parts_of(kind.kind) if part.append_only and part.key in fields]:
                 raise WriteRefused([f"{address}: {held[0]} are added through their own command (`answer`)"])
             new = address not in snapshot.entries
@@ -120,7 +120,7 @@ def _checked(target: Target, snapshot: Snapshot, records: list[Mapping[object, o
             given = {name: value for name, value in fields.items() if value is not None or not new}
             typed = {k: v for k, v in given.items() if v is not None}
             wrong += [f"{problem}: {detail}" for problem, detail in
-                      fields_problems(snapshot.ontology, {**COMMON_FIELDS, **kind.fields}, typed, known, partial=not new)]
+                      fields_problems(snapshot.ontology, snapshot.ontology.specs(kind), typed, known, partial=not new)]
             if wrong:
                 raise WriteRefused(wrong)
             found.append((address, given, new))
@@ -168,7 +168,7 @@ def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: li
         raise WriteRefused([f"the batch drops {', '.join(map(str, dropped))}: give --why (a decision address, or plain words)"])
     at, seen = utc_now(), head(target.repo)
     items = [removal.build_item(before, address, why, None, at, seen, target.ontology) for address in dropped]
-    problems = removed.check_why(items, removal.known_addresses(before))
+    problems = removed.check_why(items, removal.known_addresses(before), before.ontology.roles.agreed)
     if problems:
         raise WriteRefused([f"{problem.code}: {problem.detail}" for problem in problems])
     for address, item in zip(dropped, items, strict=True):

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 
 from ogy import near, removed
 from ogy.edit import Editor
-from ogy.kinds import NAME, SHARED_AREA, Shape
+from ogy.kinds import NAME, Shape
 from ogy.model import Address, Entry, parse_address
 from ogy.moves import Table, rehash, renamer, rewrite_fields
 from ogy.snapshot import Snapshot
@@ -57,8 +57,8 @@ def destination(snapshot: Snapshot, address: Address, text: str) -> Address:
         raise WriteRefused([f"{text!r} is no area: give <area> or <layer>/<area> (kebab-case, layers {list(snapshot.ontology.layers)})"])
     if layer not in kind.layers:
         raise WriteRefused([f"{address.kind} may live in the layers {list(kind.layers)}, not {layer}"])
-    if area == SHARED_AREA and not kind.shared:
-        raise WriteRefused([f"the area {SHARED_AREA} holds only what two areas use; {address.kind} stays in the area that owns it"])
+    if area == (shared := snapshot.ontology.shared) and not kind.shared:
+        raise WriteRefused([f"the area {shared} holds only what two areas use; {address.kind} stays in the area that owns it"])
     new = Address(layer, area, ((address.kind, key),))
     if new == address:
         raise WriteRefused([f"{address} is already {'there' if renamed else f'in {layer}/{area}'}"])
@@ -84,8 +84,9 @@ def rename_all(ed: Editor, target: Target, before: Snapshot, table: Table) -> No
     back = renamer({new: old for old, new in table.items()})
     for address, entry in seen.entries.items():
         now = dict(after.entries[address].fields)
-        if isinstance(agreed := entry.fields.get("agreed"), dict) and (was := parse_address(back(str(address)), ontology)) is not None:
-            now["agreed"] = rehash(before, after, was, address, agreed)
+        name = ontology.roles.agreed
+        if isinstance(agreed := entry.fields.get(name), dict) and (was := parse_address(back(str(address)), ontology)) is not None:
+            now[name] = rehash(before, after, was, address, agreed)
         if changes := {name: value for name, value in now.items() if value != entry.fields.get(name)}:
             ed.update(address, changes, snap=seen)
     removed.follow(target.repo / target.kb, rename)

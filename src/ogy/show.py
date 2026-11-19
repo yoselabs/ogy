@@ -68,8 +68,9 @@ def show(snapshot: Snapshot, address: Address, record: Mapping[str, Line], work:
     settling = decision_of(found, address)
     asking = next((d for d in found if d.address == address), None)
     given, nothing = settles(asking) if asking else ({}, set())
-    own = link_values(entry.fields.get("src"))
-    inherited = link_values(settling.entry.fields.get("src")) if settling else ()
+    src = snapshot.ontology.roles.src
+    own = link_values(entry.fields.get(src))
+    inherited = link_values(settling.entry.fields.get(src)) if settling else ()
     return Shown(address, context(snapshot, address), status(snapshot, address), label(snapshot, address),
                  agreed_of(snapshot, address) or _answered(asking), _decided(settling) if settling else None,
                  own or inherited, not own and bool(inherited), tuple(sorted({*given, *nothing})), f"built/{entry.path}",

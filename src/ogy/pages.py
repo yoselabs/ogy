@@ -5,9 +5,11 @@ a round like any other: the owner's `yes` agrees to all of it, `yes 2 5` to some
 
 from dataclasses import dataclass
 
+from ogy.declared import Reader
+from ogy.evidence import Link, parse_link
 from ogy.model import link_values
 from ogy.snapshot import Snapshot
-from ogy.status import Card, Label, Status, agreed_hashes, dependants, entry_card, label, rank, status
+from ogy.status import Card, Label, Status, agreed_hashes, dependants, entry_card, label, status
 
 PAGE = 12
 SOURCES = {"docs": Label.DOCS, "code": Label.CODE}
@@ -25,8 +27,10 @@ def _group(snapshot: Snapshot, card: Card, source: Label) -> str:
         return f"{card.address.home}: from code"
     if card.word:
         return f"{card.address.home}: terms"
-    where = next((item for item in link_values(fields.get("src")) if item.startswith("doc:")), "doc:")
-    return f"{card.address.home}: {where.removeprefix('doc:').partition(':')[2] or where.removeprefix('doc:')}"
+    schemes = snapshot.ontology.declared.evidence
+    where = next((link for item in link_values(fields.get(snapshot.ontology.roles.src))
+                  if isinstance(link := parse_link(item, schemes), Link) and link.reads is Reader.SECTION), None)
+    return f"{card.address.home}: {f'{where.path}#{where.fragment}' if where else ''}"
 
 
 def pages(snapshot: Snapshot, source: str, area: str | None = None) -> list[Page]:
@@ -44,7 +48,7 @@ def pages(snapshot: Snapshot, source: str, area: str | None = None) -> list[Page
         groups.setdefault(_group(snapshot, card, wanted), []).append(card)
     found: list[Page] = []
     for title, cards in sorted(groups.items()):
-        ordered = sorted(cards, key=lambda c: (rank(c.harm), -c.dependants, str(c.address)))
+        ordered = sorted(cards, key=lambda c: (snapshot.ontology.declared.rank(c.harm), -c.dependants, str(c.address)))
         chunks = [ordered[at:at + PAGE] for at in range(0, len(ordered), PAGE)]
         found += [Page(title if len(chunks) == 1 else f"{title} ({n}/{len(chunks)})", tuple(chunk)) for n, chunk in enumerate(chunks, 1)]
     return found

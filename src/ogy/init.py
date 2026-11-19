@@ -17,17 +17,13 @@ from managed_region import replace_region
 
 from ogy import config, removed
 from ogy.edit import Editor
-from ogy.kinds import SHARED_AREA
-from ogy.layout import SHARED_SAYS
+from ogy.kinds import Shape
 from ogy.model import Address, parse_address
-from ogy.ontology import packaged
+from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, packaged
 from ogy.source import KB_DIR
 from ogy.verdict import Refusal
 
 START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
-CONSTITUTION_FILE = "constitution/principles.yml"
-SHARED_FILE = f"product/{SHARED_AREA}/area.yml"  # the shared area of the first layer, with its own entry
-STARTS = {CONSTITUTION_FILE: "[]\n", SHARED_FILE: any_yaml.dump({"says": SHARED_SAYS})}  # what a new knowledge base starts with
 HOOKS_DIR = ".githooks"
 HOOK = """\
 #!/bin/sh
@@ -105,7 +101,17 @@ def _settings(repo: Path, ontology: str | None) -> str:
     held = config.read(repo).ontology
     if ontology is not None and held is not None and ontology != held:
         raise InitRefused(f"{config.CONFIG_FILE} already says ontology: {held}, not {ontology}")
-    return ontology or held or "software"
+    return ontology or held or DEFAULT_ONTOLOGY
+
+
+def starts(ontology: Ontology) -> dict[str, str]:
+    """The files a new knowledge base starts with: each fixed folder's list, empty, and the entry of the shared area of the
+    first layer."""
+    found = {f"{kind.area}/{kind.file}": "[]\n" for kind in ontology.kinds.values() if kind.area and kind.shape is Shape.LIST}
+    area = next((kind for kind in ontology.kinds.values() if kind.every_area and kind.shape is Shape.SINGLE), None)
+    if area is not None and ontology.layers:
+        found[f"{ontology.layers[0]}/{ontology.shared}/{area.file}"] = any_yaml.dump({"says": ontology.declared.shared.says})
+    return found
 
 
 def _put(repo: Path, rel: str, text: str, written: list[str]) -> None:
@@ -199,13 +205,13 @@ def _deny(repo: Path, written: list[str]) -> None:
 def init(repo: Path, ontology: str | None = None) -> Initialised:
     """Set `repo` up; run again to repair it. Refuses (InitRefused, OntologyError) before writing when it cannot go on."""
     name = _settings(repo, ontology)
-    packaged(name)
+    kinds = packaged(name)
     written: list[str] = []
     for rel in (".mcp.json", ".claude/settings.json"):
         _json(repo, rel)  # an unreadable file refuses before anything is written
     if not (repo / config.CONFIG_FILE).exists():
         _put(repo, config.CONFIG_FILE, any_yaml.dump({"ontology": name}), written)
-    for rel, text in STARTS.items():
+    for rel, text in starts(kinds).items():
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)
             written.append(f"{KB_DIR}/{rel}")
@@ -244,8 +250,9 @@ def doctor(repo: Path) -> list[str]:
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
-    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in STARTS if not (repo / KB_DIR / rel).is_file())
-    lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, config.read(repo).ontology or "software"))
+    name = config.read(repo).ontology or DEFAULT_ONTOLOGY
+    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(packaged(name)) if not (repo / KB_DIR / rel).is_file())
+    lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, name))
     for rel in ("AGENTS.md", "CLAUDE.md"):
         path = repo / rel
         if rel == "AGENTS.md" or path.exists():
