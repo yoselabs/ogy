@@ -18,6 +18,12 @@ steps:
       read-back:
         label: Read back
         then: handed-over
+    agreed:
+      at: '2026-11-19T18:04:45+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven capture and hand-over sentences
+      hash: c91a713c1777
 ends:
   handed-over:
     result: success

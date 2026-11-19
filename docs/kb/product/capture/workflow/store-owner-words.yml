@@ -12,6 +12,12 @@ steps:
       stored:
         label: Store the words
         then: keep
+    agreed:
+      at: '2026-11-19T18:04:45+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven capture and hand-over sentences
+      hash: 70eab885cded
   keep:
     says: ogy appends the answer to its decision.
     cases:
