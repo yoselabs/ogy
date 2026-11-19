@@ -4,17 +4,17 @@ options:
   drop:
     label: Drop it; only the area groups entries
     sets:
-      software/storage/rule/area-is-the-only-grouping:
+      software/storage/rule/layers-are-mandatory:
         says: Entries are grouped by area only; there is no axis above it.
   keep:
     label: Keep a product or development axis
     sets:
-      software/storage/rule/area-is-the-only-grouping:
+      software/storage/rule/layers-are-mandatory:
         says: Every entry lives under a product or development axis, then an area.
   layers-mandatory:
     label: 'Keep: product/ and software/ layer folders, mandatory, enforced by the ontology'
     sets:
-      software/storage/rule/area-is-the-only-grouping:
+      software/storage/rule/layers-are-mandatory:
         says: Every entry lives under a layer folder, product or software, then an area; the ontology enforces it and nothing skips it.
 guess:
   chose: layers-mandatory

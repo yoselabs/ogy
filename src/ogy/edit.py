@@ -124,10 +124,11 @@ class Editor:
                 held.pop(address.key, None)
         return [self._write(rel, data)]
 
-    def relocate(self, address: Address, home: str) -> list[str]:
-        """Move a top-level entry, with every part it owns, to another home (`<layer>/<area>`); its content is not touched."""
+    def relocate(self, address: Address, home: str, key: str = "") -> list[str]:
+        """Move a top-level entry, with every part it owns, to another home (`<layer>/<area>`), under a new id when `key` is
+        given (a rename); its content is not touched."""
         rel, kind = self.snapshot().entries[address].path, self._kind(address.kind)
-        new = path_for(kind, home, address.key)
+        new = path_for(kind, home, key or address.key)
         (self.root / self.kb / new).parent.mkdir(parents=True, exist_ok=True)
         if kind.shape is not Shape.LIST:
             (self.root / self.kb / rel).rename(self.root / self.kb / new)
@@ -136,6 +137,7 @@ class Editor:
         items = data if isinstance(data, list) else []
         item = next(item for item in items if isinstance(item, dict) and item.get("id") == address.key)
         rest = [other for other in items if other is not item]
+        item = {**item, "id": key} if key else item
         if rest:
             self._write(rel, rest)
         else:

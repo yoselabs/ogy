@@ -206,3 +206,14 @@ def test_the_fingerprint_breaks_a_tie_between_two_of_one_kind_and_id() -> None:
     assert {str(old): str(new) for old, new in found.items()} == {
         "product/app/actor/member": "product/people/actor/member", "product/other/actor/member": "product/loans/actor/member"}
     assert detect(base, kb(loans="A changed member.", people="Another changed member.")) == {}  # no fingerprint matches: a loss
+
+
+def test_a_rename_gives_a_new_id_every_link_follows_and_check_base_tells_it_from_a_loss(repo: Path) -> None:
+    agreed(repo)
+    assert w(repo, "move", "product/app/actor/member", "product/app/actor/borrower")[0] == cli.OK
+    assert w(repo, "show", "product/app/actor/borrower")[0] == cli.OK and w(repo, "show", "product/app/actor/member")[0] == cli.NOT_FOUND
+    assert "product/app/actor/borrower" in tree(repo)[f"{KB}/product/app/workflow/borrow.yml"]
+    assert "decided by you" in status(repo, STEP)
+    assert not list((repo / KB).rglob("removed.yml"))
+    assert w(repo, "check") == (cli.OK, ["ok"]) and base_findings(repo) == ["ok"]
+    assert w(repo, "move", "product/app/actor/borrower", "product/app/workflow/borrower")[0] != cli.OK  # the kind stays

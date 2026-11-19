@@ -1,7 +1,7 @@
 """Moves: an entry that changed area keeps its kind and id; nothing records it but Git. `ogy move` writes the new address
 into every entry that names the old one, and `ogy check --base` tells a move from a loss by comparing the two commits:
 an entry gone from one address and present at exactly one other with the same kind and id has moved; the fingerprint
-only breaks ties.
+only breaks ties. A rename (a new id) is found by the fingerprint alone: one gone and one arrived of a kind, same meaning.
 
 `rewrite_fields` is the one place that knows which values of an entry are addresses; `renamed` is a snapshot as it reads
 with the moved addresses written in, so an answer may differ from the base only by what a move changed. A kind
@@ -157,4 +157,16 @@ def detect(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
     for key, olds in gone.items():
         if arrived.get(key) and (len(olds) > 1 or len(arrived[key]) > 1):
             table |= _ties(base, now, olds, arrived[key], table)
-    return table
+    return table | _renames(base, now, gone, arrived, table)
+
+
+def _renames(base: Snapshot, now: Snapshot, gone: Mapping[tuple[str, str], list[Address]],
+             arrived: Mapping[tuple[str, str], list[Address]], table: Table) -> dict[Address, Address]:
+    """Entries of one kind gone under one id and arrived under another (`ogy move` to a new id): paired by the fingerprint,
+    only where exactly one pair matches."""
+    left = [old for key, olds in gone.items() if key not in arrived for old in olds if old not in table]
+    new = [address for key, news in arrived.items() if key not in gone for address in news]
+    found: dict[Address, Address] = {}
+    for kind in {old.kind for old in left}:
+        found |= _ties(base, now, [old for old in left if old.kind == kind], [n for n in new if n.kind == kind], table)
+    return found

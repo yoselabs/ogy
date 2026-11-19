@@ -1,4 +1,4 @@
-"""`ogy move`: an entry changes area and keeps its id, its kind, its agreements and its answers.
+"""`ogy move`: an entry changes area, or its id (a rename), and keeps its kind, its agreements and its answers.
 
 One checked write (`writes.commit`: made whole or put back): the file or list item and every part go to the new area, and
 every address that names the old one is rewritten in the same write, wherever it is: links, `sets` keys, guesses, the
@@ -27,11 +27,24 @@ class Moved:
         return f"moved {self.old} to {self.new}"
 
 
+def _renamed(snapshot: Snapshot, address: Address, text: str) -> tuple[str, str, str] | None:
+    """`<layer>/<area>/<kind>/<id>`: the layer, area and new id of a rename (the kind stays); None when `text` names an area."""
+    if len(text.split("/")) < 4:
+        return None
+    new = parse_address(text, snapshot.ontology)
+    if new is None or new.parent() is not None or new.kind != address.kind:
+        shapes = f"<area>, <layer>/<area> or <layer>/<area>/{address.kind}/<id>"
+        raise WriteRefused([f"{text!r} is no address of a {address.kind}: give {shapes}"])
+    return new.layer, new.area, new.key
+
+
 def destination(snapshot: Snapshot, address: Address, text: str) -> Address:
-    """The address an entry gets in `<area>` or `<layer>/<area>`, or why it may not go there."""
+    """The address an entry gets in `<area>`, `<layer>/<area>` or at `<layer>/<area>/<kind>/<id>`, or why it may not go there."""
     kind, parts = snapshot.kind_of(address), text.split("/")
-    layered = len(parts) == 2 and parts[0] in snapshot.ontology.layers
-    layer, area = (parts[0], parts[1]) if layered else (address.layer, parts[0])
+    renamed = _renamed(snapshot, address, text)
+    layered = renamed is None and len(parts) == 2 and parts[0] in snapshot.ontology.layers
+    layer, area = renamed[:2] if renamed else (parts[0], parts[1]) if layered else (address.layer, parts[0])
+    key = renamed[2] if renamed else address.key
     if address.parent() is not None:
         raise WriteRefused([f"{address} is a part: it moves with its {address.parent()}"])
     if kind.area is not None:
@@ -40,15 +53,15 @@ def destination(snapshot: Snapshot, address: Address, text: str) -> Address:
         raise WriteRefused([f"{address} is in a folder {address.kind} moved out of: run `ogy migrate` first"])
     if kind.shape is Shape.SINGLE:
         raise WriteRefused([f"{address.kind} is the entry of its area itself: it does not move"])
-    if len(parts) > 2 or (len(parts) == 2 and not layered) or not NAME.match(area):
+    if (not renamed and (len(parts) > 2 or (len(parts) == 2 and not layered))) or not NAME.match(area):
         raise WriteRefused([f"{text!r} is no area: give <area> or <layer>/<area> (kebab-case, layers {list(snapshot.ontology.layers)})"])
     if layer not in kind.layers:
         raise WriteRefused([f"{address.kind} may live in the layers {list(kind.layers)}, not {layer}"])
     if area == SHARED_AREA and not kind.shared:
         raise WriteRefused([f"the area {SHARED_AREA} holds only what two areas use; {address.kind} stays in the area that owns it"])
-    new = Address(layer, area, address.path)
+    new = Address(layer, area, ((address.kind, key),))
     if new == address:
-        raise WriteRefused([f"{address} is already in {layer}/{area}"])
+        raise WriteRefused([f"{address} is already {'there' if renamed else f'in {layer}/{area}'}"])
     return new
 
 
@@ -90,7 +103,7 @@ def move(target: Target, text: str, area: str) -> Moved:
         raise WriteRefused(reasons)
 
     def act(ed: Editor) -> None:
-        ed.relocate(old, new.home)
+        ed.relocate(old, new.home, new.key if new.key != old.key else "")
         rename_all(ed, target, snapshot, {old: new})
 
     return Moved(old, new, commit(target, lambda _: [new], act, renamer({old: new})))

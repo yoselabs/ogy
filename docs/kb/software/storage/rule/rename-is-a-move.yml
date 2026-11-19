@@ -1,0 +1,5 @@
+title: A rename is a move to a new id
+says: '`ogy move` to a full address of the same kind gives an entry a new id: every address naming it follows in the same write, and check --base pairs the old and new id by meaning.'
+src:
+- code:src/ogy/relocate.py#destination
+- code:src/ogy/moves.py#detect

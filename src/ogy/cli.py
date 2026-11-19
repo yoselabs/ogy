@@ -118,12 +118,13 @@ def _writes(commands: Adder) -> None:
     removing.add_argument("--why", required=True, help="why it is removed: the address of the decision that said so, or plain "
                           "words (an address stays required for an entry a person agreed to)")
     removing.add_argument("--to", help="the address that replaces it")
-    moving = _verb(commands, "move", "move an entry to another area, keeping its id, kind and agreements",
+    moving = _verb(commands, "move", "move an entry to another area or a new id, keeping its kind and agreements",
                    "Moves the entry and what it owns, and writes the new address wherever the old one is named (links, "
                    "answers, removed items); an agreement that was current stays current. Records nothing: Git keeps the move, and "
                    "`check --base` tells it from a loss. One atomic write.")
     moving.add_argument("address", help=ADDRESS)
-    moving.add_argument("area", help="the new area, or <layer>/<area> when the layer changes too (the kind must allow it)")
+    moving.add_argument("area", help="the new area, <layer>/<area> when the layer changes too (the kind must allow it), "
+                        "or the full new address to rename it")
     _verb(commands, "migrate", "rewrite the entries to the field renames, drops and folder moves their kinds declare",
           "A kind file keeps a renamed field's old name (`renamed: {old: new}`) and a dropped one (`dropped: [...]`); an entry that "
           "holds one is `needs-migration`. Renames every old name (in entries, list parts and `sets`) and keeps current the "
