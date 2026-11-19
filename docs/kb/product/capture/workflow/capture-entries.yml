@@ -12,6 +12,12 @@ steps:
       read:
         label: Read the glossary
         then: search
+    agreed:
+      at: '2026-11-19T17:58:26+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Kept no-views and YAML-only glossary; agreed to the five sentences
+      hash: 5f33d23e59d6
   search:
     says: The agent searches live and removed entries before it proposes anything.
     actor: product/shared/actor/agent
@@ -19,6 +25,12 @@ steps:
       searched:
         label: Search
         then: put
+    agreed:
+      at: '2026-11-19T17:58:26+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Kept no-views and YAML-only glossary; agreed to the five sentences
+      hash: 366025992dc3
   put:
     says: The agent writes the records with ogy put.
     actor: product/shared/actor/agent

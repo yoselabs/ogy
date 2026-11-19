@@ -4,18 +4,18 @@
   src:
   - code:src/ogy/writes.py#answer
   agreed:
-    at: '2026-11-17T23:49:06+01:00'
+    at: '2026-11-19T17:58:26+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Yes to the rest of the glossary
-    hash: 64a01604714f
+    said: Kept no-views and YAML-only glossary; agreed to the five sentences
+    hash: 5259dab1380d
 - id: agent
   title: agent
   says: An AI model that works on the knowledge base through ogy; it decides only where the owner delegated.
   nature: ai
   agreed:
-    at: '2026-11-17T23:50:50+01:00'
+    at: '2026-11-19T17:58:26+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     from: human
-    said: Confirmed both
-    hash: 4274b7c9a981
+    said: Kept no-views and YAML-only glossary; agreed to the five sentences
+    hash: bccdd6fd3915
