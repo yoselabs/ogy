@@ -18,12 +18,24 @@ steps:
     says: The latest candidate of the task decides where the land goes on.
     src: [code:src/taskloop/land.py#_resumed]
     cases:
-      closed:
+      checks-failed:
         order: 1
+        when: {text: "the task's latest checks attempt did not conclude passed, or is not released, or is abandoned; with no-change any conclusion passes"}
+        then: refused
+      implement-not-done:
+        order: 2
+        when: {text: "the task's current attempt is not a done implement attempt"}
+        then: refused
+      agent-push-bar-missing:
+        order: 3
+        when: {text: "the Git configuration in this process's environment carries the agent's push bar"}
+        then: refused
+      closed:
+        order: 11
         when: {text: the latest candidate is closed, reads: [software/land/entity/land-candidate/state/closed]}
         then: landed
       delivered:
-        order: 2
+        order: 12
         when: {text: the latest candidate is delivered, reads: [software/land/entity/land-candidate/state/delivered]}
         then: close
       otherwise: {then: continue}
@@ -31,12 +43,20 @@ steps:
     says: Nothing is delivered yet; the candidate is validated, delivered, or made.
     src: [code:src/taskloop/land.py#_delivered]
     cases:
-      pending:
+      branch-moved:
         order: 1
+        when: {text: "the local or origin's task branch is no longer X; not asked with no-change or withdraw", reads: [software/land/external/origin]}
+        then: branch-moved
+      claim-lost:
+        order: 2
+        when: {text: "the tracker no longer shows the task in progress and assigned to the factory's actor", reads: [software/claim/external/bd]}
+        then: claim-lost
+      pending:
+        order: 11
         when: {text: the latest candidate is pending, reads: [software/land/entity/land-candidate/state/pending]}
         then: validate
       pushable:
-        order: 2
+        order: 12
         when: {text: the latest candidate is pushable, reads: [software/land/entity/land-candidate/state/pushable]}
         then: deliver
       otherwise: {then: squash}

@@ -27,6 +27,11 @@ steps:
         then: tool-error
       otherwise:
         then: result
+      unnamed-round:
+        order: 0
+        when:
+          text: the tool is reply and names no round with --round
+        then: tool-error
     agreed:
       at: '2026-11-19T19:00:55+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

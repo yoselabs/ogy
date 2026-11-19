@@ -1,0 +1,18 @@
+structure: true
+question: Does the guard kind stay, or is a refusal a case that leads to a failure end?
+context: "Harmony review 2026-11-19 finding 3: a guard, a case and a choice's when overlap; all 9 real guards sit on steps and read as cases; guard on a workflow is broken. The owner asked that a case relying on an undescribed state be found deterministically."
+options:
+  delete:
+    label: "Delete guard: a refusal is a case to a failure end; who may act is the step's actor; every condition reads at least one entry"
+  across-layers:
+    label: Keep guard only for a software entry refusing a product step
+  keep:
+    label: Keep guard as it is and fix its workflow form
+guess:
+  chose: delete
+  why: One home per question.
+answers:
+- chose: delete
+  said: Yes to all of round 2 as Fable refined it
+  at: '2026-11-19T23:18:12+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -43,6 +43,13 @@ steps:
         effects:
         - do: transition
           on: product/capture/entity/entry/transition/agree
+      bare-yes-on-all:
+        order: 0
+        when:
+          text: the round was shown with --all and the yes names no cards
+          reads:
+          - product/review/entity/review-round/attr/everything
+        then: refused
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

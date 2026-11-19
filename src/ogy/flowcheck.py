@@ -17,7 +17,7 @@ class Graph:
     steps: list[Address]
     ends: list[Address]
     rows: dict[Address, dict[str, list[Address]]]  # step -> row kind -> rows
-    targets: dict[Address, set[Address]]  # step -> what its own `then:`, its rows' `then:` and its guards' `else:` name
+    targets: dict[Address, set[Address]]  # step -> what its own `then:` and its rows' `then:` name
 
 
 def link(snapshot: Snapshot, address: Address, field: str) -> list[Address]:
@@ -30,9 +30,7 @@ def graph(snapshot: Snapshot, flow: Flow, container: Address) -> Graph:
     steps = parts(container, flow.step)
     rows = {step: {kind: parts(step, kind) for kind in (flow.choice, flow.case, flow.timeout)} for step in steps}
     targets = {step: {*link(snapshot, step, flow.then),
-                      *(target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then)),
-                      *(target for guard in snapshot.links.backward(step, flow.guarded) if guard.kind == flow.guard
-                        for target in link(snapshot, guard, flow.denied))}
+                      *(target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then))}
                for step in steps}
     return Graph(container, steps, parts(container, flow.end), rows, targets)
 

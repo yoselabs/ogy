@@ -36,13 +36,11 @@ def editor(tmp_path: Path) -> Editor:
 def test_put_adds_entity_list_item_and_parts(editor: Editor) -> None:
     editor.put(Address("product", "app", (("actor", "member"),)), {"says": "A person.", "nature": "human"})
     editor.put(Address("product", "app", (("value", "late"),)), {"says": "Late.", "is": 1, "unit": "days"})
-    done = str(FLOW.part("end", "done"))
-    editor.put(Address("product", "app", (("guard", "ok"),)), {"says": "Ok.", "on": str(ASK), "when": {"text": "x"}, "else": done})
     editor.put(ASK.part("timeout"), {"after": "product/app/value/late", "then": "done"})
     editor.put(ASK.part("choice", "stay"), {"label": "Stay", "then": "done"})
     snapshot = editor.snapshot()
     assert {str(address) for address in snapshot.entries} >= {
-        "product/app/actor/member", "product/app/value/late", "product/app/guard/ok", "product/app/workflow/borrow/step/ask/timeout",
+        "product/app/actor/member", "product/app/value/late", "product/app/workflow/borrow/step/ask/timeout",
         "product/app/workflow/borrow/step/ask/choice/stay"}
     assert snapshot.entries[Address("product", "app", (("value", "late"),))].path == "product/app/values.yml"
     assert snapshot.findings == []

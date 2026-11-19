@@ -20,10 +20,11 @@ ROOT = Path(__file__).parent / "fixtures" / "tool-library"
 P, S = "product/lending", "software/lending"
 BORROW = f"{P}/workflow/borrow/step"
 UNBUILT = [
-    f"{P}/entity/tool", f"{P}/guard/in-good-standing", f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans",
+    f"{P}/entity/tool", f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans",
     f"{P}/rule/fees-round-up", f"{P}/rule/tools-are-checked-on-return", f"{P}/value/max-loans", f"{P}/value/remind-every",
     f"{P}/value/reply-wait", f"{BORROW}/ask", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record",
-    f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{P}/workflow/close-loan/step/close",
+    f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{BORROW}/standing",
+    f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes", f"{P}/workflow/close-loan/step/close",
     f"{P}/workflow/notify/step/send", f"{P}/workflow/notify/step/send/case/ok", f"{P}/workflow/notify/step/send/case/otherwise",
     f"{P}/workflow/remind/step/call", f"{P}/workflow/remind/step/call/case/otherwise", f"{P}/workflow/remind/step/call/case/sent",
     f"{S}/command/borrow-cli", f"{S}/config_key/remind-every", f"{S}/rule/one-reminder-a-day",

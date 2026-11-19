@@ -206,10 +206,3 @@ def test_unreachable_step_and_unreached_end(kb: Make) -> None:
                            "ends:\n  done: {result: success, says: D.}\n  never: {result: failure, says: N.}\n")
     found = kb({"product/app/workflow/w.yml": flow}).findings()
     assert found == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost"), (Problem.END_UNREACHED, "product/app/workflow/w/end/never")}
-
-
-def test_guard_else_reaches_an_end(kb: Make) -> None:
-    flow = ("says: S.\nstart: a\nsteps:\n  a: {then: done}\nends:\n  done: {result: success, says: D.}\n"
-            "  denied: {result: failure, says: N.}\n")
-    guard = "says: Allowed.\n\"on\": product/app/workflow/w/step/a\nwhen: {text: ok}\nelse: product/app/workflow/w/end/denied\n"
-    assert kb({"product/app/workflow/w.yml": flow, "product/app/guard/g.yml": guard}).findings() == set()

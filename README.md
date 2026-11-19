@@ -172,15 +172,15 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - Where: `area` (what one area covers).
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `view` and `command`
-  that serve steps; `operation` that performs them; `guard` on entering. A `choice` with `when` is offered only while it
+  that serve steps; `operation` that performs them. A refusal is a `case` that leads to a failure end. A `choice` with `when` is offered only while it
   holds (the same screen offers fewer choices; a `case` when the path differs); an actor step keeps one choice without it.
 - What it keeps: `entity` with `attr`, `state` and `transition`; `value` (a number with a unit), `config_key`, `set`. An
   attribute with `derived` is computed from what its expression reads: no `write` effect names it, and it has no `max`
   and is never `optional`.
-- Conditions (`when` of a case, a guard or a choice; `derived`) may name actors.
+- Conditions (`when` of a case or a choice; `derived`) may name actors.
 - What it depends on: `external` and its `deviation`s.
 - What is open and what the owner chose: `decision` with `option`, `guess` (and its `heard`) and `answer`.
-- Held to: a row, an external, a workflow, an entity, an attribute or a guard names the rules it is held to with `by`; a
+- Held to: any entry names the rules it is held to with `by`; a
   rule has no `on`. `by` is outside the build hash of all but the rows, so adding a rule stales no holder; the pin of an
   external held to a rule is part of the rule's build hash (`fingerprint.reached`), so a new pin makes its proofs work again.
 

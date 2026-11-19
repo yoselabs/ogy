@@ -53,7 +53,7 @@ owner's wording for business rows:
 7. How do we put it right, and by when?
 
 Also ask of every outside fact: who keeps it true? Each cell gets an entry (`ogy kinds` lists the
-kinds that hold it: `deviation`, `guard`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
+kinds that hold it: `deviation`, `case`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
 "fee on a closed day" and "the reminder email fails" were missed by almost all 32 runs without this pass.
 
 ## 4. Decisions: ask, guess, hear

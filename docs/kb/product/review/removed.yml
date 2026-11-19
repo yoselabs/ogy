@@ -141,3 +141,24 @@ items:
         from: human
         said: Agreed to the seven, with CI's check sentence and the answered state corrected
         hash: 41d83fa392cb
+  - id: product/review/guard/all-round-names-its-cards
+    kind: guard
+    parent:
+    title:
+    said: A bare yes to a round shown with --all is refused; the owner names the cards or says yes all.
+    why: software/ontology/decision/guard-is-a-case
+    replaced_by:
+    at: 2026-11-19 22:18:34+00:00
+    last_seen: e97f2c888c4f9b0519ab9daf521426f0dcd7a887
+    hash: f59d8c562452
+    ontology: software
+    snapshot:
+      says: A bare yes to a round shown with --all is refused; the owner names the cards or says yes all.
+      on: product/review/workflow/review-and-reply/step/apply
+      when:
+        text: the round was not shown with --all, or the yes names its cards
+        reads:
+        - product/review/entity/review-round/attr/everything
+      else: product/review/workflow/review-and-reply/end/refused
+      src:
+      - code:src/ogy/reply.py#_yes

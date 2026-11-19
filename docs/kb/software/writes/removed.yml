@@ -19,3 +19,22 @@ items:
       - software/storage/external/git
       src:
       - code:src/ogy/writes.py#message
+  - id: software/writes/guard/write-lock-free
+    kind: guard
+    parent:
+    title:
+    said: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
+    why: software/ontology/decision/guard-is-a-case
+    replaced_by:
+    at: 2026-11-19 22:18:32+00:00
+    last_seen: e97f2c888c4f9b0519ab9daf521426f0dcd7a887
+    hash: 12c7e201773d
+    ontology: software
+    snapshot:
+      says: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
+      on: product/capture/workflow/capture-entries/step/check
+      when:
+        text: no other ogy write holds the write lock
+      else: product/capture/workflow/capture-entries/end/refused
+      src:
+      - code:src/ogy/writes.py#locked

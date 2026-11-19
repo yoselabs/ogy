@@ -1,5 +1,0 @@
-says: Nothing new is delivered once the task branch is no longer the checked commit.
-"on": product/land/workflow/land/step/continue
-when: {text: "the local task branch and origin's task branch are both X; not asked with no-change or withdraw", reads: [software/land/external/origin]}
-else: product/land/workflow/land/end/branch-moved
-src: ["code:src/taskloop/land.py#_branch"]

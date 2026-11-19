@@ -85,8 +85,7 @@ def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> N
     rows = (flow.choice, flow.case, flow.timeout)
     wanted = [(container, flow.start), *((container, field) for field in flow.roots), *((k, flow.then) for k in (flow.step, *rows)),
               (flow.step, flow.actor), (flow.step, flow.calls), (flow.case, flow.covers), (flow.case, flow.when),
-              (flow.case, flow.order), *((k, field) for k in flow.servers for field in (flow.serves, flow.offers)),
-              (flow.guard, flow.guarded), (flow.guard, flow.denied)]
+              (flow.case, flow.order), *((k, field) for k in flow.servers for field in (flow.serves, flow.offers))]
     for kind, field in wanted:
         _mark(found, kind, field, "flow", kinds)
 

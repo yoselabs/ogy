@@ -201,9 +201,6 @@ class Flow(BaseModel):
     serves: str
     servers: tuple[str, ...]
     offers: str  # a serving entry offering only some choices lists them; without it, it offers all
-    guard: str  # a guard on a step sends the work to its `denied` target when its condition does not hold
-    guarded: str
-    denied: str
 
 
 class Kind(BaseModel):

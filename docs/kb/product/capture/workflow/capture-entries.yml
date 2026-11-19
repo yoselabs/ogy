@@ -53,6 +53,11 @@ steps:
         effects:
         - do: write
           on: product/capture/entity/entry
+      locked:
+        order: 0
+        when:
+          text: another ogy write holds the write lock
+        then: refused
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

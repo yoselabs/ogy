@@ -4,13 +4,22 @@ src:
 start: ask
 realizes: product/lending/capability/lend-tools
 steps:
+  standing:
+    says: Only a member who owes no late fee may borrow.
+    by: [product/lending/rule/late-fee-is-per-day]
+    cases:
+      owes:
+        order: 1
+        when: {text: the member owes a late fee, reads: [product/lending/value/late-fee]}
+        then: refused
+      otherwise: {then: record}
   ask:
     says: The member asks for a tool.
     actor: product/lending/actor/member
     choices:
       borrow:
         label: Borrow a tool
-        then: record
+        then: standing
         by:
         - product/lending/rule/late-fee-is-per-day
       leave:

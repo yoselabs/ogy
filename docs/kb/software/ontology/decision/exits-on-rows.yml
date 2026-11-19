@@ -1,0 +1,18 @@
+structure: true
+question: Do a step's exits live only on its rows?
+context: "Harmony review finding 10: a step's own then cannot hold effects, so a step that acts needs a row anyway (checkout: charge card then create the order)."
+options:
+  rows:
+    label: Yes; drop step.then; a step that only acts has one otherwise case
+  step-effects:
+    label: No; let a step with a plain then hold effects
+  both:
+    label: Keep both shapes
+guess:
+  chose: rows
+  why: Effects always have a home.
+answers:
+- chose: rows
+  said: Yes to all of round 2 as Fable refined it
+  at: '2026-11-19T23:18:17+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

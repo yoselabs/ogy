@@ -1,5 +1,0 @@
-says: A land runs from the person's own shell, never from an environment that carries the implementing agent's push bar.
-"on": product/land/workflow/land/step/resume
-when: {text: the Git configuration in this process's environment does not carry the agent's push bar}
-else: product/land/workflow/land/end/refused
-src: ["code:src/taskloop/land.py#_barred"]

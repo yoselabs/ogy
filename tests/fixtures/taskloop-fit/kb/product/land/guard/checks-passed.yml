@@ -1,5 +1,0 @@
-says: Only a task whose latest checks passed, were released and were not abandoned lands.
-"on": product/land/workflow/land/step/resume
-when: {text: "the task's latest checks attempt concluded passed, is released and is not abandoned; with no-change any conclusion"}
-else: product/land/workflow/land/end/refused
-src: ["code:src/taskloop/land.py#_not_checked"]

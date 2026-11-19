@@ -21,9 +21,6 @@ flow:
   serves: serves_stages
   servers: [screen]
   offers: shows_moves
-  guard: gate
-  guarded: guards
-  denied: refused_to
 fields:
   tells: {required: true}
   clock: {type: text}

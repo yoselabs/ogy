@@ -22,9 +22,6 @@ flow:                                                # makes it a graph: the kin
   serves: serves
   servers: [view, command]                           # the kinds that serve a step to its actor
   offers: offers                                     # a server offering only some choices lists them
-  guard: guard                                       # sends the work to its `else` target when its condition does not hold
-  guarded: "on"
-  denied: else
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
   says: {required: true}                             # the result it reaches

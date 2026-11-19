@@ -1,5 +1,0 @@
-says: Only a task whose current attempt is a finished implement attempt lands.
-"on": product/land/workflow/land/step/resume
-when: {text: the task's current attempt is a done implement attempt}
-else: product/land/workflow/land/end/refused
-src: ["code:src/taskloop/land.py#_task"]

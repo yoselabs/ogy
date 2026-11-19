@@ -15,3 +15,22 @@ items:
       says: An MCP client, such as Claude Code, that starts ogy mcp from the .mcp.json at the repository root and calls one tool per ogy command over stdio.
       src:
       - code:src/ogy/mcp_server.py#build
+  - id: software/mcp/guard/reply-names-its-round
+    kind: guard
+    parent:
+    title:
+    said: Over MCP a reply names its round; only a person at a terminal may let the newest round be taken.
+    why: software/ontology/decision/guard-is-a-case
+    replaced_by:
+    at: 2026-11-19 22:18:31+00:00
+    last_seen: e97f2c888c4f9b0519ab9daf521426f0dcd7a887
+    hash: 59b6b938bf57
+    ontology: software
+    snapshot:
+      says: Over MCP a reply names its round; only a person at a terminal may let the newest round be taken.
+      on: software/mcp/workflow/call-a-tool/step/run
+      when:
+        text: the tool is not reply, or it names the round with --round
+      else: software/mcp/workflow/call-a-tool/end/tool-error
+      src:
+      - code:src/ogy/mcp_server.py#build

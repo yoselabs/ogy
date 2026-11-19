@@ -1,0 +1,18 @@
+structure: true
+question: Which effects may a row have?
+context: 'Harmony review finding 9: create and a transition without from say one thing; count and write overlap; tell and write on an external overlap; harm cannot sit on an effect.'
+options:
+  five:
+    label: create, delete, write, transition, tell; count and counter go; a dependency is only told; an effect may carry harm
+  write-external:
+    label: The same, and write on an external stays
+  six:
+    label: Keep the six
+guess:
+  chose: five
+  why: One way to say each change.
+answers:
+- chose: five
+  said: Yes to all of round 2 as Fable refined it
+  at: '2026-11-19T23:18:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
