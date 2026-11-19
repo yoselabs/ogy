@@ -19,7 +19,7 @@ steps:
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: cbcded6cf369
   check:
-    says: ogy checks that the entry may go, then appends its item and deletes it.
+    says: ogy checks that the entry may go.
     cases:
       linked:
         order: 1

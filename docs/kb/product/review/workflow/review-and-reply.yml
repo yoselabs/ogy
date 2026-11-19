@@ -55,7 +55,7 @@ steps:
 ends:
   applied:
     result: success
-    says: The answers and agreements are recorded with a short paraphrase of what the owner said.
+    says: Each item is applied to its card, and what it records carries a short paraphrase of what the owner said.
   refused:
     result: failure
     says: The item is refused and its card stays in the queue.

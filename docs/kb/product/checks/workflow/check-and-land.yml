@@ -19,7 +19,7 @@ steps:
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: 7109afc8929b
   judge:
-    says: ogy reads the commit or the worktree and runs every check.
+    says: ogy checks the commit or the worktree it was pointed at.
     cases:
       findings:
         order: 1

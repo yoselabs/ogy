@@ -42,10 +42,10 @@ steps:
 ends:
   set-up:
     result: success
-    says: ogy.yml, the shared areas, the ogy block in AGENTS.md (and CLAUDE.md), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
+    says: ogy.yml, the constitution file, the shared area of the first layer, the ogy block in AGENTS.md (and in CLAUDE.md when it exists), the ogy server in .mcp.json, the deny rules and the pre-commit hook are in place.
   reported:
     result: success
-    says: The person reads what is missing.
+    says: The person reads what is missing, and the exit code is 1 when something is.
   refused:
     result: failure
-    says: Nothing is written.
+    says: Nothing is written; the refusal names the file or flag at fault.
