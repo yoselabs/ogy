@@ -2,8 +2,8 @@
 check finds a new error, puts every file back and refuses.
 
 `agree` (inside `reply`) and `answer` change the knowledge base, as `put` does; nothing here writes a status. ogy keeps no
-message and no quote: an answer and an agreement keep a short paraphrase of what the person said (`said`), who (`from`),
-when (`at`) and where (`where`, the session)."""
+message and no quote: an answer and an agreement keep a short paraphrase of what the person said (`said`), when (`at`) and
+where (`where`, the session), in the names the settling kind gives them; who answered is computed from `delegated`."""
 
 import datetime
 from collections.abc import Callable, Iterator, Mapping
@@ -16,9 +16,11 @@ from process_lock import LockHeldError, ProcessLock
 
 from ogy import near, removal
 from ogy.edit import Editor
+from ogy.fieldtypes import AGREED_HASH
+from ogy.kinds import Settling
 from ogy.model import Address, Finding, Problem, parse_address
 from ogy.removal import RemoveRefused
-from ogy.settle import Decision, decision_of, decisions
+from ogy.settle import Decision, answers_key, decision_of, decisions
 from ogy.snapshot import Snapshot
 from ogy.target import Target, worktree_findings
 from ogy.verdict import Refusal
@@ -109,8 +111,8 @@ class Said:
     who: str = "human"
     note: str | None = None
 
-    def stamp(self) -> Data:
-        return {"at": self.at, "where": self.where, "said": self.said}
+    def stamp(self, names: Settling) -> Data:
+        return {names.at: self.at, names.where: self.where, names.said: self.said}
 
 
 def said(text: str, where: str, at: str | None, now: Clock = utc_now, who: str = "human", note: str | None = None) -> Said:
@@ -128,9 +130,18 @@ def current(snapshot: Snapshot, addresses: list[Address]) -> dict[str, str]:
 def stamp(editor: Editor, words: Said, hashes: Mapping[str, str]) -> None:
     """Record on each entry the person's yes to the fingerprint given: `agreed: {at, where, said, hash}`."""
     for text, fingerprint in hashes.items():
-        address = editor.snapshot().resolve(text)
+        snapshot = editor.snapshot()
+        address, names = snapshot.resolve(text), settling(snapshot)
         assert address is not None
-        editor.update(address, {"agreed": {**words.stamp(), "hash": fingerprint}})
+        editor.update(address, {snapshot.ontology.roles.agreed: {**words.stamp(names), AGREED_HASH: fingerprint}})
+
+
+def settling(snapshot: Snapshot) -> Settling:
+    """The settling kind's names: an answer and an agreement are written in them."""
+    kind = snapshot.ontology.settling_kind()
+    if kind is None or kind.settling is None:
+        raise WriteRefused(["the ontology has no settling kind: nothing answers or agrees"])
+    return kind.settling
 
 
 def agree(target: Target, words: Said, texts: list[str], hashes: Mapping[str, str] | None = None) -> list[Address]:
@@ -221,12 +232,14 @@ def answer(target: Target, decision_text: str, option: str, words: Said, delegat
         raise WriteRefused([f"{decision_text} has no option {option!r} (options: {', '.join(sorted(found.options)) or 'none'})"])
     outcome: list[Answered] = []
 
+    names, key = settling(snapshot), answers_key(snapshot)
+
     def act(ed: Editor) -> None:
-        extra = (("note", words.note), ("delegated", proof))
-        item: Data = {"chose": option, "said": words.said, "at": words.at, "where": words.where,
+        extra = ((names.note, words.note), (names.delegated, proof))
+        item: Data = {names.chose: option, names.said: words.said, names.at: words.at, names.where: words.where,
                       **{k: v for k, v in extra if v}}
-        held = snapshot.entries[found.address].fields.get("answers")
-        ed.update(found.address, {"answers": [*(held if isinstance(held, list) else []), item]})
+        held = snapshot.entries[found.address].fields.get(key)
+        ed.update(found.address, {key: [*(held if isinstance(held, list) else []), item]})
         changed, gone = _apply(target, ed, found, option, now)
         if words.who == "human" and changed:
             after = ed.snapshot()

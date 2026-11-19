@@ -30,6 +30,7 @@ from ogy.kinds import NAME
 from ogy.model import Address
 from ogy.rounds import Round, Shown
 from ogy.settle import Decision, decisions
+from ogy.snapshot import Snapshot
 from ogy.status import delegated
 from ogy.target import Target
 from ogy.verdict import NotFound
@@ -102,12 +103,31 @@ def _change(target: Target, words: Said, card: Shown, sentence: str) -> None:
     commit(target, lambda snap: [a for a in [snap.resolve(card.address)] if a], act)
 
 
-def _unique(target: Target, layer: str, area: str, stem: str) -> Address:
+def _unique(target: Target, kind: str, layer: str, area: str, stem: str) -> Address:
     taken = Editor(target.repo, target.kb, target.kinds()).snapshot().entries
     number = 1
-    while (address := Address(layer, area, (("decision", stem if number == 1 else f"{stem}-{number}"),))) in taken:
+    while (address := Address(layer, area, ((kind, stem if number == 1 else f"{stem}-{number}"),))) in taken:
         number += 1
     return address
+
+
+def _question(snapshot: Snapshot, words: Said, card: Shown, field: str) -> tuple[str, dict[str, object]]:
+    """A question whether the card's sentence still holds, in the settling kind's names: keep it (the guess) or drop it."""
+    ontology = snapshot.ontology
+    kind = ontology.settling_kind()
+    names = kind.settling if kind else None
+    option, guess = (ontology.get(names.option), ontology.get(names.guess)) if names else (None, None)
+    if kind is None or names is None or option is None or guess is None or not (kind.sentence and option.sentence):
+        raise WriteRefused(["the ontology has no settling kind with a question and options: nothing can ask"])
+
+    def choice(label: str, sets: object) -> dict[str, object]:
+        return {option.sentence or "": label, names.sets: {card.address: sets}}
+
+    return kind.kind, {
+        kind.sentence: f"Is this still right: {card.shown}",
+        names.context: f"The owner said no on {words.at[:10]} ({words.where}): {words.said}. Built as it is until answered.",
+        option.key or "": {"keep": choice("Keep it as it is", {field: card.shown}), "drop": choice("Drop it", None)},
+        guess.key or "": {names.chose: "keep", names.why: "Built as it is until the owner answers."}}
 
 
 def _reconsider(target: Target, words: Said, card: Shown) -> Address:
@@ -117,12 +137,8 @@ def _reconsider(target: Target, words: Said, card: Shown) -> Address:
     field = _sentence_field(target, card.address)
     layer = subject.layer or snapshot.ontology.layers[0]  # a term has no layer: its question is the owner's, in the first layer
     key = re.sub(r"[^a-z0-9]+", "-", (subject.key or subject.kind).lower()).strip("-")
-    address = _unique(target, layer, subject.area, f"reconsider-{key if NAME.match(key) else subject.kind}")
-    fields = {"question": f"Is this still right: {card.shown}",
-              "context": f"The owner said no on {words.at[:10]} ({words.where}): {words.said}. Built as it is until answered.",
-              "options": {"keep": {"label": "Keep it as it is", "sets": {card.address: {field: card.shown}}},
-                          "drop": {"label": "Drop it", "sets": {card.address: None}}},
-              "guess": {"chose": "keep", "why": "Built as it is until the owner answers."}}
+    kind, fields = _question(snapshot, words, card, field)
+    address = _unique(target, kind, layer, subject.area, f"reconsider-{key if NAME.match(key) else subject.kind}")
     commit(target, lambda _: [address, subject], lambda ed: ed.put(address, fields))
     return address
 
@@ -137,8 +153,8 @@ def _heard(target: Target, card: Shown) -> tuple[str, str] | None:
     """(option guessed, what the owner was heard to say) of a question whose guess rests on the owner's words, else None."""
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     found = next((d for d in decisions(snapshot) if str(d.address) == card.address and not d.answers), None)
-    chose = found.guess.fields.get("chose") if found and found.guess else None
-    heard = found.heard.fields.get("said") if found and found.heard else None
+    chose = found.guess.fields.get(found.names.chose) if found and found.guess else None
+    heard = found.heard.fields.get(found.names.said) if found and found.heard else None
     return (chose, heard) if isinstance(chose, str) and isinstance(heard, str) else None
 
 
@@ -184,7 +200,7 @@ def _recommended(decision: Decision | None) -> object:
         return None
     if decision.answers:
         return decision.in_force.option if delegated(decision) and decision.in_force else None
-    return decision.guess.fields.get("chose") if decision.guess else None
+    return decision.guess.fields.get(decision.names.chose) if decision.guess else None
 
 
 def _accept_all(target: Target, found: Round, words: Said) -> str:

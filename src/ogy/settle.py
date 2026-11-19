@@ -1,7 +1,7 @@
 """Decisions settle entries: which entries and fields, the option in force, and the fixed checks D2, D4 to D6 and D10.
 
-Pure functions over a snapshot. The names read (option, answer, guess, sets, chose, value, said, from, at, where, note,
-delegated, heard) come from the settling kind's `Settling`.
+Pure functions over a snapshot. The names read (option, answer, guess, sets, chose, value, said, at, where, note, delegated,
+heard) come from the settling kind's `Settling`; the key its answers are kept under is the answer kind's `key`.
 """
 
 from collections.abc import Mapping
@@ -18,7 +18,7 @@ type Sets = Mapping[str, object]  # {address text: {field: value} | None}
 
 @dataclass(frozen=True)
 class Answer:
-    """One answer: ogy keeps no message and no quote, only the paraphrase `said`, who (`from`), when and where."""
+    """One answer: ogy keeps no message and no quote, only the paraphrase `said`, who (computed), when and where."""
 
     chose: str
     said: str
@@ -26,7 +26,7 @@ class Answer:
     at: datetime | None
     where: str = ""
     note: str | None = None  # the person's hedge or condition; outside the fingerprint
-    delegated: Address | None = None  # with `from: ai`: the decision whose human answer let the agent decide
+    delegated: Address | None = None  # an agent's answer: the decision whose human answer let the agent decide
 
 
 @dataclass(frozen=True)
@@ -92,11 +92,18 @@ def settling_of(snapshot: Snapshot) -> Settling | None:
     return kind.settling if kind else None
 
 
+def answers_key(snapshot: Snapshot) -> str:
+    """The key the settling kind keeps its answers under: the answer kind's."""
+    kind = snapshot.ontology.settling_kind()
+    answer = snapshot.ontology.get(kind.settling.answer) if kind and kind.settling else None
+    return answer.key or "" if answer else ""
+
+
 def decisions(snapshot: Snapshot) -> list[Decision]:
     kind = snapshot.ontology.settling_kind()
     if kind is None or kind.settling is None:
         return []
-    names = kind.settling
+    names, key = kind.settling, answers_key(snapshot)
     found: list[Decision] = []
     for address, entry in sorted(snapshot.entries.items()):
         if address.kind != kind.kind:
@@ -106,7 +113,7 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}
-        items = entry.fields.get("answers") or []
+        items = entry.fields.get(key) or []
         decision.answers += [_answer(snapshot, address, names, item) for item in items if isinstance(item, dict)]
         found.append(decision)
     return found
@@ -121,7 +128,7 @@ def _answer(snapshot: Snapshot, decision: Address, names: Settling, item: Mappin
     who = "ai" if item.get(names.delegated) is not None else "human"  # computed: an answer with `delegated` is an agent's
     return Answer(str(item.get(names.chose)), _text(item, names.said) or "", who, moment(item.get(names.at)),
                   _text(item, names.where) or "", _text(item, names.note),
-                  resolve(snapshot, decision, item.get(names.delegated), "decision"))
+                  resolve(snapshot, decision, item.get(names.delegated), decision.kind))
 
 
 def settles(decision: Decision) -> tuple[dict[str, set[str]], set[str]]:
