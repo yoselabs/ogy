@@ -63,6 +63,9 @@ Q<n>. <short title>
 - Each card reads alone, out of the chat: why it comes up, the question, and every option with what it makes true.
   Never show only the recommended or the in-force option; for a delegated answer, show what the owner chose before and
   what the agent changed (owner, 2026-11-19).
+- A structural question (kinds, links, workflows) is explained with a common web application first: sign-in, password
+  reset, an admin page of users, an event that starts a flow. Draw it (before and after) and map it to the owner's
+  product in a table (owner, 2026-11-19: a familiar product makes the model easy to absorb).
 - Word each card so "yes" accepts the recommendation (from grilling). Every card is a stored `decision` with its
   guess (see `ogy-capture` section 4); do not ask what is not stored.
 - If the owner's answers are short, switch to two options (from iorlas-brainstorm).
