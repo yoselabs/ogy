@@ -12,6 +12,12 @@ steps:
       shown:
         label: Show the round
         then: reply
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 9d77d36e93ef
   reply:
     says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase.
     actor: product/shared/actor/owner
@@ -40,6 +46,12 @@ steps:
         effects:
         - do: transition
           on: product/capture/entity/entry/transition/agree
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 29b256827549
 ends:
   applied:
     result: success
@@ -47,3 +59,9 @@ ends:
   refused:
     result: failure
     says: The item is refused and its card stays in the queue.
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 444ebcb4d84e

@@ -11,6 +11,12 @@ steps:
       commit:
         label: Commit
         then: check
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 251acf4754cf
   check:
     says: The hook writes the staged tree as a commit and runs ogy --rev <that commit> check.
     cases:
@@ -30,6 +36,12 @@ ends:
   committed:
     result: success
     says: The commit is made.
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 5bb66c99d080
   refused:
     result: failure
     says: The commit is refused and the findings are printed.

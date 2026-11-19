@@ -241,3 +241,9 @@ def test_yes_all_reports_a_stale_card_and_applies_the_rest(asked: Path) -> None:
     assert code == cli.OK and "not done: product/app/capability/a-cap changed since it was shown" in lines[0], lines
     assert "nobody agreed" in status(asked, "product/app/capability/a-cap")
     assert "decided by you" in status(asked, "product/app/capability/b-cap")
+
+
+def test_a_rewritten_card_then_yes_agrees_to_the_others(asked: Path) -> None:
+    code, lines = r(asked, "1: A member can borrow for 30 days., yes")
+    assert code == cli.OK and not any("refused" in line or "changed since" in line for line in lines), lines
+    assert all("decided by you" in status(asked, f"product/app/capability/{k}") for k in ("a-cap", "b-cap"))

@@ -15,6 +15,12 @@ steps:
       ask:
         label: Ask what is missing
         then: report
+    agreed:
+      at: '2026-11-19T18:56:21+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 29f093721057
   write:
     says: ogy writes each missing piece and merges into the files that exist.
     cases:

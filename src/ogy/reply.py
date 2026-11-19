@@ -252,9 +252,29 @@ def reply(target: Target, text: str, paraphrase: str, where: str, at: str | None
     before = files(target)
     applied: list[str] = []
     refused: list[str] = []
+    handled: set[str] = set()
     for item in items:
         try:
-            applied.append(f"{item}: {_apply(target, found, words, item)}")
+            applied.append(f"{item}: {_apply(target, _rest(found, item, handled), words, item)}")
         except WriteRefused as error:
             refused.append(f"{item}: {'; '.join(error.reasons)}")
+        handled |= _labels(item)
     return Replied(applied, refused, files(target) != before)
+
+
+def _labels(item: str) -> set[str]:
+    """The card a `2: <sentence>`, `no 4`, `Q1 b` or `Q1: <words>` item answers."""
+    if match := CHANGE.fullmatch(item) or NO.fullmatch(item):
+        return {match.group(1)}
+    if match := CHOOSE.fullmatch(item) or FILL.fullmatch(item):
+        return {f"Q{match.group(1)}"}
+    return set()
+
+
+def _rest(found: Round, item: str, handled: set[str]) -> Round:
+    """For a bare `yes` or `yes all`: the round without the cards an earlier item of the same reply already answered, so
+    `2: <sentence>, yes` agrees to the others instead of refusing card 2 as changed."""
+    match = YES.fullmatch(item)
+    if not handled or match is None or (match.group(1) and match.group(1).lower() != "all"):
+        return found
+    return found.model_copy(update={"cards": tuple(card for card in found.cards if card.label.upper() not in handled)})
