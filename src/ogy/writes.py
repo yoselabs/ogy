@@ -156,26 +156,42 @@ class Answered:
 
 
 def _apply(target: Target, editor: Editor, decision: Decision, option: str, now: Clock) -> tuple[list[str], list[str]]:
-    """Put the chosen option's `sets` in the worktree: fields given, entries added, entries that must not exist removed."""
+    """Put the chosen option's `sets` in the worktree: fields given, entries added, then the entries that must not exist
+    removed, each after the others of the set that link to it (a transition before the state it ends in)."""
     changed: list[str] = []
-    gone: list[str] = []
+    doomed: list[str] = []
     for text, given in sorted(decision.options[option].items()):
         snapshot = editor.snapshot()
         address = parse_address(text, snapshot.ontology)
         if address is None:
             raise WriteRefused([f"{text} is no address"])
         if given is None:
-            if address in snapshot.entries:
-                try:
-                    removal.remove(target.repo, target.kb, target.kinds(), target.ontology, text, str(decision.address), None, now(),
-                                   head(target.repo))
-                except (RemoveRefused, LookupError) as error:
-                    raise WriteRefused(error.reasons if isinstance(error, RemoveRefused) else [str(error)]) from error
-                gone.append(text)
+            doomed += [text] if address in snapshot.entries else []
         elif isinstance(given, dict):
             editor.update(address, given) if address in snapshot.entries else editor.put(address, given)
             changed.append(text)
-    return changed, gone
+    return changed, _remove_all(target, decision, doomed, now)
+
+
+def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Clock) -> list[str]:
+    """Remove every entry of `doomed`, in passes: one still linked to by another of them waits for the next pass; a pass
+    that removes nothing refuses with the reasons."""
+    gone: list[str] = []
+    while doomed:
+        refused: list[str] = []
+        before = len(doomed)
+        for text in list(doomed):
+            try:
+                removal.remove(target.repo, target.kb, target.kinds(), target.ontology, text, str(decision.address), None, now(),
+                               head(target.repo))
+            except (RemoveRefused, LookupError) as error:
+                refused += error.reasons if isinstance(error, RemoveRefused) else [str(error)]
+                continue
+            doomed.remove(text)
+            gone.append(text)
+        if len(doomed) == before:
+            raise WriteRefused(refused)
+    return gone
 
 
 def _delegation(snapshot: Snapshot, words: Said, delegated: str | None) -> str | None:

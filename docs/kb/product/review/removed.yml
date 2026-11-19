@@ -103,3 +103,41 @@ items:
     ontology: software
     snapshot:
       says: Newer rounds pushed it out; a reply that names it finds nothing.
+  - id: product/review/entity/review-round/transition/save
+    kind: transition
+    parent:
+      address: product/review/entity/review-round
+      key: transitions
+      position: 0
+    title:
+    said:
+    why: product/review/decision/review-round-says-once
+    replaced_by:
+    at: 2026-11-19 19:43:22+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 8ddb2e504ba8
+    ontology: software
+    snapshot:
+      to: kept
+  - id: product/review/entity/review-round/state/kept
+    kind: state
+    parent:
+      address: product/review/entity/review-round
+      key: states
+      position: 0
+    title:
+    said: The round is in the Git directory and a reply may name it.
+    why: product/review/decision/review-round-says-once
+    replaced_by:
+    at: 2026-11-19 19:43:22+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 41d83fa392cb
+    ontology: software
+    snapshot:
+      says: The round is in the Git directory and a reply may name it.
+      agreed:
+        at: '2026-11-19T18:43:39+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        from: human
+        said: Agreed to the seven, with CI's check sentence and the answered state corrected
+        hash: 41d83fa392cb

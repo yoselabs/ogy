@@ -143,3 +143,71 @@ items:
         sourced:
           type: list
           says: The hash of each code or doc source it was captured from.
+  - id: software/storage/value/fingerprint-length
+    kind: value
+    parent:
+    title:
+    said: The length of an entry's fingerprint.
+    why: software/storage/decision/code-constants
+    replaced_by:
+    at: 2026-11-19 19:42:44+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 7aef8661c977
+    ontology: software
+    snapshot:
+      says: The length of an entry's fingerprint.
+      is: 12
+      unit: hex digits
+      src:
+      - code:src/ogy/fieldtypes.py#FINGERPRINT_LENGTH
+  - id: software/storage/value/removed-ledger-format
+    kind: value
+    parent:
+    title:
+    said: The format of every removed.yml.
+    why: software/storage/decision/code-constants
+    replaced_by:
+    at: 2026-11-19 19:42:44+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 2f69a8ce202f
+    ontology: software
+    snapshot:
+      says: The format of every removed.yml.
+      is: 1
+      unit: format version
+      src:
+      - code:src/ogy/removed.py#FORMAT
+  - id: software/storage/value/round-digest-length
+    kind: value
+    parent:
+    title:
+    said: The length of the digest in a review round's id, after the letter r.
+    why: software/storage/decision/code-constants
+    replaced_by:
+    at: 2026-11-19 19:42:45+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 1e541279585a
+    ontology: software
+    snapshot:
+      says: The length of the digest in a review round's id, after the letter r.
+      is: 6
+      unit: hex digits
+      src:
+      - code:src/ogy/rounds.py#make
+  - id: software/storage/value/source-hash-length
+    kind: value
+    parent:
+    title:
+    said: The length of the hash of a code symbol or a document section that a built line keeps.
+    why: software/storage/decision/code-constants
+    replaced_by:
+    at: 2026-11-19 19:42:46+01:00
+    last_seen: 7ba830c4c88243e4efcc0777e80514253863dd42
+    hash: 81fd2648aca9
+    ontology: software
+    snapshot:
+      says: The length of the hash of a code symbol or a document section that a built line keeps.
+      is: 12
+      unit: hex digits
+      src:
+      - code:src/ogy/evidence.py#HASH_LENGTH

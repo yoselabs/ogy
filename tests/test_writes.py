@@ -264,3 +264,19 @@ def test_a_put_into_a_new_area_brings_its_area_entry_whose_id_is_the_folder(repo
     code, lines = w(repo, "put", json.dumps([{"address": "product/loans/area/loans", "says": "Loans and their fees."}, rule]))
     assert code == cli.OK and (repo / "docs/kb/product/loans/area.yml").read_text() == "says: Loans and their fees.\n"
     assert w(repo, "check") == (cli.OK, ["ok"]) and "product/loans/area" not in "\n".join(w(repo, "review")[1])
+
+
+def test_an_answer_removes_a_state_after_the_transition_that_links_to_it(repo: Path) -> None:
+    entity = "product/app/entity/loan"
+    states = {"open": {"says": "Lent."}, "closed": {"says": "Back."}}
+    sets = {f"{entity}/state/closed": {"says": "Back."}, f"{entity}/transition/close": {"to": "closed"}}
+    options = {"keep": {"label": "Keep", "sets": sets},
+               "drop": {"label": "Drop", "sets": {f"{entity}/state/closed": None, f"{entity}/transition/close": None}}}
+    records = [{"address": entity, "says": "A loan.", "src": ["code:app.py#lend"], "states": states,
+                "transitions": {"close": {"from": ["open"], "to": "closed"}}},
+               {"address": "product/app/decision/loan-close", "question": "Do loans close?", "options": options,
+                "guess": {"chose": "keep", "why": "built"}}]
+    code, lines = w(repo, "put", json.dumps(records))
+    assert code == cli.OK, lines
+    code, lines = w(repo, "answer", "product/app/decision/loan-close", "drop", "--said", "Loans never close", *SAID)
+    assert code == cli.OK and f"removed {entity}/state/closed" in lines and f"removed {entity}/transition/close" in lines, lines

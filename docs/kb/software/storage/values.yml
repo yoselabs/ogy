@@ -4,24 +4,6 @@
   unit: rounds
   src:
   - code:src/ogy/rounds.py#KEEP
-- id: fingerprint-length
-  says: The length of an entry's fingerprint.
-  is: 12
-  unit: hex digits
-  src:
-  - code:src/ogy/fieldtypes.py#FINGERPRINT_LENGTH
-- id: source-hash-length
-  says: The length of the hash of a code symbol or a document section that a built line keeps.
-  is: 12
-  unit: hex digits
-  src:
-  - code:src/ogy/evidence.py#HASH_LENGTH
-- id: round-digest-length
-  says: The length of the digest in a review round's id, after the letter r.
-  is: 6
-  unit: hex digits
-  src:
-  - code:src/ogy/rounds.py#make
 - id: history-limit
   says: How many commits ogy history reads unless --limit says otherwise.
   is: 100
@@ -34,9 +16,3 @@
   unit: addresses
   src:
   - code:src/ogy/near.py#MOST
-- id: removed-ledger-format
-  says: The format of every removed.yml.
-  is: 1
-  unit: format version
-  src:
-  - code:src/ogy/removed.py#FORMAT

@@ -1,3 +1,3 @@
-says: A fact read by a check, the work derivation (fingerprint) or impact is a field or a link; a fact read only by a person or agent is text (`says`) on its entry; text naming another entry makes that part a link; a decided number is a value; when no kind fits, a rule with links and a proof, never a new kind; a new kind or field names the check that reads it. `ogy init` ships the principle rigid-where-checked and this guidance (docs/guidance.md, "Rigid where checked") to every repository.
+says: Text naming another entry makes that part a link; a decided number is a value; when no kind fits, a rule with links and a proof, never a new kind; a new kind or field names the check that reads it. `ogy init` ships the principle rigid-where-checked and docs/guidance.md ("Rigid where checked") to every repository.
 because:
 - constitution/principle/rigid-where-checked
