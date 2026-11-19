@@ -1,11 +1,11 @@
 """`ogy kinds --map`: the whole ontology on one screen. One line per kind, grouped by the layers it may live in, its parts
 indented under it; then the rules the kind files declare, as sentences. Read from the kind files; nothing is kept."""
 
-from ogy.kinds import FieldSpec, FieldType, Flow, Holds, Kind, Shape
+from ogy.kinds import COMMON_FIELDS, FieldSpec, FieldType, Flow, Holds, Kind, Shape
 from ogy.ontology import Ontology
 
 LEGEND = ("! required, -> one link, ->> many links (an expression: the links it reads), [] a list part, (a|b) enum members, "
-          "indentation = part of; every kind also takes title, src, because, proof and agreed")
+          f"indentation = part of; every kind also takes {', '.join(COMMON_FIELDS)}")
 MANY = frozenset({FieldType.LINKS, FieldType.EXPR})
 
 

@@ -11,4 +11,3 @@ fields:
   event: {type: link, to: [transition]}              # started when this transition happens; the listener names it, the cause does not
   start: {type: link, to: [step], required: true}
   realizes: {type: link, to: [capability]}
-  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

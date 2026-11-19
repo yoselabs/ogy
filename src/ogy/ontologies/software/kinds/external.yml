@@ -7,5 +7,4 @@ layers: [software]
 fields:
   says: {required: true}                             # what it provides
   pin: {}
-  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing
 dropped: [terms]

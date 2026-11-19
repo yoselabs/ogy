@@ -14,4 +14,3 @@ fields:
   max: {type: link, to: [value]}
   optional: {type: flag}
   derived: {type: expr, to: [value, set, entity, attr, state, external, config_key, actor]}   # computed from what it reads, never written
-  by: {type: links, to: [rule], note: true}          # the rules it is held to; outside its fingerprint, so adding a rule stales nothing

@@ -14,4 +14,3 @@ requires:
 fields:
   after: {type: link, to: [value], required: true}
   then: {type: link, to: [step, end, workflow], required: true}
-  by: {type: links, to: [rule]}

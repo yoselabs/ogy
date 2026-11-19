@@ -281,6 +281,7 @@ COMMON_FIELDS: dict[str, FieldSpec] = {
     "title": FieldSpec(note=True),
     "src": FieldSpec(type=FieldType.TEXTS, note=True),
     "because": FieldSpec(type=FieldType.LINKS, to=(ANY,)),
+    "by": FieldSpec(type=FieldType.LINKS, to=("rule",), note=True),  # the rules it is held to; a note
     "proof": FieldSpec(type=FieldType.TEXTS),
     "agreed": FieldSpec(type=FieldType.AGREED, note=True),
 }

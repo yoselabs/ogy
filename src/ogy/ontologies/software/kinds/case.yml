@@ -15,4 +15,3 @@ fields:
   when: {type: expr, to: [value, set, entity, attr, state, external, config_key, actor]}
   covers_ends: {type: links, to: [end]}             # in a calling step: the callee's ends this case answers
   then: {type: link, to: [step, end, workflow], required: true}
-  by: {type: links, to: [rule]}
