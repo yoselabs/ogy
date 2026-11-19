@@ -12,7 +12,7 @@ sha=$(git -C "$repo" rev-parse --verify "$commit^{commit}")
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 git -C "$repo" archive "$sha" | tar -x -C "$tmp"
-(cd "$tmp" && uv run ogy kinds --map >"$tmp/map.txt" && uv run ogy glossary >"$tmp/glossary.txt")
+(cd "$tmp" && export MISE_TRUSTED_CONFIG_PATHS="$tmp" && uv run ogy kinds --map >"$tmp/map.txt" && uv run ogy glossary >"$tmp/glossary.txt")
 mkdir -p "$here/inputs"
 python3 -I - "$here" "$tmp" "$arm" <<'PY'
 import sys
