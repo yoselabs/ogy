@@ -13,12 +13,18 @@ steps:
         label: Show the round
         then: reply
   reply:
-    says: The owner replies in the reply grammar, or in natural words that the agent stores once and reads as one of its items.
+    says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase.
     actor: product/shared/actor/owner
     choices:
       replied:
         label: Reply
         then: apply
+    agreed:
+      at: '2026-11-19T18:55:09+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
+      hash: 852a3499ea9c
   apply:
     says: ogy applies each item of the reply to the round, each on its own.
     cases:
