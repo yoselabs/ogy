@@ -2,11 +2,12 @@
 
 Writes `ogy.yml`, the knowledge-base folder with its constitution folder and the area `shared` of the first layer, a marked
 block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in `.mcp.json` and Claude Code deny rules for editing the
-folder by hand."""
+folder by hand, and the entries the ontology starts with (its `starts.yml`), unless removed."""
 
 import json
 import shutil
 from dataclasses import dataclass
+from importlib.resources import files
 from pathlib import Path
 
 import any_yaml
@@ -14,9 +15,11 @@ from atomic_io import atomic_write_text
 from git_porcelain import RealRepo, config_get, git_dir
 from managed_region import replace_region
 
-from ogy import config
+from ogy import config, removed
+from ogy.edit import Editor
 from ogy.kinds import SHARED_AREA
 from ogy.layout import SHARED_SAYS
+from ogy.model import Address, parse_address
 from ogy.ontology import packaged
 from ogy.source import KB_DIR
 from ogy.verdict import Refusal
@@ -206,6 +209,9 @@ def init(repo: Path, ontology: str | None = None) -> Initialised:
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)
             written.append(f"{KB_DIR}/{rel}")
+    for address, fields in missing_starts(repo, name):
+        Editor(repo, KB_DIR, packaged(name)).put(address, fields)
+        written.append(str(address))
     _block(repo, "AGENTS.md", written)
     if (repo / "CLAUDE.md").exists():
         _block(repo, "CLAUDE.md", written)
@@ -215,6 +221,23 @@ def init(repo: Path, ontology: str | None = None) -> Initialised:
     return Initialised(name, KB_DIR, written)
 
 
+def missing_starts(repo: Path, name: str) -> list[tuple[Address, dict[str, object]]]:
+    """The entries the ontology starts a knowledge base with (its `starts.yml`) that are not there and were never removed:
+    init adds them, unagreed; an entry the owner removed is never added again."""
+    source = files("ogy").joinpath("ontologies", name, "starts.yml")
+    records = any_yaml.load(source.read_text()) if source.is_file() else []
+    ontology = packaged(name)
+    snapshot = Editor(repo, KB_DIR, ontology).snapshot()
+    ledgers, _ = removed.read_all(repo / KB_DIR)
+    gone = {item.id for ledger in ledgers.values() for item in ledger.items}
+    found: list[tuple[Address, dict[str, object]]] = []
+    for record in records if isinstance(records, list) else []:
+        address = parse_address(str(record.get("address", "")), ontology) if isinstance(record, dict) else None
+        if address is not None and address not in snapshot.entries and str(address) not in gone:
+            found.append((address, {key: value for key, value in record.items() if key != "address"}))
+    return found
+
+
 def doctor(repo: Path) -> list[str]:
     """`init --check`: what is not set up in this repository, one line each, and how to mend it; empty when it is all in place.
     Writes nothing and refuses nothing: a file it cannot read is a line too."""
@@ -222,6 +245,7 @@ def doctor(repo: Path) -> list[str]:
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
     lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in STARTS if not (repo / KB_DIR / rel).is_file())
+    lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, config.read(repo).ontology or "software"))
     for rel in ("AGENTS.md", "CLAUDE.md"):
         path = repo / rel
         if rel == "AGENTS.md" or path.exists():

@@ -5,6 +5,7 @@ shape: list
 file: principles.yml
 area: constitution                                   # one global list; a `principles.yml` in any other area is `bad-path`
 must_be_agreed: true                                 # only a review round's yes agrees it
+evidence: none                                       # a value has no source to cite: the owner's yes is its evidence
 fields:
   says: {required: true}                             # the principle, one sentence
   why: {note: true}                                  # what it protects, or where it came from

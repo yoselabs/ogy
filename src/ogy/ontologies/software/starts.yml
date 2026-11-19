@@ -1,0 +1,11 @@
+# What `ogy init` starts a knowledge base with: each entry missing by address is added, unless a removed.yml records it.
+# Nothing here is agreed: the owner reads and agrees to each in the first review (rule software/setup/rule/init-adapts).
+- address: constitution/principle/rigid-where-checked
+  says: A fact that a check, work left or impact reads is a field or a link; a fact only a reader needs is text on its entry.
+  why: An all-rigid model grows as detailed as code and lags behind it; text that a check needs is a second, unchecked spec. Each fact takes the cheapest form that still lets the checks read it.
+- address: product/shared/actor/owner
+  nature: human
+  says: The person who decides the product's business questions, in natural language; never writes entries.
+- address: product/shared/actor/agent
+  nature: ai
+  says: An AI model that works on the knowledge base through ogy; it decides only where the owner delegated.

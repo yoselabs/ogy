@@ -22,7 +22,8 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
     code, lines = cli.run(["--repo", str(tmp_path), "init"])
     assert code == cli.OK and lines[0] == "ogy is set up for the software ontology in docs/kb/"
     assert read(tmp_path, "ogy.yml") == "ontology: software\n"
-    assert (tmp_path / "docs/kb/product/shared/area.yml").is_file() and read(tmp_path, "docs/kb/constitution/principles.yml") == "[]\n"
+    assert (tmp_path / "docs/kb/product/shared/area.yml").is_file()
+    assert "rigid-where-checked" in read(tmp_path, "docs/kb/constitution/principles.yml")
     agents = read(tmp_path, "AGENTS.md")
     assert agents.startswith(AGENTS.rstrip()) and "<!-- BEGIN OGY -->" in agents and "ogy glossary" in agents
     assert "prints the constitution" in agents
@@ -30,7 +31,8 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
     assert json.loads(read(tmp_path, ".mcp.json"))["mcpServers"]["ogy"]["args"][-2:] == ["ogy", "mcp"]
     assert json.loads(read(tmp_path, ".claude/settings.json"))["permissions"]["deny"] == ["Edit(/docs/kb/**/*.yml)",
                                                                                           "Write(/docs/kb/**/*.yml)"]
-    assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == (cli.OK, ["ok"])
+    waiting = (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])  # the starters wait for the owner
+    assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == waiting
 
 
 def test_init_is_idempotent_and_keeps_the_rest(tmp_path: Path) -> None:
@@ -119,7 +121,7 @@ def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor
     assert code == cli.OK and lines == ["added product/owner-area/area/owner-area", "added product/owner-area/actor/human"], lines
     answer = next(snippet for snippet in block.split("`") if snippet.startswith("ogy answer <decision>"))
     assert parser.parse_args(shlex.split(answer.replace("<decision>", "d").replace("<option>", "o").replace("<", "").replace(">", ""))[1:])
-    assert cli.run(["--repo", str(tmp_path), "check"]) == (cli.OK, ["ok"])
+    assert cli.run(["--repo", str(tmp_path), "check"]) == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
 
 
 def test_init_denies_only_the_yaml_and_replaces_the_rule_an_earlier_init_wrote(tmp_path: Path) -> None:
@@ -177,3 +179,14 @@ def test_init_installs_a_pre_commit_hook_that_checks_the_staged_tree(tmp_path: P
     assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # idempotent
     hook.unlink()
     assert any("pre-commit" in line for line in cli.run(["--repo", str(tmp_path), "init", "--check"])[1])
+
+
+def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(repo: Path) -> None:
+    assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
+    actors = read(repo, "docs/kb/product/shared/actors.yml")
+    assert "id: owner" in actors and "nature: human" in actors and "id: agent" in actors and "agreed" not in actors
+    code, lines = cli.run(["--repo", str(repo), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
+    assert code == cli.OK, lines
+    assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
+    assert "id: agent" not in read(repo, "docs/kb/product/shared/actors.yml")
+    assert not any("actor/agent" in line for line in cli.run(["--repo", str(repo), "init", "--check"])[1])
