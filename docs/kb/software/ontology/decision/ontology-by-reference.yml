@@ -24,12 +24,10 @@ guess:
 answers:
 - chose: by-name
   said: By name, pinned to a version
-  from: human
   at: '2026-11-17T21:38:17.324+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900
 - chose: by-name-only
   said: Say repositories cannot add kinds for now; we may change it later.
-  from: human
   at: '2026-11-18T21:41:17+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   note: may change later

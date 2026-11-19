@@ -6,7 +6,6 @@
   agreed:
     at: '2026-11-19T17:58:26+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: Kept no-views and YAML-only glossary; agreed to the five sentences
     hash: 5259dab1380d
 - id: agent
@@ -16,6 +15,5 @@
   agreed:
     at: '2026-11-19T17:58:26+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: Kept no-views and YAML-only glossary; agreed to the five sentences
     hash: bccdd6fd3915

@@ -110,7 +110,7 @@ def _put(target: Target, args: argparse.Namespace, agent: bool) -> Result:
 
 
 def _answer(target: Target, args: argparse.Namespace, _: bool) -> Result:
-    done = ops.run_answer(target, args.decision, args.option, args.said, args.where, args.at, args.who, args.note, args.delegated)
+    done = ops.run_answer(target, args.decision, args.option, args.said, args.where, args.at, args.note, args.delegated)
     return done.verdict, [f"{done.value.decision}: answered {done.value.option}", *(f"set {text}" for text in done.value.changed),
                           *(f"removed {text}" for text in done.value.removed)]
 

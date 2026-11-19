@@ -84,7 +84,7 @@ there; everything else lives in the area that owns it. Change it only through og
   paraphrase to the owner in the read-back. A guess that rests on what the owner said carries a paraphrase (`guess.heard: {{said}}`),
   so the review reads "You said (paraphrased): .... Read as B." and one yes records the answer.
 - Never answer for the owner. Only when the owner said "decide on my behalf" for a scope (an answer `from: human` of a decision),
-  answer with `{ogy} answer ... --from ai --delegated <that decision>`; `{ogy} dropped` lists those answers, and you list them to the
+  answer with `{ogy} answer ... --delegated <that decision>`; `{ogy} dropped` lists those answers, and you list them to the
   owner at session end."""
 
 

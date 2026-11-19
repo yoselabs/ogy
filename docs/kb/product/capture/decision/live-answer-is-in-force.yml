@@ -17,6 +17,5 @@ guess:
 answers:
 - chose: in-force-listed
   said: 'Agreed: a live answer is in force at once'
-  from: human
   at: '2026-11-17T21:38:17.324+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900

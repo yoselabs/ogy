@@ -19,6 +19,5 @@ guess:
 answers:
 - chose: in-kind-files
   said: Every kind file gets guidance; intro points to it rather than printing it all.
-  from: human
   at: '2026-11-18T21:41:04+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

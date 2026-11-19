@@ -29,22 +29,18 @@ guess:
 answers:
 - chose: kind
   said: The glossary belongs in the ontology
-  from: human
   at: '2026-11-17T18:28:49.439+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6454
 - chose: kind-per-area
   said: One glossary per area
-  from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: term-kind
   said: 'Fable: the rule names no stale glossary home'
-  from: ai
   at: '2026-11-19T00:27:43+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/review-delegation
 - chose: term-kind
   said: yes all
-  from: human
   at: '2026-11-19T01:14:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -6,4 +6,4 @@ options:
   two: {label: "2 EUR per day, per tool", sets: {product/library/value/late-fee: {is: 2}}}
 guess: {chose: two, why: "A small fee should not scare members away; 1 EUR may not cover a reminder."}
 answers:
-  - {chose: two, said: Two euros is fine, from: human, at: "2026-11-24T18:42:00+01:00", where: "ai:claude/9b01#41"}
+  - {chose: two, said: Two euros is fine, at: "2026-11-24T18:42:00+01:00", where: "ai:claude/9b01#41"}

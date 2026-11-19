@@ -2,6 +2,5 @@ says: A removed.yml item holds a fixed envelope (id, kind, parent, title, said, 
 agreed:
   at: '2026-11-17T19:12:40.913+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6668
-  from: human
   said: Agreed on a ledger snapshot and restore by proposal
   hash: 7a388c771978

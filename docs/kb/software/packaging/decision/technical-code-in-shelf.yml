@@ -17,6 +17,5 @@ guess:
 answers:
 - chose: in-shelf
   said: ogy keeps business logic; technical code goes to shelf
-  from: human
   at: '2026-11-17T20:11:47.714+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7081

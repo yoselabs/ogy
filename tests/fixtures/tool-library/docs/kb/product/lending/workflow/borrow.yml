@@ -50,7 +50,6 @@ steps:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: 6b8ed5ef1a51
 ends:
@@ -60,7 +59,6 @@ ends:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: c2301ae65f03
   refused:
@@ -69,7 +67,6 @@ ends:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: 365576621a88
   left:
@@ -78,7 +75,6 @@ ends:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: 1b8c247af48e
 by:

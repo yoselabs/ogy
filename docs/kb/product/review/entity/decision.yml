@@ -8,7 +8,6 @@ states:
     agreed:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
       hash: 630b37fd75ae
   answered:
@@ -16,7 +15,6 @@ states:
     agreed:
       at: '2026-11-19T18:42:52+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: a6cf8b1ae0b8
 transitions:

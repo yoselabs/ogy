@@ -262,10 +262,11 @@ def run_put(target: Target, records: list[Mapping[object, object]], why: str | N
         return Run(put.put(target, records, why), 0)
 
 
-def run_answer(target: Target, decision: str, option: str, said: str, where: str, at: str | None = None, who: str = "human",
+def run_answer(target: Target, decision: str, option: str, said: str, where: str, at: str | None = None,
                note: str | None = None, delegated: str | None = None, now: writes.Clock = writes.utc_now) -> Run[Answered]:
-    """Choose the option: the answer keeps a short paraphrase of what was said, who, when and where (no message, no quote);
-    an agent (`who` ai) answers only under `delegated`, the decision whose person's answer let it decide."""
+    """Choose the option: the answer keeps a short paraphrase of what was said, when and where (no message, no quote);
+    with `delegated` an agent answered, under the decision whose person's answer let it decide; who is never a field."""
+    who = "ai" if delegated is not None else "human"
     with writes.locked(target, "answer"):
         return Run(writes.answer(target, decision, option, writes.said(said, where, at, now, who, note), delegated, now), 0)
 

@@ -15,7 +15,6 @@ guess:
 answers:
 - chose: up
   said: Rounded up, under the owner's delegation
-  from: ai
   at: '2026-11-24T18:50:00+01:00'
   where: ai:claude/9b01#43
   delegated: product/lending/decision/fee-details

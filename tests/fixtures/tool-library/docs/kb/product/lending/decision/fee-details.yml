@@ -15,6 +15,5 @@ guess:
 answers:
 - chose: yes
   said: Decide the fee details yourself
-  from: human
   at: '2026-11-24T18:45:00+01:00'
   where: ai:claude/9b01#42

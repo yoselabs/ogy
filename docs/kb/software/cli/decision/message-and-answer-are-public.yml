@@ -23,11 +23,9 @@ answers:
 - chose: keep-two
   note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
   said: Accepted all the recommendations
-  from: human
   at: '2026-11-17T23:11:42+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: answer-only
   said: Drop the message command with the messages
-  from: human
   at: '2026-11-18T20:45:23+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

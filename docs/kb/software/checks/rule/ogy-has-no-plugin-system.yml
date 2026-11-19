@@ -2,6 +2,5 @@ says: ogy has no plugin system; checks are built in and switched on by kind data
 agreed:
   at: '2026-11-17T19:41:40.214+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6774
-  from: human
   said: One package, no plugins, the ontology ships with ogy
   hash: 06f780c6ff87

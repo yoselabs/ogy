@@ -97,7 +97,7 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   `ogy put '{"address": "product/<area>/actor/human", "says": "...", "nature": "human"}'`. An actor says who uses the
   product, not a claim, so it needs no evidence. Delegation: only when the owner says "decide on my behalf" for a scope,
   that is the owner's answer to a decision; the agent then answers others with
-  `ogy answer ... --from ai --delegated <that decision>`. Such an answer is in force at once, and `ogy dropped` lists it
+  `ogy answer ... --delegated <that decision>`. Such an answer is in force at once, and `ogy dropped` lists it
   so the agent names it at session end for the owner's veto. An `ai` answer without a `delegated` decision whose answer in
   force is a person's is the check `bad-delegation`. A scope is only that decision's question; ogy models no more than
   this.

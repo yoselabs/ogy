@@ -19,6 +19,5 @@ guess:
 answers:
 - chose: rendered
   said: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.
-  from: human
   at: '2026-11-18T21:04:56+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

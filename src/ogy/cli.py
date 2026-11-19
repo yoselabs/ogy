@@ -143,10 +143,9 @@ def _writes(commands: Adder) -> None:
     answering.add_argument("--said", required=True, help=SAID)
     answering.add_argument("--where", required=True, help=WHERE)
     answering.add_argument("--at", help=AT)
-    answering.add_argument("--from", dest="who", choices=["human", "ai"], default="human",
-                           help="who chose: a person (default), or an agent under --delegated")
     answering.add_argument("--note", help="the person's hedge or condition, paraphrased (`for now`, `on condition that ...`)")
-    answering.add_argument("--delegated", help="with --from ai: the decision whose answer, a person's, let the agent decide this")
+    answering.add_argument("--delegated", help="an agent answers: the decision whose answer, a person's, let it decide this; "
+                           "without it a person answered")
     replying = _verb(commands, "reply", "apply the owner's reply to a review round",
                      "Grammar: yes, yes all or decide (every recommendation), yes 1 3, 2: sentence, no 4, Q1 b, later. "
                      "The text is the grammar line: the owner's, or your reading of their natural words. ogy keeps no message "

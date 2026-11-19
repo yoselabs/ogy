@@ -8,7 +8,6 @@
   agreed:
     at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: e0e105851d2f
 - id: address
@@ -17,7 +16,6 @@
   agreed:
     at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 4443e949c79b
 - id: agreement
@@ -32,7 +30,6 @@
   agreed:
     at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 7134976463cc
 - id: answer
@@ -43,7 +40,6 @@
   agreed:
     at: '2026-11-19T20:31:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 917fc583e0bf
 - id: area
@@ -55,7 +51,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: a257fac816cd
 - id: because
@@ -64,7 +59,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 4b751bc81a57
 - id: constitution
@@ -73,7 +67,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 0113cfa7a3b8
 - id: decision
@@ -85,7 +78,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: f0f45bda213e
 - id: entry
@@ -94,7 +86,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 874c5332c2ee
 - id: evidence
@@ -103,7 +94,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 69d52f39c830
 - id: fingerprint
@@ -112,7 +102,6 @@
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 63f7127003f0
 - id: guess
@@ -124,7 +113,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: a288ca325260
 - id: harm-tag
@@ -133,7 +121,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 3aea06c24ada
 - id: id
@@ -144,7 +131,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 7dc3dfd1f500
 - id: kind
@@ -153,7 +139,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 69fcc2cee13e
 - id: layer
@@ -162,7 +147,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: d9850da652f5
 - id: 'null'
@@ -176,7 +160,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: f043f5054a6e
 - id: ontology
@@ -187,7 +170,6 @@
   agreed:
     at: '2026-11-19T20:31:53+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 974b0b74d780
 - id: part
@@ -196,7 +178,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 1f3db5d72ac7
 - id: principle
@@ -207,7 +188,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: eb217092bd47
 - id: question
@@ -219,7 +199,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 2e792e702432
 - id: read-back
@@ -228,7 +207,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 823fb37341e6
 - id: removed-ledger
@@ -240,7 +218,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: ea4048181080
 - id: review-round
@@ -249,7 +226,6 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 8bcbb5fd00b8
 - id: src
@@ -261,7 +237,6 @@
   agreed:
     at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: b0717c587d90
 - id: term
@@ -270,7 +245,6 @@
   agreed:
     at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 0fee644ea978
 - id: work-left
@@ -279,7 +253,6 @@
   agreed:
     at: '2026-11-19T20:32:47+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 228e972fda31
 - id: review-card
@@ -288,6 +261,5 @@
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 281f3d1b5c4c

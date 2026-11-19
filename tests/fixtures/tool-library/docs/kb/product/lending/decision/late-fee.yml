@@ -20,7 +20,6 @@ guess:
 answers:
 - chose: two
   said: Two euros is fine for now
-  from: human
   at: '2026-11-24T18:42:00+01:00'
   where: ai:claude/9b01#41
   note: for now

@@ -27,17 +27,14 @@ guess:
 answers:
 - chose: review-by-area
   said: Willing to review code facts
-  from: human
   at: '2026-11-17T21:38:17.324+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7900
 - chose: review-by-area
   note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
   said: Accepted all the recommendations
-  from: human
   at: '2026-11-17T23:11:37+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: review-by-area
   said: Confirmed review by area
-  from: human
   at: '2026-11-18T11:32:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

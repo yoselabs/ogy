@@ -157,7 +157,6 @@ class Settling(BaseModel):
     chose: str = "chose"  # field of an answer and of a guess
     value: str = "sets"  # field of the guess: the values it gives when it chooses no option
     said: str = "said"  # fields of an answer and of the guess's `heard`: a short paraphrase, never a quote
-    who: str = "from"  # field of an answer: human or ai
     at: str = "at"
     where: str = "where"
     note: str = "note"

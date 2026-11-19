@@ -19,5 +19,5 @@ options:
     sets: {software/removal/rule/removed-id-is-recorded: null}
 guess: {chose: ledger, why: Agreements name addresses; the check must work in a clone without history.}
 answers:
-  - {chose: tombstone, said: Retire ids by a status, from: human, at: "2026-11-13T14:57:00+01:00", where: "bd:ogy-yy9"}
-  - {chose: ledger, said: Keep removed ids in a file, from: human, at: "2026-11-17T12:30:00+01:00", where: "ai:claude/095b#1"}
+  - {chose: tombstone, said: Retire ids by a status, at: "2026-11-13T14:57:00+01:00", where: "bd:ogy-yy9"}
+  - {chose: ledger, said: Keep removed ids in a file, at: "2026-11-17T12:30:00+01:00", where: "ai:claude/095b#1"}

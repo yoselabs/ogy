@@ -3,7 +3,6 @@
   agreed:
     at: '2026-11-18T17:33:54+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: Yes to all four
     hash: 30d1f93ef082
 - id: intuitive-for-ai
@@ -11,7 +10,6 @@
   agreed:
     at: '2026-11-18T17:33:54+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: Yes to all four
     hash: d4a70ec388eb
 - id: layers-split-business-from-technical
@@ -19,7 +17,6 @@
   agreed:
     at: '2026-11-19T19:11:42+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
     hash: d9c979d95e10
 - id: rigid-where-checked
@@ -28,6 +25,5 @@
   agreed:
     at: '2026-11-19T19:11:42+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    from: human
     said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
     hash: 8ea41892be00

@@ -1,4 +1,4 @@
 title: Ids are never reused
 says: An id, once used, is never used again.
 proof: ["tests/test_v5_removed.py::test_new_id_in_removed_is_refused"]
-agreed: {at: "2026-11-13T14:57:00+01:00", where: "bd:ogy-yy9", from: human, said: Ids are never reused, hash: 5d0a9c31e7b2}
+agreed: {at: "2026-11-13T14:57:00+01:00", where: "bd:ogy-yy9", said: Ids are never reused, hash: 5d0a9c31e7b2}

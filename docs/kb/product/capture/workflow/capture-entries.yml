@@ -14,7 +14,6 @@ steps:
     agreed:
       at: '2026-11-19T17:58:26+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Kept no-views and YAML-only glossary; agreed to the five sentences
       hash: 5f33d23e59d6
   search:
@@ -27,7 +26,6 @@ steps:
     agreed:
       at: '2026-11-19T17:58:26+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Kept no-views and YAML-only glossary; agreed to the five sentences
       hash: 366025992dc3
   put:
@@ -40,7 +38,6 @@ steps:
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven capture and hand-over sentences
       hash: ec2c8216e696
   check:
@@ -59,7 +56,6 @@ steps:
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven capture and hand-over sentences
       hash: 45eb70a58cf2
 ends:
@@ -69,7 +65,6 @@ ends:
     agreed:
       at: '2026-11-19T19:00:55+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
       hash: 9290d6a53b81
   refused:
@@ -78,6 +73,5 @@ ends:
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven capture and hand-over sentences
       hash: fe4d811ef2e4

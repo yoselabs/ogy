@@ -70,7 +70,7 @@ def test_glossary_lines_print_the_shared_terms_then_each_area() -> None:
 
 def test_a_decision_may_not_give_the_words_of_an_agreed_term() -> None:
     def kb(sets: str, agreed: bool = True) -> Snapshot:
-        stamp = "{at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1', from: human, said: Yes, hash: 'aaaaaaaaaaaa'}"
+        stamp = "{at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1', said: Yes, hash: 'aaaaaaaaaaaa'}"
         term = f"- {{id: land, word: land, says: To finish.{', agreed: ' + stamp if agreed else ''}}}\n"
         decision = f"question: Q?\noptions:\n  a: {{label: A, sets: {{{sets}}}}}\nguess: {{chose: a, why: x}}\n"
         return snap(term, **{"product/app/decision/q.yml": decision})

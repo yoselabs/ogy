@@ -2,6 +2,5 @@ says: The MCP server is the subcommand ogy mcp, and each CLI command is a tool.
 agreed:
   at: '2026-11-17T20:09:24.780+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7054
-  from: human
   said: MCP is a subcommand of the CLI
   hash: d351b91730ed

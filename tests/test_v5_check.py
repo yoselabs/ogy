@@ -22,9 +22,9 @@ def only(found: set[tuple[Problem, str]], problem: Problem) -> set[str]:
     return {where for kind, where in found if kind is problem}
 
 
-def stamp(at: str = "2026-11-12T10:05:00+01:00", where: str = "ai:claude/1#2", who: str = "human", fingerprint: str = "ca3445729b96",
+def stamp(at: str = "2026-11-12T10:05:00+01:00", where: str = "ai:claude/1#2", fingerprint: str = "ca3445729b96",
           said: str = "Yes") -> str:
-    return f"{{at: '{at}', where: '{where}', from: {who}, said: '{said}', hash: '{fingerprint}'}}"
+    return f"{{at: '{at}', where: '{where}', said: '{said}', hash: '{fingerprint}'}}"
 
 
 def agreed(value: str | None = None, **given: str) -> dict[str, str | None]:
@@ -112,7 +112,8 @@ def test_guess_has_one_of_chose_or_sets(kb: Make) -> None:
 
 def test_agreed_entry_shape(kb: Make) -> None:
     assert kb(agreed()).findings() == set()
-    for bad in (agreed(fingerprint="short"), agreed(who="ai"), agreed(said=" "),
+    who = agreed("{at: '2026-11-12T10:05:00+01:00', where: 'ai:x', from: ai, said: 'Yes', hash: 'ca3445729b96'}")  # who is no field
+    for bad in (agreed(fingerprint="short"), who, agreed(said=" "),
                 agreed("{at: '2026-11-12T10:05:00+01:00', hash: ca3445729b96}"),
                 agreed("{product/app/actor/member: {shown: A, hash: ca3445729b96}}")):
         assert only(kb(bad).findings(), Problem.WRONG_TYPE) == {"product/app/actor/member"}

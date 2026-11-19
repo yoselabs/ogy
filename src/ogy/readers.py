@@ -84,7 +84,7 @@ def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
         if (names := kind.settling) is not None:
             heard = next((k.kind for k in kinds.values() if k.is_part(names.guess) and k.key == names.heard), "")
             wanted = [(names.option, names.sets), (names.guess, names.chose), (names.guess, names.value), (heard, names.said),
-                      *((names.answer, f) for f in (names.chose, names.said, names.who, names.at, names.where, names.note,
+                      *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note,
                                                     names.delegated))]
             for part, field in wanted:
                 _mark(found, part, field, "settling", kinds)

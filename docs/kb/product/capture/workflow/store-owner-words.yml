@@ -14,7 +14,6 @@ steps:
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven capture and hand-over sentences
       hash: 70eab885cded
   keep:
@@ -38,7 +37,6 @@ steps:
     agreed:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
       hash: c4a969674d24
 ends:
@@ -48,7 +46,6 @@ ends:
     agreed:
       at: '2026-11-19T19:12:53+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
       hash: dd4f2298f264
   refused:
@@ -57,6 +54,5 @@ ends:
     agreed:
       at: '2026-11-19T18:43:39+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: 7f6de3ee2c6d

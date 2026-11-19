@@ -17,6 +17,5 @@ guess:
 answers:
 - chose: parent
   said: "Owner chose Fable's recommendations: Q1 a, Q2 a, Q3 a"
-  from: human
   at: '2026-11-19T19:03:39+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

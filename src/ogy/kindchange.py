@@ -16,6 +16,7 @@ address under the old folder renamed, as `ogy move` renames (`moved_table`); `mi
 from collections.abc import Mapping
 from dataclasses import dataclass
 
+from ogy.fieldtypes import AGREED_KEYS
 from ogy.kinds import FieldSpec, FieldType, Holds, Kind
 from ogy.model import Address, Entry, parse_address
 from ogy.moves import renamed
@@ -35,12 +36,16 @@ class Change:
     value: object
 
 
+AGREED = "agreed"  # the common field of a person's yes
+
+
 class _Pass:
     """Rewrites the fields of entries, collecting what it changed; `renames` and `drops` say which declarations apply."""
 
     def __init__(self, ontology: Ontology, renames: bool = True, drops: bool = True) -> None:
         self.ontology, self.renames, self.drops = ontology, renames, drops
         self.found: list[Change] = []
+        self.tidied = 0  # agreements that lost a key the agreed type no longer has (outside every fingerprint)
 
     def fields(self, kind: Kind, data: Mapping[str, object], address: Address, where: str = "") -> Data:
         old, listed = kind.old_names, {part.key: part for part in self.ontology.parts_of(kind.kind) if part.holding is Holds.LIST}
@@ -56,6 +61,9 @@ class _Pass:
             if name in listed and isinstance(value, list):
                 part = listed[name]
                 out[name] = [self.fields(part, item, address, f"{where}{name}.") if isinstance(item, dict) else item for item in value]
+            elif name == AGREED and isinstance(value, dict) and set(value) - AGREED_KEYS and self.drops:
+                out[name] = {key: item for key, item in value.items() if key in AGREED_KEYS}
+                self.tidied += 1
             elif (spec := kind.fields.get(name)) is not None:
                 out[name] = self._value(spec, value, address, f"{where}{name}.")
             else:
@@ -78,9 +86,9 @@ def changes(snapshot: Snapshot, renames: bool = True, drops: bool = True) -> tup
     work = _Pass(snapshot.ontology, renames, drops)
     entries: dict[Address, Entry] = {}
     for address, entry in snapshot.entries.items():
-        before = len(work.found)
+        before = (len(work.found), work.tidied)
         fields = work.fields(snapshot.kind_of(address), entry.fields, address)
-        entries[address] = entry if len(work.found) == before else Entry(address, entry.path, fields)
+        entries[address] = entry if (len(work.found), work.tidied) == before else Entry(address, entry.path, fields)
     return Snapshot(snapshot.ontology, entries, list(snapshot.findings)), work.found
 
 

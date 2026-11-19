@@ -14,7 +14,6 @@ steps:
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 9d77d36e93ef
   reply:
@@ -27,7 +26,6 @@ steps:
     agreed:
       at: '2026-11-19T18:55:09+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 852a3499ea9c
   apply:
@@ -48,7 +46,6 @@ steps:
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 29b256827549
 ends:
@@ -58,7 +55,6 @@ ends:
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
       hash: 84d2f41c5f42
   refused:
@@ -67,6 +63,5 @@ ends:
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 444ebcb4d84e

@@ -79,7 +79,7 @@ decision; `where` names the session (`ai:claude/<session-id>`); `at` defaults to
 - a rule, a correction, a delegation: write the decision that asks it, then `answer` it with what the owner said.
 Never rebuild answers from a transcript later; the second pass already missed two of sixteen. Never answer or agree
 for the owner. If the owner delegates ("decide on my behalf"), that is their answer to a decision; answer under it with
-`--from ai --delegated <that decision>` and list every such answer at the end as "decided by AI for you".
+`--delegated <that decision>` and list every such answer at the end as "decided by AI for you".
 
 ## 6. Proposals, "no" and removals
 1. A proposal is a decision before anyone acts on it, or a new option of the decision that already asks the question.

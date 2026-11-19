@@ -30,22 +30,18 @@ guess:
 answers:
 - chose: move-command
   said: Yes, a move command
-  from: human
   at: '2026-11-18T11:32:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: move-leaves-no-record
   said: Moves and migrations cause no removals
-  from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: move-by-kind-and-id
   said: 'Fable: a move is found by kind and id; a changed text is an ordinary change'
-  from: ai
   at: '2026-11-19T00:30:58+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/review-delegation
 - chose: move-by-kind-and-id
   said: Took every recommendation of Fable's revised round
-  from: human
   at: '2026-11-19T17:47:11+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

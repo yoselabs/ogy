@@ -110,7 +110,7 @@ class Said:
     note: str | None = None
 
     def stamp(self) -> Data:
-        return {"at": self.at, "where": self.where, "from": self.who, "said": self.said}
+        return {"at": self.at, "where": self.where, "said": self.said}
 
 
 def said(text: str, where: str, at: str | None, now: Clock = utc_now, who: str = "human", note: str | None = None) -> Said:
@@ -195,11 +195,9 @@ def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Cloc
 
 
 def _delegation(snapshot: Snapshot, words: Said, delegated: str | None) -> str | None:
-    """A person answers for themselves; an agent (`from: ai`) answers only under `delegated`, the decision whose person's
-    answer let it decide."""
+    """A person answers for themselves; an agent answers only under `delegated`, the decision whose person's answer let it
+    decide (who answered is computed from `delegated`)."""
     if words.who == "human":
-        if delegated is not None:
-            raise WriteRefused(["a person's answer is not delegated: --delegated goes with --from ai"])
         return None
     found = next((item for item in decisions(snapshot) if delegated is not None and str(item.address) == delegated), None)
     newest = max((a for a in found.answers if a.at is not None), key=lambda a: a.at, default=None) if found else None
@@ -224,7 +222,7 @@ def answer(target: Target, decision_text: str, option: str, words: Said, delegat
 
     def act(ed: Editor) -> None:
         extra = (("note", words.note), ("delegated", proof))
-        item: Data = {"chose": option, "said": words.said, "from": words.who, "at": words.at, "where": words.where,
+        item: Data = {"chose": option, "said": words.said, "at": words.at, "where": words.where,
                       **{k: v for k, v in extra if v}}
         held = snapshot.entries[found.address].fields.get("answers")
         ed.update(found.address, {"answers": [*(held if isinstance(held, list) else []), item]})

@@ -19,6 +19,5 @@ guess:
 answers:
 - chose: smtp
   said: Plain SMTP
-  from: human
   at: '2026-11-24T18:55:00+01:00'
   where: ai:claude/9b01#44

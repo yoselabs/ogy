@@ -118,7 +118,8 @@ def _text(item: Mapping[str, object], name: str) -> str | None:
 
 
 def _answer(snapshot: Snapshot, decision: Address, names: Settling, item: Mapping[str, object]) -> Answer:
-    return Answer(str(item.get(names.chose)), _text(item, names.said) or "", _text(item, names.who) or "", moment(item.get(names.at)),
+    who = "ai" if item.get(names.delegated) is not None else "human"  # computed: an answer with `delegated` is an agent's
+    return Answer(str(item.get(names.chose)), _text(item, names.said) or "", who, moment(item.get(names.at)),
                   _text(item, names.where) or "", _text(item, names.note),
                   resolve(snapshot, decision, item.get(names.delegated), "decision"))
 
@@ -212,10 +213,9 @@ def _in_force(snapshot: Snapshot, decision: Decision) -> list[Finding]:
 
 
 def _delegation(found: list[Decision], decision: Decision, answer: Answer) -> list[Finding]:
-    """D10: an agent's answer (`from: ai`) names, in `delegated`, a decision whose answer in force is a person's; a person's
-    answer names none."""
+    """D10: an agent's answer (one with `delegated`) names a decision whose answer in force is a person's."""
     if answer.who == "human":
-        problems = [] if answer.delegated is None else ["a person's answer is not delegated: drop delegated"]
+        problems: list[str] = []
     else:
         given = next((d for d in found if d.address == answer.delegated), None)
         newest = max((a for a in given.answers if a.at is not None), key=lambda a: a.at, default=None) if given else None

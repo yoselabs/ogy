@@ -13,7 +13,6 @@ steps:
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 251acf4754cf
   check:
@@ -31,7 +30,6 @@ steps:
     agreed:
       at: '2026-11-19T20:32:47+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
       hash: d7b8233feacc
   skip:
@@ -47,7 +45,6 @@ steps:
     agreed:
       at: '2026-11-19T20:32:47+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
       hash: d84d454b0e82
 ends:
@@ -57,7 +54,6 @@ ends:
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
       hash: 5bb66c99d080
   refused:
@@ -66,6 +62,5 @@ ends:
     agreed:
       at: '2026-11-19T20:32:47+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
       hash: a0857d6020aa

@@ -63,7 +63,7 @@ def test_reply_agrees_to_every_card_on_the_entry_with_the_paraphrase(asked: Path
     assert {"product/app/capability/a-cap", "product/app/capability/b-cap"} <= set(found)
     assert {(item.said, item.where) for item in found.values()} == {("Agreed to the cards", "ai:claude/1")}
     text = (asked / "docs/kb/product/app/capabilities.yml").read_text()
-    assert "from: human" in text and "said: Agreed to the cards" in text and "yes" not in text.replace("says", "")
+    assert "from:" not in text and "said: Agreed to the cards" in text and "yes" not in text.replace("says", "")
     assert all("decided by you" in status(asked, f"product/app/capability/{k}") for k in ("a-cap", "b-cap"))
     assert w(asked, "check") == (cli.OK, ["ok"])
 
@@ -142,7 +142,7 @@ def test_an_agreement_is_only_a_persons(asked: Path) -> None:
     capability = asked / "docs/kb/product/app/capabilities.yml"
     stamp = "  agreed: {at: '2026-11-12T10:05:00+01:00', where: 'ai:x', from: ai, said: Fine, hash: 000000000000}\n"
     capability.write_text(capability.read_text().replace("  says: A member can borrow.\n", "  says: A member can borrow.\n" + stamp))
-    assert any("from is human" in line for line in w(asked, "check")[1])
+    assert any("agreed is {at, where, said, hash" in line for line in w(asked, "check")[1])  # no field says who: only a person agrees
 
 
 def test_rounds_are_kept_by_id_and_a_reply_names_the_round_it_answers(asked: Path) -> None:
@@ -205,7 +205,7 @@ def test_one_yes_records_the_answer_a_guess_that_rests_on_the_owner_read(heard: 
     code, lines = r(heard, "yes")
     assert code == cli.OK and "product/app/decision/fee-amount answered: two" in lines[0], lines
     text = (heard / "docs/kb/product/app/decision/fee-amount.yml").read_text()
-    assert "chose: two" in text and "said: Two euros seem plenty" in text and "from: human" in text
+    assert "chose: two" in text and "said: Two euros seem plenty" in text and "from:" not in text
     assert "product/app/decision/fee-amount" not in "\n".join(w(heard, "review")[1])  # the question left the queue
     assert w(heard, "check") == (cli.OK, ["ok"])
 

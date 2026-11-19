@@ -2,6 +2,5 @@ says: The glossary is YAML only; no glossary document is generated or kept.
 agreed:
   at: '2026-11-19T20:33:03+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-  from: human
   said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
   hash: 9450196ef136

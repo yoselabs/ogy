@@ -17,7 +17,7 @@ from ogy.source import KB_DIR, WorktreeSource
 
 SOURCE = "code:app.py#lend"  # the repository fixture's one Python file
 CODE = "def lend():\n    return True\n"
-AGREED = "{at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1', from: human, said: Members sign in, hash: 000000000000}"
+AGREED = "{at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1', said: Members sign in, hash: 000000000000}"
 SIGN_IN = """\
 says: A member is signed in.
 because: [product/app/actor/member]

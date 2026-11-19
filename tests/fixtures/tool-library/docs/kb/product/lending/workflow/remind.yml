@@ -20,7 +20,6 @@ steps:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: fc3c99bb3732
 ends:
@@ -30,6 +29,5 @@ ends:
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
-      from: human
       said: Yes to the cards but the borrow step
       hash: 299ffaa0ab99

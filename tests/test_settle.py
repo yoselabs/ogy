@@ -25,7 +25,7 @@ def decision(options: str = OPTIONS, guess: str = GUESS, answers: str = "", name
 
 
 def answer(at: str, chose: str, who: str = "human", more: str = "") -> str:
-    return f"  - {{chose: {chose}, said: Two please, from: {who}, at: '{at}', where: 'ai:claude/1#2'{more}}}\n"
+    return f"  - {{chose: {chose}, said: Two please, at: '{at}', where: 'ai:claude/1#2'{more}}}\n"  # who: computed from delegated
 
 
 def snap(*parts: dict[str, str], values: str = VALUES) -> Snapshot:
@@ -40,7 +40,7 @@ def problems(snapshot: Snapshot) -> set[tuple[str, str]]:
 
 
 def agreed(fingerprint: str, at: str = "2026-11-12T10:00:00+01:00") -> str:
-    return f"agreed: {{at: '{at}', where: 'ai:claude/1', from: human, said: Fine, hash: '{fingerprint}'}}"
+    return f"agreed: {{at: '{at}', where: 'ai:claude/1', said: Fine, hash: '{fingerprint}'}}"
 
 
 def fee_hash(values: str = VALUES) -> str:
@@ -229,8 +229,6 @@ def test_an_agent_answers_only_under_a_persons_answer() -> None:
     ok = snap(decision(answers=answer("2026-11-13T10:00:00+01:00", "two", "ai", delegated)), person)
     assert problems(ok) == set() and decisions(ok)[0].in_force.delegated  # type: ignore[union-attr]
     bad = {("bad-delegation", "product/app/decision/fee")}
-    assert problems(snap(decision(answers=answer("2026-11-13T10:00:00+01:00", "two", "ai")), person)) == bad  # no delegation
-    assert problems(snap(decision(answers=answer("2026-11-13T10:00:00+01:00", "two", "human", delegated)), person)) == bad
     assert problems(snap(decision(answers=answer("2026-11-13T10:00:00+01:00", "two", "ai", delegated)), nobody)) == bad
 
 

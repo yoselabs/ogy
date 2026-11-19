@@ -150,7 +150,7 @@ def test_answer_keeps_a_paraphrase_who_when_and_where_and_chooses_the_option(dec
     assert lines == ["product/app/decision/fee-amount: answered one", "set product/app/value/fee"]
     assert "is: 1" in (decided / "docs/kb/product/app/values.yml").read_text()
     (answered,) = any_yaml.load((decided / "docs/kb/product/app/decision/fee-amount.yml").read_text())["answers"]
-    assert dict(answered) == {"chose": "one", "said": "One euro is enough", "from": "human", "at": "2026-11-12T10:05:00+01:00",
+    assert dict(answered) == {"chose": "one", "said": "One euro is enough", "at": "2026-11-12T10:05:00+01:00",
                               "where": "ai:claude/1"}
     assert not list((decided / "docs/kb").rglob("message")) and w(decided, "check") == (cli.OK, ["ok"])
     shown = w(decided, "show", "product/app/value/fee")[1]
@@ -181,8 +181,7 @@ def test_answer_refusals_leave_everything_as_it_was(decided: Path) -> None:
                  ["product/app/decision/fee-amount", "one", "--said", " ", *SAID],
                  ["product/app/decision/fee-amount", "one", "--said", "x", "--where", "nonsense"],
                  ["product/app/decision/fee-amount", "one", "--said", "x", "--where", "ai:x", "--at", "2026-11-13"],
-                 ["product/app/decision/fee-amount", "one", *said, "--from", "ai"],  # needs a delegation
-                 ["product/app/decision/fee-amount", "one", *said, "--delegated", "product/app/decision/fee-amount"]):  # a person has none
+                 ["product/app/decision/fee-amount", "one", *said, "--delegated", "product/app/decision/fee-amount"]):  # no person's answer
         code, lines = w(decided, "answer", *argv)
         assert code == cli.REFUSED and lines[0].startswith("refused:"), (argv, lines)
     assert tree(decided) == before
@@ -192,14 +191,14 @@ def test_an_agent_answers_only_under_a_persons_answer_and_it_is_listed(decided: 
     options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/value/fee": {"unit": "EUR"}}}}
     assert put(decided, "product/app/decision/fees-delegated", question="Who decides fees?", options=options,
                guess={"chose": "agent", "why": "asked"})[0] == cli.OK
-    agent = ("--from", "ai", "--delegated", "product/app/decision/fees-delegated")
+    agent = ("--delegated", "product/app/decision/fees-delegated")
     code, lines = w(decided, "answer", "product/app/decision/fee-amount", "two", "--said", "Two is small", *SAID, *agent)
     assert code == cli.REFUSED and "--delegated" in lines[0]  # the delegation has no person's answer yet
     assert w(decided, "answer", "product/app/decision/fees-delegated", "agent", "--said", "Decide fees for me", *SAID)[0] == cli.OK
     code, lines = w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One is small", *SAID, *agent)
     assert code == cli.OK, lines
     text = (decided / "docs/kb/product/app/decision/fee-amount.yml").read_text()
-    assert "from: ai" in text and "delegated: product/app/decision/fees-delegated" in text
+    assert "from:" not in text and "delegated: product/app/decision/fees-delegated" in text
     assert w(decided, "check") == (cli.OK, ["ok"])
     assert any("by AI, for you" in line for line in w(decided, "show", "product/app/value/fee")[1])
     assert w(decided, "dropped")[1] == ["answer an agent gave under a delegation (the owner may veto): product/app/decision/fee-amount"]
@@ -210,7 +209,7 @@ def test_an_answered_guess_is_inert_and_a_delegated_answer_is_shown_in_force(dec
     assert put(decided, "product/app/decision/fees-delegated", question="Who decides fees?", options=options,
                guess={"chose": "agent", "why": "asked"})[0] == cli.OK
     assert w(decided, "answer", "product/app/decision/fees-delegated", "agent", "--said", "Decide fees for me", *SAID)[0] == cli.OK
-    agent = ("--from", "ai", "--delegated", "product/app/decision/fees-delegated")
+    agent = ("--delegated", "product/app/decision/fees-delegated")
     assert w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One is small", *SAID, *agent)[0] == cli.OK
     assert not any("differs" in line for line in w(decided, "dropped")[1])  # the guess (two) is inert after an answer
     text = "\n".join(w(decided, "review")[1])

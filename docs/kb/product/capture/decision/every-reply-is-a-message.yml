@@ -24,9 +24,9 @@ options:
     sets:
       product/capture/rule/reply-is-a-message:
       product/capture/rule/no-stored-words:
-        says: 'ogy stores no messages and no quotes: an answer keeps the option chosen, a short paraphrase of what the person said (said), who (from: human or ai), when (at) and where (the session).'
+        says: "ogy stores no messages and no quotes: an answer keeps the option chosen, a short paraphrase of what the person said (said), when (at) and where (the session); an agent's answer names the decision that let it decide (delegated)."
       software/writes/rule/agreement-lives-on-the-entry:
-        says: "A person's yes in a review round is kept on the entry it agrees to (agreed: at, where, from human, said and the fingerprint agreed to); only a person agrees, and only reply writes it."
+        says: "A person's yes in a review round is kept on the entry it agrees to (agreed: at, where, said and the fingerprint agreed to); only a person agrees, and only reply writes it."
       product/capture/capability/store-words:
         says: When the owner speaks, the agent records the answer at once with a short paraphrase of what they said, and shows that paraphrase to the owner in the read-back.
         src:
@@ -48,11 +48,9 @@ guess:
 answers:
 - chose: messages
   said: Every reply is stored as a message
-  from: human
   at: '2026-11-17T18:00:15.375+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6359
 - chose: paraphrase
   said: No messages or quotes; an answer keeps a short paraphrase, who, when and where
-  from: human
   at: '2026-11-18T20:44:59+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

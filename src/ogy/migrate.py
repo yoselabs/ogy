@@ -95,7 +95,8 @@ def migrate(target: Target) -> Migrated:
     root, homes = target.repo / target.kb, snapshot.ontology.moved_homes()
     table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
                                          if (root / old / removed.FILE).is_file()}}
-    if not found and not table:
+    tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
+    if not found and not table and not tidied:
         return Migrated([], [], [], [])
     kept = Kept(snapshot)
     agreed = _agreements(snapshot, kept)
@@ -111,6 +112,6 @@ def migrate(target: Target) -> Migrated:
         lines.extend(_built(target, snapshot, kept))
         moved.extend(_rehome(ed, target, snapshot, table) if table else [])
 
-    touched = sorted({change.address for change in found} | set(agreed))
+    touched = sorted({change.address for change in found} | set(agreed) | set(tidied))
     files = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, renamer(table))
     return Migrated(found, sorted(agreed), lines, files, moved)

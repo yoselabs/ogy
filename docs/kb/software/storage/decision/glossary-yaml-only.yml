@@ -29,22 +29,18 @@ guess:
 answers:
 - chose: yaml-only
   said: Use the YAML glossary file
-  from: human
   at: '2026-11-17T18:42:12.251+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6512
 - chose: yaml-per-area
   said: One glossary file per area
-  from: human
   at: '2026-11-18T19:13:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: yaml
   said: 'Fable: the rule names no stale glossary home'
-  from: ai
   at: '2026-11-19T00:27:45+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/review-delegation
 - chose: yaml
   said: Kept no-views and YAML-only glossary; agreed to the five sentences
-  from: human
   at: '2026-11-19T17:58:26+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

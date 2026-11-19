@@ -42,22 +42,18 @@ answers:
 - chose: follower
   note: tentative
   said: Probably A
-  from: human
   at: '2026-11-18T19:37:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: held-to
   said: "Accept Fable's pick: entries name the rules they are held to with by, including stores, workflows, entities and attributes."
-  from: human
   at: '2026-11-18T22:08:21+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: by-everywhere
   said: Drop rule on; by everywhere; per-kind fingerprint choice.
-  from: ai
   at: '2026-11-18T23:22:40+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/structural-delegation
 - chose: declared
   said: Took every recommendation of Fable's revised round
-  from: human
   at: '2026-11-19T17:47:11+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

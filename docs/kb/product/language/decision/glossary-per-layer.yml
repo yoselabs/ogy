@@ -34,24 +34,20 @@ guess:
 answers:
 - chose: one-list
   said: Unsure about a glossary per layer; one list for now
-  from: human
   at: '2026-11-17T23:25:57+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: per-area
   note: may be revisited later
   said: A glossary per area is simpler to use
-  from: human
   at: '2026-11-18T19:37:15+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: per-area-shared
   said: Reserved shared area per layer; no area-less addresses.
-  from: ai
   at: '2026-11-18T23:22:38+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/structural-delegation
 - chose: per-area-shared
   said: Confirmed Fable's five structural answers
-  from: human
   at: '2026-11-19T00:52:39+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 structure: true

@@ -13,7 +13,6 @@ steps:
     agreed:
       at: '2026-11-19T18:43:39+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
       hash: 36a11eddd2b6
   list:
@@ -26,7 +25,6 @@ steps:
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: Agreed to the seven capture and hand-over sentences
       hash: c91a713c1777
 ends:
@@ -36,6 +34,5 @@ ends:
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      from: human
       said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
       hash: 46068d910c30

@@ -35,11 +35,9 @@ guess:
 answers:
 - chose: hybrid
   said: Adopt the hybrid; the test goes into the constitution and the guide, for every ontology, shipped with init.
-  from: human
   at: '2026-11-18T22:08:17+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: hybrid-how-only
   said: 'All a: took the three recommended trims'
-  from: human
   at: '2026-11-19T19:42:40+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

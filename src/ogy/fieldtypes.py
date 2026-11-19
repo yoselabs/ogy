@@ -95,7 +95,7 @@ def sets_problems(ontology: Ontology, value: object) -> Found:
     return found
 
 
-AGREED_KEYS = frozenset({"at", "where", "from", "said", "hash"})
+AGREED_KEYS = frozenset({"at", "where", "said", "hash"})  # only a person agrees, so who agreed is not a field
 
 
 def _answer_spec(ontology: Ontology, name: str) -> FieldSpec | None:
@@ -106,15 +106,14 @@ def _answer_spec(ontology: Ontology, name: str) -> FieldSpec | None:
 
 
 def agreed_problems(ontology: Ontology, value: object) -> Found:
-    """`{at, where, from: human, said, hash}`: a person's yes in a review round, `hash` the fingerprint agreed to."""
-    shape = f"{{at, where, from: human, said, hash: {FINGERPRINT_LENGTH} hex}}"
+    """`{at, where, said, hash}`: a person's yes in a review round, `hash` the fingerprint agreed to."""
+    shape = f"{{at, where, said, hash: {FINGERPRINT_LENGTH} hex}}"
     if not isinstance(value, dict) or set(value) != AGREED_KEYS:
         return [(Problem.WRONG_TYPE, f"is {shape}")]
     fingerprint, said = value["hash"], value["said"]
     found: Found = [] if isinstance(fingerprint, str) and len(fingerprint) == FINGERPRINT_LENGTH and set(fingerprint) <= HEX else [
         (Problem.WRONG_TYPE, f"hash is {FINGERPRINT_LENGTH} hex")]
     found += [] if isinstance(said, str) and said.strip() else [(Problem.WRONG_TYPE, "said is a short paraphrase of what the person said")]
-    found += [] if value["from"] == "human" else [(Problem.WRONG_TYPE, "from is human: only a person agrees")]
     for name in ("at", "where"):
         spec = _answer_spec(ontology, name)
         if spec is not None and not _simple(spec, value[name]):

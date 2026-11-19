@@ -17,12 +17,10 @@ guess:
 answers:
 - chose: sets
   said: Rename guess.value to sets.
-  from: ai
   at: '2026-11-18T23:22:42+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/structural-delegation
 - chose: sets
   said: Confirmed Fable's five structural answers
-  from: human
   at: '2026-11-19T00:52:39+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

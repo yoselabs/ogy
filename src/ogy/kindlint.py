@@ -225,7 +225,7 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
     found = [f"{name}: settling names no kind {item}" for item in (settling.option, settling.answer, settling.guess)
              if item not in kinds]
     wanted = [(settling.option, settling.sets), (settling.answer, settling.chose), (settling.answer, settling.said),
-              (settling.answer, settling.who), (settling.answer, settling.at), (settling.answer, settling.where),
+              (settling.answer, settling.at), (settling.answer, settling.where),
               (settling.guess, settling.chose), (settling.guess, settling.value)]
     found += [f"{name}: settling names no field {kind}.{field}" for kind, field in wanted if not _field_of(kinds, kind, field)]
     return found

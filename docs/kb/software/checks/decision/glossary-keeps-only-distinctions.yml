@@ -39,11 +39,9 @@ answers:
 - chose: distinctions
   delegated: software/writes/decision/capture-judgement
   said: The agent kept only the 30 distinct terms, as delegated
-  from: ai
   at: '2026-11-17T23:37:50+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
 - chose: distinctions
   said: yes all
-  from: human
   at: '2026-11-19T01:14:19+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

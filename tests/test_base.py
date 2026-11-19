@@ -18,7 +18,7 @@ question: Which way?
 options:
   a: {says: A}
 answers:
-  - {chose: a, said: A please, from: human, at: '2026-11-12T10:00:00+01:00', where: 'bd:x'}
+  - {chose: a, said: A please, at: '2026-11-12T10:00:00+01:00', where: 'bd:x'}
 """
 GONE = "product/app/actors.yml"
 
@@ -41,7 +41,7 @@ def kinds(base: Snapshot, snapshot: Snapshot, **ledgers: Ledger) -> set[tuple[st
 
 def test_append_only_rejects_edit_and_removal(ontology: Ontology) -> None:
     base = snap(ontology, {"product/app/decision/d1.yml": DECISION})
-    added = DECISION + "  - {chose: a, said: A again, from: human, at: '2026-11-13T10:00:00+01:00', where: 'bd:x'}\n"
+    added = DECISION + "  - {chose: a, said: A again, at: '2026-11-13T10:00:00+01:00', where: 'bd:x'}\n"
     edited = DECISION.replace("A please", "B please")
     dropped = DECISION.replace("answers:\n", "answers: []\n").split("  - {")[0]
     assert kinds(base, snap(ontology, {"product/app/decision/d1.yml": added})) == set()
@@ -89,7 +89,7 @@ def test_read_ledgers_reads_removed_files(kb: MakeKb) -> None:
 
 def test_a_kind_the_ontology_renamed_is_followed_and_nothing_else_may_change(ontology: Ontology) -> None:
     other = "question: Who?\noptions:\n  a: {label: A, sets: {}}\nguess: {chose: a, why: x}\n"
-    delegated = DECISION.replace("from: human", "from: ai").replace("where: 'bd:x'", "where: 'bd:x', delegated: product/app/decision/d2")
+    delegated = DECISION.replace("where: 'bd:x'", "where: 'bd:x', delegated: product/app/decision/d2")
     retired = delegated.replace("/decision/d2", "/question/d2")  # a kind this ontology no longer has
     base = snap(ontology, {"product/app/decision/d1.yml": retired})
     now = {"product/app/decision/d1.yml": delegated, "product/app/decision/d2.yml": other}
