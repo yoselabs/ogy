@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from ogy.model import Problem
+from ogy.status import harm
 
 if TYPE_CHECKING:
     from conftest import Kb
@@ -212,3 +213,11 @@ def test_unreachable_step_and_unreached_end(kb: Make) -> None:
                            "ends:\n  done: {result: success, says: D.}\n  never: {result: failure, says: N.}\n")
     found = kb({"product/app/workflow/w.yml": flow}).findings()
     assert found == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost"), (Problem.END_UNREACHED, "product/app/workflow/w/end/never")}
+
+
+def test_a_row_that_deletes_ranks_as_irreversible(kb: Make) -> None:
+    flow = ("says: S.\nstart: sys\nsteps:\n  sys:\n    cases:\n      otherwise: {then: done, effects: [{do: delete, \"on\": "
+            "product/app/entity/thing}]}\nends:\n  done: {result: success, says: D.}\n")
+    found = kb({"product/app/entity/thing.yml": "says: A thing.\n", "product/app/workflow/sys.yml": flow})
+    row = found.snapshot.resolve("product/app/workflow/sys/step/sys/case/otherwise")
+    assert row is not None and harm(found.snapshot, row) == "irreversible"

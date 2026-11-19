@@ -32,9 +32,9 @@ steps:
       otherwise:
         then: set-up
         effects:
-        - do: write
+        - do: tell
           on: software/setup/external/claude-code
-        - do: write
+        - do: tell
           on: software/storage/external/git
     agreed:
       at: '2026-11-19T19:50:03+01:00'

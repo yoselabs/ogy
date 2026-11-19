@@ -2,7 +2,7 @@ title: Land candidate
 says: One squash S of a checked commit X onto origin's main at O, numbered within its checks attempt.
 src: [code:src/taskloop/land_store.py#LandRow]
 attrs:
-  number: {type: counter}
+  number: {type: number}
   origin: {type: text, says: "O, origin's main when S was made."}
   commit: {type: text, says: 'S, the squash commit.'}
   checked: {type: text, says: 'X, the commit the checks passed on.'}

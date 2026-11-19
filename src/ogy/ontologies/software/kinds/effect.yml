@@ -1,17 +1,16 @@
 kind: effect
 about: one thing a row changes or tells; the effects of one row happen together or not at all
-guidance: "What a row changes or tells, all together or not at all. `transition` names a transition; `create` and `delete` an entity; `write` an entity, an external or an attribute that is not derived; `count` an attribute; `tell` an actor or an external. A row with effects has an operation performing it."
+guidance: "What a row changes or tells, all together or not at all. `transition` names a transition (it also creates an entity with a lifecycle); `create`, `delete` an entity without one; `write` our own entity or attribute, not derived; `tell` an actor or an external, the one effect on what we do not own. A performing operation is required."
 shape: inline
 part_of: [choice, case, timeout]
 key: effects
 holds: list
 fields:
-  do: {type: enum, of: [transition, create, delete, write, count, tell], required: true}
+  do: {type: enum, of: [transition, create, delete, write, tell], required: true, member_harm: {delete: [irreversible], tell: [tells-outside]}}
   "on": {type: link, to: [transition, entity, attr, actor, external], required: true}
 requires:
   - {if_equals: {field: do, value: transition}, path: ["on"], kinds: [transition], error: "a transition effect names a transition"}
   - {if_equals: {field: do, value: [create, delete]}, path: ["on"], kinds: [entity], error: "a create or delete effect names an entity"}
-  - {if_equals: {field: do, value: write}, path: ["on"], kinds: [attr, entity, external], without: [derived], error: "a write effect names an entity, an external or an attribute that is not derived"}
-  - {if_equals: {field: do, value: count}, path: ["on"], kinds: [attr], error: "a count effect names the attribute it counts"}
+  - {if_equals: {field: do, value: write}, path: ["on"], kinds: [attr, entity], without: [derived], error: "a write effect names our own entity or an attribute that is not derived; an external is told"}
   - {if_equals: {field: do, value: tell}, path: ["on"], kinds: [actor, external], error: "a tell effect names an actor or an external"}
 dropped: [value]

@@ -1,11 +1,13 @@
 """Agreement, status, the label of an unagreed entry and the review queue. Computed from a snapshot, never stored."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from enum import StrEnum
 
 from ogy.declared import Reader, Scheme
 from ogy.fieldtypes import AGREED_HASH
+from ogy.kinds import Holds, Kind
 from ogy.links import link_items, resolve
 from ogy.model import Address, parse_address
 from ogy.settle import Decision, decision_of, decisions, moment, settles, settling_of
@@ -133,10 +135,22 @@ def status(snapshot: Snapshot, address: Address, hashes: dict[str, str] | None =
             return Status.NOBODY
 
 
+def _member_harms(kind: Kind, fields: Mapping[str, object]) -> list[str]:
+    """The harms of the enum members the fields hold (`member_harm:` in the kind file)."""
+    return [tag for name, spec in kind.fields.items() if isinstance(value := fields.get(name), str)
+            for tag in spec.member_harm.get(value, ())]
+
+
 def harm(snapshot: Snapshot, address: Address) -> str | None:
-    """The worst harm the entry's kind declares, or a field it sets declares (`harm:` in the kind file); None when none."""
+    """The worst harm the entry's kind declares, a field it sets declares (`harm:` in the kind file), or an enum member it or
+    one of its list parts holds declares (`member_harm:`, e.g. a row whose effect deletes); None when none."""
     kind, fields = snapshot.kind_of(address), snapshot.entries[address].fields
     found = [*kind.harm, *(h for name, spec in kind.fields.items() if fields.get(name) is not None for h in spec.harm)]
+    found += _member_harms(kind, fields)
+    for part in snapshot.ontology.parts_of(kind.kind):
+        items = fields.get(part.key or "")
+        if part.holding is Holds.LIST and isinstance(items, list):
+            found += [tag for item in items if isinstance(item, dict) for tag in _member_harms(part, item)]
     return min(found, default=None, key=snapshot.ontology.declared.rank)
 
 

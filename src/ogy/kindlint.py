@@ -92,6 +92,9 @@ def _fields(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
         if field in declared.reserved.sentence:
             found.append(f"{where}: another name for a sentence; the kind names its sentence field")
         found += [f"{where}: harm {tag} is no harm of the ontology" for tag in spec.harm if tag not in declared.harms]
+        found += [f"{where}: member {member} is not in of" for member in spec.member_harm if member not in spec.of]
+        found += [f"{where}: harm {tag} of {member} is no harm of the ontology" for member, tags in spec.member_harm.items()
+                  for tag in tags if tag not in declared.harms]
         if "?" in field or any("?" in member for member in spec.of):
             found.append(f"{where}: no name contains `?`")
         found += _spec(kinds, where, spec)

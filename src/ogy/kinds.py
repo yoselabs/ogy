@@ -67,6 +67,7 @@ class FieldSpec(BaseModel):
     note: bool = False
     required: bool = False
     harm: tuple[str, ...] = ()  # what a wrong value of this field costs, for an entry that sets it (tags of `harms`)
+    member_harm: dict[str, tuple[str, ...]] = {}  # an enum member's own cost, e.g. `delete: [irreversible]`
 
 
 class Fingerprint(BaseModel):

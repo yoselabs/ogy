@@ -10,7 +10,7 @@ requires:
   - {if_set: derived, kinds: [attr], without: [max, optional], error: "a derived attribute has no max and is never optional"}
 fields:
   says: {}
-  type: {type: enum, of: [text, number, flag, money, date, time, duration, counter, one, list], required: true}
+  type: {type: enum, of: [text, number, flag, money, date, time, duration, one, list], required: true}
   of: {type: link, to: [set, entity]}                # for `one` and `list`: what it holds
   max: {type: link, to: [value]}
   optional: {type: flag}

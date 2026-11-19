@@ -23,7 +23,7 @@ attrs:
       said: Yes to the cards but the borrow step
       hash: 68fc7111925b
   renewals:
-    type: counter
+    type: number
     max: product/lending/value/max-loans
     agreed:
       at: '2026-11-25T09:00:00+01:00'
