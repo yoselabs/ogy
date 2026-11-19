@@ -1,1 +1,1 @@
-says: "An entry names the rules it is held to with `by` (links to rules): a case, a choice, an external, a workflow, an entity, an attribute or a guard, as `because` names principles. A rule has no `on`. Each kind sets whether `by` counts in its fingerprint, so adding a rule never stales a holder's agreement (a row keeps it in); `show` prints `by` both ways; a change to an external's pin makes the proofs of the rules it is held to suspect."
+says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`.

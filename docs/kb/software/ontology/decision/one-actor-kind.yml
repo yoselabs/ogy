@@ -33,3 +33,8 @@ answers:
   at: '2026-11-19T00:31:23+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: software/ontology/decision/review-delegation
+- chose: actor-three-natures
+  said: Took every recommendation of Fable's revised round
+  from: human
+  at: '2026-11-19T17:49:55+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
