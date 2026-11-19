@@ -54,7 +54,7 @@
     hash: d58bc0427a6f
 - id: because
   word: because
-  says: Links to the entries a sentence was concluded from; they must reach a src.
+  says: Links to the entries a sentence was concluded from; the chain must reach evidence.
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -93,7 +93,7 @@
     hash: 7540b4620ddf
 - id: evidence
   word: evidence
-  says: An entry's src, because chain or deciding decision; not proof, not agreement.
+  says: "What grounds an entry: src, a decision, a person's yes or because; not proof."
   agreed:
     at: '2026-11-17T23:49:06+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -195,7 +195,7 @@
     hash: 9fd5fc7b6f08
 - id: principle
   word: principle
-  says: A statement decisions are judged against and cite; the owner's spoken word is values.
+  says: A statement decisions are judged against and cite; the owner calls them values.
   avoid:
   - value-as-principle
   agreed:
