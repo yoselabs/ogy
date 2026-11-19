@@ -56,6 +56,12 @@ ends:
   applied:
     result: success
     says: Each item is applied to its card, and what it records carries a short paraphrase of what the owner said.
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: 84d2f41c5f42
   refused:
     result: failure
     says: The item is refused and its card stays in the queue.

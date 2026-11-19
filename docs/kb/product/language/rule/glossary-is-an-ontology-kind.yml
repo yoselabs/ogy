@@ -1,7 +1,7 @@
 says: The glossary is the term kind of the ontology; the owner must agree to each term.
 agreed:
-  at: '2026-11-17T18:28:49.439+00:00'
-  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#6454
+  at: '2026-11-19T19:50:03+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   from: human
-  said: The glossary belongs in the ontology
-  hash: b8097041be4b
+  said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+  hash: e9da3047a8d4

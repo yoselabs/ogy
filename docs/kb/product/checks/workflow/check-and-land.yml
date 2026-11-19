@@ -28,10 +28,28 @@ steps:
         then: blocked
       otherwise:
         then: clean
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: 0aa0d5f0f2c6
 ends:
   clean:
     result: success
     says: No finding; the knowledge base may be handed over or landed.
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: 9aa15dd97b68
   blocked:
     result: failure
     says: The findings are printed and the exit code is 1.
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: bd3c2fe906da

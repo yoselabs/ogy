@@ -38,10 +38,22 @@ steps:
           on: product/removal/entity/removed-item
         - do: delete
           on: product/capture/entity/entry
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: f2966cebf68b
 ends:
   removed:
     result: success
     says: The entry is gone from its file and its item is in removed.yml.
+    agreed:
+      at: '2026-11-19T19:50:03+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+      hash: e757fe0c9cd5
   refused:
     result: failure
     says: Nothing is written; the refusal says why.
