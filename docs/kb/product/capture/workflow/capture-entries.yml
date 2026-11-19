@@ -67,6 +67,12 @@ ends:
   written:
     result: success
     says: Every record is written.
+    agreed:
+      at: '2026-11-19T19:00:55+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
+      hash: 9290d6a53b81
   refused:
     result: failure
     says: Nothing is written; the refusal names each record at fault.

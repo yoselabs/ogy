@@ -11,6 +11,12 @@ attrs:
 states:
   nobody-agreed:
     says: No person agreed to the sentence yet.
+    agreed:
+      at: '2026-11-19T19:00:55+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
+      hash: dc8b1a765780
   decided-by-you:
     says: The owner agreed to the sentence now on the entry.
     agreed:
