@@ -36,10 +36,22 @@ steps:
         effects:
         - do: transition
           on: product/review/entity/decision/transition/answer
+    agreed:
+      at: '2026-11-19T19:12:53+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
+      hash: c4a969674d24
 ends:
   stored:
     result: success
     says: The answer is on its decision, with what the owner said paraphrased, who, when and where.
+    agreed:
+      at: '2026-11-19T19:12:53+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      from: human
+      said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
+      hash: dd4f2298f264
   refused:
     result: failure
     says: Nothing is stored.
