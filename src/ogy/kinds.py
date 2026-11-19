@@ -137,53 +137,55 @@ class OnePart(BaseModel):
 
 
 class Settling(BaseModel):
-    """Makes a kind the one that settles entries: the parts and fields the fixed checks of a decision read."""
+    """Makes a kind the one that settles entries: the parts and fields the fixed checks of a decision read. The kind file
+    names every one; the engine knows none."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-    option: str = "option"
-    answer: str = "answer"
-    guess: str = "guess"
-    sets: str = "sets"  # field of the option
-    chose: str = "chose"  # field of an answer and of a guess
-    value: str = "sets"  # field of the guess: the values it gives when it chooses no option
-    said: str = "said"  # fields of an answer and of the guess's `heard`: a short paraphrase, never a quote
-    at: str = "at"
-    where: str = "where"
-    note: str = "note"
-    delegated: str = "delegated"
-    heard: str = "heard"  # the part of a guess: what the owner said that it rests on
+    option: str
+    answer: str
+    guess: str
+    sets: str  # field of the option
+    chose: str  # field of an answer and of a guess
+    value: str  # field of the guess: the values it gives when it chooses no option
+    said: str  # fields of an answer and of the guess's `heard`: a short paraphrase, never a quote
+    at: str
+    where: str
+    note: str
+    delegated: str
+    heard: str  # the part of a guess: what the owner said that it rests on
 
 
 class Flow(BaseModel):
     """Makes a container kind (a workflow) a graph: its parts are steps and ends; a step's parts are rows.
 
-    Every name is a kind or field of this ontology, so another ontology can rename them; the checks are fixed:
+    Every name is a kind or field of this ontology, written out in its kind file, so another ontology can rename them; the
+    checks are fixed:
     step shapes, every step reachable from the start, every step reaching an end or a hand-off, every end reached,
     a calling step naming every end of its callee, the serving views offering every choice, and every container started: a root
     (an actor on its first step, or a `roots` field set) or led to from a started one.
     """
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-    start: str = "start"  # container field: the first step
-    roots: tuple[str, ...] = ("schedule", "event")  # container fields that start it from outside, as an actor on the first step does
-    step: str = "step"
-    end: str = "end"
-    choice: str = "choice"  # rows of an actor step
-    case: str = "case"  # rows of a system or calling step, lowest `order` first
-    timeout: str = "timeout"  # the optional timeout row of an actor step
-    then: str = "then"  # the edge, on a step (plain system step) or on a row
-    actor: str = "actor"
-    calls: str = "calls"
-    covers: str = "covers_ends"  # a calling step's case names the callee ends it answers
-    when: str = "when"
-    order: str = "order"
-    otherwise: str = "otherwise"  # the local key of the one case without a condition
-    serves: str = "serves"
-    servers: tuple[str, ...] = ("view", "command")
-    offers: str = "offers"  # a serving entry offering only some choices lists them; without it, it offers all
-    guard: str = "guard"  # a guard on a step sends the work to its `denied` target when its condition does not hold
-    guarded: str = "on"
-    denied: str = "else"
+    start: str  # container field: the first step
+    roots: tuple[str, ...]  # container fields that start it from outside, as an actor on the first step does
+    step: str
+    end: str
+    choice: str  # rows of an actor step
+    case: str  # rows of a system or calling step, lowest `order` first
+    timeout: str  # the optional timeout row of an actor step
+    then: str  # the edge, on a step (plain system step) or on a row
+    actor: str
+    calls: str
+    covers: str  # a calling step's case names the callee ends it answers
+    when: str
+    order: str
+    otherwise: str  # the local key of the one case without a condition
+    serves: str
+    servers: tuple[str, ...]
+    offers: str  # a serving entry offering only some choices lists them; without it, it offers all
+    guard: str  # a guard on a step sends the work to its `denied` target when its condition does not hold
+    guarded: str
+    denied: str
 
 
 class Kind(BaseModel):

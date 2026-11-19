@@ -4,7 +4,19 @@ about: one question, its options, the AI's guess and the owner's answers; it set
 guidance: "A question with options, the AI's guess and the owner's answers: business, technical or an ADR. A proposal becomes a decision before it is acted on; no and not now are options that set `null`. Search first (`ogy find`): a new option goes on the decision that already asks the question."
 shape: entity
 layers: [product, software]
-settling: {}                                         # makes it the kind that settles entries: the keys of its options' `sets` and of the guess's `sets`; names as in kinds.Settling
+settling:                                            # makes it the kind that settles entries: the keys of its options' `sets` and of the guess's `sets` (kinds.Settling)
+  option: option
+  answer: answer
+  guess: guess
+  heard: heard                                       # the part of a guess: what the owner said that it rests on
+  sets: sets                                         # field of the option
+  chose: chose                                       # field of an answer and of a guess
+  value: sets                                        # field of the guess: the values it gives when it chooses no option
+  said: said                                         # field of an answer and of the guess's heard: a short paraphrase
+  at: at
+  where: where
+  note: note
+  delegated: delegated
 # `null` for an address in an option's or the guess's `sets` is how an option says no, not now or removed: under that option the entry does not exist.
 fields:
   question: {required: true}

@@ -16,6 +16,8 @@ FIXED = "kind: principle\nabout: x\nshape: list\nfile: principles.yml\narea: glo
 HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: entity\n"
 PARENT = "kind: parent\nabout: x\nshape: entity\nlayers: [product]\n"
+SETTLING = ("settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
+            "said: said, at: at, where: where, note: note, delegated: delegated}\n")
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
 
 
@@ -69,7 +71,7 @@ def test_software_kinds_load() -> None:
     (ENTITY + "requires:\n  - {if_set: a, if_part: b, path: [], kinds: [], error: x}\n", "not both"),
     (ENTITY + "requires:\n  - {if_part: nothing, path: [], kinds: [actor], error: x}\n", "no part kind"),
     (ENTITY + "requires:\n  - {path: [], kinds: [actor], says: x}\n", "says"),
-    (ENTITY + "settling: {}\n", "settling names no kind"),
+    (ENTITY + SETTLING, "settling names no kind"),
     (HEAD + "shape: single\n", "names its file"),
     ("kind: thing\nabout: x\nshape: single\nfile: thing.yml\narea: glossary\n", "belong to kinds that live under a layer"),
     (ENTITY + "must_be_agreed: true\nasked: false\n", "never asked cannot need agreement"),
@@ -156,6 +158,6 @@ def test_fields_are_meaning_unless_note() -> None:
 
 
 def test_settling_names_are_checked() -> None:
-    decision = (HEAD.replace("thing", "decision") + "shape: entity\nsettling: {sets: nothing}\n")
+    decision = (HEAD.replace("thing", "decision") + "shape: entity\n" + SETTLING.replace("sets: sets", "sets: nothing"))
     with pytest.raises(OntologyError, match="settling names no kind option"):
         load(decision)

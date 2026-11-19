@@ -44,11 +44,11 @@ class Force:
 class Decision:
     address: Address
     entry: Entry
+    names: Settling
     options: dict[str, Sets] = field(default_factory=dict)
     answers: list[Answer] = field(default_factory=list)
     guess: Entry | None = None
     heard: Entry | None = None  # what the owner said that the guess rests on: {said}
-    names: Settling = field(default_factory=Settling)
 
     @property
     def in_force(self) -> Force | None:
@@ -101,8 +101,8 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
     for address, entry in sorted(snapshot.entries.items()):
         if address.kind != kind.kind:
             continue
-        decision = Decision(address, entry, guess=snapshot.entries.get(address.part(names.guess)),
-                            heard=snapshot.entries.get(address.part(names.guess).part(names.heard)), names=names)
+        decision = Decision(address, entry, names, guess=snapshot.entries.get(address.part(names.guess)),
+                            heard=snapshot.entries.get(address.part(names.guess).part(names.heard)))
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}

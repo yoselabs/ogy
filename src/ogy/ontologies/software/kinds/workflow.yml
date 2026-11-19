@@ -3,7 +3,27 @@ about: a result reached by steps; branching is `then` targets, merging is two ro
 guidance: "A result reached by steps, started by an actor on its first step, a `schedule`, an `event`, or a caller's `then` or `calls`. What the system does again and again is a scheduled workflow; a one-off act is a plain task outside the ontology. Branch with `then`; merge by naming one step from two rows."
 shape: entity
 layers: [product, software]
-flow: {}
+flow:                                                # makes it a graph: the kinds and fields the flow checks read (kinds.Flow)
+  start: start                                       # the container field naming the first step
+  roots: [schedule, event]                           # container fields that start it from outside, as an actor on the first step does
+  step: step
+  end: end
+  choice: choice                                     # rows of an actor step
+  case: case                                         # rows of a system or calling step, lowest `order` first
+  timeout: timeout                                   # the optional timeout row of an actor step
+  then: then                                         # the edge, on a step or on a row
+  actor: actor
+  calls: calls
+  covers: covers_ends                                # a calling step's case names the callee ends it answers
+  when: when
+  order: order
+  otherwise: otherwise                               # the local key of the one case without a condition
+  serves: serves
+  servers: [view, command]                           # the kinds that serve a step to its actor
+  offers: offers                                     # a server offering only some choices lists them
+  guard: guard                                       # sends the work to its `else` target when its condition does not hold
+  guarded: "on"
+  denied: else
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
   says: {required: true}                             # the result it reaches
