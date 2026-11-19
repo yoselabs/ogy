@@ -1,7 +1,7 @@
 title: A rule is linked by what follows it
 structure: true
 question: Which file holds the link between a rule and the entry that follows it?
-context: A reader of a rule asks where it is used; a reader of a step asks why it exists. Two copies of one link drift.
+context: 'A reader of a rule asks where it is used; a reader of a step asks why it exists. Two copies of one link drift. Today no entry names a rule with `by`, and eight kinds accept it (the in-force text lists seven: timeout is missing).'
 options:
   follower:
     label: Once, by the follower (`by`); `on` is dropped
@@ -23,6 +23,16 @@ options:
     sets:
       software/ontology/rule/rule-is-linked-by-its-follower:
         says: "An entry names the rules it is held to with `by` (links to rules): a case, a choice, an external, a workflow, an entity, an attribute or a guard, as `because` names principles. A rule has no `on`. Each kind sets whether `by` counts in its fingerprint, so adding a rule never stales a holder's agreement (a row keeps it in); `show` prints `by` both ways; a change to an external's pin makes the proofs of the rules it is held to suspect."
+  declared:
+    label: '`by` on the follower; `on` dropped; the kind files say which kinds take `by`; a rule nothing names is allowed'
+    sets:
+      software/ontology/rule/rule-is-linked-by-its-follower:
+        says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`.
+  declared-and-used:
+    label: As the one before, and a rule that nothing names with `by` is an error
+    sets:
+      software/ontology/rule/rule-is-linked-by-its-follower:
+        says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`; a rule that nothing names with `by` is an error.
 guess:
   chose: follower
   why: One owner per link; show computes the other direction.

@@ -1,6 +1,6 @@
 title: How entries leave an area
 structure: true
-question: ogy has no command that moves an entry to another area. remove and put would give a new address, lose the agreements on the entry and break the decisions that name it. How do the entries of product/ogy and software/ogy reach topic areas?
+question: How does ogy move an entry to another area without losing its agreements and the decisions that name it, and how does a later check tell a move from a removal?
 context: 'Found on 2026-11-18 while splitting the area: links, decisions, answers and removed items name the old addresses.'
 options:
   move-command:
@@ -21,7 +21,7 @@ options:
     label: Build `ogy move`, which records nothing; check --base tells a move by kind and id, and the fingerprint only breaks ties
     sets:
       software/storage/rule/move-keeps-history:
-        says: '`ogy move <address> <area>` moves an entry to another area: it keeps the kind and id and, in the same write, names the new address wherever the old one was (links, decisions, answers, the why of removed items). It writes no removed.yml item: Git keeps the history, and check --base tells a move from a loss: an entry gone with exactly one arrival of the same kind and id has moved; the fingerprint only breaks ties.'
+        says: A move keeps the kind and id, names the new address wherever the old one was in the same write, and is never a removal.
 guess:
   chose: move-leaves-no-record
   why: The owner wants a migration to cause no removals and leave no record per move.

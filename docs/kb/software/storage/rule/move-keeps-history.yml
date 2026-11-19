@@ -1,1 +1,1 @@
-says: '`ogy move <address> <area>` moves an entry to another area: it keeps the kind and id and, in the same write, names the new address wherever the old one was (links, decisions, answers, the why of removed items). It writes no removed.yml item: Git keeps the history, and check --base tells a move from a loss: an entry gone with exactly one arrival of the same kind and id has moved; the fingerprint only breaks ties.'
+says: A move keeps the kind and id, names the new address wherever the old one was in the same write, and is never a removal.
