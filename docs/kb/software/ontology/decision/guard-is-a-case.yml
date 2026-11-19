@@ -8,7 +8,7 @@ options:
     label: Keep guard only for a software entry refusing a product step
   keep:
     label: Keep guard as it is and fix its workflow form
-guess:
+proposal:
   chose: delete
   why: One home per question.
 answers:

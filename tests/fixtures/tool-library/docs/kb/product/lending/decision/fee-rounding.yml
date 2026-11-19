@@ -9,7 +9,7 @@ options:
     label: Whole days only
     sets:
       product/lending/rule/fees-round-up:
-guess:
+proposal:
   chose: up
   why: Simpler to explain.
 answers:

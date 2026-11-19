@@ -1,6 +1,8 @@
 kind: principle
 about: a value every design decision is judged against, one sentence; the constitution is the fixed folder of them, printed whole to every agent; decisions and rules cite one with `because`
-guidance: "A value every design decision is judged against, one sentence in the constitution. An entry cites it with `because` when it is the reason. A statement that must stay true and can be proved is a rule, which entries are held to with `by`."
+guidance: "A value every design decision is judged against, one sentence in the constitution. An entry cites it with `because` when it is the reason. A statement that must stay true and can be proved is a rule, which entries are held to with `satisfies`."
+like: "an ArchiMate principle: a value every design decision is judged against"
+unlike: "a rule: a principle no test can check"
 shape: list
 sentence: says
 printed_first: {also: why}                           # the constitution: printed whole to every agent before the glossary, with its why

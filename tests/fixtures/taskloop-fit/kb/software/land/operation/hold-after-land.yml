@@ -1,4 +1,0 @@
-says: Puts a task on hold with the land's refusal as the cause and one comment for the person.
-performs: [software/land/workflow/round-land/step/land-oldest/case/held]
-uses: [software/claim/external/bd]
-src: ["code:src/taskloop/round_land.py#land_passed"]

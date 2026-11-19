@@ -93,7 +93,7 @@ def sets_problems(ontology: Ontology, value: object) -> Found:
             found.append((Problem.WRONG_TYPE, f"{key} is a mapping of fields or null"))
         else:
             found += [(problem, f"{key}: {detail}") for problem, detail in
-                      fields_problems(ontology, ontology.specs(kind), fields, partial=True, old=kind.old_names)]
+                      fields_problems(ontology, ontology.specs(kind), fields, partial=True, old=ontology.old_names(kind))]
     return found
 
 

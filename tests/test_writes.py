@@ -15,7 +15,7 @@ from ogy import cli, ops
 from ogy.mcp_server import build
 from ogy.target import Target
 
-OPTIONS = "{one: {label: One, sets: {product/app/value/fee: {is: 1}}}, two: {label: Two, sets: {product/app/value/fee: {is: 2}}}}"
+OPTIONS = "{one: {label: One, sets: {product/app/quantity/fee: {is: 1}}}, two: {label: Two, sets: {product/app/quantity/fee: {is: 2}}}}"
 
 
 def w(repo: Path, *argv: str) -> tuple[int, list[str]]:
@@ -33,7 +33,7 @@ def tree(repo: Path) -> dict[str, str]:
 @pytest.fixture
 def decided(repo: Path) -> Path:
     code, lines = put(repo, "product/app/decision/fee-amount", question="How much is the fee?", options=any_yaml.load(OPTIONS),
-                      guess={"chose": "two", "why": "a guess"})
+                      proposal={"chose": "two", "why": "a guess"})
     assert code == cli.OK, lines
     return repo
 
@@ -42,51 +42,52 @@ WAIT = {"says": "The wait.", "is": 3, "unit": "days", "src": ["code:app.py#lend"
 
 
 def test_put_adds_an_entry_that_checks_clean(repo: Path) -> None:
-    code, lines = put(repo, "product/app/value/wait", **WAIT)
-    assert (code, lines) == (cli.OK, ["added product/app/value/wait"])
-    assert "id: wait" in (repo / "docs/kb/product/app/values.yml").read_text()
+    code, lines = put(repo, "product/app/quantity/wait", **WAIT)
+    assert (code, lines) == (cli.OK, ["added product/app/quantity/wait"])
+    assert "id: wait" in (repo / "docs/kb/product/app/quantities.yml").read_text()
     assert w(repo, "check")[0] == cli.OK
 
 
 def test_put_takes_kind_area_and_id_for_an_address(repo: Path) -> None:
-    record = json.dumps({"kind": "value", "layer": "product", "area": "app", "id": "wait", **WAIT})
-    assert w(repo, "put", record) == (cli.OK, ["added product/app/value/wait"])
+    record = json.dumps({"kind": "quantity", "layer": "product", "area": "app", "id": "wait", **WAIT})
+    assert w(repo, "put", record) == (cli.OK, ["added product/app/quantity/wait"])
 
 
 def test_put_takes_an_array_in_one_call_and_changes_what_exists(repo: Path) -> None:
-    records = [{"address": "product/app/value/wait", **WAIT}, {"address": "product/app/value/fee", "is": 5},
-               {"address": "product/app/value/fee", "title": "A fee"}]
-    assert w(repo, "put", json.dumps(records[:2])) == (cli.OK, ["added product/app/value/wait", "changed product/app/value/fee"])
-    text = (repo / "docs/kb/product/app/values.yml").read_text()
+    records = [{"address": "product/app/quantity/wait", **WAIT}, {"address": "product/app/quantity/fee", "is": 5},
+               {"address": "product/app/quantity/fee", "title": "A fee"}]
+    assert w(repo, "put", json.dumps(records[:2])) == (cli.OK, ["added product/app/quantity/wait", "changed product/app/quantity/fee"])
+    text = (repo / "docs/kb/product/app/quantities.yml").read_text()
     assert "is: 5" in text and "The fee." in text  # the fields not named stay
-    assert put(repo, "product/app/value/fee", title="A name")[0] == cli.OK and put(repo, "product/app/value/fee", title=None)[0] == cli.OK
-    assert "title" not in (repo / "docs/kb/product/app/values.yml").read_text() and w(repo, "check") == (cli.OK, ["ok"])
+    fee = "product/app/quantity/fee"
+    assert put(repo, fee, title="A name")[0] == cli.OK and put(repo, fee, title=None)[0] == cli.OK
+    assert "title" not in (repo / "docs/kb/product/app/quantities.yml").read_text() and w(repo, "check") == (cli.OK, ["ok"])
 
 
 def test_put_reads_yaml_arguments_a_file_and_several_arguments(repo: Path, tmp_path: Path) -> None:
-    yaml_text = "- {address: product/app/value/wait, says: The wait., is: 3, unit: days, src: [code:app.py#lend]}\n"
-    assert w(repo, "put", yaml_text) == (cli.OK, ["added product/app/value/wait"])
+    yaml_text = "- {address: product/app/quantity/wait, says: The wait., is: 3, unit: days, src: [code:app.py#lend]}\n"
+    assert w(repo, "put", yaml_text) == (cli.OK, ["added product/app/quantity/wait"])
     file = tmp_path / "more.yml"
-    file.write_text("- {address: product/app/value/late, says: Late., is: 1, unit: days, src: [code:app.py#lend]}\n")
-    two = json.dumps({"address": "product/app/value/fee", "is": 9})
-    assert w(repo, "put", two, "--file", str(file)) == (cli.OK, ["changed product/app/value/fee", "added product/app/value/late"])
+    file.write_text("- {address: product/app/quantity/late, says: Late., is: 1, unit: days, src: [code:app.py#lend]}\n")
+    two = json.dumps({"address": "product/app/quantity/fee", "is": 9})
+    assert w(repo, "put", two, "--file", str(file)) == (cli.OK, ["changed product/app/quantity/fee", "added product/app/quantity/late"])
 
 
 def test_put_checks_the_batch_together_and_writes_nothing_when_one_is_refused(repo: Path) -> None:
     before = tree(repo)
-    good = {"address": "product/app/value/wait", **WAIT}
+    good = {"address": "product/app/quantity/wait", **WAIT}
     refusals = [
-        {"address": "product/app/value/fee", "says": "x", "is": 1, "unit": "EUR", "colour": "red"},  # an unknown field
-        {"address": "product/app/value/other", "says": "x", "src": ["code:app.py#lend"]},  # required fields missing
-        {"address": "product/app/value/Bad_Id", **WAIT},
+        {"address": "product/app/quantity/fee", "says": "x", "is": 1, "unit": "EUR", "colour": "red"},  # an unknown field
+        {"address": "product/app/quantity/other", "says": "x", "src": ["code:app.py#lend"]},  # required fields missing
+        {"address": "product/app/quantity/Bad_Id", **WAIT},
         {"address": "product/app/nothing/x"},
         {"address": "product/app/decision/q", "question": "Q?", "answers": [{"chose": "a"}]},  # answers have their own command
-        {"address": "product/app/value/fee", "agreed": {"hash": "000000000000"}},  # only reply agrees
-        {"address": "product/app/value/fee", "is": "many"},
-        {"address": "product/app/value/none-yet", "is": 1},  # a change to what does not exist is an add: it lacks its fields
+        {"address": "product/app/quantity/fee", "agreed": {"hash": "000000000000"}},  # only reply agrees
+        {"address": "product/app/quantity/fee", "is": "many"},
+        {"address": "product/app/quantity/none-yet", "is": 1},  # a change to what does not exist is an add: it lacks its fields
         {"address": "product/app/workflow/borrow/step/ask/choice/go/nope/x"},
-        {"kind": "value", "layer": "product", "area": "app"},
-        {"address": "product/app/value/wait", "kind": "value", "layer": "product", "area": "app", "id": "wait"},
+        {"kind": "quantity", "layer": "product", "area": "app"},
+        {"address": "product/app/quantity/wait", "kind": "quantity", "layer": "product", "area": "app", "id": "wait"},
     ]
     for bad in refusals:
         code, lines = w(repo, "put", json.dumps([good, bad]))
@@ -98,7 +99,7 @@ def test_put_checks_the_batch_together_and_writes_nothing_when_one_is_refused(re
 
 def test_a_batch_that_breaks_the_base_is_put_back(repo: Path) -> None:
     before = tree(repo)
-    ok = {"address": "product/app/value/wait", **WAIT}
+    ok = {"address": "product/app/quantity/wait", **WAIT}
     code, lines = w(repo, "put", json.dumps([ok, {"address": "software/app/view/page2", "says": "Another page.",
                                                   "src": ["code:app.py#lend"],
                                                    "serves": ["product/app/workflow/borrow/step/nowhere"]}]))
@@ -110,7 +111,7 @@ def test_a_decision_and_the_entry_its_options_set_arrive_in_one_call(repo: Path)
     options = {"keep": {"label": "Keep", "sets": {"product/app/capability/late-fee": {"says": "A late fee is charged."}}},
                "drop": {"label": "Drop", "sets": {"product/app/capability/late-fee": None}}}
     records = [{"address": "product/app/decision/late-fee-q", "question": "Keep the late fee?", "options": options,
-                "guess": {"chose": "keep", "why": "built"}},
+                "proposal": {"chose": "keep", "why": "built"}},
                {"address": "product/app/capability/late-fee", "says": "A late fee is charged.", "src": ["code:app.py#lend"]}]
     assert w(repo, "put", json.dumps(records)) == (cli.OK, ["added product/app/decision/late-fee-q",
                                                             "added product/app/capability/late-fee"])
@@ -120,17 +121,17 @@ def test_a_decision_and_the_entry_its_options_set_arrive_in_one_call(repo: Path)
 def test_put_adds_a_part_under_a_parent_of_the_same_call_and_to_one_that_exists(repo: Path) -> None:
     stay = {"address": "product/app/workflow/borrow/step/ask/choice/stay", "label": "Stay", "then": "product/app/workflow/borrow/end/done"}
     assert w(repo, "put", json.dumps(stay))[0] == cli.OK and "stay" in (repo / "docs/kb/product/app/workflow/borrow.yml").read_text()
-    options = {"keep": {"label": "Keep", "sets": {"product/app/value/fee": {"is": 2}}}}
-    records = [{"address": "product/app/decision/q2/guess", "chose": "keep", "why": "built"},
+    options = {"keep": {"label": "Keep", "sets": {"product/app/quantity/fee": {"is": 2}}}}
+    records = [{"address": "product/app/decision/q2/proposal", "chose": "keep", "why": "built"},
                # the part comes before its parent: still added after
                {"address": "product/app/decision/q2", "question": "Keep the fee?", "options": options}]
-    assert w(repo, "put", json.dumps(records)) == (cli.OK, ["added product/app/decision/q2", "added product/app/decision/q2/guess"])
+    assert w(repo, "put", json.dumps(records)) == (cli.OK, ["added product/app/decision/q2", "added product/app/decision/q2/proposal"])
     assert w(repo, "check") == (cli.OK, ["ok"])
 
 
 def test_put_never_reuses_a_removed_id(repo: Path) -> None:
-    assert w(repo, "remove", "software/app/operation/lend", "--why", "not needed")[0] == cli.OK
-    code, _ = put(repo, "software/app/operation/lend", says="x", performs=["product/app/workflow/borrow/step/ask/choice/go"],
+    assert w(repo, "remove", "software/app/handler/lend", "--why", "not needed")[0] == cli.OK
+    code, _ = put(repo, "software/app/handler/lend", says="x", performs=["product/app/workflow/borrow/step/ask/choice/go"],
                   src=["code:app.py#lend"])
     assert code == cli.REFUSED
 
@@ -147,13 +148,13 @@ SAID = ("--where", "ai:claude/1", "--at", "2026-11-12T10:05:00+01:00")
 def test_answer_keeps_a_paraphrase_when_and_where_and_agrees_to_what_it_sets(decided: Path) -> None:
     code, lines = w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One euro is enough", *SAID)
     assert code == cli.OK, lines
-    assert lines == ["product/app/decision/fee-amount: answered one", "set product/app/value/fee"]
-    assert "is: 1" in (decided / "docs/kb/product/app/values.yml").read_text()
+    assert lines == ["product/app/decision/fee-amount: answered one", "set product/app/quantity/fee"]
+    assert "is: 1" in (decided / "docs/kb/product/app/quantities.yml").read_text()
     (answered,) = any_yaml.load((decided / "docs/kb/product/app/decision/fee-amount.yml").read_text())["answers"]
     assert dict(answered) == {"chose": "one", "said": "One euro is enough", "at": "2026-11-12T10:05:00+01:00",
                               "where": "ai:claude/1"}
     assert not list((decided / "docs/kb").rglob("message")) and w(decided, "check") == (cli.OK, ["ok"])
-    shown = w(decided, "show", "product/app/value/fee")[1]
+    shown = w(decided, "show", "product/app/quantity/fee")[1]
     assert any("decided by you" in line for line in shown)  # the answer agrees to what the option sets, as its card showed it
     assert "You said (paraphrased): One euro is enough" in w(decided, "show", "product/app/decision/fee-amount")[1]
 
@@ -168,7 +169,7 @@ def test_answer_note_is_shown_and_listed_by_dropped(decided: Path) -> None:
     kind = "product/app/decision/fee-amount"
     code, lines = w(decided, "answer", kind, "two", "--said", "Two for now", *SAID, "--note", "for now; challenge it later")
     assert code == cli.OK, lines
-    assert any("note: for now; challenge it later" in line for line in w(decided, "show", "product/app/value/fee")[1])
+    assert any("note: for now; challenge it later" in line for line in w(decided, "show", "product/app/quantity/fee")[1])
     assert w(decided, "dropped")[1] == [f"answer with a note (the owner's hedge or condition): {kind}"]
     assert w(decided, "status")[1][-1] == "dropped: 1 (ogy dropped)"
     assert w(decided, "check") == (cli.OK, ["ok"])
@@ -188,9 +189,9 @@ def test_answer_refusals_leave_everything_as_it_was(decided: Path) -> None:
 
 
 def test_an_agent_answers_only_under_a_persons_answer_and_it_is_listed(decided: Path) -> None:
-    options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/value/fee": {"unit": "EUR"}}}}
+    options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/quantity/fee": {"unit": "EUR"}}}}
     assert put(decided, "product/app/decision/fees-delegated", question="Who decides fees?", options=options,
-               guess={"chose": "agent", "why": "asked"})[0] == cli.OK
+               proposal={"chose": "agent", "why": "asked"})[0] == cli.OK
     agent = ("--delegated", "product/app/decision/fees-delegated")
     code, lines = w(decided, "answer", "product/app/decision/fee-amount", "two", "--said", "Two is small", *SAID, *agent)
     assert code == cli.REFUSED and "--delegated" in lines[0]  # the delegation has no person's answer yet
@@ -200,14 +201,14 @@ def test_an_agent_answers_only_under_a_persons_answer_and_it_is_listed(decided: 
     text = (decided / "docs/kb/product/app/decision/fee-amount.yml").read_text()
     assert "from:" not in text and "delegated: product/app/decision/fees-delegated" in text
     assert w(decided, "check") == (cli.OK, ["ok"])
-    assert any("by AI, for you" in line for line in w(decided, "show", "product/app/value/fee")[1])
+    assert any("by AI, for you" in line for line in w(decided, "show", "product/app/quantity/fee")[1])
     assert w(decided, "dropped")[1] == ["answer an agent gave under a delegation (the owner may veto): product/app/decision/fee-amount"]
 
 
 def test_an_answered_guess_is_inert_and_a_delegated_answer_is_shown_in_force(decided: Path) -> None:
-    options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/value/fee": {"unit": "EUR"}}}}
+    options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/quantity/fee": {"unit": "EUR"}}}}
     assert put(decided, "product/app/decision/fees-delegated", question="Who decides fees?", options=options,
-               guess={"chose": "agent", "why": "asked"})[0] == cli.OK
+               proposal={"chose": "agent", "why": "asked"})[0] == cli.OK
     assert w(decided, "answer", "product/app/decision/fees-delegated", "agent", "--said", "Decide fees for me", *SAID)[0] == cli.OK
     agent = ("--delegated", "product/app/decision/fees-delegated")
     assert w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One is small", *SAID, *agent)[0] == cli.OK
@@ -225,7 +226,7 @@ def test_answer_that_says_no_removes_the_entry(repo: Path) -> None:
                "drop": {"label": "Drop", "sets": {"product/app/capability/late-fee": None}}}
     records = [{"address": "product/app/capability/late-fee", "says": "A late fee is charged.", "src": ["code:app.py#lend"]},
                {"address": "product/app/decision/late-fee-q", "question": "Keep the late fee?", "options": options,
-                "guess": {"chose": "keep", "why": "built"}}]
+                "proposal": {"chose": "keep", "why": "built"}}]
     assert w(repo, "put", json.dumps(records))[0] == cli.OK
     code, lines = w(repo, "answer", "product/app/decision/late-fee-q", "drop", "--said", "No late fee", *SAID)
     assert code == cli.OK and "removed product/app/capability/late-fee" in lines, lines
@@ -238,17 +239,17 @@ def test_a_second_writer_is_refused_while_the_lock_is_held(repo: Path) -> None:
     assert git is not None
     before = tree(repo)
     with ProcessLock.acquire(git / "ogy.lock", reentrant=False):
-        code, lines = w(repo, "put", json.dumps({"address": "product/app/value/fee", "is": 9}))
+        code, lines = w(repo, "put", json.dumps({"address": "product/app/quantity/fee", "is": 9}))
     assert code == cli.REFUSED and "another ogy write" in lines[0] and tree(repo) == before
 
 
 def test_writes_work_through_the_mcp_tools(repo: Path) -> None:
     names = {tool.name for tool in asyncio.run(build().list_tools())}
     assert {"put", "answer", "reply"} <= names and not {"new", "set", "agree", "init", "message"} & names
-    record = json.dumps([{"address": "product/app/value/wait", **WAIT, "says": "- a wait."}])
+    record = json.dumps([{"address": "product/app/quantity/wait", **WAIT, "says": "- a wait."}])
     result = asyncio.run(build().call_tool("put", {"repo": str(repo), "records": [record]}))
     assert (result.structured_content or {}).get("exit_code") == cli.OK
-    assert "- a wait." in (repo / "docs/kb/product/app/values.yml").read_text()
+    assert "- a wait." in (repo / "docs/kb/product/app/quantities.yml").read_text()
     with pytest.raises(ToolError, match="standard input"):
         asyncio.run(build().call_tool("put", {"repo": str(repo), "file": "-"}))
 
@@ -274,7 +275,7 @@ def test_an_answer_removes_a_state_after_the_transition_that_links_to_it(repo: P
     records = [{"address": entity, "says": "A loan.", "src": ["code:app.py#lend"], "states": states,
                 "transitions": {"close": {"from": ["open"], "to": "closed"}}},
                {"address": "product/app/decision/loan-close", "question": "Do loans close?", "options": options,
-                "guess": {"chose": "keep", "why": "built"}}]
+                "proposal": {"chose": "keep", "why": "built"}}]
     code, lines = w(repo, "put", json.dumps(records))
     assert code == cli.OK, lines
     code, lines = w(repo, "answer", "product/app/decision/loan-close", "drop", "--said", "Loans never close", *SAID)

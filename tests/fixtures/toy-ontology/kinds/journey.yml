@@ -1,6 +1,6 @@
 kind: journey
 about: a result reached by stages
-shape: entity
+shape: file
 sentence: tells
 layers: [business, tech]
 flow:

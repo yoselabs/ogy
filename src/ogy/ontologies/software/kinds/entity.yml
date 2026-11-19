@@ -1,12 +1,14 @@
 kind: entity
 about: a thing the product keeps facts about; its attributes and, when it has one, its lifecycle
-guidance: "A thing the product keeps facts about: its attributes, and states and transitions when the product records moves and reacts to them. A closed list of words is a set; a number someone decides is a value."
-shape: entity
+guidance: "A thing the product keeps facts about: its attributes, and states and transitions when the product records moves and reacts to them. A closed list of words is an enum; a number someone decides is a quantity."
+like: "an ER or UML entity: a thing the product keeps facts about"
+unlike: "a DDD aggregate with its own rules; a database table"
+shape: file
 sentence: says
 layers: [product, software]
 needs_proof: true
 fingerprint:
   proofs: true
-  also: [[/attr, "=@fingerprint"], [/state, "=@fingerprint"], [/transition, "=@fingerprint"]]
+  also: [[/attribute, "=@fingerprint"], [/state, "=@fingerprint"], [/transition, "=@fingerprint"]]
 fields:
   says: {required: true}

@@ -11,7 +11,7 @@ steps:
         when:
           text: the mailer accepted the message
           reads:
-          - software/lending/external/mailer
+          - software/lending/dependency/mailer
         then: sent
         effects:
         - do: tell

@@ -1,0 +1,16 @@
+structure: true
+question: Do the fields take mainstream names too?
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19). Each field with its source: the common `by` becomes `satisfies` (SysML satisfy: this entry is held to that rule); capability `serves` becomes `realizes` (ArchiMate realization from a capability to a goal, as workflow realizes capability; recalled from the ArchiMate 3 specification, not re-read in this session); setting `binds` becomes `default` (the quantity a setting falls back to); area `distinct` becomes `unlike` (text for now; a link to the neighbouring area comes later). `ogy migrate` renames them (`renamed:` in the kind files and in ontology.yml)."
+options:
+  rename:
+    label: Rename by, capability.serves, setting.binds and area.distinct
+  keep:
+    label: Keep the current field names
+proposal:
+  chose: rename
+  why: serves meant two things (a capability's goal and a view's step); by read as a preposition.
+answers:
+- chose: rename
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:33:47+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

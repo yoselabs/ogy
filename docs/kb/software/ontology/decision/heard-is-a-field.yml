@@ -1,0 +1,16 @@
+structure: true
+question: Is what the owner said that a proposal rests on a text field of the proposal, instead of a part kind of its own?
+context: 'Harmony review 2026-11-19, finding 7 (decision parts): heard was a part kind with one field `said`; the owner approved it as a field (bead ogy-yy9.75). It stays a paraphrase, never a quote; the review card still reads "You said (paraphrased): .... Read as B."'
+options:
+  field:
+    label: '`heard` is a text field of the proposal, a short paraphrase; the heard kind goes'
+  keep:
+    label: Keep heard as a part with `said`
+proposal:
+  chose: field
+  why: One kind fewer and the same card; nothing read the part but its one field.
+answers:
+- chose: field
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:33:41+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

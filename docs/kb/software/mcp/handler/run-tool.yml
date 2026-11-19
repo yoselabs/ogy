@@ -1,0 +1,8 @@
+says: Runs one CLI command for an MCP tool call and turns exit codes 2 to 4 into tool errors.
+performs:
+- software/mcp/workflow/call-a-tool/step/run/case/otherwise
+- software/mcp/workflow/call-a-tool/step/run/case/error
+uses:
+- software/mcp/dependency/fastmcp
+src:
+- code:src/ogy/mcp_server.py#_run

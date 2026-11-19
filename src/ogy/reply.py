@@ -154,7 +154,7 @@ def _heard(target: Target, card: Shown) -> tuple[str, str] | None:
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     found = next((d for d in decisions(snapshot) if str(d.address) == card.address and not d.answers), None)
     chose = found.guess.fields.get(found.names.chose) if found and found.guess else None
-    heard = found.heard.fields.get(found.names.said) if found and found.heard else None
+    heard = found.heard if found else None
     return (chose, heard) if isinstance(chose, str) and isinstance(heard, str) else None
 
 

@@ -25,7 +25,7 @@ def test_a_term_says_one_line_of_under_15_words(kb: Make) -> None:
     long = "- {id: a, word: a, says: " + " ".join(["word"] * 15) + "}\n- {id: b, word: b, says: \"One.\\nTwo.\"}\n"
     assert problems(snap(long)) == {(Problem.TERM_TOO_LONG, "product/shared/term/a"), (Problem.TERM_TOO_LONG, "product/shared/term/b")}
     assert problems(snap(LAND)) == set()
-    old = "- {id: fee, word: fee, of: product/app/value/fee, distinct: [a price], group: Money, example: x, borrowed: 'https://x.org'}\n"
+    old = "- {id: fee, word: fee, of: product/app/quantity/fee, distinct: [a price], group: Money, example: x, borrowed: 'https://x.org'}\n"
     found = kb({"product/app/glossary.yml": old}).findings()
     assert {problem for problem, _ in found} == {Problem.NEEDS_MIGRATION, Problem.MISSING_FIELD}  # `ogy migrate`, then a `says`
     assert not kb({"product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings(evidence=True)
@@ -72,7 +72,7 @@ def test_a_decision_may_not_give_the_words_of_an_agreed_term() -> None:
     def kb(sets: str, agreed: bool = True) -> Snapshot:
         stamp = "{at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1', said: Yes, hash: 'aaaaaaaaaaaa'}"
         term = f"- {{id: land, word: land, says: To finish.{', agreed: ' + stamp if agreed else ''}}}\n"
-        decision = f"question: Q?\noptions:\n  a: {{label: A, sets: {{{sets}}}}}\nguess: {{chose: a, why: x}}\n"
+        decision = f"question: Q?\noptions:\n  a: {{label: A, sets: {{{sets}}}}}\nproposal: {{chose: a, why: x}}\n"
         return snap(term, **{"product/app/decision/q.yml": decision})
     reworded = "product/shared/term/land: {says: To end.}"
     assert (Problem.AGREED_TERM_IN_SETS, "product/app/decision/q") in problems(kb(reworded))

@@ -12,11 +12,10 @@ options:
     sets:
       product/language/rule/term-use-is-computed:
         says: A term keeps the sources it came from (messages, documents, code); they are stored but not printed.
-guess:
+proposal:
   chose: computed
   why: The sentences already say where a word is used; stored sources are a second copy of that fact.
-  heard:
-    said: Probably
+  heard: Probably
 answers:
 - chose: computed
   note: terms will appear in code; no need to rescan code each time

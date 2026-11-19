@@ -16,7 +16,7 @@ options:
     sets:
       software/storage/rule/layers-are-mandatory:
         says: Every entry lives under a layer folder, product or software, then an area; the ontology enforces it and nothing skips it.
-guess:
+proposal:
   chose: layers-mandatory
   why: The owner said the layout is mandatory and the ontology must not allow skipping it.
 answers:

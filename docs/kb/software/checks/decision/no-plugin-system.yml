@@ -11,7 +11,7 @@ options:
     sets:
       software/checks/rule/ogy-has-no-plugin-system:
         says: ogy loads plugins by name at run time.
-guess:
+proposal:
   chose: no-plugins
   why: Dynamic loading adds a failure mode with no job that data cannot do.
 answers:

@@ -8,7 +8,7 @@ options:
     label: No; let a step with a plain then hold effects
   both:
     label: Keep both shapes
-guess:
+proposal:
   chose: rows
   why: Effects always have a home.
 answers:

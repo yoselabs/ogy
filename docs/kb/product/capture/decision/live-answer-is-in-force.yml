@@ -11,7 +11,7 @@ options:
     sets:
       product/capture/rule/live-answer-is-in-force:
         says: An answer recorded live waits for the owner's yes.
-guess:
+proposal:
   chose: in-force-listed
   why: The sentences it sets still need a yes; asking twice is the cost of the other option.
 answers:

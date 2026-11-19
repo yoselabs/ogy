@@ -19,9 +19,9 @@ def test_every_op_result_carries_its_verdict(repo: Path) -> None:
     target = ops.Target(repo)
     assert ops.run_check(target).verdict is Verdict.OK
     assert ops.run_work(target).verdict is Verdict.FINDINGS
-    assert ops.run_show(target, "product/app/value/fee").verdict is Verdict.OK
+    assert ops.run_show(target, "product/app/quantity/fee").verdict is Verdict.OK
     with pytest.raises(ops.UnknownEntry) as error:
-        ops.run_show(target, "product/app/value/nope")
+        ops.run_show(target, "product/app/quantity/nope")
     assert error.value.verdict is Verdict.NOT_FOUND
 
 
@@ -54,9 +54,10 @@ def test_a_diff_may_start_before_the_knowledge_base_existed(repo: Path) -> None:
 
 
 def test_reads_default_to_the_worktree_and_say_so(repo: Path) -> None:
-    (repo / "docs/kb/product/app/values.yml").write_text("- {id: fee, says: The fee., is: 9, unit: EUR, src: [product/app/message/m1]}\n")
-    assert "is: 9" in "\n".join(ogy(repo, "show", "product/app/value/fee")[1])
-    assert "is: 2" in "\n".join(ogy(repo, "--rev", "HEAD", "show", "product/app/value/fee")[1])
+    (repo / "docs/kb/product/app/quantities.yml").write_text(
+        "- {id: fee, says: The fee., is: 9, unit: EUR, src: [product/app/message/m1]}\n")
+    assert "is: 9" in "\n".join(ogy(repo, "show", "product/app/quantity/fee")[1])
+    assert "is: 2" in "\n".join(ogy(repo, "--rev", "HEAD", "show", "product/app/quantity/fee")[1])
     assert "the worktree" in cli.parser().format_help()
 
 
@@ -69,8 +70,8 @@ def test_main_prints_refusals_to_stderr_and_returns_the_code(repo: Path, capsys:
     repo.with_name(repo.name + "-empty").mkdir()
     code, out, err = run("--repo", str(repo.with_name(repo.name + "-empty")), "check")  # a later --repo wins
     assert code == 3 and out == "" and "no knowledge-base folder" in err and "Traceback" not in err
-    code, out, err = run("show", "product/app/value/none")
-    assert code == 4 and out == "" and "no entry product/app/value/none" in err
+    code, out, err = run("show", "product/app/quantity/none")
+    assert code == 4 and out == "" and "no entry product/app/quantity/none" in err
     code, out, err = run("work")
     assert code == 1 and "unbuilt" in out and err == ""
     with pytest.raises(SystemExit) as usage:

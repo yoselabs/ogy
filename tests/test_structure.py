@@ -26,11 +26,11 @@ LAYOUT = "product/app/decision/keep-the-layers"
 @pytest.fixture
 def structural(repo: Path) -> Path:
     """A capability nobody agreed to (card 1), a question whose guess rests on what the owner said and a structural one that does too."""
-    assert put(repo, "product/app/capability/borrow", says="A member can borrow.", because=["product/app/value/fee"])[0] == cli.OK
-    cited = {"chose": "two", "why": "the owner leaned to two", "heard": {"said": "Two euros seem plenty"}}
-    assert put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), guess=cited)[0] == cli.OK
+    assert put(repo, "product/app/capability/borrow", says="A member can borrow.", because=["product/app/quantity/fee"])[0] == cli.OK
+    cited = {"chose": "two", "why": "the owner leaned to two", "heard": "Two euros seem plenty"}
+    assert put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), proposal=cited)[0] == cli.OK
     kept = {**cited, "chose": "keep"}
-    decision = {"address": LAYOUT, "question": "Keep the layer folders?", "structure": True, "options": LAYERS, "guess": kept}
+    decision = {"address": LAYOUT, "question": "Keep the layer folders?", "structure": True, "options": LAYERS, "proposal": kept}
     code, lines = w(repo, "put", json.dumps([decision, {"address": RULE, "says": "Every entry lives under a layer folder."}]))
     assert code == cli.OK, lines
     return repo
@@ -80,7 +80,7 @@ def test_status_coverage_lists_the_kinds_with_no_entry_per_layer(repo: Path) -> 
     product = next(line for line in lines if line.startswith("  product:"))
     software = next(line for line in lines if line.startswith("  software:"))
     assert "goal" in product and "capability" in product and "actor" not in product and "message" not in product
-    assert "command" in software and "view" not in software and "operation" not in software
+    assert "command" in software and "view" not in software and "handler" not in software
     assert not any(line.startswith("coverage") for line in w(repo, "status")[1])  # only when asked
 
 

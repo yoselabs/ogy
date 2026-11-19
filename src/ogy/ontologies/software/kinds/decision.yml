@@ -1,26 +1,28 @@
 kind: decision
 evidence: none          # a decision is a question; its evidence is the answer
-about: one question, its options, the AI's guess and the owner's answers; it settles the fields its options and guess set, and whether an entry exists, and is never a source; business, technical and development (ADR) decisions alike; the only home of a question and its answers (a tracker may mirror them)
-guidance: "A question with options, the AI's guess and the owner's answers: business, technical or an ADR. A proposal becomes a decision before it is acted on; no and not now are options that set `null`. Search first (`ogy find`): a new option goes on the decision that already asks the question."
-shape: entity
+about: one question, its options, the AI's proposal and the owner's answers; it settles the fields its options and proposal set, and whether an entry exists, and is never a source; business, technical and development (ADR) decisions alike; the only home of a question and its answers (a tracker may mirror them)
+guidance: "A question with options, the AI's proposal and the owner's answers: business, technical or an ADR. A suggestion becomes a decision before it is acted on; no and not now are options that set `null`. Search first (`ogy find`): a new option goes on the decision that already asks the question."
+like: "an ADR: question, options, the owner's answer"
+unlike: "a DMN decision, an automated evaluation"
+shape: file
 sentence: question
 layers: [product, software]
-settling:                                            # makes it the kind that settles entries: the keys of its options' `sets` and of the guess's `sets` (kinds.Settling)
+settling:                                            # makes it the kind that settles entries: the keys of its options' `sets` and of the proposal's `sets` (kinds.Settling)
   option: option
   answer: answer
-  guess: guess
-  heard: heard                                       # the part of a guess: what the owner said that it rests on
+  guess: proposal                                   # the part: what is built while no answer is given
+  heard: heard                                       # field of the proposal: what the owner said that it rests on, paraphrased
   sets: sets                                         # field of the option
-  chose: chose                                       # field of an answer and of a guess
-  value: sets                                        # field of the guess: the values it gives when it chooses no option
-  said: said                                         # field of an answer and of the guess's heard: a short paraphrase
+  chose: chose                                       # field of an answer and of the proposal
+  value: sets                                        # field of the proposal: the values it gives when it chooses no option
+  said: said                                         # field of an answer: a short paraphrase
   at: at
   where: where
   note: note
   delegated: delegated
   context: context                                   # field of the decision: why the question comes up
-  why: why                                           # field of the guess: its reason
-# `null` for an address in an option's or the guess's `sets` is how an option says no, not now or removed: under that option the entry does not exist.
+  why: why                                           # field of the proposal: its reason
+# `null` for an address in an option's or the proposal's `sets` is how an option says no, not now or removed: under that option the entry does not exist.
 fields:
   question: {required: true}
   structure: {type: flag, harm: [structure]}   # the question changes the layout, layers, kinds or paths: it is asked on its own card, never in `yes` or `yes all`

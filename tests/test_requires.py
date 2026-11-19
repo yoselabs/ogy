@@ -16,8 +16,8 @@ type Make = Callable[[dict[str, str | None] | None], Kb]
 
 LOAN = """\
 says: A loan.
-attrs:
-  member: {type: one, of: product/app/entity/loan}
+attributes:
+  member: {of: product/app/entity/loan}
   days: {type: number}
   late: {type: flag, derived: {text: days is over the limit, reads: [days, product/app/actor/member]}}
 """
@@ -29,12 +29,12 @@ steps:
     actor: product/app/actor/member
     choices:
       go: {label: Go, then: done, when: {text: the member is late, reads: [product/app/actor/member]}}
-      stay: {label: Stay, then: done, effects: [{do: write, "on": product/app/entity/loan/attr/days}]}
+      stay: {label: Stay, then: done, effects: [{do: write, "on": product/app/entity/loan/attribute/days}]}
 ends:
   done: {result: success, says: D.}
 """
 SERVED = {"software/app/view/ask-page.yml": "says: The page.\nserves: [product/app/workflow/ask/step/ask]\n",
-          "software/app/operation/write.yml": "says: Writes.\nperforms: [product/app/workflow/ask/step/ask/choice/stay]\n",
+          "software/app/handler/write.yml": "says: Writes.\nperforms: [product/app/workflow/ask/step/ask/choice/stay]\n",
           "product/app/entity/loan.yml": LOAN}
 
 
@@ -52,22 +52,29 @@ def test_an_actor_step_keeps_one_choice_without_when(kb: Make) -> None:
 
 
 @pytest.mark.parametrize("effect", [
-    '{do: write, "on": product/app/entity/loan/attr/late}',  # a derived attribute is never written
+    '{do: write, "on": product/app/entity/loan/attribute/late}',  # a derived attribute is never written
     '{do: tell, "on": product/app/entity/loan}',
     '{do: transition, "on": product/app/entity/loan}',
 ])
 def test_an_effect_names_what_its_do_acts_on(kb: Make, effect: str) -> None:
-    flow = STEP.replace('{do: write, "on": product/app/entity/loan/attr/days}', effect)
+    flow = STEP.replace('{do: write, "on": product/app/entity/loan/attribute/days}', effect)
     assert unmet(kb, {**SERVED, "product/app/workflow/ask.yml": flow}) == {"product/app/workflow/ask/step/ask/choice/stay"}
 
 
-def test_a_derived_attribute_has_no_max_and_one_names_what_it_holds(kb: Make) -> None:
-    loan = LOAN.replace("derived:", "optional: true, derived:").replace(", of: product/app/entity/loan", "")
-    assert unmet(kb, {**SERVED, "product/app/entity/loan.yml": loan}) == {
-        "product/app/entity/loan/attr/late", "product/app/entity/loan/attr/member"}
+def test_a_derived_attribute_has_no_max_and_never_is_optional(kb: Make) -> None:
+    loan = LOAN.replace("derived:", "optional: true, derived:")
+    assert unmet(kb, {**SERVED, "product/app/entity/loan.yml": loan}) == {"product/app/entity/loan/attribute/late"}
 
 
-HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: entity\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
+def test_an_attribute_has_a_type_or_names_what_it_holds(kb: Make) -> None:
+    loan = LOAN.replace("{of: product/app/entity/loan}", "{many: true}")
+    found = kb({**SERVED, "product/app/entity/loan.yml": loan}).findings()
+    assert (Problem.ONE_OF, "product/app/entity/loan/attribute/member") in found
+    plain = LOAN.replace("{of: product/app/entity/loan}", "{type: text, many: true}")  # a list of plain values
+    assert not kb({**SERVED, "product/app/entity/loan.yml": plain}).findings() - kb({**SERVED}).findings()
+
+
+HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
 
 
 @pytest.mark.parametrize(("requires", "message"), [

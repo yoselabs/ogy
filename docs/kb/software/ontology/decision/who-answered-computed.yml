@@ -6,7 +6,7 @@ options:
     label: Yes; an answer with `delegated` is an agent's, every other answer and agreement a person's
   keep:
     label: Keep `from` as a readable field
-guess:
+proposal:
   chose: computed
   why: One fact, one field.
 answers:

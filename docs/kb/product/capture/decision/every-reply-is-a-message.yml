@@ -12,13 +12,13 @@ options:
         says: The owner's words are stored verbatim as a message when they are said, and answers and agreements cite that message.
         src:
         - code:src/ogy/writes.py#message
-      software/writes/operation/store-message:
+      software/writes/handler/store-message:
         says: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
       software/cli/command/message:
         says: Store a reply of a person or an agent, whole and once.
-      software/storage/value/message-digest-length:
+      software/storage/quantity/message-digest-length:
         says: The length of the digest in a message's id, after its date.
-      software/writes/operation/record-answer:
+      software/writes/handler/record-answer:
   paraphrase:
     label: 'No messages or quotes: an answer and an agreement keep a short paraphrase, who, when and where'
     sets:
@@ -31,18 +31,18 @@ options:
         says: When the owner speaks, the agent records the answer at once with a short paraphrase of what they said, and shows that paraphrase to the owner in the read-back.
         src:
         - code:src/ogy/writes.py#said
-      software/writes/operation/store-message:
+      software/writes/handler/store-message:
       software/cli/command/message:
-      software/storage/value/message-digest-length:
-      software/writes/operation/record-answer:
+      software/storage/quantity/message-digest-length:
+      software/writes/handler/record-answer:
         says: 'Appends an answer to its decision: the option chosen, a short paraphrase of what was said, who, when and where.'
         performs:
         - product/capture/workflow/store-owner-words/step/keep/case/otherwise
         uses:
-        - software/storage/external/git
+        - software/storage/dependency/git
         src:
         - code:src/ogy/writes.py#answer
-guess:
+proposal:
   chose: paraphrase
   why: The owner chose it on 2026-11-18, for privacy.
 answers:

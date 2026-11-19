@@ -104,17 +104,6 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 63f7127003f0
-- id: guess
-  word: guess
-  says: The option or values the AI builds on until the owner answers a decision.
-  avoid:
-  - assumed
-  - ?assumed
-  agreed:
-    at: '2026-11-19T20:31:53+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: a288ca325260
 - id: harm-tag
   word: harm tag
   says: A kind's label for what a wrong sentence costs; it orders review, blocks nothing.
@@ -263,3 +252,14 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 281f3d1b5c4c
+- id: guess
+  word: proposal
+  says: The option or values the AI builds on until the owner answers a decision.
+  avoid:
+  - assumed
+  - ?assumed
+  agreed:
+    at: '2026-11-19T20:31:53+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+    hash: a288ca325260

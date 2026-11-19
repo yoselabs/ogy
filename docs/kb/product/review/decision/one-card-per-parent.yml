@@ -11,7 +11,7 @@ options:
     label: One card per part
     sets:
       product/review/rule/one-card-per-parent:
-guess:
+proposal:
   chose: parent
   why: The owner's time is the scarce thing.
 answers:

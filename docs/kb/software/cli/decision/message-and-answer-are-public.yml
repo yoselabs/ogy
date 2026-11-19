@@ -16,7 +16,7 @@ options:
     sets:
       software/cli/rule/answer-and-reply-are-public:
         says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command; a review round is the only road to agreement.'
-guess:
+proposal:
   chose: answer-only
   why: The owner chose it on 2026-11-18, with no messages stored.
 answers:

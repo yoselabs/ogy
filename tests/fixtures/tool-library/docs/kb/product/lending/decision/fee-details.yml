@@ -9,7 +9,7 @@ options:
     label: The owner decides every fee detail
     sets:
       product/lending/rule/agent-decides-fee-details:
-guess:
+proposal:
   chose: yes
   why: Fee details are small and reversible.
 answers:

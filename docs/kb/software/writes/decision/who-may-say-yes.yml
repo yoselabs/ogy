@@ -16,7 +16,7 @@ options:
     sets:
       software/writes/rule/who-may-say-yes:
         says: One owner is named in `ogy.yml` and only they confirm.
-guess:
+proposal:
   chose: human
   why: One human so far; the other two model a case nobody has met.
 answers:

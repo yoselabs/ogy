@@ -15,7 +15,7 @@ options:
     sets:
       product/review/entity/decision:
         says: A decision as the product follows it, from a waiting question to an answered one.
-guess:
+proposal:
   chose: keep
   why: Kept until the owner answers.
 answers:

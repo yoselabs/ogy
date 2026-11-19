@@ -27,15 +27,15 @@ steps:
         when:
           text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
           reads:
-          - software/setup/external/claude-code
+          - software/setup/dependency/claude-code
         then: refused
       otherwise:
         then: set-up
         effects:
         - do: tell
-          on: software/setup/external/claude-code
+          on: software/setup/dependency/claude-code
         - do: tell
-          on: software/storage/external/git
+          on: software/storage/dependency/git
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

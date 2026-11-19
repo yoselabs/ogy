@@ -20,7 +20,7 @@ options:
     label: No record of removed ids
     sets:
       software/storage/rule/removed-id-is-recorded:
-guess:
+proposal:
   chose: file
   why: A clone without history must still refuse a reused id.
 answers:

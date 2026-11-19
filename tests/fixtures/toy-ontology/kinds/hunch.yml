@@ -9,3 +9,4 @@ fields:
   picked: {type: link, to: [pick]}
   gives: {type: sets}
   grounds: {note: true, required: true}
+  overheard: {note: true}                           # what the boss said that it rests on, paraphrased

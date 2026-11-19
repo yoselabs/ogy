@@ -191,7 +191,7 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     force, names = decision.in_force, decision.names
     guess = force.option if decision.answers and force else decision.guess.fields.get(names.chose) if decision.guess else None
     keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
-    said = decision.heard.fields.get(names.said) if decision.heard and not decision.answers else None
+    said = decision.heard if not decision.answers else None
     addresses = [decision.address.part(names.option, key) for key in keys]
     options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),

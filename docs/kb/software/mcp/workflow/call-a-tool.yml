@@ -23,7 +23,7 @@ steps:
         when:
           text: the command ends with a usage error, a refusal or not found (exit 2 to 4)
           reads:
-          - software/cli/set/exit-codes
+          - software/cli/enum/exit-codes
         then: tool-error
       otherwise:
         then: result

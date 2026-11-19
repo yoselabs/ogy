@@ -1,0 +1,16 @@
+says: Sends mail over SMTP.
+pin: smtplib (Python 3.15)
+workarounds:
+  slow-at-night:
+    when:
+      text: the mailer answers after reply-wait
+      reads:
+      - product/lending/quantity/reply-wait
+    says: The reminder is sent again the next morning.
+    agreed:
+      at: '2026-11-25T09:00:00+01:00'
+      where: ai:claude/9b01#45
+      said: Yes to the cards but the borrow step
+      hash: 96f90c1ff121
+satisfies:
+- software/lending/rule/one-reminder-a-day

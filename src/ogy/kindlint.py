@@ -36,7 +36,7 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         found += _shape(kinds, name, kind) + _per_area(name, kind)
         found += _fields(kinds, declared, name, kind)
         found += _rules(kinds, name, kind)
-        found += _migration(declared, name, kind) + _moved(name, kind)
+        found += _migration(declared, name, kind) + _moved(name, kind) + _was(kinds, name, kind)
     found += _files(kinds)
     found += _keys(kinds, declared)
     found += _settling(kinds) + _roles(kinds)
@@ -56,16 +56,16 @@ def _shape(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
     if not inline and (kind.part_of or kind.key is not None or kind.holds is not None):
         found.append(f"{name}: part_of, key and holds belong to inline kinds only")
     if inline and kind.area is not None:
-        found.append(f"{name}: area belongs to entity and list kinds")
+        found.append(f"{name}: area belongs to file and list kinds")
     found += [f"{name}: part_of names unknown kind {parent}" for parent in kind.part_of if parent not in kinds]
     if kind.area is not None and (not NAME.match(kind.area) or kind.area in RESERVED_AREAS):
         found.append(f"{name}: area {kind.area!r} is no valid area name")
     if kind.append_only and not (inline and kind.holding.value == "list"):
         found.append(f"{name}: append_only belongs to inline kinds that hold a list")
     if inline and kind.layers:
-        found.append(f"{name}: layers belong to entity and list kinds; a part is in its parent's layer")
+        found.append(f"{name}: layers belong to file and list kinds; a part is in its parent's layer")
     if not inline and kind.area is None and not kind.layers:
-        found.append(f"{name}: an entity or list kind declares the layers it may appear in")
+        found.append(f"{name}: a file or list kind declares the layers it may appear in")
     if kind.area is not None and kind.layers:
         found.append(f"{name}: a kind in the fixed folder {kind.area} has no layers")
     return found
@@ -158,6 +158,25 @@ def _migration(declared: Declared, name: str, kind: Kind) -> list[str]:
              if old in kind.fields or old in declared.common]
     found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
     found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
+    found += [f"{name}: revalued or folded {field}, which is no field" for field in (*kind.revalued, *kind.folded)
+              if field not in kind.fields]
+    return found
+
+
+def _was(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
+    """A renamed kind's old name is no kind any more and no other kind's old name; an old file belongs to a list or single kind
+    and an old key to a part."""
+    if kind.was is None:
+        return []
+    old = kind.was
+    found = [f"{name}: was {old.kind}, which is still a kind or no snake_case name"] if old.kind in kinds or not KIND_NAME.match(
+        old.kind) else []
+    found += [f"{name}: was {old.kind}, as another kind was"] if any(
+        other.was and other.was.kind == old.kind for other_name, other in kinds.items() if other_name != name) else []
+    if old.file is not None and (kind.shape not in FILED or not old.file.endswith(".yml") or old.file == kind.file):
+        found.append(f"{name}: was.file is the other .yml file a list or single kind kept its entries in")
+    if old.key is not None and (kind.shape is not Shape.INLINE or old.key == kind.key):
+        found.append(f"{name}: was.key is the other key a part was kept under")
     return found
 
 
@@ -226,7 +245,7 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
     wanted = [(settling.option, settling.sets), (settling.answer, settling.chose), (settling.answer, settling.said),
               (settling.answer, settling.at), (settling.answer, settling.where),
               (settling.guess, settling.chose), (settling.guess, settling.value), (name, settling.context),
-              (settling.guess, settling.why)]
+              (settling.guess, settling.why), (settling.guess, settling.heard)]
     found += [f"{name}: settling names no field {kind}.{field}" for kind, field in wanted if not _field_of(kinds, kind, field)]
     return found
 

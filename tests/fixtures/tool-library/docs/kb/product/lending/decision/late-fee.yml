@@ -5,18 +5,17 @@ options:
   one:
     label: 1 EUR per day, per tool
     sets:
-      product/lending/value/late-fee:
+      product/lending/quantity/late-fee:
         is: 1
   two:
     label: 2 EUR per day, per tool
     sets:
-      product/lending/value/late-fee:
+      product/lending/quantity/late-fee:
         is: 2
-guess:
+proposal:
   chose: two
   why: A small fee should not scare members away; 1 EUR may not cover a reminder.
-  heard:
-    said: A small fee
+  heard: A small fee
 answers:
 - chose: two
   said: Two euros is fine for now

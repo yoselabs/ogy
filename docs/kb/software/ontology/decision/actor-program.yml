@@ -16,7 +16,7 @@ options:
     label: A step's actor may stay an external
     sets:
       software/ontology/rule/actor-program:
-guess:
+proposal:
   chose: program
   why: A system step already means a step with no actor, so the nature `system` would read as two things; one link target per field keeps step.actor checked.
 answers:

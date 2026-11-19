@@ -14,11 +14,10 @@ options:
       software/ontology/rule/actors-split-by-layer:
         says: Actors live in one layer and a field on the actor marks it business or technical.
       constitution/principle/layers-split-business-from-technical:
-guess:
+proposal:
   chose: by-layer
   why: The layers already separate what the business decides from how it is built; a field would repeat that.
-  heard:
-    said: Split business and technical actors by layer.
+  heard: Split business and technical actors by layer.
 answers:
 - chose: by-layer
   said: Split business and technical actors by layer.

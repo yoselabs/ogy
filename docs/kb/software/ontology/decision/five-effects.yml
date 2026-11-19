@@ -8,7 +8,7 @@ options:
     label: The same, and write on an external stays
   six:
     label: Keep the six
-guess:
+proposal:
   chose: five
   why: One way to say each change.
 answers:

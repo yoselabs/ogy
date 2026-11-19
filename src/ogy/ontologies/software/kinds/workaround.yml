@@ -1,0 +1,15 @@
+kind: workaround
+was: {kind: deviation, key: deviations}
+about: how a dependency behaves against expectation, and the workaround the product carries
+guidance: "How a dependency behaves against its contract, under `when`, and the workaround the product carries. A statement about our own product that must stay true is a rule, not a workaround: a workaround is forced by the dependency, not chosen."
+like: "a known issue with its workaround in release notes"
+unlike: "a rule: it is forced by the dependency, not chosen"
+shape: inline
+sentence: says
+part_of: dependency
+key: workarounds
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  when: {type: expr, to: [quantity, dependency], required: true}
+  says: {required: true}                             # the workaround

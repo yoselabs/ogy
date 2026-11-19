@@ -1,0 +1,15 @@
+question: Is the uri scheme for a file of the repository, in an answer's `where`, `path:`?
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `file:` reads as a file URL with an absolute path; `path:` names a path of the repository."
+options:
+  path:
+    label: '`path:`'
+  keep:
+    label: Keep `file:`
+proposal:
+  chose: path
+  why: The place is a repository path, not a file URL.
+answers:
+- chose: path
+  said: 'Yes, all: mainstream renames'
+  at: '2026-11-20T00:34:13+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

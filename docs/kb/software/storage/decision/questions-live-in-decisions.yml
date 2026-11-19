@@ -11,7 +11,7 @@ options:
     sets:
       software/storage/rule/a-question-lives-in-its-decision:
         says: A question and its answers live in the tracker item.
-guess:
+proposal:
   chose: in-decision
   why: One home for each fact.
 answers:

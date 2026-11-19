@@ -10,11 +10,10 @@ options:
     label: Hand-written checks in ogy's Python stay
     sets:
       software/ontology/rule/graph-rules-declared:
-guess:
+proposal:
   chose: declared
   why: A rule that is data can be read, changed per ontology and checked without editing ogy; hand-written checks hide rules from the ontology.
-  heard:
-    said: Graph rules all declared in the kinds
+  heard: Graph rules all declared in the kinds
 answers:
 - chose: declared
   said: Every graph rule belongs in the kind files

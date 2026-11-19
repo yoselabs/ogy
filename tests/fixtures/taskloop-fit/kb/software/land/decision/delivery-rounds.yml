@@ -1,9 +1,10 @@
 title: Passes of the delivery rule
 question: How many times may one land read origin again before it answers that main moved?
 context: A rejected push and a moved main both send the land back to read origin. The code stops after a fixed number of passes.
-src: [code:src/taskloop/land_push.py#ROUNDS]
-guess:
+src:
+- code:src/taskloop/land_push.py#ROUNDS
+proposal:
   why: It is the constant in the code; no document gives a reason for 3.
   sets:
-    software/land/value/delivery-rounds:
+    software/land/quantity/delivery-rounds:
       is: 3

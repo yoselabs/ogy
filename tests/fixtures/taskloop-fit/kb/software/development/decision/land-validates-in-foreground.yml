@@ -1,16 +1,19 @@
 title: The land validates in its own process
 question: Where does the land run the checks of S?
 context: Implement and checks steps run through a step entry. The land does not.
-src: ["code:src/taskloop/land_check.py#validated"]
+src:
+- code:src/taskloop/land_check.py#validated
 options:
   foreground:
     label: In the land's own process, in a free slot
     sets:
-      software/land/operation/validate:
+      software/land/handler/validate:
         says: Runs the required checks on S in the candidate's slot under the slot's lock, renews the claim meanwhile, concludes the candidate and releases the slot.
   entry:
     label: Through a step entry, like the checks step
     sets:
-      software/land/operation/validate:
+      software/land/handler/validate:
         says: Starts a step entry that runs the required checks on S and waits for its result.
-guess: {chose: foreground, why: It is what the code does; nothing relaunches a land but the person.}
+proposal:
+  chose: foreground
+  why: It is what the code does; nothing relaunches a land but the person.

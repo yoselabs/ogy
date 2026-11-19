@@ -11,11 +11,10 @@ options:
     sets:
       software/ontology/rule/guide-is-rendered:
         says: A guide is written by hand and proved built by a recorded run of the workflow it serves.
-guess:
+proposal:
   chose: rendered
   why: A render keeps the guide equal to the workflow and makes its work left computable; a recorded run proves one moment only.
-  heard:
-    said: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.
+  heard: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.
 answers:
 - chose: rendered
   said: A guide is rendered from the workflow YAML, deterministically; the renderer is separate software or an extension.

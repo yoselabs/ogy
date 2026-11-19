@@ -6,7 +6,7 @@ from the ontology.
 ## The ontology describes what should be true
 
 The knowledge base holds the state the product should be in: its goals, capabilities, workflows, rules, entities,
-values and the software that builds them. It does not hold the work.
+quantities and the software that builds them. It does not hold the work.
 
 Work is the difference between what should be true and what is true. When the ontology changes, the difference
 between the old and the new version is the work to do. When reality drifts from the ontology, restoring it is the
@@ -46,7 +46,7 @@ Imagine the task done and forgotten. If nothing in the ontology becomes false, i
 ## Examples
 
 - **Deploy to a new environment.** The ontology has no environment kind yet: environments are deferred. For now, an
-  environment the product must keep running in is a decision (where it runs, and why) plus the `config_key`s and `value`s
+  environment the product must keep running in is a decision (where it runs, and why) plus the `setting`s and `quantity`s
   it sets; a one-off deploy to it is a plain task.
 - **Vacuum the database tomorrow, once.** Nothing in the ontology becomes false if it is forgotten: a plain task.
 - **Vacuum the database again and again.** A repeated manual task is a sign that a scheduled workflow is missing.
@@ -66,7 +66,7 @@ init` ships this principle and this section to every repository.
 | read by a check, the work derivation or impact | a field or a link |
 | read only by a person or an agent | text (`says`) on its entry |
 | text that names another entry | that part becomes a link |
-| a decided number | a value |
+| a decided number | a quantity |
 | no kind fits | a rule with links and a proof, never a new kind |
 | a new kind or field | only when it names the check that reads it |
 
@@ -77,7 +77,7 @@ Two ways this fails:
   names an entry must be a link; a rule that constrains nothing is an error; a new field comes only when several
   rules repeat one sentence shape.
 
-Example, a store. Choosing Postgres is a decision plus an external. How fields are stored (a JSON column, a compound
+Example, a store. Choosing Postgres is a decision plus a dependency. How fields are stored (a JSON column, a compound
 index, a DynamoDB GSI or LSI) is text on that decision, or code, unless a check must read it. What should be true is
-the requirement: a latency value plus a rule with a timing proof. Moving to DynamoDB then changes the decision and the
-external; the requirement and its proof stay, and the work is what the proof finds no longer true.
+the requirement: a latency quantity plus a rule with a timing proof. Moving to DynamoDB then changes the decision and the
+dependency; the requirement and its proof stay, and the work is what the proof finds no longer true.

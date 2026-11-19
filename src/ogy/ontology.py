@@ -69,6 +69,15 @@ class Ontology:
         """Every field an entry of `kind` may carry: the common ones and the kind's."""
         return {**self.common, **kind.fields}
 
+    def old_names(self, kind: Kind) -> dict[str, str | None]:
+        """Each field name an entry of `kind` no longer has -> the field it is now, or None when it was dropped: the common
+        fields `ontology.yml` renamed and the kind's own renames and drops."""
+        return {**self.declared.renamed, **kind.old_names}
+
+    def renamed_kinds(self) -> dict[str, Kind]:
+        """Each old kind name -> the kind it is now (`was`)."""
+        return {kind.was.kind: kind for kind in self.kinds.values() if kind.was is not None}
+
     def get(self, name: str) -> Kind | None:
         return self.kinds.get(name)
 

@@ -1,0 +1,10 @@
+says: Makes S from X on origin's main as fetched now and inserts the candidate, with a slot's reservation when S must be checked.
+performs:
+- product/land/workflow/land/step/squash/case/no-change-confirmed
+- product/land/workflow/land/step/squash/case/same-tree
+- product/land/workflow/land/step/squash/case/otherwise
+uses:
+- software/land/dependency/origin
+src:
+- code:src/taskloop/land.py#_made
+- code:src/taskloop/land_check.py#inserted

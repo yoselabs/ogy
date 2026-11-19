@@ -14,21 +14,21 @@ from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.receipts import Status
 from ogy.target import Target
 
-FEE, LEND, GO = "product/app/value/fee", "software/app/operation/lend", "product/app/workflow/borrow/step/ask/choice/go"
+FEE, LEND, GO = "product/app/quantity/fee", "software/app/handler/lend", "product/app/workflow/borrow/step/ask/choice/go"
 TIMEOUT, ASKED = "product/app/workflow/borrow/step/ask/timeout", "product/app/decision/fee"
 DECISION = """\
 question: How much is the fee?
 options:
-  two: {label: Two euros, sets: {product/app/value/fee: {is: 2, unit: EUR}}}
-guess: {chose: two, why: Small.}
+  two: {label: Two euros, sets: {product/app/quantity/fee: {is: 2, unit: EUR}}}
+proposal: {chose: two, why: Small.}
 """
 EFFECT = files("ogy").joinpath("ontologies", "software", "kinds", "effect.yml").read_text()
 EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith("requires:") or "if_equals: {field: do" in line]
-# value.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
+# quantity.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
-    "value.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: per}\n")],
-    "effect.yml": [('  "on": {type: link, to: [transition, entity, attr, actor, external], required: true}\n', ""),
+    "quantity.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: per}\n")],
+    "effect.yml": [('  "on": {type: link, to: [transition, entity, attribute, actor, dependency], required: true}\n', ""),
                    ("dropped: [value]", 'dropped: [value, "on"]'), *((line, "") for line in EFFECT_PAIRS)],
     "answer.yml": [("  note: {note: true}", "  hedge: {note: true}"), ("", "renamed: {note: hedge}\n")],
     "decision.yml": [("  note: note\n", "  note: hedge\n")],
@@ -125,4 +125,4 @@ def test_the_base_is_read_migrated(repo: Path, before: str) -> None:
 
 def test_a_rename_names_a_field_of_the_kind() -> None:
     with pytest.raises(OntologyError, match="renamed unit to units, which is no field"):
-        changed({"value.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: units}\n")]})
+        changed({"quantity.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: units}\n")]})

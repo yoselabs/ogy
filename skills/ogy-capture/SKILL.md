@@ -7,12 +7,12 @@ description: Turn an owner's words, docs or code into entries of an ogy knowledg
 # OGY capture (draft, 2026-11-17)
 
 Status: **proposed**. The commands this skill names are the ones in the [README](../../README.md) table; `ogy put` (one
-batch write for create and update), `guess.heard`, `answer --said --where`, `answer.note` and a required
+batch write for create and update), `proposal.heard`, `answer --said --where`, `answer.note` and a required
 `remove --why` are being built and are **untested here**. Steps with no eval behind them are marked untested.
 The skill holds the flow; the ontology (`ogy kinds [kind]`) holds the shapes; `ogy check` holds the lints. Never write
 YAML by hand and never read a spec to learn a shape: ask `ogy kinds`. Read `ogy kinds <kind>` before you create the first
 entry of that kind in a session: its guidance says when to use it rather than a neighbour (an actor, a state or an
-attribute; a case or a choice's `when`; `by` or `because`). `ogy kinds --map` shows the whole ontology and its rules (untested).
+attribute; a case or a choice's `when`; `satisfies` or `because`). `ogy kinds --map` shows the whole ontology and its rules (untested).
 
 ## 1. Glossary first
 Run `ogy glossary` before you read code or write a sentence (`ogy glossary <layer>/<area>` for one area and the shared
@@ -42,7 +42,7 @@ Read the sources:
   already covers goes in with `because`. Never ask the owner what the words already settle.
 
 ## 3. Hazard pass (untested as a skill step; P16, P17 single runs)
-Take every row with an effect, every read of an external fact, every external, and ask seven questions, in the
+Take every row with an effect, every read of an outside fact, every dependency, and ask seven questions, in the
 owner's wording for business rows:
 1. What if it happens twice?
 2. What if it stops halfway?
@@ -53,15 +53,15 @@ owner's wording for business rows:
 7. How do we put it right, and by when?
 
 Also ask of every outside fact: who keeps it true? Each cell gets an entry (`ogy kinds` lists the
-kinds that hold it: `deviation`, `case`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
+kinds that hold it: `workaround`, `case`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
 "fee on a closed day" and "the reminder email fails" were missed by almost all 32 runs without this pass.
 
-## 4. Decisions: ask, guess, hear
+## 4. Decisions: ask, propose, hear
 Run the `elicit` skill on what is still open. Every question is a `decision` entry before anyone is asked:
 - **options**, each setting the entries it would create (`sets`); "no", "not now" and "removed" are an option whose
   address is `null`;
-- **`guess`**: the option you recommend, with `why`. If what the owner said leans to an option without choosing it, write
-  `guess.heard: {said: <a short paraphrase>}`; the card then reads "You said (paraphrased): .... Read as B." and one
+- **`proposal`**: the option you recommend, with `why`. If what the owner said leans to an option without choosing it, write
+  `proposal.heard: <a short paraphrase>`; the card then reads "You said (paraphrased): .... Read as B." and one
   `yes` records the answer. Never put the owner's words into `why`;
 - **`answer`**, only when the owner chose, with `said` (one short line, your paraphrase) and, when the owner hedged
   ("for now", "probably", "on condition that..."), a `note`, paraphrased too.
@@ -84,7 +84,7 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
 ## 6. Proposals, "no" and removals
 1. A proposal is a decision before anyone acts on it, or a new option of the decision that already asks the question.
    Prose in a consult is not kept. A consult never ends with "open points": the receiving session writes each
-   proposal as a decision with a guess before it reports (P2).
+   proposal as a decision with a proposal part before it reports (P2).
 2. Search before you propose: `ogy find <words>`, `ogy find --parent <address>`, `ogy history <address>`. A proposal made
    before gets an option in the old decision.
 3. Deleting a mechanism or a field: list every job it did and, per job, the entry that now does it or the decision
@@ -94,12 +94,12 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
 5. Never edit an answer. A reversal is a new answer; the old one stays.
 6. Structure (layout, layers, kinds, paths) is the owner's, and the folders `docs/kb/{constitution,product/<area>,software/<area>}`
    are mandatory:
-   - Each layer has the area `shared`: only the terms, actors and sets that two of its areas use live there (`ogy move` an
+   - Each layer has the area `shared`: only the terms, actors and enums that two of its areas use live there (`ogy move` an
      entry there when a second area starts to use it); everything else stays in the area that owns it and is linked.
-   - Every area holds its `area.yml` (`says`: what it covers; `distinct`: what belongs next door). Read it before writing
+   - Every area holds its `area.yml` (`says`: what it covers; `unlike`: what belongs next door). Read it before writing
      into an area; a new area brings its `area.yml` in the same `ogy put`.
    - Before recommending to remove or change structure, search the owner's earlier answers (`ogy find <words>`,
-     `ogy history`). A conflict goes into the decision's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....".
+     `ogy history`). A conflict goes into the proposal's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....".
    - "Unused in captures" is never by itself a reason to remove structure the owner asked for.
    - Ask a structural decision (`structure: true`) on its own card, never in an accept-all (`yes`, `yes all`, `decide`).
 
@@ -120,7 +120,7 @@ A checker counterexample counts as a defect only if its trace is code-captured.
 ## Output
 1. The entries written (addresses).
 2. Owner questions: from `ogy review`, at most 7, most important first.
-3. Assumed for read-back, each with its guess.
+3. Assumed for read-back, each with its proposal.
 4. Hazard cells left open.
 
 ## Judge critically (owner, 2026-11-17)

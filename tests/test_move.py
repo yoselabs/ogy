@@ -120,8 +120,9 @@ def test_an_actor_moves_and_the_steps_that_name_it_stay_agreed(repo: Path) -> No
 
 
 def test_a_decision_moves_and_what_cites_it_follows(repo: Path) -> None:
-    sets = {"keep": {"label": "Keep", "sets": {"product/app/value/fee": {"is": 2}}}}
-    decision = {"address": "product/app/decision/fee", "question": "Keep the fee?", "options": sets, "guess": {"chose": "keep", "why": "g"}}
+    sets = {"keep": {"label": "Keep", "sets": {"product/app/quantity/fee": {"is": 2}}}}
+    decision = {"address": "product/app/decision/fee", "question": "Keep the fee?", "options": sets,
+                "proposal": {"chose": "keep", "why": "g"}}
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
     code, lines = w(repo, "remove", "software/app/view/page", "--why", "product/app/decision/fee")
     assert code == cli.OK, lines
@@ -141,8 +142,8 @@ def test_the_layer_may_change_when_the_kind_allows_it_and_is_refused_when_it_doe
     code, lines = w(repo, "move", "product/app/goal/lend", "software/app")
     assert code == cli.REFUSED and "goal may live in the layers" in lines[0] and tree(repo) == before
     assert w(repo, "move", "software/app/view/page", "product/app")[0] == cli.REFUSED  # a view is software only
-    assert w(repo, "move", "product/app/value/fee", "software/app")[0] == cli.OK
-    assert (repo / KB / "software/app/values.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
+    assert w(repo, "move", "product/app/quantity/fee", "software/app")[0] == cli.OK
+    assert (repo / KB / "software/app/quantities.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
 
 
 def test_a_move_is_refused_when_the_target_exists_or_was_removed(repo: Path) -> None:
@@ -157,41 +158,41 @@ def test_a_move_is_refused_when_the_target_exists_or_was_removed(repo: Path) -> 
         assert w(repo, "move", *argv)[0] in (cli.REFUSED, cli.USAGE, cli.NOT_FOUND), argv
     assert tree(repo) == before
     fee = "- {id: fee, says: Another fee., is: 1, unit: EUR, src: ['code:app.py#lend']}\n"
-    (repo / KB / "product/other/values.yml").write_text(fee)
-    assert w(repo, "remove", "product/other/value/fee", "--why", "not wanted")[0] == cli.OK
-    code, lines = w(repo, "move", "product/app/value/fee", "product/other")
+    (repo / KB / "product/other/quantities.yml").write_text(fee)
+    assert w(repo, "remove", "product/other/quantity/fee", "--why", "not wanted")[0] == cli.OK
+    code, lines = w(repo, "move", "product/app/quantity/fee", "product/other")
     assert code == cli.REFUSED and "never reused" in lines[0]
 
 
 def test_move_works_through_the_mcp_tools(repo: Path) -> None:
     assert "move" in {tool.name for tool in asyncio.run(build().list_tools())}
-    result = asyncio.run(build().call_tool("move", {"repo": str(repo), "address": "product/app/value/fee", "area": "product/loans"}))
-    assert (result.structured_content or {}).get("exit_code") == cli.OK and (repo / KB / "product/loans/values.yml").exists()
+    result = asyncio.run(build().call_tool("move", {"repo": str(repo), "address": "product/app/quantity/fee", "area": "product/loans"}))
+    assert (result.structured_content or {}).get("exit_code") == cli.OK and (repo / KB / "product/loans/quantities.yml").exists()
     with pytest.raises(Exception, match="area"):
-        asyncio.run(build().call_tool("move", {"repo": str(repo), "address": "product/loans/value/fee"}))
+        asyncio.run(build().call_tool("move", {"repo": str(repo), "address": "product/loans/quantity/fee"}))
 
 
 def test_an_entry_a_decision_in_force_sets_can_move_and_the_answer_still_counts(repo: Path) -> None:
-    sets = {n: {"label": n, "sets": {"product/app/value/fee": {"is": i}}} for i, n in ((1, "one"), (2, "two"))}
-    decision = {"address": "product/app/decision/fee", "question": "How much?", "options": sets, "guess": {"chose": "two", "why": "g"}}
+    sets = {n: {"label": n, "sets": {"product/app/quantity/fee": {"is": i}}} for i, n in ((1, "one"), (2, "two"))}
+    decision = {"address": "product/app/decision/fee", "question": "How much?", "options": sets, "proposal": {"chose": "two", "why": "g"}}
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
     code, lines = w(repo, "answer", "product/app/decision/fee", "one", "--said", "One", "--where", "ai:x",
                     "--at", "2026-11-12T10:05:00+01:00")
     assert code == cli.OK, lines
     commit(repo, "answered")
     dropped = w(repo, "dropped")
-    code, lines = w(repo, "move", "product/app/value/fee", "product/loans")
+    code, lines = w(repo, "move", "product/app/quantity/fee", "product/loans")
     assert code == cli.OK, lines
     text = (repo / KB / "product/app/decision/fee.yml").read_text()
-    assert "product/loans/value/fee" in text and "product/app/value/fee" not in text
-    assert "is: 1" in (repo / KB / "product/loans/values.yml").read_text()
+    assert "product/loans/quantity/fee" in text and "product/app/quantity/fee" not in text
+    assert "is: 1" in (repo / KB / "product/loans/quantities.yml").read_text()
     assert w(repo, "check") == (cli.OK, ["ok"]) and base_findings(repo) == ["ok"]
     assert w(repo, "dropped") == dropped  # a move drops nothing
 
 
 def test_a_move_into_an_area_without_its_area_entry_is_refused_and_the_area_entry_stays(repo: Path) -> None:
     before = tree(repo)
-    code, lines = w(repo, "move", "product/app/value/fee", "product/elsewhere")
+    code, lines = w(repo, "move", "product/app/quantity/fee", "product/elsewhere")
     assert code == cli.REFUSED and "missing-entry" in lines[0] and "product/elsewhere/area/elsewhere" in lines[0] and tree(repo) == before
     code, lines = w(repo, "move", "product/app/area/app", "product/loans")
     assert code == cli.REFUSED and "does not move" in lines[0]

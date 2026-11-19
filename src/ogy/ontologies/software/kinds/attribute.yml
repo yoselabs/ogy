@@ -1,0 +1,26 @@
+kind: attribute
+was: {kind: attr, key: attrs}
+about: one fact kept about an entity
+guidance: "A fact kept about an entity: a plain value has a `type`; a link to an entity or an enum names it in `of`; `many` holds a list. A fact computed from others is `derived` and never written. A fact that changes the outcome is tested in a case; a move the product reacts to is a state."
+like: "an ER or UML attribute: one fact kept about an entity"
+unlike: "a field of a kind file; a state, which the product reacts to"
+shape: inline
+sentence: says
+part_of: entity
+key: attributes
+exactly_one_of: [[type, of]]                         # a plain value has a type; a link names what it holds
+requires:
+  - {if_set: derived, kinds: [attribute], without: [max, optional], error: "a derived attribute has no max and is never optional"}
+fields:
+  says: {}
+  type: {type: enum, of: [text, number, flag, money, date, datetime, duration]}
+  of: {type: link, to: [enum, entity]}               # what it holds, when it holds an entry
+  many: {type: flag}                                 # a list of values, or of entries named by `of`
+  max: {type: link, to: [quantity]}
+  optional: {type: flag}
+  derived: {type: expr, to: [quantity, enum, entity, attribute, state, dependency, setting, actor]}   # computed from what it reads, never written
+revalued:                                            # `ogy migrate`: time is datetime; one and list give way to `of` and `many`
+  type:
+    time: {type: datetime}
+    one: {type: null}
+    list: {type: text, many: true}                   # a list named nothing (rule list-attr-of): a list of plain texts

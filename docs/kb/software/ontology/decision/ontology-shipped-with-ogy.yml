@@ -11,7 +11,7 @@ options:
     sets:
       software/ontology/rule/software-ontology-ships-with-ogy:
         says: The software ontology is a separate package.
-guess:
+proposal:
   chose: shipped
   why: One package to install.
 answers:

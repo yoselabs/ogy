@@ -1,13 +1,15 @@
 kind: rule
-about: a statement that must stay true; the entries held to it name it with `by`
-guidance: "A statement that must stay true, proved by a test. `by` means held to a rule; `because` cites a principle or a decision as the reason. A decided number is a value the rule names. When no kind fits, write a rule with links and a proof, never a new kind."
-shape: entity
+about: a statement that must stay true; the entries held to it name it with `satisfies`
+guidance: "A statement that must stay true, proved by a test. `satisfies` means held to a rule; `because` cites a principle or a decision as the reason. A decided number is a quantity the rule names. When no kind fits, write a rule with links and a proof, never a new kind."
+like: "a business rule, a SysML requirement satisfied by entries and verified by a proof"
+unlike: "a principle: a value that no test can check"
+shape: file
 sentence: says
 layers: [product, software]
 needs_proof: true
 fingerprint:
   proofs: true
-  reached: [["<-by", "=pin"]]                           # an external held to it changes its pin: its proofs are suspect
+  reached: [["<-satisfies", "=pin"]]                    # a dependency held to it changes its pin: its proofs are suspect
 fields:
   says: {required: true}
-dropped: ["on"]                                      # the entries held to it name it with `by`
+dropped: ["on"]                                      # the entries held to it name it with `satisfies`

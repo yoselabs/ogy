@@ -1,7 +1,7 @@
 says: A tool the library owns.
 src:
 - code:src/library/loans.py#Tool
-attrs:
+attributes:
   out:
     says: The tool is out on a loan.
     type: flag
@@ -9,3 +9,7 @@ attrs:
       text: an open loan holds the tool
       reads:
       - product/lending/entity/loan
+  parts:
+    says: The parts that come with the tool.
+    type: text
+    many: true

@@ -93,8 +93,7 @@ def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> N
 def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
     for kind in kinds.values():
         if (names := kind.settling) is not None:
-            heard = next((k.kind for k in kinds.values() if k.is_part(names.guess) and k.key == names.heard), "")
-            wanted = [(names.option, names.sets), (names.guess, names.chose), (names.guess, names.value), (heard, names.said),
+            wanted = [(names.option, names.sets), (names.guess, names.chose), (names.guess, names.value), (names.guess, names.heard),
                       *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note,
                                                     names.delegated))]
             for part, field in wanted:

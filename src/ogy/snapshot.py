@@ -11,6 +11,7 @@ from ogy.layout import BUILT_DIR, read_files
 from ogy.model import Address, Entry, Finding, Problem, link_values, parse_address
 from ogy.ontology import Ontology
 from ogy.paths import LinkIndex
+from ogy.retype import Retype, applied, problems
 from ogy.source import Source
 
 FINGERPRINT_LENGTH = 12
@@ -135,8 +136,11 @@ class Snapshot:
 
 
 def build(ontology: Ontology, files: dict[str, str]) -> Snapshot:
-    """Read entry files into a snapshot."""
-    found, findings = read_files(ontology, files)
+    """Read entry files into a snapshot. A file that still holds an old kind name is `needs-migration`; one at an old kind's
+    path is not read (`ogy.retype`)."""
+    work = Retype(ontology)
+    found, findings = read_files(ontology, {rel: text for rel, text in files.items() if work.path(rel) == rel})
+    findings += [Finding(Problem.NEEDS_MIGRATION, rel, why) for rel, why in sorted(problems(ontology, files).items())]
     entries: dict[Address, Entry] = {}
     for entry in found:
         if entry.address in entries:
@@ -146,6 +150,7 @@ def build(ontology: Ontology, files: dict[str, str]) -> Snapshot:
     return Snapshot(ontology, entries, findings)
 
 
-def load(source: Source, ontology: Ontology) -> Snapshot:
-    """Every entry file of the knowledge base in one batch read."""
-    return build(ontology, source.read(kb_paths(source.listing())))
+def load(source: Source, ontology: Ontology, retyped: bool = False) -> Snapshot:
+    """Every entry file of the knowledge base in one batch read; `retyped`: as `ogy migrate` renames the kinds (`ogy.retype`)."""
+    files = source.read(kb_paths(source.listing()))
+    return build(ontology, applied(ontology, files) if retyped else files)

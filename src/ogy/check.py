@@ -49,8 +49,10 @@ class Checker:
         listed = [part for part in self.snapshot.ontology.parts_of(kind.kind) if part.holding is Holds.LIST]
         known = {part.key for part in listed if part.key}
         for problem, detail in fields_problems(self.snapshot.ontology, self.snapshot.ontology.specs(kind), entry.fields, known,
-                                               old=kind.old_names):
+                                               old=self.snapshot.ontology.old_names(kind)):
             self._add(problem, entry, detail)
+        for problem in self._reshape(kind, entry.fields):
+            self._add(Problem.NEEDS_MIGRATION, entry, problem)
         for part in listed:
             items = entry.fields.get(part.key or "")
             if items is None:
@@ -61,6 +63,14 @@ class Checker:
             for item in items:
                 for problem, detail in fields_problems(self.snapshot.ontology, part.fields, item, old=part.old_names):
                     self._add(problem, entry, f"{part.key}: {detail}")
+
+    @staticmethod
+    def _reshape(kind: Kind, fields: dict[str, object]) -> list[str]:
+        """An old value the kind revalued, or a part's mapping it folded into a field: `ogy migrate` rewrites it."""
+        found = [f"{name} holds a part's mapping, now its {inner}: run `ogy migrate`" for name, inner in kind.folded.items()
+                 if isinstance(fields.get(name), dict)]
+        return found + [f"{name} {value} is now {', '.join(f'{k} {v}' for k, v in values[value].items())}: run `ogy migrate`"
+                        for name, values in kind.revalued.items() if isinstance(value := fields.get(name), str) and value in values]
 
     def _layer(self, kind: Kind, entry: Entry) -> None:
         layer = entry.address.layer
@@ -130,7 +140,7 @@ def check(snapshot: Snapshot, source: Source, base: Source | None = None, landin
     findings = list(snapshot.findings) + (product_areas(snapshot, product) if product else [])
     for run in CHECKS:
         findings.extend(run(snapshot, source))
-    older = migrated(load(base, snapshot.ontology)) if base is not None else None  # the base as `ogy migrate` would write it
+    older = migrated(load(base, snapshot.ontology, retyped=True)) if base is not None else None  # the base as `ogy migrate` would write it
     if landing:
         for run in LANDING:
             findings.extend(item for item in run(snapshot, source)

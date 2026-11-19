@@ -9,11 +9,10 @@ options:
     label: Rename it (domain, slice, module or context)
     sets:
       product/language/rule/area-is-the-word:
-guess:
+proposal:
   chose: area
   why: Area is plain, already in every address and command, and carries none of the meanings domain, module or context have in software.
-  heard:
-    said: Fine with it
+  heard: Fine with it
 answers:
 - chose: area
   said: Fine with the word area

@@ -44,7 +44,7 @@ def test_example_tool_library_has_no_findings() -> None:
 
 def test_taskloop_fit_has_only_expected_findings() -> None:
     terms = {"claim", "land", "squash", "target-tip", "gate", "checked-commit"}
-    expected = {(Problem.ORPHAN, "software/land/workflow/round-land"), *((Problem.TERM_NOT_AGREED,
+    expected = {(Problem.NEVER_STARTED, "software/land/workflow/round-land"), *((Problem.TERM_NOT_AGREED,
                                                                           f"product/shared/term/{word}") for word in terms)}
     assert findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb")) == expected
     assert not {item for item in findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb"), landing=False)

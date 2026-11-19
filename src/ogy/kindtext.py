@@ -52,8 +52,23 @@ def _rules(kind: Kind) -> list[str]:
         lines.append(f"  requires{' ' + need.condition if need.condition else ''}: {need.error}")
     if kind.one_part:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
+    lines += [f"  was: {kind.was.kind} (`ogy migrate`)"] if kind.was else []
     lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
+    lines += [f"  revalued: {field} {old} is now {', '.join(f'{k} {v}' for k, v in now.items())} (`ogy migrate`)"
+              for field, values in kind.revalued.items() for old, now in values.items()]
+    lines += [f"  folded: {field} held a part, now its {inner} (`ogy migrate`)" for field, inner in kind.folded.items()]
     return lines + [f"  dropped: {old} (`ogy migrate`)" for old in kind.dropped]
+
+
+def _likeness(kind: Kind) -> list[str]:
+    return [f"  {word}: {text}" for word, text in (("like", kind.like), ("unlike", kind.unlike)) if text]
+
+
+def likeness_lines(ontology: Ontology) -> list[str]:
+    """One line per kind that says what mainstream notion it matches and which of the same name it does not mean."""
+    found = [f"  {name}: " + "; ".join(f"{word} {text}" for word, text in (("like", kind.like), ("unlike", kind.unlike)) if text)
+             for name, kind in sorted(ontology.kinds.items()) if kind.like or kind.unlike]
+    return ["kinds, like and unlike:", *found] if found else []
 
 
 def kinds_lines(ontology: Ontology, only: str | None = None) -> list[str]:
@@ -64,7 +79,7 @@ def kinds_lines(ontology: Ontology, only: str | None = None) -> list[str]:
     for name, kind in sorted(ontology.kinds.items()):
         if only not in (None, name):
             continue
-        lines += [f"{name}: {kind.about}", *([f"  guidance: {kind.guidance}"] if kind.guidance else []), *_facts(kind)]
+        lines += [f"{name}: {kind.about}", *([f"  guidance: {kind.guidance}"] if kind.guidance else []), *_likeness(kind), *_facts(kind)]
         if kind.fields:
             lines += ["  fields:", *(_field(field, spec) for field, spec in kind.fields.items())]
         lines += [*_rules(kind), ""]

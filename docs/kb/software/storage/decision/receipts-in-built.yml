@@ -11,7 +11,7 @@ options:
     sets:
       software/storage/rule/built-record-lives-under-built:
         says: Receipts sit in a block inside each entry.
-guess:
+proposal:
   chose: built
   why: Diffs of meaning stay free of tool output.
 answers:

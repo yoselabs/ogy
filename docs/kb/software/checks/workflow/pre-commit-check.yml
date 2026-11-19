@@ -40,7 +40,7 @@ steps:
         when:
           text: the commit changes nothing under docs/kb
           reads:
-          - software/storage/external/git
+          - software/storage/dependency/git
         then: committed
       otherwise:
         then: check

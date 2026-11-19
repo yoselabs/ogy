@@ -1,4 +1,4 @@
 says: One removed entry in the removed.yml of its area, appended once and never edited.
 src:
 - code:src/ogy/removed.py#Item
-attrs: {}
+attributes: {}

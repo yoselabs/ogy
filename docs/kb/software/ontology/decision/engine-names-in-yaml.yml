@@ -8,7 +8,7 @@ options:
     label: Only the names the coming kind changes need
   later:
     label: Later
-guess:
+proposal:
   chose: all-now
   why: It makes every later change a YAML edit.
 answers:

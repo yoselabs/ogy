@@ -11,11 +11,10 @@ options:
     sets:
       software/ontology/rule/no-repository-kinds:
         says: A repository may extend the ontology it names with its own kinds declared in YAML.
-guess:
+proposal:
   chose: not-now
   why: One shipped set of kinds keeps every kb readable the same way until a real need appears.
-  heard:
-    said: No custom kinds for now; later yes.
+  heard: No custom kinds for now; later yes.
 answers:
 - chose: not-now
   said: No custom kinds for now; later yes.

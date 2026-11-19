@@ -1,9 +1,10 @@
 title: Lands per round
 question: How many tasks may one round land or put on hold?
 context: The code stops the land phase after the first task it landed or held.
-src: [code:src/taskloop/round_land.py#land_passed]
-guess:
+src:
+- code:src/taskloop/round_land.py#land_passed
+proposal:
   why: It is what the code does; the number is not written as a constant.
   sets:
-    software/land/value/lands-per-round:
+    software/land/quantity/lands-per-round:
       is: 1

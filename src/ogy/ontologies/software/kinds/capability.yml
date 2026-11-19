@@ -1,11 +1,14 @@
 kind: capability
 about: something the product can do, decided before its workflows
-guidance: "Something the product can do, named before its workflows; a workflow realizes it. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
-harm: [who-is-allowed]
+guidance: "Something the product can do, named before its workflows; it realizes goals, and a workflow realizes it. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
+like: "an ArchiMate capability: what the product can do, named before how"
+unlike: "a workflow, which is how one result is reached"
+harm: [authorization]
 shape: list
 sentence: says
 file: capabilities.yml
 layers: [product]
 fields:
   says: {required: true}
-  serves: {type: links, to: [goal]}
+  realizes: {type: links, to: [goal]}
+renamed: {serves: realizes}

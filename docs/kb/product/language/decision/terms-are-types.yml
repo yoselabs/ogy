@@ -11,11 +11,10 @@ options:
     sets:
       product/language/rule/glossary-holds-types:
         says: The glossary holds types and named instances alike.
-guess:
+proposal:
   chose: types
   why: An instance is an entry of the knowledge base, not a word of its language.
-  heard:
-    said: Types only, no instances
+  heard: Types only, no instances
 answers:
 - chose: types
   said: The glossary holds types, not instances

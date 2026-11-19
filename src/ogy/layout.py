@@ -40,7 +40,7 @@ def _kind_at(ontology: Ontology, tail: list[str]) -> tuple[Kind, str | None] | s
             return (kind, None) if kind else f"no list or single kind keeps its entries in {file}"
         case [folder, file]:
             kind = ontology.get(folder)
-            return (kind, file.removesuffix(SUFFIX)) if kind and kind.shape is Shape.ENTITY else f"no entity kind {folder!r}"
+            return (kind, file.removesuffix(SUFFIX)) if kind and kind.shape is Shape.FILE else f"no file kind {folder!r}"
         case _:
             return "an entry file is <layer>/<area>/<kind>/<id>.yml or <layer>/<area>/<list file>.yml"
 

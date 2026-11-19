@@ -57,4 +57,6 @@ def test_agents_read_the_constitution_before_the_glossary(kb: Make) -> None:
     assert both.index("  land: To finish a delivery.") > both.index("    why: Storage is no meaning.")
     assert "  graph: The ontology is a graph of linked entries." in both
     none = kb({"constitution/principles.yml": "[]\n", "product/shared/glossary.yml": glossary}).snapshot
-    assert printed_lines(none) == ["product/shared:", "  land: To finish a delivery."]
+    lines = printed_lines(none)
+    assert lines[:3] == ["product/shared:", "  land: To finish a delivery.", ""]
+    assert lines[3] == "kinds, like and unlike:" and "  actor: like a UML actor; unlike" in lines[4]  # the kinds, after the words

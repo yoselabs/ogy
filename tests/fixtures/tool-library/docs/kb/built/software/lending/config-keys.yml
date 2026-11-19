@@ -1,1 +1,0 @@
-software/lending/config_key/smtp-host: {own: 3b431c537f07, deps: {}, covers: [], sourced: {code:src/library/remind.py#notify: 2156d0bd9f9c}}

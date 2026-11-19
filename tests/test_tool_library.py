@@ -21,16 +21,16 @@ P, S = "product/lending", "software/lending"
 BORROW = f"{P}/workflow/borrow/step"
 UNBUILT = [
     f"{P}/entity/tool", f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans",
-    f"{P}/rule/fees-round-up", f"{P}/rule/tools-are-checked-on-return", f"{P}/value/max-loans", f"{P}/value/remind-every",
-    f"{P}/value/reply-wait", f"{BORROW}/ask", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record",
+    f"{P}/rule/fees-round-up", f"{P}/rule/tools-are-checked-on-return", f"{P}/quantity/max-loans", f"{P}/quantity/remind-every",
+    f"{P}/quantity/reply-wait", f"{BORROW}/ask", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record",
     f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{BORROW}/standing",
     f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes", f"{P}/workflow/close-loan/step/close",
     f"{P}/workflow/close-loan/step/close/case/otherwise",
     f"{P}/workflow/notify/step/send", f"{P}/workflow/notify/step/send/case/ok", f"{P}/workflow/notify/step/send/case/otherwise",
     f"{P}/workflow/remind/step/call", f"{P}/workflow/remind/step/call/case/otherwise", f"{P}/workflow/remind/step/call/case/sent",
-    f"{S}/command/borrow-cli", f"{S}/config_key/remind-every", f"{S}/rule/one-reminder-a-day",
-    f"{S}/external/mailer/deviation/slow-at-night", f"{S}/operation/lend",
-    f"{S}/operation/send-reminder", f"{S}/view/leave-button",
+    f"{S}/command/borrow-cli", f"{S}/setting/remind-every", f"{S}/rule/one-reminder-a-day",
+    f"{S}/dependency/mailer/workaround/slow-at-night", f"{S}/handler/lend",
+    f"{S}/handler/send-reminder", f"{S}/view/leave-button",
 ]
 WORK = {
     *((address, Status.UNBUILT) for address in UNBUILT),
@@ -38,8 +38,8 @@ WORK = {
     (f"{P}/rule/late-fee-is-per-day", Status.CHANGED),
     (f"{P}/rule/late-fee-is-per-day", Status.CODE_CHANGED),  # late_fee() changed since the rule was captured from it
     (f"{BORROW}/ask/choice/borrow", Status.CHANGED),  # the rule it is held to (`by`) changed
-    (f"{S}/view/borrow-page", Status.DEPENDENCY_CHANGED),  # built against that rule
-    (f"{S}/config_key/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
+    (f"{S}/view/borrow-page", Status.INPUT_CHANGED),  # built against that rule
+    (f"{S}/setting/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
 }
 # kind.field -> why this knowledge base leaves it empty

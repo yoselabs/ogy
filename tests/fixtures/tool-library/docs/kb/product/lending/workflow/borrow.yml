@@ -6,13 +6,18 @@ realizes: product/lending/capability/lend-tools
 steps:
   standing:
     says: Only a member who owes no late fee may borrow.
-    by: [product/lending/rule/late-fee-is-per-day]
     cases:
       owes:
         order: 1
-        when: {text: the member owes a late fee, reads: [product/lending/value/late-fee]}
+        when:
+          text: the member owes a late fee
+          reads:
+          - product/lending/quantity/late-fee
         then: refused
-      otherwise: {then: record}
+      otherwise:
+        then: record
+    satisfies:
+    - product/lending/rule/late-fee-is-per-day
   ask:
     says: The member asks for a tool.
     actor: product/lending/actor/member
@@ -20,7 +25,7 @@ steps:
       borrow:
         label: Borrow a tool
         then: standing
-        by:
+        satisfies:
         - product/lending/rule/late-fee-is-per-day
       leave:
         label: Leave
@@ -30,13 +35,13 @@ steps:
           reads:
           - product/lending/actor/member
     timeout:
-      after: product/lending/value/reply-wait
+      after: product/lending/quantity/reply-wait
       then: left
-      by:
-      - product/lending/rule/at-most-max-loans
       effects:
       - do: tell
         on: product/lending/actor/member
+      satisfies:
+      - product/lending/rule/at-most-max-loans
   record:
     says: The library records the loan.
     cases:
@@ -45,9 +50,9 @@ steps:
         when:
           text: the member holds max-loans tools
           reads:
-          - product/lending/value/max-loans
+          - product/lending/quantity/max-loans
         then: refused
-        by:
+        satisfies:
         - product/lending/rule/at-most-max-loans
       otherwise:
         then: lent
@@ -86,5 +91,5 @@ ends:
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
       hash: 1b8c247af48e
-by:
+satisfies:
 - product/lending/rule/at-most-max-loans

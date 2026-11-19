@@ -21,7 +21,7 @@ class Status(StrEnum):
 
     UNBUILT = "unbuilt"  # never built
     CHANGED = "changed"  # built, then its meaning changed
-    DEPENDENCY_CHANGED = "dependency changed"  # built, then something it was built against changed
+    INPUT_CHANGED = "input changed"  # built, then something it was built against changed
     REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"

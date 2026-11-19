@@ -12,11 +12,10 @@ options:
     sets:
       software/ontology/rule/examples-before-kinds:
         says: The ontology adds kinds for environments, permissions and SLOs, and data fields on entities, now.
-guess:
+proposal:
   chose: examples-first
   why: Under rigid-where-checked a new kind must name the check that reads it; real examples show which checks fail to read what they need.
-  heard:
-    said: Roll with the proposed smaller next step.
+  heard: Roll with the proposed smaller next step.
 answers:
 - chose: examples-first
   said: Roll with the proposed smaller next step.

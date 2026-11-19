@@ -10,7 +10,7 @@ options:
     sets:
       product/inspection/workflow/inspect-kb:
         says: An agent reads the knowledge base without changing it.
-guess:
+proposal:
   chose: keep
   why: Kept until the owner answers.
 answers:
