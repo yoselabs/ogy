@@ -1,0 +1,17 @@
+structure: true
+question: Is who answered computed from `delegated`, dropping `answer.from` and `agreed.from`?
+context: 'Harmony review finding 7: a check forces from ai exactly when delegated is set; agreed.from has one legal value.'
+options:
+  computed:
+    label: Yes; an answer with `delegated` is an agent's, every other answer and agreement a person's
+  keep:
+    label: Keep `from` as a readable field
+guess:
+  chose: computed
+  why: One fact, one field.
+answers:
+- chose: computed
+  said: "All a: took Fable's harmony picks for round 1"
+  from: human
+  at: '2026-11-19T20:57:09+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

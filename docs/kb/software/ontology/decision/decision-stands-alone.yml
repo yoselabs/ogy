@@ -1,0 +1,19 @@
+structure: true
+question: May a decision stand alone, its chosen option being the record, with a rule written only where a test could catch it broken?
+context: 'Harmony review finding 1: 56 of 66 decisions only set one rule that repeats the option; 60 of 65 rules have no link in or out and no proof.'
+options:
+  alone:
+    label: Yes; a rule only where a test could catch it broken
+  alone-and-sort:
+    label: Yes, and sort the 60 mirror rules now
+  always-sets:
+    label: No; every decision keeps setting an entry
+guess:
+  chose: alone
+  why: One sentence per choice.
+answers:
+- chose: alone
+  said: "All a: took Fable's harmony picks for round 1"
+  from: human
+  at: '2026-11-19T20:57:05+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

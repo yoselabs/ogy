@@ -1,0 +1,19 @@
+structure: true
+question: Which kinds may name the rules they are held to with `by`?
+context: "Harmony review finding 1: `by` is on 8 kinds, not on commands or operations, where ogy's own rules apply; it is used 0 times."
+options:
+  common:
+    label: Every kind; `by` is a common field like `because`
+  more:
+    label: The 8 kinds plus command, view, operation and capability
+  keep:
+    label: Keep the 8
+guess:
+  chose: common
+  why: A rule may hold any entry.
+answers:
+- chose: common
+  said: "All a: took Fable's harmony picks for round 1"
+  from: human
+  at: '2026-11-19T20:57:07+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

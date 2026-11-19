@@ -1,0 +1,19 @@
+structure: true
+question: When the owner answers a decision whose card showed the sentences the option sets, do those sentences read decided by you?
+context: 'Harmony review finding 17: 47 rules read nobody agreed although the owner chose their exact text.'
+options:
+  agrees:
+    label: Yes; the answer agrees to the sentences the card showed
+  status-only:
+    label: No, but the status says chosen by you in the decision
+  keep:
+    label: Keep as it is
+guess:
+  chose: agrees
+  why: The owner chose that exact text.
+answers:
+- chose: agrees
+  said: "All a: took Fable's harmony picks for round 1"
+  from: human
+  at: '2026-11-19T20:57:12+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
