@@ -47,3 +47,217 @@ items:
     ontology: software
     snapshot:
       says: "The fix-now items of the ontology review are built in this order: 1 a migration rule for kind changes; 2 an example knowledge base run as a regression fixture on every kind change; 3 a field-reader report; 4 the actor nature system, with step.actor naming actors only; 5 layer-root homes and a glossary per area; 6 rule.on dropped for `by` on externals, workflows, entities, attributes and guards; 7 conditional requirements (if_equals, needs_field) and choice.when; 8 external.terms, effect.value, config_key.used_by and config_key.default cut; 9 guess.value renamed to sets; 10 terms compressed, moving distinct into says and avoid first; 11 a guidance field per kind and `ogy kinds --map`, with guidance on because against by; 12 the environment example of docs/guidance.md fixed. Items 4, 5, 6 and 9 change the structure and wait for the owner's card; keep and park items get a bead each group."
+  - id: software/ontology/decision/one-actor-kind
+    kind: decision
+    parent:
+    title:
+    said: The ontology has the kind `persona` for who uses the product, and the owner asked why `persona`, actor and `role` all exist. Is there one kind for who uses the product, and what is it called?
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats a kind file, a term or the tree'
+    replaced_by:
+    at: 2026-11-19 16:50:10+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: e4386d9e99c0
+    ontology: software
+    snapshot:
+      question: The ontology has the kind `persona` for who uses the product, and the owner asked why `persona`, actor and `role` all exist. Is there one kind for who uses the product, and what is it called?
+      structure: true
+      answers:
+      - chose: actor
+        said: 'Agreed: one actor kind'
+        from: human
+        at: '2026-11-18T19:52:47+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      - chose: actor-three-natures
+        said: 'Fable: the rule names the program nature too'
+        from: ai
+        at: '2026-11-19T00:31:23+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        delegated: software/ontology/decision/review-delegation
+      - chose: actor-three-natures
+        said: Took every recommendation of Fable's revised round
+        from: human
+        at: '2026-11-19T17:49:55+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: actor
+        why: Three words for one concept compete; actor is the word the workflow steps already use (a step's actor), so one word serves both.
+        heard:
+          said: Agreed
+      options:
+        actor:
+          label: One kind actor (nature human or ai); `persona` and `role` are avoided words
+          sets:
+            software/ontology/rule/one-actor-kind:
+              says: One kind, actor, names who uses the product, with nature human or ai; the words `persona` and `role` are avoided.
+        keep:
+          label: Keep the kind `persona`
+          sets:
+            software/ontology/rule/one-actor-kind:
+              says: One kind, `persona`, names who uses the product, with nature human or agent.
+        actor-three-natures:
+          label: One kind actor (nature human, ai or program); `persona` and `role` are avoided words
+          sets:
+            software/ontology/rule/one-actor-kind:
+              says: One kind, actor, names who uses the product, with nature human, ai or program; the words `persona` and `role` are avoided.
+  - id: software/ontology/decision/who-is-an-actor
+    kind: decision
+    parent:
+    title:
+    said: Who is an actor of the product, only the people and AI that use it, or anyone who uses or operates it, including a third-party system that invokes a workflow?
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats a kind file, a term or the tree'
+    replaced_by:
+    at: 2026-11-19 16:50:11+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: 65047808dca1
+    ontology: software
+    snapshot:
+      question: Who is an actor of the product, only the people and AI that use it, or anyone who uses or operates it, including a third-party system that invokes a workflow?
+      structure: true
+      answers:
+      - chose: operates
+        said: Actors are whoever uses or operates the product, people, AI or other systems.
+        from: human
+        at: '2026-11-18T21:04:54+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: operates
+        why: An operator performs workflow steps just as a person using it does, and a system that invokes a workflow is the actor of its first step.
+        heard:
+          said: Actors are whoever uses or operates the product, people, AI or other systems.
+      options:
+        operates:
+          label: Anyone who uses or operates the product, a person, an AI or a third-party system
+          sets:
+            software/ontology/rule/who-is-an-actor:
+              says: An actor is anyone who uses or operates the product, a person, an AI or a third-party system that invokes a workflow.
+        users-only:
+          label: Only who uses the product
+          sets:
+            software/ontology/rule/who-is-an-actor:
+              says: An actor is only who uses the product; whoever merely operates it is not an actor.
+  - id: software/ontology/decision/variation-test
+    kind: decision
+    parent:
+    title:
+    said: When two kinds of the same thing differ, how does one tell whether the difference is an actor, a lifecycle state or an attribute?
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats a kind file, a term or the tree'
+    replaced_by:
+    at: 2026-11-19 16:50:12+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: b26d1f5e7015
+    ontology: software
+    snapshot:
+      question: When two kinds of the same thing differ, how does one tell whether the difference is an actor, a lifecycle state or an attribute?
+      context: Part of the actor kind's guidance (software/ontology/decision/kind-guidance).
+      answers:
+      - chose: by-what-differs
+        said: Different permitted actions make an actor, a recorded move the product reacts to a state, a fact changing the outcome an attribute; a threshold name is never an actor.
+        from: human
+        at: '2026-11-18T21:41:07+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      guess:
+        chose: by-what-differs
+        why: It asks what differs, so a word in the owner's speech does not become an actor that does nothing different.
+        heard:
+          said: Different permitted actions make an actor, a recorded move the product reacts to makes a state, a fact that changes the outcome makes an attribute; a threshold name is never an actor.
+      options:
+        by-what-differs:
+          label: 'Different things they may do: actor; the product records the move and reacts: state; same actions, different outcome from a fact: attribute tested in a case; a name with a threshold is never an actor'
+          sets:
+            software/ontology/rule/variation-test:
+              says: A variation is an actor when they may do different things; a lifecycle state when the product records the move and reacts to it; an attribute tested in a case when they do the same things and a fact changes the outcome. A name with a threshold (a senior volunteer, a large order) is never an actor.
+        actor-per-name:
+          label: Every named variation is its own actor
+          sets:
+            software/ontology/rule/variation-test:
+              says: Every named variation of who uses the product is its own actor.
+  - id: software/ontology/decision/variation-fields
+    kind: decision
+    parent:
+    title:
+    said: Which fields does the ontology add to model conditional choices, derived facts and actor variations?
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats a kind file, a term or the tree'
+    replaced_by:
+    at: 2026-11-19 16:50:13+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: 2d563b3777a9
+    ontology: software
+    snapshot:
+      question: Which fields does the ontology add to model conditional choices, derived facts and actor variations?
+      structure: true
+      context: The owner finds the existing ontology has too many fields; a field audit follows (bead under ogy-yy9).
+      answers:
+      - chose: fewer
+        said: 'Fewer fields: add choice.when and attr.derived only, as Fable suggested.'
+        from: human
+        at: '2026-11-18T21:41:09+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        note: the owner finds the existing ontology has too many fields
+      guess:
+        chose: fewer
+        why: Two fields cover the cases the variation test leaves to choices and attributes, and the ontology already has too many fields.
+        heard:
+          said: Fewer fields; add choice.when and attr.derived only, as Fable suggested.
+      options:
+        fewer:
+          label: Add `choice.when` and `attr.derived` only; conditions may name actors; no `actor.is` or `actor.kept_as`
+          sets:
+            software/ontology/rule/variation-fields:
+              says: The ontology adds `choice.when` and `attr.derived` only; a `when` condition may name actors; there is no `actor.is` and no `actor.kept_as`; an actor step keeps one unconditional choice; a derived attribute is never written.
+        all-four:
+          label: Add `choice.when`, `attr.derived`, `actor.is` and `actor.kept_as`
+          sets:
+            software/ontology/rule/variation-fields:
+              says: The ontology adds `choice.when`, `attr.derived`, `actor.is` and `actor.kept_as`; a `when` condition may name actors.
+  - id: software/ontology/rule/one-actor-kind
+    kind: rule
+    parent:
+    title:
+    said: One kind, actor, names who uses the product, with nature human, ai or program; the words `persona` and `role` are avoided.
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats the actor kind file'
+    replaced_by: software/ontology/rule/actor-program
+    at: 2026-11-19 16:50:15+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: a8e9426cf248
+    ontology: software
+    snapshot:
+      says: One kind, actor, names who uses the product, with nature human, ai or program; the words `persona` and `role` are avoided.
+  - id: software/ontology/rule/who-is-an-actor
+    kind: rule
+    parent:
+    title:
+    said: An actor is anyone who uses or operates the product, a person, an AI or a third-party system that invokes a workflow.
+    why: 'Fable review 2026-11-19, owner took all recommended: repeats the actor kind file'
+    replaced_by: software/ontology/rule/actor-program
+    at: 2026-11-19 16:50:17+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: b4b07800023b
+    ontology: software
+    snapshot:
+      says: An actor is anyone who uses or operates the product, a person, an AI or a third-party system that invokes a workflow.
+  - id: software/ontology/rule/variation-test
+    kind: rule
+    parent:
+    title:
+    said: A variation is an actor when they may do different things; a lifecycle state when the product records the move and reacts to it; an attribute tested in a case when they do the same things and a fact changes the outcome. A name with a threshold (a senior volunteer, a large order) is never an actor.
+    why: 'Fable review 2026-11-19, owner took all recommended: it is the guidance of actor.yml and the kind files'
+    replaced_by:
+    at: 2026-11-19 16:50:18+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: f895c6c4af4f
+    ontology: software
+    snapshot:
+      says: A variation is an actor when they may do different things; a lifecycle state when the product records the move and reacts to it; an attribute tested in a case when they do the same things and a fact changes the outcome. A name with a threshold (a senior volunteer, a large order) is never an actor.
+  - id: software/ontology/rule/variation-fields
+    kind: rule
+    parent:
+    title:
+    said: The ontology adds `choice.when` and `attr.derived` only; a `when` condition may name actors; there is no `actor.is` and no `actor.kept_as`; an actor step keeps one unconditional choice; a derived attribute is never written.
+    why: 'Fable review 2026-11-19, owner took all recommended: it is the guidance of actor.yml and the kind files'
+    replaced_by:
+    at: 2026-11-19 16:50:19+00:00
+    last_seen: 161e464e57d7c52334f78714456646e77fb1d989
+    hash: d8779c54887b
+    ontology: software
+    snapshot:
+      says: The ontology adds `choice.when` and `attr.derived` only; a `when` condition may name actors; there is no `actor.is` and no `actor.kept_as`; an actor step keeps one unconditional choice; a derived attribute is never written.
