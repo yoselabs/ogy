@@ -13,7 +13,7 @@ and the entry comes back to the owner as changed. The old fingerprints are read 
 A kind that moved out of a fixed folder (`moved_from`) has its entries there moved to the `shared` area of its first layer, every
 address under the old folder renamed, as `ogy move` renames (`moved_table`); `migrated` reads the base that way too."""
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
 from ogy.fieldtypes import agreed_keys
@@ -45,7 +45,8 @@ class _Pass:
         self.tidied = 0  # agreements that lost a key the agreed type no longer has (outside every fingerprint)
 
     def fields(self, kind: Kind, data: Mapping[str, object], address: Address, where: str = "") -> Data:
-        old, listed = kind.old_names, {part.key: part for part in self.ontology.parts_of(kind.kind) if part.holding is Holds.LIST}
+        old = self.ontology.old_names(kind)
+        listed = {part.key: part for part in self.ontology.parts_of(kind.kind) if part.holding is Holds.LIST}
         out: Data = {}
         for given, value in data.items():
             name = old.get(given, given)
@@ -102,41 +103,57 @@ def migrated(snapshot: Snapshot) -> Snapshot:
     return renamed(changes(snapshot)[0], moved_table(snapshot))
 
 
-def _hop(hop: str, back: Mapping[str, str]) -> str:
-    prefix = next((mark for mark in ("<-", "=") if hop.startswith(mark)), "")
-    return prefix + back.get(hop[len(prefix):], hop[len(prefix):])
+def _hop(hop: str, back: Mapping[str, str], kinds: Mapping[str, str]) -> str:
+    prefix = next((mark for mark in ("<-", "=", "/") if hop.startswith(mark)), "")
+    return prefix + (kinds if prefix == "/" else back).get(hop[len(prefix):], hop[len(prefix):])
+
+
+def _spec(spec: FieldSpec, kinds: Mapping[str, str]) -> FieldSpec:
+    return spec.model_copy(update={"to": tuple(kinds.get(name, name) for name in spec.to)}) if spec.to else spec
 
 
 def before(ontology: Ontology) -> Ontology:
     """The kinds as they were before their declared renames and drops: a renamed field under its old name, a dropped one back
-    as text. A fingerprint path names a renamed field by its old name too (the renames of every kind, as paths cross kinds)."""
-    back = {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()}
+    as text, a renamed kind under its old name, file and key (`was`), and a renamed common field under its old name. A
+    fingerprint path names a renamed field or part kind by its old name too (the renames of every kind, as paths cross kinds)."""
+    common = {new: old for old, new in ontology.declared.renamed.items()}
+    back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()}
+    names = {kind.kind: kind.was.kind for kind in ontology.kinds.values() if kind.was}
     kinds: dict[str, Kind] = {}
     for name, kind in ontology.kinds.items():
         mine = {new: old for old, new in kind.renamed.items()}
-        fields = {mine.get(field, field): spec for field, spec in kind.fields.items()} | {old: FieldSpec() for old in kind.dropped}
-        also, reached = (tuple(tuple(_hop(hop, back) for hop in path) for path in paths)
+        fields = {mine.get(field, field): _spec(spec, names) for field, spec in kind.fields.items()} | {
+            old: FieldSpec() for old in kind.dropped}
+        also, reached = (tuple(tuple(_hop(hop, back, names) for hop in path) for path in paths)
                          for paths in (kind.fingerprint.also, kind.fingerprint.reached))
-        update = {"also": also, "reached": reached}
-        kinds[name] = kind.model_copy(update={"fields": fields, "fingerprint": kind.fingerprint.model_copy(update=update)})
-    return Ontology.unchecked(kinds, ontology.declared)
+        printed = kind.fingerprint.model_copy(update={"also": also, "reached": reached})
+        update: dict[str, object] = {"fields": fields, "fingerprint": printed,
+                                     "part_of": tuple(names.get(parent, parent) for parent in kind.part_of)}
+        if kind.was:
+            update |= {"kind": kind.was.kind, "file": kind.was.file or kind.file, "key": kind.was.key or kind.key}
+        kinds[names.get(name, name)] = kind.model_copy(update=update)
+    declared = ontology.declared.model_copy(update={"common": {common.get(field, field): _spec(spec, names)
+                                                               for field, spec in ontology.common.items()}})
+    return Ontology.unchecked(kinds, declared)
 
 
 class Kept:
-    """Which fingerprints stay current across a migration of one snapshot."""
+    """Which fingerprints stay current across a migration: `old` is the knowledge base as it was, read under `before`, and
+    `snapshot` the same files under the new kind names (`ogy.retype`); `back` gives a new address its old one."""
 
-    def __init__(self, snapshot: Snapshot) -> None:
-        old = before(snapshot.ontology)
-        self.was = Snapshot(old, snapshot.entries, [])
-        self.dropped = Snapshot(old, changes(snapshot, renames=False)[0].entries, [])
+    def __init__(self, snapshot: Snapshot, old: Snapshot | None = None, back: Callable[[str], str] = str) -> None:
+        was = old or Snapshot(before(snapshot.ontology), snapshot.entries, [])
+        self.back, self.was = back, was
+        self.dropped = Snapshot(was.ontology, changes(was, renames=False)[0].entries, [])
         self.now = changes(snapshot)[0]
 
     def hash(self, address: Address, given: str, *, build: bool = False) -> str | None:
         """The meaning fingerprint (the build hash, for a built line) after the migration when `given` was current and no
         dropped value touched it, else None."""
-        if address not in self.was.entries:
+        was = parse_address(self.back(str(address)), self.was.ontology)
+        if was is None or was not in self.was.entries:
             return None
-        def of(snapshot: Snapshot) -> str:
-            return snapshot.build_hash(address) if build else snapshot.fingerprint(address)
-        was = of(self.was)
-        return of(self.now) if given == was and of(self.dropped) == was else None
+        def of(snapshot: Snapshot, at: Address) -> str:
+            return snapshot.build_hash(at) if build else snapshot.fingerprint(at)
+        then = of(self.was, was)
+        return of(self.now, address) if given == then and of(self.dropped, was) == then else None

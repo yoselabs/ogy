@@ -16,7 +16,7 @@ from ogy.status import harm
 
 V5 = Path(__file__).parent / "fixtures"
 type MakeKb = Callable[[Mapping[str, str | None] | None], Kb]
-BASE_PROBLEMS = ("removed-unrecorded", "bad-snapshot", "bad-removed", "edited-", "id-reused", "broken-link")
+BASE_PROBLEMS = ("removed-unrecorded", "bad-snapshot", "bad-removed", "edited-", "id-reused", "link-to-removed")
 
 
 def example(tmp_path: Path) -> list[str]:
@@ -59,7 +59,7 @@ def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
 def test_harm_is_read_from_the_kind_files(kb: MakeKb, ontology: Ontology) -> None:
     snapshot = kb(None).snapshot
     assert harm(snapshot, snapshot.resolve("product/app/actor/member") or snapshot_error()) is None
-    text = "kind: risky\nabout: x\nharm: [irreversible, moves-money]\nshape: entity\nlayers: [product]\nfields:\n  says: {}\n"
+    text = "kind: risky\nabout: x\nharm: [irreversible, moves-money]\nshape: file\nlayers: [product]\nfields:\n  says: {}\n"
     kinds = parse_kinds({"kinds/risky.yml": text}, ontology.declared)
     risky = build(kinds, {"product/app/risky/x.yml": "says: x\n"})
     assert harm(risky, next(iter(risky.entries))) == "moves-money"

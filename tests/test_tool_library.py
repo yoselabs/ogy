@@ -38,7 +38,7 @@ WORK = {
     (f"{P}/rule/late-fee-is-per-day", Status.CHANGED),
     (f"{P}/rule/late-fee-is-per-day", Status.CODE_CHANGED),  # late_fee() changed since the rule was captured from it
     (f"{BORROW}/ask/choice/borrow", Status.CHANGED),  # the rule it is held to (`by`) changed
-    (f"{S}/view/borrow-page", Status.DEPENDENCY_CHANGED),  # built against that rule
+    (f"{S}/view/borrow-page", Status.INPUT_CHANGED),  # built against that rule
     (f"{S}/config_key/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
 }

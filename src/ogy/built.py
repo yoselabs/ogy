@@ -137,7 +137,7 @@ def unstamp(kb: Path, source: str, address: str) -> None:
 
 def work_left(record: Mapping[str, Line], current: Mapping[str, tuple[str, Mapping[str, str]]]) -> dict[str, str]:
     """B1. `current` maps each `needs_proof` address to (its fingerprint now, {dependency: fingerprint now}).
-    Returns {address: "unbuilt" | "changed" | "dependency changed"} for the entries that are work."""
+    Returns {address: "unbuilt" | "changed" | "input changed"} for the entries that are work."""
     work: dict[str, str] = {}
     for address, (own, deps) in sorted(current.items()):
         line = record.get(address)
@@ -146,7 +146,7 @@ def work_left(record: Mapping[str, Line], current: Mapping[str, tuple[str, Mappi
         elif line.own != own:
             work[address] = "changed"
         elif any(deps.get(dep) != fingerprint for dep, fingerprint in line.deps.items()):
-            work[address] = "dependency changed"
+            work[address] = "input changed"
     return work
 
 

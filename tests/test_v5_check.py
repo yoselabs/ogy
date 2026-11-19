@@ -182,10 +182,10 @@ def test_calling_step_covers_every_callee_end(kb: Make) -> None:
 
 def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> None:
     alone = kb({"product/app/workflow/callee.yml": CALLEE}).findings(started=True)
-    assert alone == {(Problem.ORPHAN, "product/app/workflow/callee")}
+    assert alone == {(Problem.NEVER_STARTED, "product/app/workflow/callee")}
     both = calling("[product/app/workflow/callee/end/good, product/app/workflow/callee/end/bad]")
-    assert kb(both).findings(started=True) == {(Problem.ORPHAN, "product/app/workflow/caller"),
-                                               (Problem.ORPHAN, "product/app/workflow/callee")}  # a caller nothing starts
+    assert kb(both).findings(started=True) == {(Problem.NEVER_STARTED, "product/app/workflow/caller"),
+                                               (Problem.NEVER_STARTED, "product/app/workflow/callee")}  # a caller nothing starts
     caller = both["product/app/workflow/caller.yml"] or ""
     timed = {**both, "product/app/values.yml": VALUES,
              "product/app/workflow/caller.yml": caller.replace("says: C.\n", "says: C.\nschedule: product/app/value/fee\n")}

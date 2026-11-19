@@ -67,7 +67,7 @@ def test_a_derived_attribute_has_no_max_and_one_names_what_it_holds(kb: Make) ->
         "product/app/entity/loan/attr/late", "product/app/entity/loan/attr/member"}
 
 
-HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: entity\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
+HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
 
 
 @pytest.mark.parametrize(("requires", "message"), [

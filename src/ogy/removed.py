@@ -359,14 +359,15 @@ def check_replacements(items: Iterable[Item], live: Collection[str]) -> list[Pro
         while step.replaced_by is not None and step.replaced_by not in live:
             nxt = by_id.get(step.replaced_by)
             if nxt is None or nxt.id in seen:
-                out.append(Problem("broken-link", item.id, f"replaced_by {item.replaced_by} ends at {step.replaced_by}"
+                code = "link-to-removed" if nxt else "dangling-link"
+                out.append(Problem(code, item.id, f"replaced_by {item.replaced_by} ends at {step.replaced_by}"
                                    + (" in a cycle" if nxt else " which is gone")))
                 break
             step = nxt
             seen.add(step.id)
         else:
             if step.replaced_by is None and step is not item:
-                out.append(Problem("broken-link", item.id, f"replaced_by chain ends at {step.id}, removed for good"))
+                out.append(Problem("link-to-removed", item.id, f"replaced_by chain ends at {step.id}, removed for good"))
     return out
 
 
@@ -374,7 +375,7 @@ def check_links(links: Iterable[tuple[str, str]], items: Iterable[Item]) -> list
     """R8: (source, target) pairs whose target is removed; the text names the item's why and replacement. The caller
     leaves out the allowed ones (`agreed`, an item's why and parent.address)."""
     by_id = {i.id: i for i in items}
-    return [Problem("broken-link", s, f"{t} was removed (why: {by_id[t].why}, replaced by: {by_id[t].replaced_by})")
+    return [Problem("link-to-removed", s, f"{t} was removed (why: {by_id[t].why}, replaced by: {by_id[t].replaced_by})")
             for s, t in links if t in by_id]
 
 

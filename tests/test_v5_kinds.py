@@ -14,8 +14,8 @@ ACTOR = "kind: actor\nabout: who uses it\nshape: list\nfile: actors.yml\nlayers:
 LAYERS = ("product", "software")
 FIXED = "kind: principle\nabout: x\nshape: list\nfile: principles.yml\narea: glossary\n"
 HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
-ENTITY = HEAD + "shape: entity\n"
-PARENT = "kind: parent\nabout: x\nshape: entity\nlayers: [product]\n"
+ENTITY = HEAD + "shape: file\n"
+PARENT = "kind: parent\nabout: x\nshape: file\nlayers: [product]\n"
 SETTLING = ("settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
             "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n")
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
@@ -54,14 +54,14 @@ def test_software_kinds_load() -> None:
     (HEAD + "shape: list\nfile: actors.yml\n", "also the file of actor"),
     (HEAD + "shape: list\nfile: actor.yml\n", "equals a kind name"),
     (HEAD + "shape: list\nfile: removed.yml\n", "removed ledger"),
-    (HEAD.replace("product", "nowhere") + "shape: entity\n", "not a layer of the ontology"),
-    ("kind: thing\nabout: x\nshape: entity\n", "declares the layers it may appear in"),
+    (HEAD.replace("product", "nowhere") + "shape: file\n", "not a layer of the ontology"),
+    ("kind: thing\nabout: x\nshape: file\n", "declares the layers it may appear in"),
     (HEAD + "shape: inline\nkey: k\npart_of: actor\n", "a part is in its parent's layer"),
     (ENTITY + "area: glossary\n", "has no layers"),
     (HEAD + "shape: inline\nkey: k\npart_of: nobody\n", "unknown kind nobody"),
     (ENTITY + "holds: list\n", "inline kinds only"),
     (ENTITY + "append_only: true\n", "inline kinds that hold a list"),
-    (HEAD + "shape: entity\nimmutable: true\n", "immutable"),
+    (HEAD + "shape: file\nimmutable: true\n", "immutable"),
     (ENTITY + "area: Not_An_Area\n", "no valid area name"),
     (ENTITY + "area: built\n", "no valid area name"),
     (ENTITY + "fields:\n  status: {}\n", "computed, never stored"),
@@ -82,8 +82,8 @@ def test_loader_refuses_inconsistent_kinds(text: str, message: str) -> None:
 
 
 def test_link_has_one_direction() -> None:
-    first = HEAD.replace("thing", "first") + "shape: entity\nfields:\n  to: {type: link, to: [second]}\n"
-    second = HEAD.replace("thing", "second") + "shape: entity\nfields:\n  back: {type: links, to: [first]}\n"
+    first = HEAD.replace("thing", "first") + "shape: file\nfields:\n  to: {type: link, to: [second]}\n"
+    second = HEAD.replace("thing", "second") + "shape: file\nfields:\n  back: {type: links, to: [first]}\n"
     with pytest.raises(OntologyError, match="link to each other"):
         load(first, second)
     load(PARENT + "fields:\n  of: {type: link, to: [part]}\n", PART + "fields:\n  up: {type: link, to: [parent]}\n")
@@ -99,7 +99,7 @@ def test_part_kind_with_several_parents() -> None:
 def test_any_target_accepts_every_kind_and_no_kind_is_named_any() -> None:
     load(ENTITY + "fields:\n  of: {type: link, to: [any]}\n")
     with pytest.raises(OntologyError, match="not be `any`"):
-        load("kind: any\nabout: x\nshape: entity\n")
+        load("kind: any\nabout: x\nshape: file\n")
 
 
 def test_list_kind_declares_its_file_once() -> None:
@@ -158,6 +158,6 @@ def test_fields_are_meaning_unless_note() -> None:
 
 
 def test_settling_names_are_checked() -> None:
-    decision = (HEAD.replace("thing", "decision") + "shape: entity\n" + SETTLING.replace("sets: sets", "sets: nothing"))
+    decision = (HEAD.replace("thing", "decision") + "shape: file\n" + SETTLING.replace("sets: sets", "sets: nothing"))
     with pytest.raises(OntologyError, match="settling names no kind option"):
         load(decision)

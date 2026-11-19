@@ -160,7 +160,7 @@ def orphans(snapshot: Snapshot, flow: Flow, kind: str) -> list[Finding]:
             _top(source) in started for field in (flow.then, flow.calls) for source in snapshot.links.backward(address, field))}
         started |= led
         grown = bool(led)
-    return [Finding(Problem.ORPHAN, snapshot.entries[address].path, "nothing starts it: no actor on its first step, no "
+    return [Finding(Problem.NEVER_STARTED, snapshot.entries[address].path, "nothing starts it: no actor on its first step, no "
                     f"{' or '.join(flow.roots)}, and no started workflow leads to it", address)
             for address in flows if address not in started]
 

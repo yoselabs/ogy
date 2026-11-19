@@ -49,7 +49,7 @@ class Checker:
         listed = [part for part in self.snapshot.ontology.parts_of(kind.kind) if part.holding is Holds.LIST]
         known = {part.key for part in listed if part.key}
         for problem, detail in fields_problems(self.snapshot.ontology, self.snapshot.ontology.specs(kind), entry.fields, known,
-                                               old=kind.old_names):
+                                               old=self.snapshot.ontology.old_names(kind)):
             self._add(problem, entry, detail)
         for part in listed:
             items = entry.fields.get(part.key or "")
@@ -130,7 +130,7 @@ def check(snapshot: Snapshot, source: Source, base: Source | None = None, landin
     findings = list(snapshot.findings) + (product_areas(snapshot, product) if product else [])
     for run in CHECKS:
         findings.extend(run(snapshot, source))
-    older = migrated(load(base, snapshot.ontology)) if base is not None else None  # the base as `ogy migrate` would write it
+    older = migrated(load(base, snapshot.ontology, retyped=True)) if base is not None else None  # the base as `ogy migrate` would write it
     if landing:
         for run in LANDING:
             findings.extend(item for item in run(snapshot, source)

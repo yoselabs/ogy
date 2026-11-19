@@ -2,6 +2,7 @@
 indented under it; then the rules the kind files declare, as sentences. Read from the kind files; nothing is kept."""
 
 from ogy.kinds import FieldSpec, FieldType, Flow, Holds, Kind, Shape
+from ogy.kindtext import likeness_lines
 from ogy.ontology import Ontology
 
 LEGEND = ("! required, -> one link, ->> many links (an expression: the links it reads), [] a list part, (a|b) enum members, "
@@ -80,4 +81,4 @@ def map_lines(ontology: Ontology) -> list[str]:
         for kind in kinds:
             lines += _tree(ontology, kind, 1, shown)
     flows = [line for name, kind in sorted(ontology.kinds.items()) if kind.flow for line in _flow_rules(name, kind.flow)]
-    return [*lines, "rules:", *_rules(ontology), *flows]
+    return [*lines, "rules:", *_rules(ontology), *flows, *likeness_lines(ontology)]

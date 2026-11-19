@@ -38,7 +38,7 @@ def test_unstamp_deletes_line_and_empty_file(tmp_path: Path) -> None:
 def test_work_left_reads_the_built_record() -> None:
     record = {"a": line("1", deps={"d": "x"}), "b": line("2"), "c": line("3", deps={"d": "x"}), "ok": line("4")}
     current = {"a": ("1", {"d": "y"}), "b": ("9", {}), "c": ("3", {"d": "x"}), "new": ("5", {}), "ok": ("4", {})}
-    assert built.work_left(record, current) == {"a": "dependency changed", "b": "changed", "new": "unbuilt"}
+    assert built.work_left(record, current) == {"a": "input changed", "b": "changed", "new": "unbuilt"}
 
 
 def test_removed_entry_is_work_until_line_deleted(tmp_path: Path) -> None:

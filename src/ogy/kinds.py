@@ -33,7 +33,7 @@ LINKING = frozenset({FieldType.LINK, FieldType.LINKS, FieldType.EXPR})
 class Shape(StrEnum):
     """Where a kind's entries live on disk."""
 
-    ENTITY = "entity"  # one file per entry: <layer>/<area>/<kind>/<id>.yml
+    FILE = "file"  # one file per entry: <layer>/<area>/<kind>/<id>.yml
     LIST = "list"  # one file per layer and area, named by the kind's `file`, holding a list of entries with `id`
     SINGLE = "single"  # one file per area, named by the kind's `file`, holding one entry whose id is the area's name
     INLINE = "inline"  # a part kept inside its parent's file, under the part kind's `key`
@@ -204,6 +204,15 @@ class Flow(BaseModel):
     offers: str  # a serving entry offering only some choices lists them; without it, it offers all
 
 
+class Was(BaseModel):
+    """A kind's name before a rename, and where its entries were kept under it: `ogy migrate` moves them to the new name."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    kind: str
+    file: str | None = None  # a list or single kind's file before the rename
+    key: str | None = None  # a part's key inside its parent before the rename
+
+
 class Kind(BaseModel):
     """One kind of entry, as written in `kinds/<kind>.yml`."""
 
@@ -211,6 +220,8 @@ class Kind(BaseModel):
     kind: str
     about: str
     guidance: str | None = None  # how to decide: when to use this kind rather than its neighbours (`ogy kinds <kind>`)
+    like: str | None = None  # the mainstream notion it matches, one line (`ogy kinds`, `--map`, `ogy glossary`)
+    unlike: str | None = None  # the mainstream notions of the same name it does not mean, one line
     sentence: str | None = None  # the field that holds what an entry says: what a card shows, a search finds, a person agrees to
     shape: Shape
     layers: tuple[str, ...] = ()  # the layer folders this kind may appear in (the folder is the layer's only home)
@@ -237,6 +248,7 @@ class Kind(BaseModel):
     requires: tuple[Requirement, ...] = ()
     one_part: OnePart | None = None
     flow: Flow | None = None
+    was: Was | None = None  # the kind's old name: its entries keep it until `ogy migrate`
     renamed: dict[str, str] = {}  # old field name -> new: an entry written before holds the old one until `ogy migrate`
     dropped: tuple[str, ...] = ()  # fields the kind no longer has: `ogy migrate` removes them (a filled one comes back to the owner)
 

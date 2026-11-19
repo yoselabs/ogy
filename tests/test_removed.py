@@ -113,7 +113,7 @@ def test_replaced_by_chain_reaches_live_entry() -> None:
     assert len(removed.check_replacements([a, b], [])) == 2
     cycle = make("product/land/workflow/c", replaced_by="product/land/workflow/a")
     a_to_c = dataclasses.replace(a, replaced_by="product/land/workflow/c")
-    assert removed.check_replacements([a_to_c, cycle], [])[0].code == "broken-link"
+    assert removed.check_replacements([a_to_c, cycle], [])[0].code == "link-to-removed"
     dead = make("product/land/workflow/d", replaced_by="product/land/workflow/a")
     assert removed.check_replacements([dead, make("product/land/workflow/a")], [])
 

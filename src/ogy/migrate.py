@@ -8,16 +8,19 @@ renamed as `ogy move` renames it. Nothing is recorded: Git keeps the old names a
 
 from dataclasses import dataclass, field
 
+from atomic_io import atomic_write_text
+
 from ogy import built, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
-from ogy.kindchange import Change, Kept, changes, moved_table
+from ogy.kindchange import Change, Kept, before, changes, moved_table
 from ogy.model import Address
 from ogy.moves import renamer
 from ogy.relocate import rename_all
-from ogy.snapshot import Snapshot
+from ogy.retype import Retype, applied, retype
+from ogy.snapshot import Snapshot, build, kb_paths
 from ogy.target import Target
-from ogy.writes import commit
+from ogy.writes import commit, files
 
 
 @dataclass(frozen=True)
@@ -27,11 +30,14 @@ class Migrated:
     built: list[str]  # built lines re-set
     files: list[str]
     moved: list[tuple[Address, Address]] = field(default_factory=list)  # out of a fixed folder their kind moved out of
+    retyped: list[tuple[str, str]] = field(default_factory=list)  # files under a renamed kind: (old path, new path)
 
     def lines(self) -> list[str]:
-        if not self.changes and not self.moved:
+        if not self.changes and not self.moved and not self.retyped:
             return ["nothing to migrate"]
-        out = [f"renamed {c.address} {c.field} to {c.new}" if c.new else f"dropped {c.address} {c.field} (it held {c.value!r}): "
+        out = [f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}"
+               for old, new in self.retyped]
+        out += [f"renamed {c.address} {c.field} to {c.new}" if c.new else f"dropped {c.address} {c.field} (it held {c.value!r}): "
                "the owner sees this entry as changed" for c in self.changes]
         out += [f"moved {old} to {new}: `ogy move` it to the area that uses it" for old, new in self.moved]
         out += [f"kept the agreement current: {address}" for address in self.agreed]
@@ -86,23 +92,48 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
     return moved
 
 
+def _retyped(target: Target) -> tuple[dict[str, str | None], Snapshot | None, list[tuple[str, str]]]:
+    """The files the kind renames change, the knowledge base as it was under the old kind names (None when no kind was renamed)
+    and each changed file as (old path, new path)."""
+    ontology, raw = target.kinds(), files(target)
+    changed = retype(ontology, raw)
+    if not changed:
+        return {}, None, []
+    work, gone = Retype(ontology), [rel for rel, text in changed.items() if text is None]
+    pairs = [(rel, work.path(rel)) for rel in gone] + [(rel, rel) for rel in changed if changed[rel] is not None and rel in raw]
+    return changed, build(before(ontology), {rel: raw[rel] for rel in kb_paths(raw)}), sorted(pairs)
+
+
+def _write(target: Target, changed: dict[str, str | None]) -> None:
+    root = target.repo / target.kb
+    for rel, text in changed.items():
+        if text is None:
+            (root / rel).unlink()
+        else:
+            (root / rel).parent.mkdir(parents=True, exist_ok=True)
+            atomic_write_text(root / rel, text)
+
+
 def migrate(target: Target) -> Migrated:
     """Write the migration of the worktree (the lock is held); refuses, writing nothing, when it leaves a new error."""
-    editor = Editor(target.repo, target.kb, target.kinds())
-    snapshot = editor.snapshot()
+    retyped, was, pairs = _retyped(target)
+    ontology, work = target.kinds(), Retype(target.kinds())
+    now = applied(ontology, files(target))
+    snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
     root, homes = target.repo / target.kb, snapshot.ontology.moved_homes()
     table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
                                          if (root / old / removed.FILE).is_file()}}
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
-    if not found and not table and not tidied:
+    if not found and not table and not tidied and not retyped:
         return Migrated([], [], [], [])
-    kept = Kept(snapshot)
+    kept = Kept(snapshot, was, lambda text: work.address(text, back=True))
     agreed = _agreements(snapshot, kept)
     lines: list[str] = []
     moved: list[tuple[Address, Address]] = []
 
     def act(ed: Editor) -> None:
+        _write(target, retyped)
         for address, entry in snapshot.entries.items():
             now = {**after.entries[address].fields, **({snapshot.ontology.roles.agreed: agreed[address]} if address in agreed else {})}
             update = {name: now.get(name) for name in {*entry.fields, *now} if now.get(name) != entry.fields.get(name)}
@@ -112,5 +143,6 @@ def migrate(target: Target) -> Migrated:
         moved.extend(_rehome(ed, target, snapshot, table) if table else [])
 
     touched = sorted({change.address for change in found} | set(agreed) | set(tidied))
-    files = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, renamer(table))
-    return Migrated(found, sorted(agreed), lines, files, moved)
+    names = renamer(table) if table else work.address
+    written = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, names)
+    return Migrated(found, sorted(agreed), lines, written, moved, pairs)

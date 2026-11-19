@@ -1,6 +1,6 @@
 kind: screen
 about: how a person reaches a stage
-shape: entity
+shape: file
 sentence: tells
 layers: [tech]
 needs_proof: true

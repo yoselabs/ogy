@@ -61,10 +61,10 @@ class Kb:
         return home
 
     def findings(self, evidence: bool = False, landing: bool = False, started: bool = False) -> set[tuple[Problem, str]]:
-        """The findings; `no-evidence` only with `evidence=True` and `orphan` (nothing starts a workflow) only with
+        """The findings; `no-evidence` only with `evidence=True` and `never-started` (nothing starts a workflow) only with
         `started=True`, so a test of one rule does not carry a `src` on every entry or a root for every workflow."""
         found = check(self.snapshot, self.source, landing=landing)
-        hidden = {problem for problem, shown in ((Problem.NO_EVIDENCE, evidence), (Problem.ORPHAN, started)) if not shown}
+        hidden = {problem for problem, shown in ((Problem.NO_EVIDENCE, evidence), (Problem.NEVER_STARTED, started)) if not shown}
         return {(item.problem, str(item.address) if item.address else item.path) for item in found if item.problem not in hidden}
 
 

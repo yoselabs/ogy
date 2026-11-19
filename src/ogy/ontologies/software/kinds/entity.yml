@@ -1,7 +1,7 @@
 kind: entity
 about: a thing the product keeps facts about; its attributes and, when it has one, its lifecycle
 guidance: "A thing the product keeps facts about: its attributes, and states and transitions when the product records moves and reacts to them. A closed list of words is a set; a number someone decides is a value."
-shape: entity
+shape: file
 sentence: says
 layers: [product, software]
 needs_proof: true

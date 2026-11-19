@@ -1,7 +1,7 @@
 kind: operation
 about: the code unit that performs the rows that have an effect, using externals
 guidance: "The code unit that performs the rows that have an effect, using externals. A view or a command serves a step to an actor; an operation does the work behind the row. One operation may perform several rows."
-shape: entity
+shape: file
 sentence: says
 layers: [software]
 needs_proof: true
