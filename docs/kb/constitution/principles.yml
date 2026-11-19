@@ -16,6 +16,18 @@
     hash: d4a70ec388eb
 - id: layers-split-business-from-technical
   says: 'What the business decides is kept apart from how it is built: a business fact lives in the product layer, a build fact in the software layer.'
+  agreed:
+    at: '2026-11-19T19:11:42+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
+    hash: d9c979d95e10
 - id: rigid-where-checked
   says: A fact that a check, work left or impact reads is a field or a link; a fact only a reader needs is text on its entry.
   why: An all-rigid model grows as detailed as code and lags behind it; text that a check needs is a second, unchecked spec. Each fact takes the cheapest form that still lets the checks read it.
+  agreed:
+    at: '2026-11-19T19:11:42+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    from: human
+    said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
+    hash: 8ea41892be00

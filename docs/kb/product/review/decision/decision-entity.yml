@@ -18,3 +18,9 @@ options:
 guess:
   chose: keep
   why: Kept until the owner answers.
+answers:
+- chose: trim
+  said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
+  from: human
+  at: '2026-11-19T19:11:42+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
