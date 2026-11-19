@@ -1,0 +1,22 @@
+structure: true
+question: Does the owner agree to a workflow or an entity once, on one card that lists its steps, ends, states and attributes?
+context: 'Fable review 2026-11-19: about 46 of 63 waiting cards were parts of about 14 parents.'
+options:
+  parent:
+    label: One card per parent, its parts listed on it; one yes covers them
+    sets:
+      product/review/rule/one-card-per-parent:
+        says: A workflow or an entity is one review card that lists its parts; one yes agrees to the parent and every part.
+  part:
+    label: One card per part
+    sets:
+      product/review/rule/one-card-per-parent:
+guess:
+  chose: parent
+  why: The owner's time is the scarce thing.
+answers:
+- chose: parent
+  said: "Owner chose Fable's recommendations: Q1 a, Q2 a, Q3 a"
+  from: human
+  at: '2026-11-19T19:03:39+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

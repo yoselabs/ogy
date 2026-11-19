@@ -1,0 +1,15 @@
+question: May a capability stand with no workflow, so the one-step workflow inspect-kb goes?
+context: 'Fable review 2026-11-19: inspect-kb has one step, an agent reads, and exists only so the capability inspect has a workflow.'
+options:
+  remove:
+    label: Yes; remove inspect-kb, a capability needs no workflow
+    sets:
+      product/inspection/workflow/inspect-kb:
+  keep:
+    label: No; keep the workflow
+    sets:
+      product/inspection/workflow/inspect-kb:
+        says: An agent reads the knowledge base without changing it.
+guess:
+  chose: keep
+  why: Kept until the owner answers.
