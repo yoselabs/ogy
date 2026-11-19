@@ -1,0 +1,122 @@
+format: 1
+items:
+  - id: product/removal/entity/removed-item/attr/at
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 3
+    title:
+    said: When it was removed.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:27+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 39c4964fb8a1
+    ontology: software
+    snapshot:
+      type: time
+      says: When it was removed.
+  - id: product/removal/entity/removed-item/attr/hash
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 4
+    title:
+    said: Its fingerprint when it was removed.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:28+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 7103586f3afc
+    ontology: software
+    snapshot:
+      type: text
+      says: Its fingerprint when it was removed.
+  - id: product/removal/entity/removed-item/attr/id
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 0
+    title:
+    said: The removed address; no entry may take it again.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:29+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 6be4110df845
+    ontology: software
+    snapshot:
+      type: text
+      says: The removed address; no entry may take it again.
+  - id: product/removal/entity/removed-item/attr/last-seen
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 2
+    title:
+    said: The commit it was last seen in.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:30+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 258759d4a758
+    ontology: software
+    snapshot:
+      type: text
+      says: The commit it was last seen in.
+  - id: product/removal/entity/removed-item/attr/replaced-by
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 1
+    title:
+    said: The address that replaces it, when one does.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:31+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: bef7c20ec33b
+    ontology: software
+    snapshot:
+      type: one
+      says: The address that replaces it, when one does.
+      of: product/capture/entity/entry
+  - id: product/removal/entity/removed-item/attr/snapshot
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 1
+    title:
+    said: The entry as it was in its file, parts included.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:33+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: c7bbe6b24747
+    ontology: software
+    snapshot:
+      type: text
+      says: The entry as it was in its file, parts included.
+  - id: product/removal/entity/removed-item/attr/why
+    kind: attr
+    parent:
+      address: product/removal/entity/removed-item
+      key: attrs
+      position: 0
+    title:
+    said: The address of the decision that said so, or plain words.
+    why: 'Fable review 2026-11-19: the agreed rule removed-item-keeps-snapshot lists the same fields'
+    replaced_by:
+    at: 2026-11-19 18:01:34+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 338aee217af6
+    ontology: software
+    snapshot:
+      type: text
+      says: The address of the decision that said so, or plain words.

@@ -2,8 +2,6 @@ says: A write goes on only while no other ogy write holds the lock; a second wri
 on: product/capture/workflow/capture-entries/step/check
 when:
   text: no other ogy write holds the write lock
-  reads:
-  - software/storage/entity/write-lock
 else: product/capture/workflow/capture-entries/end/refused
 src:
 - code:src/ogy/writes.py#locked

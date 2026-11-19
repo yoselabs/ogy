@@ -86,3 +86,60 @@ items:
           label: No rule lists the areas; the folders of the tree are the list
           sets:
             software/storage/rule/areas-by-topic:
+  - id: software/storage/entity/write-lock
+    kind: entity
+    parent:
+    title:
+    said: The file ogy.lock in the Git directory that one ogy write holds at a time.
+    why: 'Fable review 2026-11-19: restates writes.py#locked; the guard write-lock-free holds the rule'
+    replaced_by:
+    at: 2026-11-19 18:01:16+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: e8a1e5e522a2
+    ontology: software
+    snapshot:
+      says: The file ogy.lock in the Git directory that one ogy write holds at a time.
+      src:
+      - code:src/ogy/writes.py#locked
+      states:
+        free:
+          says: No write holds the lock.
+        held:
+          says: One write holds it; another write is refused.
+      transitions:
+        acquire:
+          from:
+          - free
+          to: held
+        release:
+          from:
+          - held
+          to: free
+  - id: software/storage/entity/built-line
+    kind: entity
+    parent:
+    title:
+    said: One line of a built file under built/, written by the tool when the proof of an entry passed.
+    why: 'Fable review 2026-11-19: nothing links to it; restates built.py#Line, the rule built-record-lives-under-built and the term built-record'
+    replaced_by:
+    at: 2026-11-19 18:01:25+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: ecf9d44a8e0f
+    ontology: software
+    snapshot:
+      says: One line of a built file under built/, written by the tool when the proof of an entry passed.
+      src:
+      - code:src/ogy/built.py#Line
+      attrs:
+        own:
+          type: text
+          says: 'The build hash of the entry that was proved: its fingerprint, proofs and what its kind reaches.'
+        deps:
+          type: list
+          says: The build hashes of the entries it depends on.
+        covers:
+          type: list
+          says: What the proof covers.
+        sourced:
+          type: list
+          says: The hash of each code or doc source it was captured from.

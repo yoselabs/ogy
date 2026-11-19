@@ -70,3 +70,37 @@ items:
         agreed:
           type: list
           says: The sentences and fingerprints this message agreed to.
+  - id: product/capture/entity/entry/attr/says
+    kind: attr
+    parent:
+      address: product/capture/entity/entry
+      key: attrs
+      position: 0
+    title:
+    said: The sentence the owner reads and agrees to.
+    why: "Fable review 2026-11-19: repeats the entity's sentence and the term; no check reads it"
+    replaced_by:
+    at: 2026-11-19 18:01:35+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: ec5d06b7ffbb
+    ontology: software
+    snapshot:
+      type: text
+      says: The sentence the owner reads and agrees to.
+  - id: product/capture/entity/entry/attr/src
+    kind: attr
+    parent:
+      address: product/capture/entity/entry
+      key: attrs
+      position: 0
+    title:
+    said: 'Where the sentence came from: code: links or doc: links.'
+    why: "Fable review 2026-11-19: repeats the entity's sentence and the term; no check reads it"
+    replaced_by:
+    at: 2026-11-19 18:01:37+00:00
+    last_seen: 0ce1c89878094f39551e6da242aa4d36e7058a95
+    hash: 2a600521f0c6
+    ontology: software
+    snapshot:
+      type: list
+      says: 'Where the sentence came from: code: links or doc: links.'

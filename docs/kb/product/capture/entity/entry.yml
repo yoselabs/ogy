@@ -1,13 +1,7 @@
 says: 'What the product keeps of an entry: its sentence, its sources and whether the owner agreed to the sentence now on it, computed.'
 src:
 - code:src/ogy/status.py#Status
-attrs:
-  says:
-    type: text
-    says: The sentence the owner reads and agrees to.
-  src:
-    type: list
-    says: 'Where the sentence came from: code: links or doc: links.'
+attrs: {}
 states:
   nobody-agreed:
     says: No person agreed to the sentence yet.

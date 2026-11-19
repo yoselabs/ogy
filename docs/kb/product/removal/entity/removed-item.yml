@@ -1,26 +1,4 @@
 says: One removed entry in the removed.yml of its area, appended once and never edited.
 src:
 - code:src/ogy/removed.py#Item
-attrs:
-  id:
-    type: text
-    says: The removed address; no entry may take it again.
-  why:
-    type: text
-    says: The address of the decision that said so, or plain words.
-  replaced-by:
-    type: one
-    says: The address that replaces it, when one does.
-    of: product/capture/entity/entry
-  at:
-    type: time
-    says: When it was removed.
-  last-seen:
-    type: text
-    says: The commit it was last seen in.
-  hash:
-    type: text
-    says: Its fingerprint when it was removed.
-  snapshot:
-    type: text
-    says: The entry as it was in its file, parts included.
+attrs: {}
