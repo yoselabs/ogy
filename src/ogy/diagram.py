@@ -15,7 +15,7 @@ def node(address: Address) -> str:
 def label(snapshot: Snapshot, row: Address, flow: Flow) -> str:
     fields = snapshot.entries[row].fields
     when = fields.get(flow.when)
-    text = fields.get("label") or (when.get("text") if isinstance(when, dict) else None) or row.key or row.kind
+    text = snapshot.sentence(row) or (when.get("text") if isinstance(when, dict) else None) or row.key or row.kind
     return str(text).replace('"', "'")
 
 

@@ -38,7 +38,7 @@ def pages(snapshot: Snapshot, source: str, area: str | None = None) -> list[Page
     wanted, count, hashes = SOURCES[source], dependants(snapshot), agreed_hashes(snapshot)
     groups: dict[str, list[Card]] = {}
     for address in snapshot.entries:
-        if "says" not in snapshot.kind_of(address).fields:
+        if not snapshot.ontology.carded(snapshot.kind_of(address)):
             continue
         if area not in (None, address.area) or status(snapshot, address, hashes) is not Status.NOBODY:
             continue

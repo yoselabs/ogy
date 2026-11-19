@@ -153,6 +153,24 @@ class Settling(BaseModel):
     note: str
     delegated: str
     heard: str  # the part of a guess: what the owner said that it rests on
+    context: str  # field of the settling kind: why the question comes up, so its card reads on its own
+    why: str  # field of the guess: the reason for it
+
+
+class Glossary(BaseModel):
+    """Makes a kind the glossary: its entries are the words of the product's one language, its sentence what a word means."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    word: str  # the field holding the word people say
+    avoid: str  # the field listing words never used for it: a sentence that uses one is `avoided-word`
+    words: int  # its sentence has fewer words than this (`term-too-long`)
+
+
+class PrintedFirst(BaseModel):
+    """Makes a kind what every agent reads first, whole, before the glossary (the constitution)."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    also: str | None = None  # a field printed under the sentence
 
 
 class Flow(BaseModel):
@@ -195,6 +213,7 @@ class Kind(BaseModel):
     kind: str
     about: str
     guidance: str | None = None  # how to decide: when to use this kind rather than its neighbours (`ogy kinds <kind>`)
+    sentence: str | None = None  # the field that holds what an entry says: what a card shows, a search finds, a person agrees to
     shape: Shape
     layers: tuple[str, ...] = ()  # the layer folders this kind may appear in (the folder is the layer's only home)
     area: str | None = None  # entries live only in this fixed folder (the constitution), outside every layer
@@ -210,6 +229,8 @@ class Kind(BaseModel):
     evidence: Evidence | None = None
     holds: Holds | None = None
     settling: Settling | None = None
+    glossary: Glossary | None = None
+    printed_first: PrintedFirst | None = None
     fields: dict[str, FieldSpec] = {}
     part_of: tuple[str, ...] = ()  # an inline kind's parent kinds
     key: str | None = None  # an inline part's key inside the parent entry

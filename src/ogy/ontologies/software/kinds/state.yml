@@ -2,6 +2,7 @@ kind: state
 about: one state of an entity's lifecycle; first and last states are computed from the transitions
 guidance: "A lifecycle state of an entity: a recorded move the product reacts to. A fact that only changes an outcome is an attribute; different permitted actions make an actor, not a state."
 shape: inline
+sentence: says
 part_of: entity
 key: states
 fields:

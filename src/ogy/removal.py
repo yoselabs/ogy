@@ -1,7 +1,7 @@
 """`ogy remove`: delete an entry or a part, and append its item (envelope and snapshot) to its area's removed ledger."""
 
 import datetime
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from pathlib import Path
 
 from ogy import removed
@@ -50,9 +50,13 @@ def snapshot_problems(base: Snapshot, item: Item) -> list[str]:
         found.append("snapshot differs from the entry in the base")
     if item.hash != base.fingerprint(address):
         found.append(f"hash is not the fingerprint {base.fingerprint(address)}")
-    if item.title != shot.get(base.ontology.roles.title) or item.said != (shot.get("says") or shot.get("question")):
+    if item.title != shot.get(base.ontology.roles.title) or item.said != _said(base.kind_of(address).sentence, shot):
         found.append("title or said differs from the snapshot")
     return found
+
+
+def _said(sentence: str | None, fields: Mapping[str, object]) -> object:
+    return fields.get(sentence) if sentence else None
 
 
 def known_addresses(snapshot: Snapshot) -> list[str]:
@@ -90,7 +94,7 @@ def build_item(snapshot: Snapshot, address: Address, why: str | None, replaced_b
     if parent is not None:
         siblings = [a for a in snapshot.entries if a.parent() == parent and a.kind == address.kind]
         where = Parent(str(parent), snapshot.kind_of(address).key or "", siblings.index(address))
-    title, says = fields.get(snapshot.ontology.roles.title), fields.get("says") or fields.get("question")
+    title, says = fields.get(snapshot.ontology.roles.title), _said(snapshot.kind_of(address).sentence, fields)
     return Item(str(address), address.kind, where, title if isinstance(title, str) else None, says if isinstance(says, str) else None,
                 why, replaced_by, at, last_seen, snapshot.fingerprint(address), ontology,
                 entry_snapshot(snapshot, address))

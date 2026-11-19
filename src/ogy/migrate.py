@@ -12,7 +12,6 @@ from ogy import built, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
 from ogy.kindchange import Change, Kept, changes, moved_table
-from ogy.kinds import Shape
 from ogy.model import Address
 from ogy.moves import renamer
 from ogy.relocate import rename_all
@@ -73,11 +72,11 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
         new = Address(home.layer, home.area, address.path)
         ed.relocate(address, new.home)
         moved.append((address, new))
-    area = next(kind for kind in snapshot.ontology.kinds.values() if kind.every_area and kind.shape is Shape.SINGLE)
-    for home in table.values():
-        here = Address(home.layer, home.area, ((area.kind, snapshot.ontology.shared),))
+    area = snapshot.ontology.area_kind()
+    homes = [Address(home.layer, home.area, ((area.kind, snapshot.ontology.shared),)) for home in table.values()] if area else []
+    for here in homes:
         if here not in snapshot.entries:
-            ed.put(here, {"says": snapshot.ontology.declared.shared.says})
+            ed.put(here, snapshot.ontology.shared_fields())
     rename_all(ed, target, snapshot, table)
     root = target.repo / target.kb
     for old, new in table.items():

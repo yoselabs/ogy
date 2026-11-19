@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from ogy.declared import Reader, Scheme
 from ogy.links import link_items, resolve
-from ogy.model import Address
+from ogy.model import Address, parse_address
 from ogy.settle import Decision, decision_of, decisions, moment, settles
 from ogy.snapshot import Snapshot
 
@@ -163,27 +163,28 @@ def _reason(decision: Decision) -> str:
     if decision.answers:
         return ""
     fields = decision.guess.fields if decision.guess and not decision.heard else {}
-    value = fields.get("why")
+    value = fields.get(decision.names.why)
     return f"AI guess because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
 
 def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], kind: str) -> Card:
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
     tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=snapshot.ontology.declared.rank)
-    force = decision.in_force
-    guess = force.option if decision.answers and force else decision.guess.fields.get("chose") if decision.guess else None
+    force, names = decision.in_force, decision.names
+    guess = force.option if decision.answers and force else decision.guess.fields.get(names.chose) if decision.guess else None
     keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
-    said = decision.heard.fields.get("said") if decision.heard and not decision.answers else None
-    parts = [snapshot.entries[decision.address.part("option", key)].fields for key in keys]
-    options = tuple((key, str(fields.get("label", key))) for key, fields in zip(keys, parts, strict=True))
+    said = decision.heard.fields.get(names.said) if decision.heard and not decision.answers else None
+    addresses = [decision.address.part(names.option, key) for key in keys]
+    options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
-                decision.entry.text("question") or "", guess if isinstance(guess, str) else "",
+                snapshot.sentence(decision.address) or "", guess if isinstance(guess, str) else "",
                 snapshot.fingerprint(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
-                context=decision.entry.text("context") or "", then=tuple(_then(fields.get("sets")) for fields in parts),
+                context=decision.entry.text(names.context) or "",
+                then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
                 earlier=_earlier(decision) if kind == "delegated" else "", alone=asked_alone(snapshot, tags[0] if tags else None))
 
 
-def _then(sets: object) -> tuple[str, ...]:
+def _then(snapshot: Snapshot, sets: object) -> tuple[str, ...]:
     """What an option makes true, one line per entry it sets: its sentence, its other fields, or that it does not exist."""
     if not isinstance(sets, dict):
         return ()
@@ -192,8 +193,11 @@ def _then(sets: object) -> tuple[str, ...]:
         if not isinstance(fields, dict):
             lines.append(f"{target} does not exist")
             continue
-        says = fields.get("says")
-        rest = ", ".join(f"{name} = {value}" for name, value in fields.items() if name != "says")
+        address = parse_address(str(target), snapshot.ontology)
+        kind = snapshot.ontology.get(address.kind) if address else None
+        sentence = kind.sentence if kind else None
+        says = fields.get(sentence) if sentence else None
+        rest = ", ".join(f"{name} = {value}" for name, value in fields.items() if name != sentence)
         lines.append(f"{target}: {says}" if isinstance(says, str) else f"{target}")
         if rest:
             lines[-1] += ("; " if isinstance(says, str) else ": ") + rest
@@ -211,7 +215,7 @@ def _earlier(decision: Decision) -> str:
 
 
 def _says(snapshot: Snapshot, address: Address) -> str:
-    return snapshot.entries[address].text("says") or ""
+    return snapshot.sentence(address) or ""
 
 
 def evidence(snapshot: Snapshot, address: Address) -> str:
@@ -230,10 +234,10 @@ def evidence(snapshot: Snapshot, address: Address) -> str:
 
 
 def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Address, int]) -> Card:
-    """A `yes` or `changed` card; a term shows its word, its meaning and the words it is not."""
-    fields = snapshot.entries[address].fields
-    avoid = fields.get("avoid") or []
-    word = str(fields.get("word") or "") if address.kind == "term" else ""
+    """A `yes` or `changed` card; a word of the glossary shows its word, its meaning and the words it is not."""
+    fields, glossary = snapshot.entries[address].fields, snapshot.kind_of(address).glossary
+    avoid = fields.get(glossary.avoid) or [] if glossary else []
+    word = str(fields.get(glossary.word) or "") if glossary else ""
     tag = harm(snapshot, address)
     return Card(kind, address, tag, count.get(address, 0), _says(snapshot, address), alone=asked_alone(snapshot, tag),
                 fingerprint=snapshot.fingerprint(address), evidence=evidence(snapshot, address), word=word,
@@ -248,7 +252,7 @@ def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
                  for decision in decisions(snapshot) if not decision.answers or delegated(decision)]
     cards: list[Card] = []
     for address in snapshot.entries:
-        if "says" not in snapshot.kind_of(address).fields or not snapshot.kind_of(address).asked:
+        if not snapshot.kind_of(address).asked or not snapshot.ontology.carded(snapshot.kind_of(address)):
             continue
         match status(snapshot, address, hashes):
             case Status.CHANGED:

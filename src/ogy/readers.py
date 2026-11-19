@@ -3,27 +3,39 @@
 
 Most readers come from the kind files themselves: the fingerprint (when something compares it), the paths of `requires`
 and `fingerprint.also`, `exactly_one_of` and `one_part`, the names `flow:` and `settling:` give, link resolution and impact
-(every link, links and expr field), and the review rank (`harm`). The checks and printers that read a field by its name are
-`NAMED` below, kept in step with their code. `ogy show` prints every field and is no reader."""
+(every link, links and expr field), and the review rank (`harm`). The checks and printers that read a field by its name follow
+from the roles the kinds declare (`named`): the sentence, the glossary, the printed-first kind, the settling names. `ogy show`
+prints every field and is no reader."""
 
 from collections.abc import Iterable
 
 from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement
 from ogy.ontology import Ontology
-from ogy.terms import TEXT_FIELDS
 
-# field, or kind.field -> the checks and printers that read it by name
-NAMED: dict[str, tuple[str, ...]] = {
-    **dict.fromkeys(TEXT_FIELDS, ("check avoided-word",)),  # the avoided-word check reads every text field
-    "says": ("check avoided-word", "check duplicate-says", "printer review"),
-    "question": ("check avoided-word", "printer review"),
-    "label": ("check avoided-word", "printer review", "printer diagram"),
-    "guess.why": ("check avoided-word", "printer review"),
-    "principle.why": ("check avoided-word", "printer glossary"),
-    "term.word": ("check word-clash", "printer glossary"),
-    "term.says": ("check term-too-long", "printer glossary"),
-    "term.avoid": ("check avoided-word", "check word-clash", "printer glossary"),
-}
+AVOIDED, REVIEW, GLOSSARY = "check avoided-word", "printer review", "printer glossary"
+
+
+def named(ontology: Ontology) -> dict[str, set[str]]:
+    """field, or kind.field -> the checks and printers that read it by name, from the roles the kinds declare."""
+    found: dict[str, set[str]] = {name: {AVOIDED} for name in ontology.texts()}  # the avoided-word check reads every text field
+
+    def add(key: str, *readers: str) -> None:
+        found.setdefault(key, set()).update(readers)
+
+    for kind in ontology.kinds.values():
+        if kind.sentence is not None:
+            add(kind.sentence, AVOIDED, REVIEW, *(["check duplicate-says"] if ontology.carded(kind) else []))
+        if kind.flow is not None and (row := ontology.get(kind.flow.choice)) is not None and row.sentence:
+            add(f"{row.kind}.{row.sentence}", "printer diagram")
+        if (names := kind.settling) is not None:
+            add(f"{names.guess}.{names.why}", AVOIDED, REVIEW)
+        if (printed := kind.printed_first) is not None and printed.also:
+            add(f"{kind.kind}.{printed.also}", AVOIDED, GLOSSARY)
+        if (glossary := kind.glossary) is not None:
+            add(f"{kind.kind}.{glossary.word}", "check word-clash", GLOSSARY)
+            add(f"{kind.kind}.{kind.sentence}", "check term-too-long", GLOSSARY)
+            add(f"{kind.kind}.{glossary.avoid}", AVOIDED, "check word-clash", GLOSSARY)
+    return found
 
 type Reads = dict[tuple[str, str], set[str]]
 
@@ -90,11 +102,12 @@ def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
                 _mark(found, part, field, "settling", kinds)
 
 
-def _compared(kinds: dict[str, Kind], reached: set[str]) -> set[str]:
+def _compared(ontology: Ontology, reached: set[str]) -> set[str]:
     """The kinds whose fingerprint the work or an agreement compares: built (needs proof), agreed (asked, with a sentence),
     reached by a path; a list or one part is inside its parent's. Telling a move from a loss compares every fingerprint, for
     identity, not meaning: it is no reader."""
-    own = {n for n, k in kinds.items() if k.needs_proof or (k.asked and "says" in k.fields) or k.must_be_agreed or n in reached}
+    kinds = ontology.kinds
+    own = {n for n, k in kinds.items() if k.needs_proof or (k.asked and ontology.carded(k)) or k.must_be_agreed or n in reached}
     inside = {n for n, k in kinds.items() if k.holding in (Holds.LIST, Holds.ONE) and k.part_of and set(k.part_of) & own}
     return own | inside | ({n for n, k in kinds.items() if k.holding is Holds.ONE and set(k.part_of) & inside})
 
@@ -115,10 +128,10 @@ def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
         if kind.flow is not None:
             _flow(found, kinds, name, kind.flow)
     _settling(found, kinds)
-    compared = _compared(kinds, reached)
+    compared, by_name = _compared(ontology, reached), named(ontology)
     for name, kind in kinds.items():
         for field, spec in kind.fields.items():
-            extra = [item for item in (*NAMED.get(field, ()), *NAMED.get(f"{name}.{field}", ())) if kind.asked or item != "printer review"]
+            extra = [item for item in (*by_name.get(field, ()), *by_name.get(f"{name}.{field}", ())) if kind.asked or item != REVIEW]
             extra += ["fingerprint"] if not spec.note and name in compared else []
             extra += ["links and impact"] if spec.type in LINKING else []
             extra += ["review rank (harm)"] if spec.harm else []

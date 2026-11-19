@@ -12,7 +12,6 @@ from ogy.snapshot import Snapshot
 from ogy.status import Status, agreed_hashes, status
 from ogy.verdict import NotFound
 
-SENTENCE = ("says", "question", "label", "word")
 REMOVED = "removed"
 STATES = {Status.QUESTION: "question", Status.CHANGED: "changed", Status.BY_YOU: "you", Status.NOBODY: "nobody"}
 
@@ -38,11 +37,11 @@ def _live(snapshot: Snapshot, parent: str | None, cites: Address | None) -> list
             continue
         if parent is not None and str(address.parent()) != parent:
             continue
-        says = next((text for name in (*SENTENCE, snapshot.ontology.roles.title) if (text := entry.text(name))), "")
+        says = snapshot.sentence(address) or entry.text(snapshot.ontology.roles.title) or ""
         if address in asked:
             state = "question" if not asked[address].answers else "you"
         else:
-            state = STATES[status(snapshot, address, hashes)] if "says" in snapshot.kind_of(address).fields else ""
+            state = STATES[status(snapshot, address, hashes)] if snapshot.ontology.carded(snapshot.kind_of(address)) else ""
         rows.append(Found(str(address), address.kind, state, says))
     return rows
 

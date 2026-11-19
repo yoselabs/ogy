@@ -39,7 +39,7 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         found += _migration(declared, name, kind) + _moved(name, kind)
     found += _files(kinds)
     found += _keys(kinds, declared)
-    found += _settling(kinds)
+    found += _settling(kinds) + _roles(kinds)
     found += _link_direction(kinds)
     return found
 
@@ -222,8 +222,27 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
              if item not in kinds]
     wanted = [(settling.option, settling.sets), (settling.answer, settling.chose), (settling.answer, settling.said),
               (settling.answer, settling.at), (settling.answer, settling.where),
-              (settling.guess, settling.chose), (settling.guess, settling.value)]
+              (settling.guess, settling.chose), (settling.guess, settling.value), (name, settling.context),
+              (settling.guess, settling.why)]
     found += [f"{name}: settling names no field {kind}.{field}" for kind, field in wanted if not _field_of(kinds, kind, field)]
+    return found
+
+
+def _roles(kinds: Mapping[str, Kind]) -> list[str]:
+    """A sentence is a text field of its kind; the glossary and the printed-first kind are one kind each, with a sentence, and
+    name their own fields."""
+    found = [f"{name}: sentence {kind.sentence} is no text field" for name, kind in kinds.items() if kind.sentence is not None
+             and (kind.sentence not in kind.fields or kind.fields[kind.sentence].type is not FieldType.TEXT)]
+    glossary = [(name, kind, kind.glossary) for name, kind in kinds.items() if kind.glossary]
+    printed = [(name, kind, kind.printed_first) for name, kind in kinds.items() if kind.printed_first]
+    found += ["at most one kind is the glossary"] if len(glossary) > 1 else []
+    found += ["at most one kind is printed first"] if len(printed) > 1 else []
+    for name, kind, role in glossary:
+        found += [f"{name}: glossary names no field {field}" for field in (role.word, role.avoid) if field not in kind.fields]
+        found += [f"{name}: the glossary kind names its sentence"] if kind.sentence is None else []
+    for name, kind, role in printed:
+        found += [f"{name}: printed_first names no field {role.also}"] if role.also and role.also not in kind.fields else []
+        found += [f"{name}: the printed-first kind names its sentence"] if kind.sentence is None else []
     return found
 
 

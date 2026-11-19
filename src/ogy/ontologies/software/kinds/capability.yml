@@ -3,6 +3,7 @@ about: something the product can do, decided before its workflows
 guidance: "Something the product can do, named before its workflows; a workflow realizes it. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
 harm: [who-is-allowed]
 shape: list
+sentence: says
 file: capabilities.yml
 layers: [product]
 fields:

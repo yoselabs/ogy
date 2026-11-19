@@ -108,9 +108,9 @@ def starts(ontology: Ontology) -> dict[str, str]:
     """The files a new knowledge base starts with: each fixed folder's list, empty, and the entry of the shared area of the
     first layer."""
     found = {f"{kind.area}/{kind.file}": "[]\n" for kind in ontology.kinds.values() if kind.area and kind.shape is Shape.LIST}
-    area = next((kind for kind in ontology.kinds.values() if kind.every_area and kind.shape is Shape.SINGLE), None)
+    area = ontology.area_kind()
     if area is not None and ontology.layers:
-        found[f"{ontology.layers[0]}/{ontology.shared}/{area.file}"] = any_yaml.dump({"says": ontology.declared.shared.says})
+        found[f"{ontology.layers[0]}/{ontology.shared}/{area.file}"] = any_yaml.dump(ontology.shared_fields())
     return found
 
 

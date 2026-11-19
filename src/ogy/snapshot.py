@@ -66,6 +66,11 @@ class Snapshot:
             raise KeyError(address.kind)
         return kind
 
+    def sentence(self, address: Address) -> str | None:
+        """What the entry says: the field its kind names as its sentence."""
+        name = self.kind_of(address).sentence
+        return self.entries[address].text(name) if name else None
+
     def fingerprint(self, address: Address) -> str:
         """The meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements, review cards and removed
         items hold it, so a new proof or a changed dependency never sends an entry back to the owner."""

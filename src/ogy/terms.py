@@ -1,5 +1,6 @@
-"""The glossary: the terms of every area's `glossary.yml`, the shared ones in the area `shared` of a layer. T1-T3 are pure data
-checks, T4 and T5 take what another module computed, T6 reads the decisions, `glossary_lines` prints it.
+"""The glossary: the entries of the kind that declares `glossary:` (the terms of every area's `glossary.yml`, the shared ones in
+the shared area of a layer). Its word, sentence and avoid fields and the word limit are the ones that kind names. T1-T3 are pure
+data checks, T4 and T5 take what another module computed, T6 reads the decisions, `glossary_lines` prints it.
 
 `check_term_agreement` computes T4 and T5 from the agreement and status of each term.
 """
@@ -7,21 +8,26 @@ checks, T4 and T5 take what another module computed, T6 reads the decisions, `gl
 import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
+from ogy.kinds import Glossary
 from ogy.model import Address, Entry, Finding, Problem, link_values
 from ogy.settle import decisions
 from ogy.snapshot import Snapshot
 from ogy.source import Source
 from ogy.status import Agreement, Status, agreed_hashes, agreement, status
 
-TERM = "term"
-TERM_WORDS = 15  # a term's `says` has fewer words than this
-TEXT_FIELDS = frozenset({"says", "title", "question", "label", "context", "why"})
 _CODE = re.compile(r"`[^`]*`")
 _WORD = re.compile(r"[a-z0-9]+")  # ids split at - and _ too
 
 
 def terms(snapshot: Snapshot) -> list[Entry]:
-    return [entry for address, entry in sorted(snapshot.entries.items()) if address.kind == TERM]
+    kind = snapshot.ontology.glossary_kind()
+    return [entry for address, entry in sorted(snapshot.entries.items()) if kind and address.kind == kind.kind]
+
+
+def role(snapshot: Snapshot) -> tuple[Glossary, str] | None:
+    """The glossary role and the sentence field of the glossary kind."""
+    kind = snapshot.ontology.glossary_kind()
+    return (kind.glossary, kind.sentence) if kind and kind.glossary and kind.sentence else None
 
 
 def agreeable(snapshot: Snapshot) -> list[Entry]:
@@ -33,17 +39,17 @@ def _words(text: str) -> list[str]:
     return _WORD.findall(_CODE.sub(" ", text).lower())
 
 
-def _texts(value: object) -> Iterator[str]:
-    """Agent-written texts of an entry, parts held in its fields included."""
+def _texts(value: object, names: frozenset[str]) -> Iterator[str]:
+    """Agent-written texts of an entry (the fields `names`), parts held in its fields included."""
     if isinstance(value, Mapping):
         for key, item in value.items():
-            if key in TEXT_FIELDS and isinstance(item, str):
+            if key in names and isinstance(item, str):
                 yield item
             else:
-                yield from _texts(item)
+                yield from _texts(item, names)
     elif isinstance(value, list):
         for item in value:
-            yield from _texts(item)
+            yield from _texts(item, names)
 
 
 def _contains(words: list[str], phrase: list[str]) -> bool:
@@ -51,62 +57,68 @@ def _contains(words: list[str], phrase: list[str]) -> bool:
     return bool(phrase) and any(words[at:at + size] == phrase for at in range(len(words) - size + 1))
 
 
-def _word(entry: Entry) -> str:
-    return (entry.text("word") or "").strip().lower()
+def _word(glossary: Glossary, entry: Entry) -> str:
+    return (entry.text(glossary.word) or "").strip().lower()
 
 
-def _avoided(snapshot: Snapshot, entries: list[Entry]) -> list[Finding]:
-    avoided = {item: _words(item) for entry in entries for item in link_values(entry.fields.get("avoid"))}
+def _avoided(snapshot: Snapshot, glossary: Glossary, entries: list[Entry]) -> list[Finding]:
+    avoided = {item: _words(item) for entry in entries for item in link_values(entry.fields.get(glossary.avoid))}
+    names = snapshot.ontology.texts()
     found: list[Finding] = []
     for address, entry in snapshot.entries.items():
-        spoken = [_words(" ".join(key for _, key in address.path))] + [_words(text) for text in _texts(entry.fields)]
+        spoken = [_words(" ".join(key for _, key in address.path))] + [_words(text) for text in _texts(entry.fields, names)]
         for item, phrase in avoided.items():
             if any(_contains(words, phrase) for words in spoken):
                 found.append(Finding(Problem.AVOIDED_WORD, entry.path, f"avoided word {item!r}", address))
     return found
 
 
-def _compressed(entry: Entry) -> list[Finding]:
-    """T1: a term says what it means in one line of under 15 words."""
-    says = entry.text("says") or ""
-    if "\n" in says.strip() or len(says.split()) >= TERM_WORDS:
-        return [Finding(Problem.TERM_TOO_LONG, entry.path, f"a term says one line of under {TERM_WORDS} words, not {len(says.split())}",
+def _compressed(glossary: Glossary, sentence: str, entry: Entry) -> list[Finding]:
+    """T1: a term says what it means in one line of fewer words than the glossary's limit."""
+    says, limit = entry.text(sentence) or "", glossary.words
+    if "\n" in says.strip() or len(says.split()) >= limit:
+        kind = entry.address.kind
+        return [Finding(Problem.TERM_TOO_LONG, entry.path, f"a {kind} says one line of under {limit} words, not {len(says.split())}",
                         entry.address)]
     return []
 
 
-def _clashes(entries: list[Entry]) -> list[Finding]:
-    """T2: no two terms share a word; no `avoid` item is a term's word."""
+def _clashes(glossary: Glossary, entries: list[Entry]) -> list[Finding]:
+    """T2: no two terms share a word; no avoided item is a term's word."""
     found: list[Finding] = []
     seen: dict[str, Entry] = {}
     for entry in entries:
-        if (word := _word(entry)) in seen:
+        if (word := _word(glossary, entry)) in seen:
             found.append(Finding(Problem.WORD_CLASH, entry.path, f"word {word!r} is also the word of {seen[word].address}", entry.address))
         seen.setdefault(word, entry)
     for entry in entries:
-        for item in link_values(entry.fields.get("avoid")):
+        for item in link_values(entry.fields.get(glossary.avoid)):
             if (other := seen.get(item.strip().lower())) is not None:
-                found.append(Finding(Problem.WORD_CLASH, entry.path, f"avoid {item!r} is the word of {other.address}", entry.address))
+                found.append(Finding(Problem.WORD_CLASH, entry.path, f"{glossary.avoid} {item!r} is the word of {other.address}",
+                                     entry.address))
     return found
 
 
 def check_terms(snapshot: Snapshot, source: Source | None = None) -> list[Finding]:
     """T1, T2 and T3."""
+    if (found := role(snapshot)) is None:
+        return check_term_sets(snapshot)
+    glossary, sentence = found
     entries = terms(snapshot)
-    found = [problem for entry in entries for problem in _compressed(entry)]
-    return [*found, *_clashes(entries), *_avoided(snapshot, entries), *check_term_sets(snapshot)]
+    problems = [problem for entry in entries for problem in _compressed(glossary, sentence, entry)]
+    return [*problems, *_clashes(glossary, entries), *_avoided(snapshot, glossary, entries), *check_term_sets(snapshot)]
 
 
 def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
     """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or guess
     gives it fields: its words have one home, the term and its agreement."""
-    agreed = agreed_hashes(snapshot)
+    agreed, kind = agreed_hashes(snapshot), snapshot.ontology.glossary_kind()
     found: list[Finding] = []
     for decision in decisions(snapshot):
         for sets in decision.sets_all():
             for text, given in sets.items():
                 address = snapshot.resolve(text)
-                if address is not None and address.kind == TERM and text in agreed and given is not None:
+                if address is not None and kind and address.kind == kind.kind and text in agreed and given is not None:
                     found.append(Finding(Problem.AGREED_TERM_IN_SETS, decision.entry.path,
                                          f"{text} is agreed: a decision may only set it to null", decision.address))
     return found
@@ -140,13 +152,16 @@ def glossary_homes(snapshot: Snapshot, home: str | None = None) -> list[str]:
 def glossary_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
     """The terms for the terminal, under the home they live in (see `glossary_homes`)."""
     lines: list[str] = []
+    if (named := role(snapshot)) is None:
+        return lines
+    glossary, sentence = named
     for where in glossary_homes(snapshot, home):
-        found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=_word)
+        found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=lambda entry: _word(glossary, entry))
         lines += [f"{where}:"] if found else []
         for entry in found:
-            lines.append(f"  {entry.text('word')}: {entry.text('says')}")
-            if items := link_values(entry.fields.get("avoid")):
-                lines.append(f"    avoid: {'; '.join(items)}")
+            lines.append(f"  {entry.text(glossary.word)}: {entry.text(sentence)}")
+            if items := link_values(entry.fields.get(glossary.avoid)):
+                lines.append(f"    {glossary.avoid}: {'; '.join(items)}")
     return lines
 
 

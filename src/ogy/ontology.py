@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from ogy import declared as declaring
 from ogy.declared import Declared, Roles
 from ogy.kindlint import problems
-from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind
+from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind, Shape
 from ogy.verdict import Unusable
 
 DEFAULT_ONTOLOGY = "software"
@@ -88,6 +88,42 @@ class Ontology:
 
     def settling_kind(self) -> Kind | None:
         return next((kind for kind in self.kinds.values() if kind.settling is not None), None)
+
+    def glossary_kind(self) -> Kind | None:
+        """The kind whose entries are the glossary's words."""
+        return next((kind for kind in self.kinds.values() if kind.glossary is not None), None)
+
+    def printed_kind(self) -> Kind | None:
+        """The kind every agent reads first, whole (the constitution)."""
+        return next((kind for kind in self.kinds.values() if kind.printed_first is not None), None)
+
+    def area_kind(self) -> Kind | None:
+        """The single kind every area holds: what the area covers."""
+        return next((kind for kind in self.kinds.values() if kind.every_area and kind.shape is Shape.SINGLE), None)
+
+    def shared_fields(self) -> dict[str, object]:
+        """The fields of the entry of a layer's shared area: its sentence, as `ontology.yml` gives it."""
+        area = self.area_kind()
+        return {area.sentence: self.declared.shared.says} if area and area.sentence else {}
+
+    def carded(self, kind: Kind) -> bool:
+        """A person agrees to the kind's sentence entry by entry: it has one, and it is neither the settling kind nor one of its
+        options (a question is answered, not agreed to) nor a row of a flow (it is read with its step)."""
+        settler = self.settling_kind()
+        names = settler.settling if settler else None
+        asked = {settler.kind, names.option} if settler and names else set()
+        rows = {row for flow in (k.flow for k in self.kinds.values()) if flow for row in (flow.choice, flow.case, flow.timeout)}
+        return kind.sentence is not None and kind.kind not in asked | rows
+
+    def texts(self) -> frozenset[str]:
+        """The fields an agent writes words in, read for avoided words: every sentence, the title, a question's context, a
+        guess's reason and what is printed under a printed-first sentence."""
+        settler, printed = self.settling_kind(), self.printed_kind()
+        names = settler.settling if settler else None
+        found = {kind.sentence for kind in self.kinds.values() if kind.sentence} | {self.roles.title}
+        found |= {names.context, names.why} if names else set()
+        also = printed.printed_first.also if printed and printed.printed_first else None
+        return frozenset(found | ({also} if also else set()))
 
 
 def parse_kinds(texts: Mapping[str, str], declared: Declared) -> Ontology:

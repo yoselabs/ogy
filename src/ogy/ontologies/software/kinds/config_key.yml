@@ -2,6 +2,7 @@ kind: config_key
 about: a real setting the product reads; a number it holds is a `value` it binds
 guidance: "A real setting the product reads from a file or the environment, under its name. A number it holds is a value it binds, a closed list of words a set. A decided limit nobody configures is only a value."
 shape: list
+sentence: says
 file: config-keys.yml
 layers: [software]
 needs_proof: true

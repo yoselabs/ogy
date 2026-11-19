@@ -2,6 +2,7 @@ kind: attr
 about: one fact kept about an entity
 guidance: "A fact kept about an entity. A fact computed from others is `derived` and never written. A link to another entity is type `one` with `of`. A fact that changes the outcome is tested in a case; a move the product records and reacts to is a state, not an attribute."
 shape: inline
+sentence: says
 part_of: entity
 key: attrs
 requires:

@@ -37,7 +37,7 @@ def headers(snapshot: Snapshot) -> list[Header]:
     for decision in decisions(snapshot):
         count.setdefault(decision.address.home, Counter())["answered" if decision.answers else "question"] += 1
     for address in snapshot.entries:
-        if "says" not in snapshot.kind_of(address).fields or not snapshot.kind_of(address).asked:
+        if not snapshot.kind_of(address).asked or not snapshot.ontology.carded(snapshot.kind_of(address)):
             continue
         found = count.setdefault(address.home, Counter())
         match status(snapshot, address, hashes):

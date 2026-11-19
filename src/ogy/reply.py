@@ -84,9 +84,10 @@ def _one(found: Round, label: str) -> Shown:
 def _sentence_field(target: Target, address: str) -> str:
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     found = snapshot.resolve(address)
-    if found is None or "says" not in snapshot.kind_of(found).fields:
+    kind = snapshot.kind_of(found) if found else None
+    if kind is None or kind.sentence is None or not snapshot.ontology.carded(kind):
         raise WriteRefused([f"{address} has no sentence to replace"])
-    return "says"
+    return kind.sentence
 
 
 def _change(target: Target, words: Said, card: Shown, sentence: str) -> None:

@@ -17,7 +17,7 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: entity\n"
 PARENT = "kind: parent\nabout: x\nshape: entity\nlayers: [product]\n"
 SETTLING = ("settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
-            "said: said, at: at, where: where, note: note, delegated: delegated}\n")
+            "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n")
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
 
 

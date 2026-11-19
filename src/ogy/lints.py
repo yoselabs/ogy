@@ -9,11 +9,11 @@ from ogy.source import Source
 
 
 def _twice(snapshot: Snapshot) -> list[Finding]:
-    """H3: two top-level entries of one kind in one area with the same `says`."""
+    """H3: two top-level entries of one kind in one area with the same sentence (a kind a person agrees to entry by entry)."""
     seen: dict[tuple[str, str, str], str] = {}
     found: list[Finding] = []
     for address, entry in snapshot.entries.items():
-        says = entry.text("says")
+        says = snapshot.sentence(address) if snapshot.ontology.carded(snapshot.kind_of(address)) else None
         if len(address.path) != 1 or says is None:
             continue
         key = (address.area, address.kind, " ".join(says.split()).lower())
