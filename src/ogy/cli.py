@@ -28,7 +28,7 @@ def _globals(command: argparse.ArgumentParser, default: object) -> None:
     command.add_argument("--repo", type=Path, default=Path.cwd() if default is None else default,
                          help="the Git repository (default: the current folder)")
     command.add_argument("--rev", default=default, help="a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was "
-                         "just written; CI passes --rev HEAD). Writes always change the worktree")
+                         "just written). Writes always change the worktree")
     command.add_argument("--ontology", default=default,
                          help=f"the ontology folder in ogy/ontologies (default: ogy.yml, else {DEFAULT_ONTOLOGY})")
 

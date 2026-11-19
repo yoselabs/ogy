@@ -26,7 +26,7 @@ repository root (`ontology`, optional `rev`; `$OGY_CONFIG` names another file); 
 the folder `docs/kb`: there is no flag or setting that moves it.
 
 Commands. The flags `--repo`, `--rev` and `--ontology` go before or after the command (`ogy --rev HEAD check` or `ogy check --rev HEAD`). `--rev` is a commit,
-or `.` for the worktree, which is the default: a read sees what was just written. CI reads a commit with `--rev HEAD`.
+or `.` for the worktree, which is the default: a read sees what was just written.
 A `docs/kb` that is not there, or a commit that does not exist, is a refusal, never a green check.
 
 Exit codes: 0 ok, 1 findings (`check`, `work`, a `reply` with an item refused), 2 usage, 3 refused, 4 not found.
