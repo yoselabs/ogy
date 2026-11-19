@@ -53,6 +53,6 @@ def test_taskloop_fit_has_only_expected_findings() -> None:
 
 def test_taskloop_fit_reads_every_part_with_a_slash_address() -> None:
     snapshot = load(WorktreeSource(V5, "taskloop-fit/kb"), packaged())
-    assert len(snapshot.entries) == 174  # 185 entries of the fit's README, less 16 effects, which have no address, and the shared area
+    assert len(snapshot.entries) == 175  # the README's 185, less 16 effects and the shared area, plus one otherwise case
     squash = snapshot.resolve("product/land/workflow/land/step/squash/case/otherwise")
     assert squash is not None and snapshot.resolve("product/land/workflow/land/step/squash/effect/x") is None

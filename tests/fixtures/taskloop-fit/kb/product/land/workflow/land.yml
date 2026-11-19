@@ -218,7 +218,8 @@ steps:
   summarize:
     says: S is made in Git objects only and the facts of the land are shown; nothing is recorded, pushed or closed.
     src: [code:src/taskloop/land.py#_summary]
-    then: reported
+    cases:
+      otherwise: {then: reported}
 ends:
   landed: {result: success, says: S is on origin's main and the task is closed locally; the tracker is not synced.}
   delivered-unclosed: {result: success, says: "S was found on origin's main, so nothing was withdrawn; the task is still open."}

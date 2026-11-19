@@ -6,7 +6,8 @@ start: close
 steps:
   close:
     says: The library closes the loan.
-    then: closed
+    cases:
+      otherwise: {then: closed}
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45

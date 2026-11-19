@@ -29,8 +29,7 @@ def graph(snapshot: Snapshot, flow: Flow, container: Address) -> Graph:
     parts = snapshot.links.parts
     steps = parts(container, flow.step)
     rows = {step: {kind: parts(step, kind) for kind in (flow.choice, flow.case, flow.timeout)} for step in steps}
-    targets = {step: {*link(snapshot, step, flow.then),
-                      *(target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then))}
+    targets = {step: {target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then)}
                for step in steps}
     return Graph(container, steps, parts(container, flow.end), rows, targets)
 
@@ -57,21 +56,21 @@ class FlowChecker:
         return self.snapshot.entries[address].fields.get(field) is not None
 
     def shape(self, step: Address) -> None:
-        """Actor step: choices (`requires` keeps one without `when:`), maybe a timeout. Calling step: cases. System step: cases or
-        a plain `then:`."""
+        """Actor step: choices (`requires` keeps one without `when:`), maybe a timeout. Calling step: cases over the callee's
+        ends. System step: cases, the one `otherwise` case when it only goes on (decision exits-on-rows)."""
         flow, rows = self.flow, self.graph.rows[step]
         choices, cases, timeouts = rows[flow.choice], rows[flow.case], rows[flow.timeout]
-        then, calls = self.has(step, flow.then), self.has(step, flow.calls)
+        calls = self.has(step, flow.calls)
         if self.has(step, flow.actor):
-            if not choices or bool(cases) or then or calls:
+            if not choices or bool(cases) or calls:
                 self.add(Problem.STEP_SHAPE, step, "an actor step offers choices and nothing else")
             return
         if choices or timeouts:
             self.add(Problem.STEP_SHAPE, step, "only an actor step has choices or a timeout")
-        if calls and (then or not cases):
+        if calls and not cases:
             self.add(Problem.STEP_SHAPE, step, "a calling step continues by cases over the callee's ends")
-        if not calls and bool(cases) == then:
-            self.add(Problem.STEP_SHAPE, step, "a system step has cases or one `then:`, not both")
+        if not calls and not cases:
+            self.add(Problem.STEP_SHAPE, step, f"a system step goes on by its cases; one that only goes on has one `{flow.otherwise}` case")
         if cases and not calls:
             self.system_cases(step, cases)
 

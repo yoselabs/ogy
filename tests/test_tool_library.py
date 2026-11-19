@@ -25,6 +25,7 @@ UNBUILT = [
     f"{P}/value/reply-wait", f"{BORROW}/ask", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record",
     f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{BORROW}/standing",
     f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes", f"{P}/workflow/close-loan/step/close",
+    f"{P}/workflow/close-loan/step/close/case/otherwise",
     f"{P}/workflow/notify/step/send", f"{P}/workflow/notify/step/send/case/ok", f"{P}/workflow/notify/step/send/case/otherwise",
     f"{P}/workflow/remind/step/call", f"{P}/workflow/remind/step/call/case/otherwise", f"{P}/workflow/remind/step/call/case/sent",
     f"{S}/command/borrow-cli", f"{S}/config_key/remind-every", f"{S}/rule/one-reminder-a-day",

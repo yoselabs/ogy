@@ -209,7 +209,7 @@ def test_cases_are_ordered_by_data(kb: Make) -> None:
 
 
 def test_unreachable_step_and_unreached_end(kb: Make) -> None:
-    flow = ("says: S.\nstart: a\nsteps:\n  a: {then: done}\n  lost: {then: done}\n"
+    flow = ("says: S.\nstart: a\nsteps:\n  a: {cases: {otherwise: {then: done}}}\n  lost: {cases: {otherwise: {then: done}}}\n"
                            "ends:\n  done: {result: success, says: D.}\n  never: {result: failure, says: N.}\n")
     found = kb({"product/app/workflow/w.yml": flow}).findings()
     assert found == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost"), (Problem.END_UNREACHED, "product/app/workflow/w/end/never")}

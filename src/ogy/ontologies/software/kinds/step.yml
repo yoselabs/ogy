@@ -1,6 +1,6 @@
 kind: step
-about: "an actor step (choices, maybe a timeout), a system step (cases or one `then`) or a calling step (calls, cases over the callee's ends); no actor means the product itself"
-guidance: "One place in a workflow: an actor step (choices, maybe a timeout), a system step (cases or one `then`) or a calling step (another workflow, cases over its ends). No actor means the product acts. Start a new step when another actor acts or the product waits."
+about: "an actor step (choices, maybe a timeout), a system step (cases; one `otherwise` case when it only goes on) or a calling step (calls, cases over the callee's ends); no actor means the product itself"
+guidance: "One place in a workflow: an actor step (choices, maybe a timeout), a system step (cases; one `otherwise` case to only go on) or a calling step (another workflow, cases over its ends). No actor means the product acts. Start a new step when another actor acts or the product waits."
 shape: inline
 sentence: says
 part_of: workflow
@@ -13,5 +13,4 @@ requires:
 fields:
   says: {}
   actor: {type: link, to: [actor]}
-  then: {type: link, to: [step, end, workflow]}
   calls: {type: link, to: [workflow]}
