@@ -1,13 +1,13 @@
 """`ogy init`: make a repository ready for ogy. Every step is idempotent and merges; nothing is clobbered.
 
-Writes `ogy.yml`, the knowledge-base folder with its constitution folder and the area `shared` of the first layer, a marked
-block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in `.mcp.json` and Claude Code deny rules for editing the
-folder by hand, and the entries the ontology starts with (its `starts.yml`), unless removed."""
+Writes `ogy.yml`, the knowledge-base folder with the (empty) lists of its fixed folders and the entry of the shared area of the
+first layer, the ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CLAUDE.md when it exists), the
+ogy server in `.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with
+(its `starts.yml`), unless removed. Every name in them comes from the ontology folder."""
 
 import json
 import shutil
 from dataclasses import dataclass
-from importlib.resources import files
 from pathlib import Path
 
 import any_yaml
@@ -19,7 +19,7 @@ from ogy import config, removed
 from ogy.edit import Editor
 from ogy.kinds import Shape
 from ogy.model import Address, parse_address
-from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, packaged
+from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
 from ogy.source import KB_DIR
 from ogy.verdict import Refusal
 
@@ -37,51 +37,6 @@ exec {ogy} --rev "$commit" check
 SERVER = {"command": "uvx", "args": ["--from", "git+https://github.com/yoselabs/ogy", "ogy", "mcp"]}
 CHECKOUT = ["run", "--frozen", "--no-sync", "python", "-I", "-m", "ogy"]  # ogy's own repository runs the code in front of it
 PUBLISHED = "uvx --from git+https://github.com/yoselabs/ogy ogy"
-BLOCK = """\
-## Knowledge base (ogy)
-
-The requirements knowledge base is the folder `docs/kb/`: `constitution/`, `product/<area>/` and `software/<area>/`, nothing else
-at its top. Each layer has the area `shared` (`product/shared/`): only the terms, actors and sets that two of its areas use live
-there; everything else lives in the area that owns it. Change it only through ogy (CLI or MCP); never edit its YAML by hand.
-- Run `{ogy} glossary` first, before reading code or writing a sentence: it prints the constitution (the principles every decision is
-  judged against; cite one with `because`), then the glossary: the shared terms, then each area's (`<layer>/<area>/glossary.yml`);
-  `{ogy} glossary <layer>/<area>` prints one area's terms with the shared ones it reads. Read both; use the words it prints. A term
-  is `word`, `says` (one line of under 15 words) and `avoid`, nothing else; it needs no source. A word one area uses goes in that
-  area's glossary, one that two areas use in the `shared` area of their layer. `{ogy} status` shows where things
-  stand; `{ogy} find <words>` searches live and removed entries (search before you propose); `{ogy} show <address>` reads one.
-- Before you create an entry of a kind, read `{ogy} kinds <kind>`: what it is, its guidance (when to use it rather than its
-  neighbours: an actor, a lifecycle state or an attribute; `by` holds an entry to a rule, `because` cites a principle or a decision
-  as the reason) and its fields. `{ogy} kinds --map` prints the whole ontology on one screen, with its rules.
-- Add and change entries with ONE command, `{ogy} put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
-  (`{ogy} put '[{{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}}]'`). An address that exists is changed (`"field": null` removes a
-  field), a new one is added; the whole call is checked together (a decision may come with the entries its options set) and written whole
-  or not at all. A choice goes in with `{ogy} answer`, a reply to a review round with `{ogy} reply "<grammar line>"`;
-  `{ogy} remove --why` always says why (a decision address, or plain words); remove only when a requirement changes,
-  never to reorganise. To change an entry's area use `{ogy} move <address> <area>` (`<layer>/<area>` to change the layer too): the id
-  and the owner's agreements stay, every address follows in the same write, and nothing is recorded (Git keeps it); never remove
-  and put again.
-- A newer ogy may rename or drop a field of a kind, or move a kind out of a fixed folder (the kind file says `renamed: {{old: new}}`,
-  `dropped: [...]` or `moved_from: <folder>/<file>`); `{ogy} check` then reports `needs-migration`. Run `{ogy} migrate`, never a hand
-  edit: it renames and moves in one write and keeps the owner's agreements and the built lines current; a dropped field that held a
-  value is printed, and that entry comes back to the owner as changed. What it moved lands in `product/shared`: `{ogy} move` each
-  entry to the area that uses it.
-- Reads see the worktree by default (`--rev .`); CI reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
-  go before or after the command: `{ogy} show <address> --rev HEAD`.
-- Every write is checked; fix what it refuses. Run `{ogy} check` before you hand over: every finding is an error, there are no
-  warnings. Exit codes: 0 ok, 1 findings, 2 usage, 3 refused, 4 not found.
-- Every area folder holds its `area.yml` (`says`: what the area covers; `distinct`: what belongs in a neighbouring area); a put
-  into a new area brings it in the same call. The first actor is the person:
-  `{ogy} put '[{{"address": "product/<area>/area/<area>", "says": "..."}}, {{"address": "product/<area>/actor/human", "says": "...",
-  "nature": "human"}}]'`
-  (an actor needs no evidence).
-- ogy stores no messages and no quotes. When the owner speaks, record the answer at once with a short paraphrase:
-  `{ogy} answer <decision> <option> --said "<one plain line>" --where ai:<agent>/<session-id>` (`--note` for a hedge or condition), or
-  `{ogy} reply "<grammar line>" --said "..." --where ...` for a review round (`from: human`: only a person agrees). Show each
-  paraphrase to the owner in the read-back. A guess that rests on what the owner said carries a paraphrase (`guess.heard: {{said}}`),
-  so the review reads "You said (paraphrased): .... Read as B." and one yes records the answer.
-- Never answer for the owner. Only when the owner said "decide on my behalf" for a scope (an answer `from: human` of a decision),
-  answer with `{ogy} answer ... --delegated <that decision>`; `{ogy} dropped` lists those answers, and you list them to the
-  owner at session end."""
 
 
 class InitRefused(Refusal):
@@ -137,12 +92,16 @@ def _server(repo: Path) -> dict[str, object]:
     return {"command": "uv", "args": [*CHECKOUT, "mcp"]} if is_ogy_repo(repo) else dict(SERVER)
 
 
-def _block(repo: Path, rel: str, written: list[str]) -> None:
+def block(repo: Path, ontology: Ontology, body: str) -> str:
+    """`body` with the ontology's agents block (its `agents.md`) in the marked region; unchanged when the ontology has none."""
+    if ontology.agents is None:
+        return body
+    return replace_region(body, ontology.agents.format(ogy=invocation(repo)), start_marker=START, end_marker=END)
+
+
+def _block(repo: Path, ontology: Ontology, rel: str, written: list[str]) -> None:
     path = repo / rel
-    body = path.read_text() if path.exists() else ""
-    _put(repo, rel, replace_region(body, BLOCK.format(ogy=invocation(repo)), start_marker=START, end_marker=END), written)
-
-
+    _put(repo, rel, block(repo, ontology, path.read_text() if path.exists() else ""), written)
 def _hook(repo: Path, written: list[str]) -> None:
     """The tracked pre-commit hook that runs `ogy check` on the staged tree, and `core.hooksPath` pointing at it."""
     rel = f"{HOOKS_DIR}/pre-commit"
@@ -205,7 +164,7 @@ def _deny(repo: Path, written: list[str]) -> None:
 def init(repo: Path, ontology: str | None = None) -> Initialised:
     """Set `repo` up; run again to repair it. Refuses (InitRefused, OntologyError) before writing when it cannot go on."""
     name = _settings(repo, ontology)
-    kinds = packaged(name)
+    kinds = named(name, repo)
     written: list[str] = []
     for rel in (".mcp.json", ".claude/settings.json"):
         _json(repo, rel)  # an unreadable file refuses before anything is written
@@ -215,30 +174,27 @@ def init(repo: Path, ontology: str | None = None) -> Initialised:
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)
             written.append(f"{KB_DIR}/{rel}")
-    for address, fields in missing_starts(repo, name):
-        Editor(repo, KB_DIR, packaged(name)).put(address, fields)
+    for address, fields in missing_starts(repo, kinds):
+        Editor(repo, KB_DIR, kinds).put(address, fields)
         written.append(str(address))
-    _block(repo, "AGENTS.md", written)
+    _block(repo, kinds, "AGENTS.md", written)
     if (repo / "CLAUDE.md").exists():
-        _block(repo, "CLAUDE.md", written)
+        _block(repo, kinds, "CLAUDE.md", written)
     _mcp(repo, written)
     _deny(repo, written)
     _hook(repo, written)
     return Initialised(name, KB_DIR, written)
 
 
-def missing_starts(repo: Path, name: str) -> list[tuple[Address, dict[str, object]]]:
+def missing_starts(repo: Path, ontology: Ontology) -> list[tuple[Address, dict[str, object]]]:
     """The entries the ontology starts a knowledge base with (its `starts.yml`) that are not there and were never removed:
     init adds them, unagreed; an entry the owner removed is never added again."""
-    source = files("ogy").joinpath("ontologies", name, "starts.yml")
-    records = any_yaml.load(source.read_text()) if source.is_file() else []
-    ontology = packaged(name)
     snapshot = Editor(repo, KB_DIR, ontology).snapshot()
     ledgers, _ = removed.read_all(repo / KB_DIR)
     gone = {item.id for ledger in ledgers.values() for item in ledger.items}
     found: list[tuple[Address, dict[str, object]]] = []
-    for record in records if isinstance(records, list) else []:
-        address = parse_address(str(record.get("address", "")), ontology) if isinstance(record, dict) else None
+    for record in ontology.starts:
+        address = parse_address(str(record.get("address", "")), ontology)
         if address is not None and address not in snapshot.entries and str(address) not in gone:
             found.append((address, {key: value for key, value in record.items() if key != "address"}))
     return found
@@ -250,14 +206,14 @@ def doctor(repo: Path) -> list[str]:
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
-    name = config.read(repo).ontology or DEFAULT_ONTOLOGY
-    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(packaged(name)) if not (repo / KB_DIR / rel).is_file())
-    lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, name))
+    ontology = named(config.read(repo).ontology or DEFAULT_ONTOLOGY, repo)
+    lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(ontology) if not (repo / KB_DIR / rel).is_file())
+    lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, ontology))
     for rel in ("AGENTS.md", "CLAUDE.md"):
         path = repo / rel
         if rel == "AGENTS.md" or path.exists():
             have = path.read_text() if path.exists() else ""
-            if replace_region(have, BLOCK.format(ogy=invocation(repo)), start_marker=START, end_marker=END) != have:
+            if block(repo, ontology, have) != have:
                 lines.append(f"{rel} has no current ogy block: run `ogy init`")
     if not (repo / HOOKS_DIR / "pre-commit").is_file():
         lines.append(f"missing {HOOKS_DIR}/pre-commit (checks the knowledge base on commit): run `ogy init`")

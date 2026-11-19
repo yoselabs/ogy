@@ -30,7 +30,8 @@ def _globals(command: argparse.ArgumentParser, default: object) -> None:
     command.add_argument("--rev", default=default, help="a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was "
                          "just written). Writes always change the worktree")
     command.add_argument("--ontology", default=default,
-                         help=f"the ontology folder in ogy/ontologies (default: ogy.yml, else {DEFAULT_ONTOLOGY})")
+                         help=f"the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: "
+                         f"ogy.yml, else {DEFAULT_ONTOLOGY})")
 
 
 def _verb(commands: Adder, name: str, about: str, detail: str = "") -> argparse.ArgumentParser:

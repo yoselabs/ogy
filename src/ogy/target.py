@@ -7,7 +7,7 @@ from git_porcelain import GitError, RealRepo
 
 from ogy.check import check
 from ogy.model import Finding
-from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, packaged
+from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
 from ogy.snapshot import Snapshot, load
 from ogy.source import KB_DIR, Source, open_source
 
@@ -26,7 +26,7 @@ class Target:
         return replace(self, rev=rev)
 
     def kinds(self) -> Ontology:
-        return packaged(self.ontology)
+        return named(self.ontology, self.repo)
 
     def read(self) -> tuple[Source, Snapshot]:
         source = open_source(self.repo, self.rev, self.kb)
