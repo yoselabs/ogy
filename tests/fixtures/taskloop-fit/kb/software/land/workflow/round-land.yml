@@ -8,7 +8,7 @@ steps:
     cases:
       nobody-waits:
         order: 1
-        when: {text: no passed task of this round waits}
+        when: {text: no passed task of this round waits, reads: [software/land/entity/land-candidate]}
         then: nothing
       manual:
         order: 2

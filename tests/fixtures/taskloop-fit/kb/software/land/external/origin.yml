@@ -3,7 +3,7 @@ says: The Git remote of the person's checkout; its branch main is where tasks la
 src: [code:src/taskloop/land_push.py#REMOTE]
 deviations:
   race-answers-as-policy:
-    when: {text: "a push loses the race for main (another push holds the ref's lock, or main moved)"}
+    when: {text: "a push loses the race for main (another push holds the ref's lock, or main moved)", reads: [software/land/external/origin]}
     says: The remote answers such a push like a policy refusal, so a rejected push reads origin again; main no longer at O is the race, main still at O is policy.
     src: [code:src/taskloop/land_push.py#_raced]
 by:

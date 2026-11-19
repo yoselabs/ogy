@@ -14,7 +14,7 @@ type Make = Callable[[dict[str, str | None] | None], Kb]
 
 VALUES = "- {id: fee, says: The fee., is: 2, unit: EUR}\n- {id: wait, says: The wait., is: 3, unit: days}\n"
 CALLEE = ("says: Callee.\nstart: only\nsteps:\n  only:\n    cases:\n"
-          "      a: {order: 1, when: {text: x}, then: good}\n      otherwise: {then: bad}\n"
+          "      a: {order: 1, when: {text: x, reads: [product/app/actor/member]}, then: good}\n      otherwise: {then: bad}\n"
           "ends:\n  good: {result: success, says: G.}\n  bad: {result: failure, says: B.}\n")
 
 
@@ -78,7 +78,12 @@ def test_expr_reads_are_checked_links(kb: Make) -> None:
 
 
 def test_expr_text_is_not_parsed(kb: Make) -> None:
-    assert kb({**when('"2 >= ((( and or"', "[]"), "product/app/values.yml": VALUES}).findings() == set()
+    assert kb({**when('"2 >= ((( and or"', "[product/app/actor/member]"), "product/app/values.yml": VALUES}).findings() == set()
+
+
+def test_a_condition_that_reads_nothing_is_wrong(kb: Make) -> None:
+    found = kb({**when("the member is new", "[]"), "product/app/values.yml": VALUES}).findings()
+    assert (Problem.WRONG_TYPE, "product/app/workflow/sys/step/sys/case/go") in found
 
 
 DECISION = """\
@@ -188,7 +193,7 @@ def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> Non
 
 def cases(first: str, second: str) -> dict[str, str | None]:
     flow = ("says: S.\nstart: sys\nsteps:\n  sys:\n    cases:\n"
-            f"      a: {{{first}, when: {{text: a}}, then: done}}\n      b: {{{second}, when: {{text: b}}, then: done}}\n"
+            f"      a: {{{first}, when: {{text: a, reads: [product/app/actor/member]}}, then: done}}\n      b: {{{second}, when: {{text: b, reads: [product/app/actor/member]}}, then: done}}\n"
             "      otherwise: {then: done}\nends:\n  done: {result: success, says: D.}\n")
     return {"product/app/workflow/sys.yml": flow}
 

@@ -20,15 +20,15 @@ steps:
     cases:
       checks-failed:
         order: 1
-        when: {text: "the task's latest checks attempt did not conclude passed, or is not released, or is abandoned; with no-change any conclusion passes"}
+        when: {text: "the task's latest checks attempt did not conclude passed, or is not released, or is abandoned; with no-change any conclusion passes", reads: [software/land/entity/land-candidate]}
         then: refused
       implement-not-done:
         order: 2
-        when: {text: "the task's current attempt is not a done implement attempt"}
+        when: {text: "the task's current attempt is not a done implement attempt", reads: [software/claim/external/bd]}
         then: refused
       agent-push-bar-missing:
         order: 3
-        when: {text: "the Git configuration in this process's environment carries the agent's push bar"}
+        when: {text: "the Git configuration in this process's environment carries the agent's push bar", reads: [software/land/external/origin]}
         then: refused
       closed:
         order: 11
@@ -66,29 +66,29 @@ steps:
     cases:
       conflict:
         order: 1
-        when: {text: X does not merge onto origin's main}
+        when: {text: X does not merge onto origin's main, reads: [software/land/external/origin]}
         then: conflict
       no-change-unconfirmed:
         order: 2
-        when: {text: the tree of S is the tree of origin's main and the person did not choose no-change}
+        when: {text: the tree of S is the tree of origin's main and the person did not choose no-change, reads: [software/land/external/origin]}
         then: no-change
       no-change-confirmed:
         order: 3
-        when: {text: the tree of S is the tree of origin's main and the person chose no-change}
+        when: {text: the tree of S is the tree of origin's main and the person chose no-change, reads: [software/land/external/origin]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/insert-delivered}]
         then: close
       changes-under-no-change:
         order: 4
-        when: {text: the person chose no-change and S changes origin's main}
+        when: {text: the person chose no-change and S changes origin's main, reads: [software/land/external/origin]}
         then: refused
       gate-changed:
         order: 5
-        when: {text: S changes the gate and the person did not accept that}
+        when: {text: S changes the gate and the person did not accept that, reads: [software/land/entity/land-candidate]}
         then: gate-changed
         src: [code:src/taskloop/land_target.py#gated]
       same-tree:
         order: 6
-        when: {text: the tree of S is the tree of X and main's required check names are those the checks ran}
+        when: {text: the tree of S is the tree of X and main's required check names are those the checks ran, reads: [software/land/entity/land-candidate]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/insert-pushable}]
         then: deliver
       otherwise:
@@ -105,12 +105,12 @@ steps:
         then: checks-failed
       passed:
         order: 2
-        when: {text: every required check passed on S}
+        when: {text: every required check passed on S, reads: [software/land/entity/land-candidate]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/pass}]
         then: deliver
       failed:
         order: 3
-        when: {text: a required check failed on S}
+        when: {text: a required check failed on S, reads: [software/land/entity/land-candidate]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/fail}]
         then: checks-failed
       otherwise: {then: unavailable}
@@ -126,7 +126,7 @@ steps:
         by: [software/land/rule/delivery-read-from-origin]
       gone:
         order: 2
-        when: {text: S is no longer in the repository}
+        when: {text: S is no longer in the repository, reads: [software/land/external/origin]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/supersede}]
         then: again
       moved:
@@ -141,7 +141,7 @@ steps:
     cases:
       first:
         order: 1
-        when: {text: this invocation has made no candidate yet}
+        when: {text: this invocation has made no candidate yet, reads: [software/land/entity/land-candidate]}
         then: squash
       otherwise: {then: unavailable}
   push:
@@ -158,7 +158,7 @@ steps:
     cases:
       accepted:
         order: 1
-        when: {text: the remote accepted the push}
+        when: {text: the remote accepted the push, reads: [software/land/external/origin]}
         effects: [{do: transition, on: software/land/entity/land-candidate/transition/deliver}]
         then: close
       raced:

@@ -23,11 +23,15 @@ steps:
         order: 1
         when:
           text: a live link or a decision in force names the entry or a part of it
+          reads:
+          - product/capture/entity/entry
         then: refused
       agreed-without-address:
         order: 2
         when:
           text: a person agreed to the entry and the reason is not the address of a decision
+          reads:
+          - product/capture/entity/entry/state/decided-by-you
         then: refused
       otherwise:
         then: removed

@@ -39,6 +39,8 @@ steps:
         order: 1
         when:
           text: the commit changes nothing under docs/kb
+          reads:
+          - software/storage/external/git
         then: committed
       otherwise:
         then: check

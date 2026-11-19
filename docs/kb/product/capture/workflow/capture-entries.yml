@@ -47,6 +47,8 @@ steps:
         order: 1
         when:
           text: a record adds an error to the files or entries it touches
+          reads:
+          - product/capture/entity/entry
         then: refused
       otherwise:
         then: written
@@ -57,6 +59,8 @@ steps:
         order: 0
         when:
           text: another ogy write holds the write lock
+          reads:
+          - software/storage/external/git
         then: refused
     agreed:
       at: '2026-11-19T18:04:45+01:00'

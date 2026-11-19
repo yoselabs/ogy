@@ -36,8 +36,11 @@ def _uri(spec: FieldSpec, value: object) -> bool:
 
 
 def _expr(value: object) -> bool:
-    return isinstance(value, dict) and isinstance(value.get("text"), str) and set(value) <= {"text", "reads"} and (
-        "reads" not in value or _texts(value["reads"]))
+    """A condition or derivation: its text, and the entries it reads, at least one (decision guard-is-a-case): a condition
+    that reads nothing relies on something the knowledge base does not describe."""
+    reads = value.get("reads") if isinstance(value, dict) else None
+    return (isinstance(value, dict) and isinstance(value.get("text"), str) and set(value) <= {"text", "reads"}
+            and _texts(reads) and bool(reads))
 
 
 def _number(value: object) -> bool:
@@ -69,7 +72,7 @@ def _expected(spec: FieldSpec) -> str:
         case FieldType.TIME:
             return "a date, a time and a UTC offset (2026-11-12T10:05:00+01:00)"
         case FieldType.EXPR:
-            return "a mapping {text, reads}"
+            return "a mapping {text, reads}, reads naming at least one entry it depends on"
         case _:
             return str(spec.type)
 

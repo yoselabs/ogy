@@ -23,11 +23,15 @@ steps:
         order: 1
         when:
           text: the answer is an agent's and names no decision whose answer, a person's, let it decide
+          reads:
+          - product/review/entity/decision
         then: refused
       twice:
         order: 2
         when:
           text: the decision already holds an answer with the same time
+          reads:
+          - product/review/entity/decision
         then: refused
       otherwise:
         then: stored

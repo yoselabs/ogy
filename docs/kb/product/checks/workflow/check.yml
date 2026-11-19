@@ -10,6 +10,8 @@ steps:
         order: 1
         when:
           text: the check reports a finding
+          reads:
+          - product/capture/entity/entry
         then: blocked
       otherwise:
         then: clean
