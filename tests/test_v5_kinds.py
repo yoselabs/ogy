@@ -30,7 +30,7 @@ def load(*texts: str) -> None:
 
 def test_software_kinds_load() -> None:
     ontology = packaged()
-    assert len(ontology.kinds) == 32 and "message" not in ontology.kinds
+    assert len(ontology.kinds) == 31 and "message" not in ontology.kinds
     assert ontology.kinds["term"].area is None and ontology.kinds["principle"].area == "constitution"
     assert {name for name, kind in ontology.kinds.items() if kind.shared} == {"term", "actor", "set", "area"}
     assert ontology.settling_kind() is ontology.kinds["decision"]
