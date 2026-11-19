@@ -1,0 +1,25 @@
+kind: ruling
+about: one question, its picks, the hunch and the verdicts
+shape: entity
+sentence: ask
+evidence: none
+layers: [business, tech]
+settling:
+  option: pick
+  answer: verdict
+  guess: hunch
+  heard: overheard
+  sets: gives
+  chose: picked
+  value: gives
+  said: gist
+  at: moment
+  where: place
+  note: caveat
+  delegated: proxy
+  context: background
+  why: grounds
+fields:
+  ask: {required: true}
+  layout: {type: flag, harm: [layout]}
+  background: {note: true}

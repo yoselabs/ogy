@@ -1,0 +1,30 @@
+kind: journey
+about: a result reached by stages
+shape: entity
+sentence: tells
+layers: [business, tech]
+flow:
+  start: first
+  roots: [clock]
+  step: stage
+  end: finish
+  choice: move
+  case: branch
+  timeout: wait
+  then: next
+  actor: who
+  calls: invokes
+  covers: answers_finishes
+  when: if
+  order: rank
+  otherwise: fallback
+  serves: serves_stages
+  servers: [screen]
+  offers: shows_moves
+  guard: gate
+  guarded: guards
+  denied: refused_to
+fields:
+  tells: {required: true}
+  clock: {type: text}
+  first: {type: link, to: [stage], required: true}

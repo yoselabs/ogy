@@ -5,9 +5,10 @@ from datetime import datetime
 from enum import StrEnum
 
 from ogy.declared import Reader, Scheme
+from ogy.fieldtypes import AGREED_HASH
 from ogy.links import link_items, resolve
 from ogy.model import Address, parse_address
-from ogy.settle import Decision, decision_of, decisions, moment, settles
+from ogy.settle import Decision, decision_of, decisions, moment, settles, settling_of
 from ogy.snapshot import Snapshot
 
 MAX_CARDS = 7
@@ -72,9 +73,12 @@ class Agreed:
 def agreed_of(snapshot: Snapshot, address: Address) -> Agreed | None:
     """The entry's own `agreed`, when it is well formed."""
     item = snapshot.entries[address].fields.get(snapshot.ontology.roles.agreed)
-    if not isinstance(item, dict) or not isinstance(fingerprint := item.get("hash"), str) or (when := moment(item.get("at"))) is None:
+    names = settling_of(snapshot)
+    if not isinstance(item, dict) or names is None or not isinstance(fingerprint := item.get(AGREED_HASH), str):
         return None
-    said, where = item.get("said"), item.get("where")
+    if (when := moment(item.get(names.at))) is None:
+        return None
+    said, where = item.get(names.said), item.get(names.where)
     return Agreed(when, fingerprint, said if isinstance(said, str) else "", where if isinstance(where, str) else "")
 
 

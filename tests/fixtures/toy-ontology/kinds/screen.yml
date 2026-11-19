@@ -1,0 +1,11 @@
+kind: screen
+about: how a person reaches a stage
+shape: entity
+sentence: tells
+layers: [tech]
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  tells: {required: true}
+  serves_stages: {type: links, to: [stage], required: true}
+  shows_moves: {type: links, to: [move]}

@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 
 from ogy import removed
-from ogy.graph import incoming
+from ogy.graph import PARENT, incoming
 from ogy.model import Address, area_of
 from ogy.near import hint
 from ogy.settle import decisions
@@ -31,7 +31,7 @@ def _live(snapshot: Snapshot, parent: str | None, cites: Address | None) -> list
     hashes = agreed_hashes(snapshot)
     asked = {item.address: item for item in decisions(snapshot)}
     rows: list[Found] = []
-    citing = {edge.address for edge in incoming(snapshot)[cites] if edge.field != "of"} if cites is not None else set()
+    citing = {edge.address for edge in incoming(snapshot)[cites] if edge.field != PARENT} if cites is not None else set()
     for address, entry in sorted(snapshot.entries.items()):
         if cites is not None and address not in citing:
             continue

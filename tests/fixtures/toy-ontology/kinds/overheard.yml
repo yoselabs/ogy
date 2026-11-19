@@ -1,0 +1,8 @@
+kind: overheard
+about: what the boss said that a hunch rests on
+shape: inline
+part_of: hunch
+key: overheard
+holds: one
+fields:
+  gist: {note: true, required: true}

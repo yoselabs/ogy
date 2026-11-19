@@ -1,0 +1,12 @@
+kind: region
+about: a folder of entries, what it covers
+shape: single
+sentence: tells
+file: region.yml
+every_area: true
+evidence: none
+asked: false
+layers: [business, tech]
+shared: true
+fields:
+  tells: {required: true}

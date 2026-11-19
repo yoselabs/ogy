@@ -1,0 +1,14 @@
+kind: verdict
+about: a person chose a pick
+shape: inline
+part_of: ruling
+key: verdicts
+holds: list
+append_only: true
+fields:
+  picked: {type: link, to: [pick], required: true}
+  gist: {note: true, required: true}
+  moment: {type: time, required: true}
+  place: {type: uri, schemes: [ai, file], required: true}
+  caveat: {note: true}
+  proxy: {type: link, to: [ruling]}

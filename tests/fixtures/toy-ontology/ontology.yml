@@ -1,0 +1,23 @@
+# A toy ontology for the tests: every kind, field, layer, harm tag, scheme and folder has another name than the software
+# ontology's, so a test that passes on it shows the engine knows none of those names.
+layers: [business, tech]
+shared:
+  area: common
+  says: "What two regions of this layer both use."
+common:
+  heading: {note: true}
+  source: {type: texts, note: true}
+  reason: {type: links, to: [any]}
+  held_by: {type: links, to: [norm], note: true}
+  tests: {type: texts}
+  accepted: {type: agreed, note: true}
+roles: {title: heading, src: source, because: reason, proof: tests, agreed: accepted}
+harms: [layout, cash]
+asked_alone: [layout]
+evidence:
+  py: {reads: symbol, files: [.py]}
+  md: {reads: section, files: [.md], pinned: true}
+proof: {files: [.py]}
+reserved:
+  computed: [state_of]
+  sentence: [says]

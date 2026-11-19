@@ -1,0 +1,9 @@
+kind: pick
+about: one way to answer a ruling
+shape: inline
+sentence: caption
+part_of: ruling
+key: picks
+fields:
+  caption: {required: true}
+  gives: {type: sets}

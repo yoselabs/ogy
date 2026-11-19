@@ -1,0 +1,8 @@
+kind: finish
+about: how a journey ends
+shape: inline
+sentence: tells
+part_of: journey
+key: finishes
+fields:
+  tells: {required: true}

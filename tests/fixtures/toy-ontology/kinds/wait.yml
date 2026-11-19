@@ -1,0 +1,11 @@
+kind: wait
+about: what happens when a person waits too long
+shape: inline
+part_of: stage
+key: wait
+holds: one
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  delay: {type: text, required: true}
+  next: {type: link, to: [stage, finish, journey], required: true}

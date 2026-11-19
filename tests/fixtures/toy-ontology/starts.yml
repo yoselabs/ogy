@@ -1,0 +1,5 @@
+- address: charter/tenet/plain-words
+  tells: A sentence a person reads says one thing in plain words.
+- address: business/common/person/boss
+  tells: The person who rules on the questions.
+  sort: human

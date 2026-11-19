@@ -1,0 +1,13 @@
+kind: stage
+about: one place in a journey
+shape: inline
+sentence: tells
+part_of: journey
+key: stages
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  tells: {}
+  who: {type: link, to: [person]}
+  next: {type: link, to: [stage, finish, journey]}
+  invokes: {type: link, to: [journey]}

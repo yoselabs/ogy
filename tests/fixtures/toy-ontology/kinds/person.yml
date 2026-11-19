@@ -1,0 +1,11 @@
+kind: person
+about: someone who uses the product
+shape: list
+sentence: tells
+file: people.yml
+evidence: none
+layers: [business, tech]
+shared: true
+fields:
+  tells: {required: true}
+  sort: {type: enum, of: [human, machine], required: true}

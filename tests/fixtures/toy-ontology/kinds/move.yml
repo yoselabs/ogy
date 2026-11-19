@@ -1,0 +1,12 @@
+kind: move
+about: what a person may do at a stage
+shape: inline
+sentence: caption
+part_of: stage
+key: moves
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  caption: {required: true}
+  if: {type: expr, to: [norm, person]}
+  next: {type: link, to: [stage, finish, journey], required: true}

@@ -1,0 +1,11 @@
+kind: hunch
+about: the agent's guess
+shape: inline
+part_of: ruling
+key: hunch
+holds: one
+exactly_one_of: [[picked, gives]]
+fields:
+  picked: {type: link, to: [pick]}
+  gives: {type: sets}
+  grounds: {note: true, required: true}

@@ -1,0 +1,14 @@
+kind: word_entry
+about: a word of the product's language
+shape: list
+sentence: tells
+glossary: {word: spelling, avoid: shun, words: 10}
+file: words.yml
+layers: [business, tech]
+shared: true
+must_be_agreed: true
+evidence: none
+fields:
+  spelling: {required: true}
+  tells: {required: true}
+  shun: {type: texts}

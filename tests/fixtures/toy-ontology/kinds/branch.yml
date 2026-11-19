@@ -1,0 +1,12 @@
+kind: branch
+about: where the product goes from a stage
+shape: inline
+part_of: stage
+key: branches
+needs_proof: true
+fingerprint: {proofs: true}
+fields:
+  rank: {type: number}
+  if: {type: expr, to: [norm, person]}
+  answers_finishes: {type: links, to: [finish]}
+  next: {type: link, to: [stage, finish, journey], required: true}

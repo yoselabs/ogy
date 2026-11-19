@@ -105,6 +105,13 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
 ### Layout
 
 The ontology declares where entries live (`ontologies/software/ontology.yml`) and the loader enforces it; nothing skips a level.
+The engine knows no name of the ontology: `ontology.yml` declares the layers, the shared area and its sentence, the fields every
+entry may carry and the roles the engine reads them in (`roles`), the harm tags in review order and those asked alone, the
+evidence schemes of `src` and the proof form, and the reserved field names; each kind names its `sentence:`, `term` declares the
+`glossary:` role and `principle` the `printed_first:` role, and `workflow.yml` and `decision.yml` write out every `flow:` and
+`settling:` name. `starts.yml` and `agents.md` beside them are what `ogy init` writes. `--ontology` (or `ontology:` in `ogy.yml`)
+names a shipped ontology, or a folder on disk when it holds a `/` (relative to the repository); `tests/fixtures/toy-ontology` is one
+in which every name differs.
 `docs/kb/constitution/principles.yml` holds the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
 `<layer>/<area>/<file>`; a single kind: one entry in `<layer>/<area>/<file>` whose id is the area), the layer being `product` or `software`.
 Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `distinct`, what belongs in a neighbouring area): the kind

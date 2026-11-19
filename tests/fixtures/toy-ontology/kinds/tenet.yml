@@ -1,0 +1,12 @@
+kind: tenet
+about: a value every ruling is judged against
+shape: list
+sentence: tells
+printed_first: {also: reasoning}
+file: tenets.yml
+area: charter
+must_be_agreed: true
+evidence: none
+fields:
+  tells: {required: true}
+  reasoning: {note: true}
