@@ -347,3 +347,14 @@ def test_a_stage_a_machine_acts_at_comes_back_through_a_screen_wired_to_the_mach
     assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["unmet-requirement"]
     page.write_text(page.read_text() + "wired_to: [business/shop/person/shopper]\n")
     assert w(toy, "check")[0] == cli.OK
+
+
+def test_a_toy_word_points_at_the_entry_that_defines_it(toy: Path) -> None:
+    """`glossary: {names: points_at}`: a word with no sentence of its own prints the sentence of the entry it points at."""
+    words = toy / "docs/kb/business/shop/words.yml"
+    words.write_text(words.read_text() + "- {id: shopper, spelling: shopper, points_at: business/shop/person/shopper}\n")
+    assert w(toy, "check")[0] == cli.OK
+    assert "  shopper: A person who buys. (business/shop/person/shopper)" in w(toy, "glossary")[1]
+    words.write_text(words.read_text().replace("points_at: business/shop/person/shopper", "points_at: business/shop/person/shopper, "
+                                                                                          "tells: Buys."))
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["one-of"]

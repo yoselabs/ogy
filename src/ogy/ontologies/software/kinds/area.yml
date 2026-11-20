@@ -1,6 +1,6 @@
 kind: area
 about: "what one area of a layer covers, so an agent knows what belongs there and what belongs next door; which product areas a software area builds is computed from links, never stored"
-guidance: "One topic of a layer, named for what it covers, never after the product. An entry goes in the area whose `says` covers it; `unlike` says what goes next door. What two areas use (a term, an actor, an enum) goes in `shared`. Change an entry's area only with `ogy move`."
+guidance: "One topic of a layer, named for what it covers, never after the product. An entry goes where `says` covers it; `unlike` links the areas next door, and `says` ends `Not here: <what>: <area>`. What two areas use (a term, an actor, an enum) goes in `shared`. Change an entry's area only with `ogy move`."
 like: "a module or product area: one topic of a layer"
 unlike: "a DDD bounded context: the glossary is one language"
 shape: single
@@ -14,4 +14,4 @@ shared: true            # the area `shared` holds its own area.yml too
 renamed: {distinct: unlike}
 fields:
   says: {required: true}                             # one sentence: what the area covers
-  unlike: {type: texts}                              # what belongs in a neighbouring area, not here
+  unlike: {type: links, to: [area]}                  # the neighbouring areas whose topic is close: a renamed area follows

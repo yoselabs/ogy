@@ -9,10 +9,10 @@ part_of: step
 key: choices
 needs_proof: true
 fingerprint: {proofs: true}
-input: {satisfies: content}                         # a rule the row is held to changes: the row and its performer are stale
 requires:
   - {if_part: effect, path: ["<-performs"], kinds: [handler], error: "a row with an effect has a handler performing it"}
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (behaviour: a rule it is held to changes, it is stale)
   label: {required: true}
   when: {type: expr, to: [quantity, enum, entity, attribute, state, dependency, setting, actor], harm: [authorization], input: none}   # offered only while it holds; the step keeps one choice without it
   then: {type: link, to: [step, end, workflow], required: true, input: none}

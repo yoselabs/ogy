@@ -9,6 +9,7 @@ shape: file
 sentence: says
 layers: [software]
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
   says: {required: true}                             # what it provides
   pin: {}
   realizes: {type: link, to: [actor]}                # the program actor rows tell (a payment provider)

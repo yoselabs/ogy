@@ -70,8 +70,13 @@ class Snapshot:
 
     def sentence(self, address: Address) -> str | None:
         """What the entry says: the field its kind names as its sentence."""
-        name = self.kind_of(address).sentence
-        return self.entries[address].text(name) if name else None
+        kind = self.kind_of(address)
+        own = self.entries[address].text(kind.sentence) if kind.sentence else None
+        if own is None and kind.glossary is not None and kind.glossary.names is not None:
+            named = sorted(self.links.forward(address, kind.glossary.names))
+            sentence = self.kind_of(named[0]).sentence if named else None
+            return self.entries[named[0]].text(sentence) if named and sentence else None  # one hop: a term naming a term
+        return own
 
     def fingerprint(self, address: Address) -> str:
         """The meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements, review cards and removed

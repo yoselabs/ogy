@@ -83,8 +83,8 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   other fields have the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is
   work). It may pick less: `input: {fields: [pin]}` (only those fields of each target) or `input: {parts: [choice]}` (the
   addresses of those parts of each target). A link field of a kind that needs proof states its input, `none` included,
-  its own and the common ones (`ontology.yml` states `none` for `because` and `satisfies`). A kind gives the input of a
-  common field or of a part kind in its own `input:` map (`input: {satisfies: content}`, `input: {attribute: content}`;
+  its own and the common ones (`ontology.yml` states `none` for `because`). A kind gives the input of a
+  common field or of a part kind in its own `input:` map (`input: {because: address}`, `input: {attribute: content}`;
   `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
   [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed content input reads
   `changed` in `ogy work`, as a changed meaning does: the build hash is one hash, and a built line keeps only it (`own`), what
@@ -125,13 +125,14 @@ names a shipped ontology, or a folder on disk when it holds a `/` (relative to t
 in which every name differs.
 `docs/kb/constitution/principles.yml` holds the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
 `<layer>/<area>/<file>`; a single kind: one entry in `<layer>/<area>/<file>` whose id is the area), the layer being `product` or `software`.
-Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `unlike`, what belongs in a neighbouring area): the kind
+Every area holds its `area.yml` (kind `area`: `says`, what the area covers, ending `Not here: <what>: <area>`; `unlike`, links to the neighbouring areas, so a renamed area follows): the kind
 declares `every_area`, so an area folder without it is `missing-entry`, and a write into a new area brings it in the same call. It needs
 no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folder
 `constitution/` is no area. An area or kind at the top, or an unknown layer, is `bad-path`. A folder that holds only its `removed.yml`
 is an area no more.
 - The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. A term is compressed: `word`, `says` (one
-  line of under 15 words, else `term-too-long`) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
+  line of under 15 words, else `term-too-long`) or `names` (the entry that defines the word: an entity, an actor, a state...; the
+  glossary and its card print that entry's sentence, length-checked the same; exactly one of the two) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
   from the sentences. Each layer has the reserved area `shared`, a
   normal area with its `area.yml`: a term, an actor or an enum that two areas use lives there (`product/shared/glossary.yml`,
   `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, enum and area)
@@ -218,9 +219,10 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
   provider); a row that tells a program actor has a handler that performs it and `uses` a dependency realizing that actor
   (`actor.nature` is read here).
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
-- Held to: any entry names the rules it is held to with `satisfies`; a
-  rule has no `on`. `satisfies` is an input of the rows and interfaces only (`input: {satisfies: content}`), so adding a rule stales
-  no other holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
+- Held to: behaviour (a step, a row, an interface, a handler, a dependency, a workflow) names the rules it is held to with
+  `satisfies`; a rule names the data it holds to (a quantity, an enum, a setting, an entity, an attribute, a state) with
+  `constrains`, a content input (a changed number makes the rule work). `satisfies` is a content input of the rows and interfaces
+  only, so adding a rule stales no other holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
   proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
@@ -234,14 +236,14 @@ links whose holder, the entry or the list part item, has `key` a or b), `^` the 
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
 `links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
 
-An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
-that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
+An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` to a
+principle or a decision (the reason, never a source); or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
 Every kind file carries `guidance:`, a short text on how to decide when to use the kind (for an actor, the variation test:
 different permitted actions make an actor, a recorded move the product reacts to a state, a fact that changes the outcome an
 attribute in a case; a threshold name is never an actor), and `like` and `unlike`, one line each: the mainstream notion
 the kind matches and the ones of the same name it does not mean (`ogy kinds`, `--map` and `ogy glossary` print them).
-`satisfies` holds an entry to a rule; `because` cites a principle or a
-decision as the reason. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
+`satisfies` holds behaviour to a rule, `constrains` holds data to it; `because` cites a principle or a
+decision as the reason, nothing else. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
 
 ## Where the code lives
 

@@ -1,6 +1,6 @@
 kind: rule
-about: a statement that must stay true; the entries held to it name it with `satisfies`
-guidance: "A statement that must stay true, proved by a test. `satisfies` means held to a rule; `because` cites a principle or a decision as the reason. A decided number is a quantity the rule names. When no kind fits, write a rule with links and a proof, never a new kind."
+about: a statement that must stay true; the behaviour held to it names it with `satisfies`, the data it holds to it names with `constrains`
+guidance: "A statement that must stay true, proved by a test. It `constrains` the data it holds to (quantity, enum, setting, entity, attribute, state): a change there is work. Behaviour (step, row, interface, handler, dependency, workflow) names it with `satisfies`. `because` cites a principle or a decision. No kind fits: a rule with links and a proof, never a new kind."
 like: "a business rule, a SysML requirement satisfied by entries and verified by a proof"
 unlike: "a principle: a value that no test can check"
 shape: file
@@ -11,4 +11,5 @@ fingerprint: {proofs: true}
 input_from: {satisfies: {fields: [pin]}}             # a dependency held to it changes its pin: its proofs are suspect
 fields:
   says: {required: true}
+  constrains: {type: links, to: [quantity, enum, setting, entity, attribute, state], input: content}   # the data it holds to: a change is work
 dropped: ["on"]                                      # the entries held to it name it with `satisfies`

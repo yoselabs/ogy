@@ -349,6 +349,8 @@ def _roles(kinds: Mapping[str, Kind]) -> list[str]:
     found += ["at most one kind is printed first"] if len(printed) > 1 else []
     for name, kind, role in glossary:
         found += [f"{name}: glossary names no field {field}" for field in (role.word, role.avoid) if field not in kind.fields]
+        if role.names is not None and (role.names not in kind.fields or kind.fields[role.names].type is not FieldType.LINK):
+            found.append(f"{name}: glossary names {role.names}, no link field of the kind")
         found += [f"{name}: the glossary kind names its sentence"] if kind.sentence is None else []
     for name, kind, role in printed:
         found += [f"{name}: printed_first names no field {role.also}"] if role.also and role.also not in kind.fields else []

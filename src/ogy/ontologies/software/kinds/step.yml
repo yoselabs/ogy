@@ -13,6 +13,7 @@ requires:
   - {if_set: actor, path: ["<-serves"], kinds: [interface], work: true, error: "an actor step has an interface that serves it"}
   - {if_set: actor, path: [/choice], kinds: [choice], without: [when], error: "an actor step offers at least one choice without `when`"}
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
   says: {}
   actor: {type: link, to: [actor], input: none}
   calls: {type: link, to: [workflow], input: none}

@@ -1,4 +1,4 @@
-says: 'How the knowledge base is stored: the docs/kb layout, addresses and ids, the removed ledgers, the built record, moves, Git and shelf.'
+says: 'How the knowledge base is stored: the docs/kb layout, addresses and ids, the removed ledgers, the built record, moves, Git and shelf. Not here: the kinds and their fields: ontology; the write operations: writes.'
 unlike:
-- 'the kinds and their fields: ontology'
-- 'the write operations: writes'
+- software/ontology/area/ontology
+- software/writes/area/writes

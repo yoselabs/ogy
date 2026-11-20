@@ -16,7 +16,7 @@ def test_the_shipped_fields_name_their_readers(ontology: Ontology) -> None:
     assert found[("proposal", "sets")] == ["exactly_one_of", "settling"]
     assert "build input" in found[("dependency", "pin")]  # a handler that uses the dependency reads its pin (`input: {fields: [pin]}`)
     assert "build input" in found[("quantity", "unit")] and "build input" not in found[("dependency", "says")]
-    assert found[("area", "unlike")] == [] and "check term-too-long" in found[("term", "says")]
+    assert found[("area", "unlike")] == ["links and impact"] and "check term-too-long" in found[("term", "says")]
     assert found[("decision", "context")] == ["check avoided-word"]  # a note: outside every fingerprint
 
 
@@ -26,4 +26,4 @@ def test_a_field_nothing_reads_is_listed(repo: Path) -> None:
     texts["kinds/area.yml"] += "  colour: {note: true}\n"
     assert readers(parse_kinds(texts, declared()))[("area", "colour")] == []
     code, lines = ogy(repo, "kinds", "area", "--readers")
-    assert code == cli.OK and "area.unlike: nothing" in lines and lines[-2] == "read by nothing (1): area.unlike"
+    assert code == cli.OK and "area.unlike: links and impact" in lines and lines[-2] == "read by nothing (0): none"

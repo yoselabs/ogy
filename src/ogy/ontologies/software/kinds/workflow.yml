@@ -26,6 +26,7 @@ flow:                                                # makes it a graph: the kin
   offers: offers                                     # a server offering only some choices lists them
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
   says: {required: true}                             # the result it reaches
   schedule: {type: link, to: [quantity]}                # started on this clock
   event: {type: link, to: [transition]}              # started when this transition happens; the listener names it, the cause does not

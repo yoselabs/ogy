@@ -128,10 +128,10 @@ def test_agreed_entry_shape(kb: Make) -> None:
 
 def test_common_fields(kb: Make) -> None:
     changed = {"product/app/actors.yml": "- {id: member, title: Member, says: x, nature: human, src: [], agreed: "
-                                         + stamp() + ", because: [product/app/workflow/sign-in], proof: [tests/t.py::test_a]}\n"}
+                                         + stamp() + ", because: [product/app/decision/sign-in], proof: [tests/t.py::test_a]}\n"}
     assert kb(changed).findings() == set()
     wrong = {"product/app/actors.yml":
-             "- {id: member, says: x, nature: human, src: one, because: [product/app/workflow/nothing], layer: product}\n"}
+             "- {id: member, says: x, nature: human, src: one, because: [product/app/decision/nothing], layer: product}\n"}
     found = kb(wrong).findings()
     assert {problem for problem, _ in found} == {Problem.WRONG_TYPE, Problem.DANGLING_LINK, Problem.UNKNOWN_FIELD,
                                                  Problem.BAD_SRC}  # `layer` is no field: the folder is the layer

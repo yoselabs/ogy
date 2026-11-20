@@ -15,11 +15,9 @@ shared:                                              # the reserved area of ever
 common:
   title: {note: true}
   src: {type: texts, note: true}
-  because: {type: links, to: [any], input: none}
-  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to; a note
+  because: {type: links, to: [principle, decision], input: none}   # the reason: a principle or a decision, never a source
   proof: {type: texts}
   agreed: {type: agreed, note: true}
-renamed: {by: satisfies}                             # common fields renamed: `ogy migrate` rewrites the old name
 roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what
 # What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in.
 harms: [structure, tells-outside, irreversible, authorization]

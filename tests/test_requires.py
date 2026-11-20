@@ -117,8 +117,9 @@ def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_depe
 
 
 def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
-    flow = SIGN_IN.replace("because: [product/app/actor/member]", "because: [software/app/interface/sign-in-page]")
-    assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in") in kb({"product/app/workflow/sign-in.yml": flow}).findings()
+    flow = SIGN_IN.replace("actor: product/app/actor/member", "actor: software/app/actor/bot")
+    bot = {"software/app/actors.yml": "- {id: bot, says: A scheduler., nature: program}\n", "product/app/workflow/sign-in.yml": flow}
+    assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in/step/ask") in kb(bot).findings()
 
 
 HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"

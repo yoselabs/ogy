@@ -82,7 +82,7 @@ def test_review_from_docs_yes_with_numbers(repo: Path) -> None:
 
 def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
     (repo / "docs/kb/product/app/capabilities.yml").write_text(
-        "- {id: borrow, says: A member borrows., because: product/app/quantity/fee, src: [code:src/x.py#f]}\n")
+        "- {id: borrow, says: A member borrows., src: [code:src/x.py#f]}\n")
     (repo / "src").mkdir()
     (repo / "src/x.py").write_text("def f():\n    pass\n")
     lines = w(repo, "review", "--from", "code")[1]

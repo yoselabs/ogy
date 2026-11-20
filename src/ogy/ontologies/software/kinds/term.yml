@@ -1,18 +1,20 @@
 kind: term
 about: "a word of the glossary, the one language of the product: an area's words in its glossary.yml, the words two areas use in the area shared of their layer"
-guidance: "A word of the product's one language: `says` in one line under 15 words, and the words to `avoid`. It goes in the glossary of the area that uses it, in `shared` when two areas do. A sentence names an entry with a link, not with a term."
+guidance: "A word of the product's one language: `says` in one line under 15 words, or `names` the entry that defines it; and the words to `avoid`. It goes in the glossary of the area that uses it, in `shared` when two areas do. A sentence names an entry with a link, not with a term."
 like: "a glossary entry, a word of the ubiquitous language"
 unlike: "a kind of the ontology; a tag"
 shape: list
 sentence: says                                       # what the word means
-glossary: {word: word, avoid: avoid, words: 15}      # the words of the product: `ogy glossary` prints them; checks word-clash, avoided-word, term-too-long
+glossary: {word: word, avoid: avoid, words: 15, names: names}      # the words of the product: `ogy glossary` prints them; checks word-clash, avoided-word, term-too-long
 file: glossary.yml                                   # <layer>/<area>/glossary.yml
 layers: [product, software]
 shared: true                                         # a word two areas use lives in <layer>/shared/glossary.yml
 must_be_agreed: true                                 # agreed in a review round, or proposed by a decision with no answer yet
 evidence: none                                       # it keeps no sources: where a word is used is computed from the sentences
+exactly_one_of: [[says, names]]                      # one sentence per concept: its own, or the named entry's
 fields:
   word: {required: true}                             # the word people say (`land`, `X`, `task tracker`); a term writes no `title`
-  says: {required: true}                             # what it means, one line of under 15 words (`term-too-long`)
+  says: {}                                           # what it means, one line of under 15 words (`term-too-long`)
+  names: {type: link, to: [actor, entity, attribute, state, enum, quantity, setting, capability, goal, workflow, step, rule, dependency, handler]}                     # the entry that defines the word: the glossary prints its sentence
   avoid: {type: texts}                               # words and phrases never used for this concept; retired names live here
 dropped: [of, distinct, example, borrowed, group]    # a term is compressed: what it is not goes into says or avoid first

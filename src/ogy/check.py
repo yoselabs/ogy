@@ -111,7 +111,7 @@ class Checker:
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST and part.requires else None
             for item in items if isinstance(items, list) else ():
                 reaches = reaching(self.snapshot, entry.address, item, part.kind) if isinstance(item, dict) else None
-                for need in (need for need in part.requires if not need.work) if isinstance(item, dict) and reaches else ():
+                for need in (need for need in part.requires if not need.work) if reaches is not None else ():
                     if applies(need, item, lambda _: False, reaches) and not satisfied(self.snapshot, need, part.kind, entry.address,
                                                                                       item, item=True):
                         self._add(Problem.UNMET, entry, f"{part.key}: {need.error}")
