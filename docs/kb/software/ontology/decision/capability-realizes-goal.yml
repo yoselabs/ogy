@@ -1,0 +1,15 @@
+question: Must a capability realize a goal?
+context: 'Bead ogy-yy9.75 owner decision (5): realizes keeps three senses; a capability must realize a goal. Declared on capability as a work requirement with its own status unrealized (a requirement names its work status in YAML), so a capability decided before its goal is work left, not a red check. docs/kb: 6 of the capabilities realize no goal (capture answer-under-delegation, store-words, write-entries; inspection inspect; setup doctor, set-up-a-repository).'
+options:
+  work:
+    label: Required, listed as work left (unrealized) until the goal is written
+  error:
+    label: Required, an error at once
+proposal:
+  chose: work
+  why: The goals are not written yet; the coordinator chose work over a red check.
+answers:
+- chose: work
+  said: 'Yes, all: realizes keeps three senses; a capability must realize a goal'
+  at: '2026-11-20T03:36:01+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -209,7 +209,8 @@ command appears without an edit). Every tool describes itself (its description i
 
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
-- Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
+- Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A capability `realizes` a
+  goal; one that realizes none is work left (`unrealized` in `ogy work`) until the goal is written, not a finding.
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `interface`
   (ArchiMate's application interface: where an actor reaches the product; its `form` is web, cli, http, mcp, library, file
   or message) that serves steps; `handler` that performs them. An interface `shows` and `accepts` entities and attributes

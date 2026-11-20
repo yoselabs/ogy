@@ -8,6 +8,7 @@ from tests.conftest import SIGN_IN, declared
 
 from ogy.model import Address, Problem
 from ogy.ontology import OntologyError, parse_kinds
+from ogy.receipts import work_left
 from ogy.snapshot import Snapshot
 
 if TYPE_CHECKING:
@@ -181,3 +182,14 @@ def test_an_interface_is_checked_by_its_form_and_what_it_serves(kb: Make, page: 
     assert (problem, "software/app/interface/extra") in kb(flow).findings()
     shows = "says: The loans.\nform: file\nshows: [product/app/entity/loan]\nallows: [product/app/actor/member]\n"
     assert kb({**flow, "software/app/interface/extra.yml": shows}).findings() == set()  # only shows: it may serve no step
+
+
+def test_a_capability_that_realizes_no_goal_is_work_named_in_yaml(kb: Make) -> None:
+    """Owner: a capability realizes a goal. Until the goal is written it is work (`status: unrealized`), not a finding."""
+    lone = kb({"product/app/capabilities.yml": "- {id: lend, says: Members borrow.}\n"})
+    assert lone.findings() == set()
+    assert [(item.address, item.status) for item in work_left(lone.snapshot, {}, lambda *_: None) if item.status == "unrealized"] == [
+        ("product/app/capability/lend", "unrealized")]
+    goal = {"product/app/goals.yml": "- {id: tools, says: Members get tools.}\n",
+            "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
+    assert not [item for item in work_left(kb(goal).snapshot, {}, lambda *_: None) if item.status == "unrealized"]
