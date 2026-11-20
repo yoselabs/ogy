@@ -1,16 +1,20 @@
 # One vocabulary for every run before a scorer sees it: each word on the left is rewritten to the word on the right,
-# in every run of every arm alike (also inside the "why" text, also with a final s, also capitalised).
-# Only 1:1 renames are here. Not mapped, so still visible to a scorer: `many`, `heard`, `realizes` on a capability,
-# and everything arm B adds (`interface` and its fields). Add B's 1:1 renames here when its map is printed.
-quantity	value
-quantities	values
-enum	set
-handler	operation
-dependency	external
-dependencies	externals
-setting	config_key
-attribute	attr
-workaround	deviation
-proposal	guess
-satisfies	by
-default	binds
+# in every run of every arm alike. Three tab-separated columns: old, new, where.
+#   kind   rewritten wherever the word stands, also in the "why" text, also with a final s, also capitalised
+#   field  rewritten only where it stands as a field: in a code span, after a dot, or before "->", "->>" or ":".
+#          The plain English word ("by default", "this satisfies") is left alone.
+# Only true 1:1 renames are here. Not mapped, so still visible to a scorer: `many`, `heard`, `realizes` on a
+# capability, and everything arm B adds or re-scopes (`interface` and its fields, `constrains`). Add B's 1:1 renames
+# when its map is printed, and only those.
+quantity	value	kind
+quantities	values	kind
+enum	set	kind
+handler	operation	kind
+dependency	external	kind
+dependencies	externals	kind
+setting	config_key	kind
+attribute	attr	kind
+workaround	deviation	kind
+proposal	guess	kind
+satisfies	by	field
+default	binds	field

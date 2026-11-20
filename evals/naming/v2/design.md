@@ -25,12 +25,12 @@ last table of key.md is corrected with it. "same" means the same as the column t
 | 12 | `entity > attr`, type list or text | `entity > attribute`, type text, `many` or not | same |
 | 13 | `actor`, nature program | same | same; credit `dependency.realizes -> actor` (verify) |
 | 14 | `entity > attr`, type money, `derived` | `entity > attribute` | same |
-| 15 | `rule` + `proof`; 15b `by` | `rule` + `proof`; 15b `satisfies` | 15b `rule.constrains` (verify) |
+| 15 | `rule` + `proof`; 15b `by` on the entity | `rule` + `proof`; 15b `satisfies` on the entity | 15b `rule.constrains -> entity` only; `satisfies` on the entity is 0 (verify) |
 | 16 | `external` (`pin`) | `dependency` (`pin`) | same |
 | 17 | `value` | `quantity` | same |
 | 18 | `view`, `serves` both steps | same | `interface`, `includes` (verify) |
 | 19 | `external > deviation` (`when`) | `dependency > workaround` (`when`) | same |
-| 20 | `actor`, nature program; step `actor` | same | the tie to [10] as B's map gives it (verify) |
+| 20 | `actor`, nature program; step `actor` | same | `allows` on the interface of [10], or the served step's `actor` (verify) |
 | 21 | `decision > option` x2 + `guess` | + `proposal` | same |
 | 22 | `value` + `config_key` (`binds`) | `quantity` + `setting` (`default`) | same |
 | 23 | `goal`, `for` | same | same |
@@ -39,6 +39,32 @@ last table of key.md is corrected with it. "same" means the same as the column t
 | 26 | `capability`, `serves ->` [23] | `capability`, `realizes ->` [23] | same |
 | 27 | `entity > attr`, type number | `entity > attribute` | same |
 | 28 | `decision > option` x2 + `answer` | same | same |
+
+## Arm B: what is still open
+
+B is scored twice: on the full 51, and on the **common-homes subset** of 45 items, the 51 without 10a, 10b, 18a,
+18b, 20b and 13b (the items whose home or link exists in another form in B). Both are fixed now. Every comparison
+with B describes and decides nothing.
+
+15b in B follows the owner's split: a must-hold statement about a data kind is tied from the statement
+(`rule.constrains -> entity`); `satisfies` stays for behaviour kinds only. So in arm B, 15b is 1 only when the
+scorer's note says `from the statement`. A B run that puts `satisfies` on the entity reaches the scorer as `by`
+(vocab.tsv) and may be marked 1: after unblinding, set those to 0 and say how many were changed.
+
+To settle against `inputs/B.md` once stage 3 has landed, before any B run is scored; each one also updates the
+last table of key.md, never its neutral columns:
+
+| cell | question |
+|---|---|
+| [10] | the kind and the fields of an API call: `interface` with `form` and `shows`? does 10b still ask for a step? |
+| [18] | how one screen used twice is written: `includes` from both screens, or another field |
+| [24] | where what a call gives back is written: `shows` on the entry of [10], linked to facts kept about the bike? |
+| [13] | whether `dependency.realizes -> actor` exists; it stays credit, never an item |
+| [20] | the tie to [10]: `allows` on the interface naming the actor, or the actor of the served step |
+| 15b | `rule.constrains` and its targets; that `satisfies` is not offered on data kinds |
+| D15 | which kinds need a proof: if a `setting`, an `interface` or a `workaround` must carry one, do [9], [10], [19] need a link item for it? If so it is added as credit only (the 51 do not change after the freeze) |
+| vocab.tsv | B's true 1:1 renames, and no others |
+| names-extra.txt | names now in a built map come out; `check-neutral.py` must pass with B |
 
 ## Where arms differ by more than a name
 

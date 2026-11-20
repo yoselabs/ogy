@@ -26,7 +26,7 @@ absence item: it scores 1 when the fact has an entry and the named link is not t
 | 12 remarks on a bike | a fact kept about the bike, free text | 12a written inside a kept thing "bike"; 12b typed as free text or as a list, and not pointed at a closed list (a mark for "several" is neither needed nor wrong) | a closed list of words; a glossary word per remark; a kept thing "remark" with stages |
 | 13 PayRight's notifier | an acting party that is a program; separate from [3] | 13a marked as a program; 13b the move to "paid" of [2] is tied to what it does (it acts in the step whose branch makes the move, or the move is that branch's effect) | folding it into [3]; the code unit that receives the message; an API call alone |
 | 14 what a hire cost | a fact kept about the hire, typed as an amount with currency, worked out from other entries | 14a written inside the hire of [2]; 14b typed as an amount with currency; 14c worked out from [5]; 14d worked out from [17] | a decided number; a kept thing of its own ("price", "amount") |
-| 15 never out on two hires | a must-hold statement with a check | 15a the check named on it in the field for it; 15b (counted apart) tied by a link to the kept thing it limits, the hire or the bike, from either end | a statement held above all; a branch alone; text on the hire only |
+| 15 never out on two hires | a must-hold statement with a check | 15a the check named on it in the field for it; 15b (counted apart) tied by a link to the kept thing it limits, the hire or the bike; write in the note which form the run used: from the kept thing, or from the statement | a statement held above all; a branch alone; text on the hire only |
 | 16 geolib, version 3 | an outside thing we use and do not own | 16a the version 3 in the field for it | the code unit doing the work; an API call; a glossary word; `none` |
 | 17 5 euros per hour over | a decided number with its unit | 17a 5 and euros (per hour) on it | a fact kept about the hire; an environment knob; a must-hold statement with 5 left in its text |
 | 18 bike tile shown twice | one screen entry, used twice | 18a tied to the map screen or its step; 18b tied to the list of past hires or its step | two entries; a kept thing "bike"; the code that draws it |
@@ -70,7 +70,7 @@ change no mark.
 | 12 | `entity > attr`, `type` text or list, with or without `many`, no `of` |
 | 13 | `actor`, `nature` program; `step.actor`, an `effect` on the `transition` |
 | 14 | `entity > attr`, `type` money, `derived ->>` [5], [17] |
-| 15 | `rule` with `proof`; 15b: `by` on the entity pointing at the rule, or `constrains` on the rule pointing at the entity |
+| 15 | `rule` with `proof`; 15b: `by` on the entity pointing at the rule (note: `from the kept thing`), or `constrains` on the rule pointing at the entity (note: `from the statement`) |
 | 16 | `external` (`pin`) |
 | 17 | `value` (`is`, `unit`) |
 | 18 | `view` with `serves` to both steps, or `interface` named by `includes` of both screens |
