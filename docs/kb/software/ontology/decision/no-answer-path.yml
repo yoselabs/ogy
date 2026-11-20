@@ -8,8 +8,8 @@ options:
     sets:
       software/ontology/rule/no-answer-is-a-failure-end:
         says: 'A row that tells a program actor or a dependency owes a no-answer path: a timeout, or a case ending in failure, on its step or the next, and a rule it satisfies on whether a repeat is safe; end.result stays success or failure.'
-  unknown-result:
-    label: Add unknown to end.result
+  third-result:
+    label: Add a third value to end.result for a call nobody answered
     sets:
       software/ontology/rule/no-answer-is-a-failure-end:
 proposal:

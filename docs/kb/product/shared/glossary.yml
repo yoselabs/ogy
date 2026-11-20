@@ -263,3 +263,9 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: a288ca325260
+- id: no-answer-path
+  word: no-answer path
+  says: What a row that tells an outside system does when no answer comes.
+  avoid:
+  - unknown result
+  - unknown end
