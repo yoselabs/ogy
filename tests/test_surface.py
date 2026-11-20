@@ -1,10 +1,12 @@
 """The command surface: flags before or after the verb, help on everything, find, near misses, status, and what an agent is given."""
 
 import asyncio
+import json
 lazy from pathlib import Path
 
 import pytest
 from fastmcp.exceptions import ToolError
+from git_porcelain import run_git
 from tests.conftest import commit, ogy
 from verb_cli.testing import assert_help_tree
 
@@ -124,3 +126,22 @@ def test_review_and_check_take_a_layer_and_a_changed_card_shows_what_changed(rep
     commit(repo, "edited")
     code, lines = ogy(repo, "--rev", ".", "review", "product")
     assert code == cli.OK and "   since you agreed: step/ask: says: The member asks. -> The member begs." in lines, lines
+
+
+def test_a_half_workflow_commits_on_a_branch_and_landing_refuses_it(repo: Path) -> None:
+    """Fable's blocker 8: an end no step reaches yet and a workflow nothing starts are a layer not finished, not a fault."""
+    run_git(repo, "checkout", "-q", "-b", "later")
+    half = {
+        "address": "product/app/workflow/remind",
+        "says": "A late borrower is reminded.",
+        "src": ["code:app.py#lend"],
+        "start": "send",
+        "steps": {"send": {"says": "The library sends a reminder.", "cases": {"otherwise": {"then": "sent"}}}},
+        "ends": {"sent": {"result": "success", "says": "Sent."}, "ignored": {"result": "failure", "says": "Ignored."}},
+    }
+    code, lines = ogy(repo, "put", json.dumps(half))
+    assert code == cli.OK, lines
+    commit(repo, "half a workflow")
+    assert ogy(repo, "--rev", ".", "check")[0] == cli.OK
+    code, lines = ogy(repo, "--rev", ".", "check", "--landing")
+    assert code == cli.FINDINGS and {line.split(":")[0] for line in lines} == {"end-unreached", "never-started"}, lines

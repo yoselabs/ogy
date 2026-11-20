@@ -177,7 +177,22 @@ def orphans(snapshot: Snapshot, flow: Flow, kind: str) -> list[Finding]:
     ]
 
 
-def check_flows(snapshot: Snapshot, _source: Source) -> list[Finding]:
+# A layer that is not finished yet, not a wrong entry: refused only when it lands (`ogy check --landing`), so a half
+# workflow commits on a branch.
+UNFINISHED = frozenset({Problem.END_UNREACHED, Problem.NEVER_STARTED})
+
+
+def check_flows(snapshot: Snapshot, source: Source) -> list[Finding]:
+    """The faults of the flows: what the author can fix in their own layer now."""
+    return [item for item in _flows(snapshot, source) if item.problem not in UNFINISHED]
+
+
+def check_unfinished_flows(snapshot: Snapshot, source: Source) -> list[Finding]:
+    """For landing only: an end no reachable step leads to, a workflow nothing starts."""
+    return [item for item in _flows(snapshot, source) if item.problem in UNFINISHED]
+
+
+def _flows(snapshot: Snapshot, _source: Source) -> list[Finding]:
     findings: list[Finding] = []
     for kind in snapshot.ontology.kinds.values():
         if kind.flow is None:

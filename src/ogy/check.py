@@ -10,7 +10,7 @@ lazy from collections.abc import Mapping
 from ogy.coverage import check_every_area, product_areas
 from ogy.evidencecheck import check_evidence
 from ogy.fieldtypes import fields_problems
-from ogy.flowcheck import check_flows
+from ogy.flowcheck import check_flows, check_unfinished_flows
 from ogy.kindchange import migrated
 from ogy.kinds import Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
@@ -173,7 +173,8 @@ CHECKS: tuple[Check, ...] = (
     check_lints,
 )
 # Errors only when a land is asked for: nobody has agreed yet is waiting for the owner, not a fault (`ogy check` counts it).
-LANDING: tuple[Check, ...] = (check_term_agreement, check_proposed_terms)
+# A workflow whose end nothing reaches or that nothing starts is a layer not finished yet: a branch commits it, a land refuses it.
+LANDING: tuple[Check, ...] = (check_term_agreement, check_proposed_terms, check_unfinished_flows)
 
 
 def check(

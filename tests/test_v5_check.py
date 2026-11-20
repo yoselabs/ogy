@@ -230,10 +230,10 @@ def test_calling_step_covers_every_callee_end(kb: Make) -> None:
 
 
 def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> None:
-    alone = kb({"product/app/workflow/callee.yml": CALLEE}).findings(started=True)
+    alone = kb({"product/app/workflow/callee.yml": CALLEE}).findings(started=True, landing=True)
     assert alone == {(Problem.NEVER_STARTED, "product/app/workflow/callee")}
     both = calling("[product/app/workflow/callee/end/good, product/app/workflow/callee/end/bad]")
-    assert kb(both).findings(started=True) == {
+    assert kb(both).findings(started=True, landing=True) == {
         (Problem.NEVER_STARTED, "product/app/workflow/caller"),
         (Problem.NEVER_STARTED, "product/app/workflow/callee"),
     }  # a caller nothing starts
@@ -243,7 +243,7 @@ def test_a_workflow_is_started_by_a_root_or_by_a_started_caller(kb: Make) -> Non
         "product/app/quantities.yml": VALUES,
         "product/app/workflow/caller.yml": caller.replace("says: C.\n", "says: C.\nschedule: product/app/quantity/fee\n"),
     }
-    assert kb(timed).findings(started=True) == set()
+    assert kb(timed).findings(started=True, landing=True) == set()
 
 
 def cases(first: str, second: str) -> dict[str, str | None]:
@@ -269,8 +269,12 @@ def test_unreachable_step_and_unreached_end(kb: Make) -> None:
         "says: S.\nstart: a\nsteps:\n  a: {cases: {otherwise: {then: done}}}\n  lost: {cases: {otherwise: {then: done}}}\n"
         "ends:\n  done: {result: success, says: D.}\n  never: {result: failure, says: N.}\n"
     )
-    found = kb({"product/app/workflow/w.yml": flow}).findings()
-    assert found == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost"), (Problem.END_UNREACHED, "product/app/workflow/w/end/never")}
+    written = kb({"product/app/workflow/w.yml": flow})
+    assert written.findings() == {(Problem.UNREACHABLE, "product/app/workflow/w/step/lost")}  # an end nothing reaches yet: unfinished
+    assert written.findings(landing=True) == {
+        (Problem.UNREACHABLE, "product/app/workflow/w/step/lost"),
+        (Problem.END_UNREACHED, "product/app/workflow/w/end/never"),
+    }
 
 
 def test_a_row_that_deletes_ranks_as_irreversible(kb: Make) -> None:
