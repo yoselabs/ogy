@@ -1,5 +1,5 @@
 says: The pre-commit hook that ogy init writes; it checks the knowledge base as staged.
-invoked_as: git commit (runs .githooks/pre-commit)
+invoked_as: git commit (runs the prek entry `ogy hook pre-commit` when the repo has a prek config, else .githooks/pre-commit)
 serves:
 - software/checks/workflow/pre-commit-check/step/commit
 src:

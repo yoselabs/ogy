@@ -5,11 +5,18 @@ options:
     label: Every commit is checked, so a code change that breaks a code source is refused at once
   kb-only:
     label: Only a commit that changes docs/kb is checked; a broken code source waits for the next one
+  affected-only:
+    label: A commit is checked only when it changes the knowledge base or a file its `src` items cite; any other commit makes the hook do no work (two Git commands, no entry read), proved by a test that bounds the commands it runs
 proposal:
-  chose: every-commit
-  why: A code source that breaks without a knowledge-base change is the case the skip hid.
+  chose: affected-only
+  why: The check reads the knowledge base and the files it cites, so a commit that changes none of them has nothing new to find; a renamed code file that a `code:` source cites still changes a cited file and is checked.
+  heard: If no underlying file changed, the hook and just check need not run; the inputs are the knowledge base plus the files it cites; replace the earlier decision with that.
 answers:
 - chose: every-commit
   said: Build all of Fable's fixes, so every commit is checked
   at: '2026-11-20T14:54:57+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: affected-only
+  said: 'Skip the hook when nothing it reads changed: the knowledge base and the files it cites; replaces the earlier every-commit answer.'
+  at: '2026-11-20T21:54:39+01:00'
+  where: ai:claude/4d8c6794

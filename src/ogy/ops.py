@@ -11,7 +11,7 @@ lazy from pathlib import Path
 from git_porcelain import git_dir
 from process_lock import LockHeldError, ProcessLock
 
-from ogy import hooks, near, put, removal, removed, reply, rounds, writes
+from ogy import affected, hooks, near, put, removal, removed, reply, rounds, writes
 from ogy.base import read_ledgers
 from ogy.built import Line, read_source
 from ogy.check import check
@@ -123,9 +123,14 @@ def run_hook(target: Target, name: str, pushed: str = "") -> Run[list[tuple[hook
     """What a Git hook or the gate guards, each update checked at the commit it will hold: `pre-commit` the staged tree,
     `pre-push` each branch of the push (`pushed`: the hook's standard input), `gate` the worktree; a land (`ogy.hooks`) with the
     landing checks."""
+    if name == "pre-commit" and affected.unaffected(target.repo, target.kb):
+        return Run([], 0, Verdict.OK)  # affected-file selection: nothing the check reads changed, so no work
     one = {"pre-commit": hooks.staged, "gate": hooks.checked_out}.get(name)
     updates = [one(target.repo)] if one else hooks.pushed(target.repo, pushed)
     found = [(update, run_check(target.at(update.rev), update.base, landing=update.land).value) for update in updates]
+    if name == "pre-commit":
+        for update, _ in found:
+            affected.remember(target.repo, target.kb, update.rev, target.at(update.rev).read()[1])
     return Run(found, 0, Verdict.FINDINGS if any(items for _, items in found) else Verdict.OK)
 
 
