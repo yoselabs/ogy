@@ -6,8 +6,9 @@ from typing import TYPE_CHECKING
 import pytest
 from tests.conftest import SIGN_IN, declared
 
-from ogy.model import Problem
+from ogy.model import Address, Problem
 from ogy.ontology import OntologyError, parse_kinds
+from ogy.snapshot import Snapshot
 
 if TYPE_CHECKING:
     from conftest import Kb
@@ -126,6 +127,21 @@ def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
     told = PAY.replace("product/app/actor/provider", "software/app/dependency/cards")  # a product row never tells a dependency
     found = kb({**PAYING, "product/app/workflow/pay.yml": told, "software/app/dependency/cards.yml": CARDS}).findings()
     assert (Problem.LAYER_DIRECTION, "product/app/workflow/pay/step/charge/case/otherwise") in found
+
+
+def test_an_entity_needs_proof_only_with_transitions(kb: Make) -> None:
+    """D15: `needs_proof: {if_part: transition}`; a step, a handler and a quantity need none."""
+    lifecycle = LOAN + "states:\n  out: {says: Out.}\ntransitions:\n  lend: {to: out}\n"
+    plain, held = kb(SERVED).snapshot, kb({**SERVED, "product/app/entity/loan.yml": lifecycle}).snapshot
+    loan = "product/app/entity/loan"
+    assert not plain.needs_proof(at(plain, loan)) and held.needs_proof(at(held, loan))
+    assert not any(plain.needs_proof(at(plain, text)) for text in ("software/app/handler/write", "product/app/workflow/sign-in/step/ask"))
+
+
+def at(snapshot: Snapshot, text: str) -> Address:
+    found = snapshot.resolve(text)
+    assert found is not None, text
+    return found
 
 
 HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"

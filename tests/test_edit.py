@@ -83,11 +83,12 @@ def test_fingerprint_follows_fields_that_are_not_notes(editor: Editor, ontology:
     assert editor.snapshot().fingerprint(fee) == before
     editor.update(fee, {"is": 5})
     assert editor.snapshot().fingerprint(fee) != before
-    meaning = editor.snapshot().fingerprint(fee)
-    editor.update(fee, {"proof": ["tests/test_fee.py::test_fee"]})
+    go = ASK.part("choice", "go")  # a row needs proof; a quantity does not (D15)
+    meaning = editor.snapshot().fingerprint(go)
+    editor.update(go, {"proof": ["tests/test_go.py::test_go"]})
     snapshot = editor.snapshot()
-    assert snapshot.fingerprint(fee) == meaning  # a new proof never sends the entry back to the owner
-    assert snapshot.build_hash(fee) != snapshot.build_hash(fee, proofs=False)  # but it is work for the built record
+    assert snapshot.fingerprint(go) == meaning  # a new proof never sends the entry back to the owner
+    assert snapshot.build_hash(go) != snapshot.build_hash(go, proofs=False)  # but it is work for the built record
 
 
 def test_a_parent_fingerprint_follows_its_unkeyed_parts_and_declared_paths(editor: Editor) -> None:

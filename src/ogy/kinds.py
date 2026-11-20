@@ -176,6 +176,13 @@ class Requirement(BaseModel):
         return ""
 
 
+class ProofWhen(BaseModel):
+    """A kind's entries need proof only when they hold a part of this kind (an entity with transitions)."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    if_part: str
+
+
 class OnePart(BaseModel):
     """Exactly one part of this kind (of `kind`) has `field` equal to `equals`, such as one `otherwise` case."""
 
@@ -283,7 +290,7 @@ class Kind(BaseModel):
     moved_from: str | None = None  # `<folder>/<file>`: the fixed-folder file it was kept in; `ogy migrate` moves it to `shared`
     file: str | None = None  # a list or single kind's file name inside every area
     every_area: bool = False  # every area of the kind's layers holds an entry of it; an area without one is `missing-entry`
-    needs_proof: bool = False  # entries count as work until built
+    needs_proof: bool | ProofWhen = False  # entries count as work until built; `{if_part: <kind>}`: only those holding one
     must_be_agreed: bool = False
     asked: bool = True  # false: its sentence is never put to the owner, so it gets no review card and needs no agreement
     harm: tuple[str, ...] = ()  # what a wrong sentence of this kind costs (tags of `harms`); read by the review queue
@@ -333,6 +340,16 @@ class Kind(BaseModel):
     def moved_folder(self) -> str | None:
         """The fixed folder the entries were kept in before they moved into the layers (`ogy migrate` moves them)."""
         return self.moved_from.split("/", 1)[0] if self.moved_from is not None and self.layers else None
+
+    @property
+    def proves(self) -> bool:
+        """Some entries of the kind need proof (all, or those holding the part `needs_proof` names): read by the kind's lints,
+        readers and printers; which entry needs one is `Snapshot.needs_proof`."""
+        return self.needs_proof is not False
+
+    @property
+    def proof_text(self) -> str:
+        return f"needs proof with a {self.needs_proof.if_part}" if isinstance(self.needs_proof, ProofWhen) else "needs proof"
 
     @property
     def holding(self) -> Holds:

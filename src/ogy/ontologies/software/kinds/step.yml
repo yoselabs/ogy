@@ -7,8 +7,6 @@ shape: inline
 sentence: says
 part_of: workflow
 key: steps
-needs_proof: true
-fingerprint: {proofs: true}
 requires:
   - {if_set: actor, path: ["<-serves"], kinds: [interface], work: true, status: unserved, error: "an actor step has an interface that serves it"}
   - {if_set: actor, path: [/choice], kinds: [choice], without: [when], error: "an actor step offers at least one choice without `when`"}

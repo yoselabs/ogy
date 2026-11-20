@@ -113,7 +113,7 @@ def _compared(ontology: Ontology, reached: set[str]) -> set[str]:
     reached by a path; a list or one part is inside its parent's. Telling a move from a loss compares every fingerprint, for
     identity, not meaning: it is no reader."""
     kinds = ontology.kinds
-    own = {n for n, k in kinds.items() if k.needs_proof or (k.asked and ontology.carded(k)) or k.must_be_agreed or n in reached}
+    own = {n for n, k in kinds.items() if k.proves or (k.asked and ontology.carded(k)) or k.must_be_agreed or n in reached}
     inside = {n for n, k in kinds.items() if k.holding in (Holds.LIST, Holds.ONE) and k.part_of and set(k.part_of) & own}
     return own | inside | ({n for n, k in kinds.items() if k.holding is Holds.ONE and set(k.part_of) & inside})
 

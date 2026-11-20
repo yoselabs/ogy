@@ -16,6 +16,7 @@ from ogy.kinds import (
     Input,
     Kind,
     Picked,
+    ProofWhen,
     Requirement,
     Shape,
     Was,
@@ -171,7 +172,10 @@ def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
                   if holders and not any(field in other.fields for other in holders)]
         found += [f"{name}.input_from.{key}: {field}, {_SOME.format(other.kind)}" for other in holders
                   for field in (key, *picked.fields) if field in _partial(other)]
-    if kind.needs_proof:
+    when = kind.needs_proof if isinstance(kind.needs_proof, ProofWhen) else None
+    if when is not None and not (when.if_part in kinds and kinds[when.if_part].is_part(name)):
+        found.append(f"{name}: needs_proof if_part names no part kind {when.if_part}")
+    if kind.proves:
         found += [f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
                   for field, spec in {**declared.common, **kind.fields}.items()
                   if spec.type in LINKING and spec.input is None and field not in kind.input]

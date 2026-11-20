@@ -86,6 +86,16 @@ class Snapshot:
             self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), ())
         return self._prints[key]
 
+    def needs_proof(self, address: Address) -> bool:
+        """The entry is work until built: its kind needs proof, or needs it of entries that hold the part it names."""
+        given = self.kind_of(address).needs_proof
+        if isinstance(given, bool):
+            return given
+        part = self.ontology.get(given.if_part)
+        if part is not None and part.holding is Holds.LIST:
+            return bool(self.entries[address].fields.get(part.key or ""))
+        return bool(self.links.parts(address, given.if_part))
+
     def agreed_print(self, address: Address) -> str:
         """What a person agrees to and a card shows: the fingerprint, with the fingerprints of the rows read with a step and,
         for a term that names an entry, that entry's sentence. A row or a named sentence that changes sends the entry back to

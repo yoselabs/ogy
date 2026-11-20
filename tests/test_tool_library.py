@@ -19,18 +19,15 @@ from ogy.source import WorktreeSource
 ROOT = Path(__file__).parent / "fixtures" / "tool-library"
 P, S = "product/lending", "software/lending"
 BORROW = f"{P}/workflow/borrow/step"
-UNBUILT = [
-    f"{P}/entity/tool", f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans",
-    f"{P}/rule/fees-round-up", f"{P}/rule/tools-are-checked-on-return", f"{P}/quantity/max-loans", f"{P}/quantity/remind-every",
-    f"{P}/quantity/reply-wait", f"{BORROW}/ask", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record",
-    f"{BORROW}/record/case/full", f"{BORROW}/record/case/otherwise", f"{BORROW}/standing",
-    f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes", f"{P}/workflow/close-loan/step/close",
-    f"{P}/workflow/close-loan/step/close/case/otherwise",
-    f"{P}/workflow/notify/step/send", f"{P}/workflow/notify/step/send/case/ok", f"{P}/workflow/notify/step/send/case/otherwise",
-    f"{P}/workflow/remind/step/call", f"{P}/workflow/remind/step/call/case/otherwise", f"{P}/workflow/remind/step/call/case/sent",
-    f"{S}/interface/borrow-cli", f"{S}/setting/remind-every", f"{S}/rule/one-reminder-a-day",
-    f"{S}/dependency/mailer/workaround/slow-at-night", f"{S}/handler/lend",
-    f"{S}/handler/send-reminder", f"{S}/interface/leave-button", f"{S}/interface/loans-report",
+UNBUILT = [  # D15: no step, handler or quantity, and an entity only with transitions (tool has none)
+    f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans", f"{P}/rule/fees-round-up",
+    f"{P}/rule/tools-are-checked-on-return", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record/case/full",
+    f"{BORROW}/record/case/otherwise", f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes",
+    f"{P}/workflow/close-loan/step/close/case/otherwise", f"{P}/workflow/notify/step/send/case/ok",
+    f"{P}/workflow/notify/step/send/case/otherwise", f"{P}/workflow/remind/step/call/case/otherwise",
+    f"{P}/workflow/remind/step/call/case/sent", f"{S}/interface/borrow-cli", f"{S}/setting/remind-every",
+    f"{S}/rule/one-reminder-a-day", f"{S}/dependency/mailer/workaround/slow-at-night", f"{S}/interface/leave-button",
+    f"{S}/interface/loans-report",
 ]
 WORK = {
     *((address, Status.UNBUILT) for address in UNBUILT),

@@ -358,3 +358,11 @@ def test_a_toy_word_points_at_the_entry_that_defines_it(toy: Path) -> None:
     words.write_text(words.read_text().replace("points_at: business/shop/person/shopper", "points_at: business/shop/person/shopper, "
                                                                                           "tells: Buys."))
     assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["one-of"]
+
+
+def test_a_toy_stage_needs_proof_only_while_it_holds_a_move() -> None:
+    """`needs_proof: {if_part: move}`: the condition names a part kind of the toy's own."""
+    texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}
+    journey = texts["business/shop/journey/buy.yml"].replace("finishes:", "  think: {tells: The shopper thinks., next: done}\nfinishes:")
+    snapshot = build(named(str(TOY), Path(".")), {**texts, "business/shop/journey/buy.yml": journey})
+    assert snapshot.needs_proof(_at(snapshot, PICK)) and not snapshot.needs_proof(_at(snapshot, "business/shop/journey/buy/stage/think"))

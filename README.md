@@ -80,6 +80,12 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
 - Two hashes. The fingerprint is the meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements,
   review cards and removed items hold it. The build hash adds the proofs and the build inputs; only the built record and
   work left compare it. A new proof or a changed dependency is work, never a question for the owner.
+- Which entries need a proof (a test that shows them built): the rows (choice, case, timeout), a rule, an interface, a setting
+  and a workaround; an entity only while it has transitions (`needs_proof: {if_part: transition}`); never a step, a handler
+  or a quantity (a number is proved by the rule that `constrains` it). Each is work until its built line matches its build
+  hash. A built line on a live entry that needs no proof is removal work, and `ogy migrate` deletes it. A dependency's new
+  pin still reaches the rules it is held to (`input_from`); the handler that uses it is no longer built, so its `uses` input
+  reads nothing.
 - Build inputs (as in Bazel and Make). A link field says what of its targets enters the build hash with `input:` `none`
   (the default when unset), `address` (the target's address: a relink is work; only on a note or common field, as a kind's
   other fields have the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is

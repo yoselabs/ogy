@@ -72,13 +72,13 @@ def build_hash(target: Target, text: str) -> str:
 
 @pytest.fixture
 def before(repo: Path) -> str:
-    """The fee and the operation agreed, the fee, the choice and the timeout built, and an answer with a note: committed."""
+    """The fee and the operation agreed, the choice and the timeout built, and an answer with a note: committed."""
     target = Target(repo)
     (repo / "docs/kb/product/app/decision/fee.yml").parent.mkdir(parents=True, exist_ok=True)
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(DECISION)
     ops.run_answer(target, ASKED, "two", "Two is fine", "ai:claude/1", note="for now")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
-    for text in (FEE, GO, TIMEOUT):
+    for text in (GO, TIMEOUT):
         built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
                     built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
@@ -130,11 +130,11 @@ def test_a_rename_names_a_field_of_the_kind() -> None:
 
 def test_migrate_strips_the_old_deps_of_a_built_line_and_keeps_it_current(repo: Path, before: str) -> None:
     target = Target(repo)
-    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(FEE, target.kinds())].path
+    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(GO, target.kinds())].path
     path.write_text(path.read_text().replace("covers:", f"deps: {{{LEND}: aaaaaaaaaaaa}}, covers:"))
     assert [(item.problem, item.path) for item in ops.run_check(target).value] == [
         (Problem.NEEDS_MIGRATION, f"built/{path.relative_to(repo / 'docs/kb/built')}")]
-    assert f"kept the built line current: {FEE}" in ops.run_migrate(target).value.lines()
+    assert f"kept the built line current: {GO}" in ops.run_migrate(target).value.lines()
     assert "deps" not in path.read_text()
     assert not ops.run_check(target).value
-    assert FEE not in {item.address for item in ops.run_work(target).value}
+    assert GO not in {item.address for item in ops.run_work(target).value}

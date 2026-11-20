@@ -38,7 +38,7 @@ class Work:
 
 
 def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
-    proving = [a for a in sorted(snapshot.entries) if snapshot.kind_of(a).needs_proof]
+    proving = [a for a in sorted(snapshot.entries) if snapshot.needs_proof(a)]
     current = {str(a): snapshot.build_hash(a) for a in proving}
     return [Work(text, Status(why), current[text], record[text].own if text in record else None)
             for text, why in built.work_left(record, current).items()]
@@ -52,8 +52,10 @@ def _unmet(snapshot: Snapshot) -> list[Work]:
 
 
 def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, removed.Item]) -> list[Work]:
-    """B2: the `why` of the ledger item is printed beside the work."""
-    found: list[Work] = []
+    """B2: the `why` of the ledger item is printed beside the work. A line on a live entry that needs no proof (its kind no
+    longer does, or an entity lost its transitions) is removal work too: `ogy migrate` deletes it."""
+    found = [Work(str(address), Status.REMOVED, "", record[str(address)].own, "needs no proof: `ogy migrate` deletes the line")
+             for address in sorted(snapshot.entries) if str(address) in record and not snapshot.needs_proof(address)]
     for text in built.removal_work(record, (str(a) for a in snapshot.entries)):
         item = next((ledger[i] for i in sorted(ledger, key=len, reverse=True) if text == i or text.startswith(i + "/")), None)
         found.append(Work(text, Status.REMOVED, "", record[text].own, f"why: {item.why}" if item else "no ledger item"))

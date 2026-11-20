@@ -1,0 +1,4 @@
+says: A late tool costs the late fee for each day it is late.
+constrains: [product/library/quantity/late-fee]
+because: [product/library/decision/late-fee]
+proof: [tests/test_fee.py::test_late_fee_per_day]

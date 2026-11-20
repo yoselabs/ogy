@@ -8,8 +8,6 @@ shape: list
 sentence: says
 file: quantities.yml
 layers: [product, software]
-needs_proof: true
-fingerprint: {proofs: true}
 fields:
   says: {required: true}                             # what the quantity is, without the number
   is: {type: number, required: true}
