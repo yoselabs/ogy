@@ -136,4 +136,4 @@ No run that counts starts before every line is ticked. Write the date and the ev
       2026-11-20: README arms and comparison tables; guess-prompt.md no longer names B at all (B is not guessed).
 - [x] Pilot and smoke folders are marked as not counted.
       2026-11-20: README.md ("Not counted, ever"), `runs/README.md`, `pilot/RESULT.md`.
-- [ ] v2/ is committed and that commit is the "frozen at" of README.md.
+- [x] v2/ is committed and that commit is the "frozen at" of README.md. 2026-11-20: 019b4a3.

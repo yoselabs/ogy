@@ -7,7 +7,7 @@ blamed on a name. v1's files and scores stay as they are; v2 results are not com
 
 Pinned; the freeze commit is the one field still open:
 
-- frozen at: `<commit of v2/>`
+- frozen at: `019b4a3` (2026-11-20; this line and the GO.md ticks were written after it)
 - `small` model id: `claude-haiku-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
 - `default` model id: `claude-opus-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
 - scorer model id: `claude-opus-5-5`, effort `medium`
