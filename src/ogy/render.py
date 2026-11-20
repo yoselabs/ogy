@@ -14,6 +14,7 @@ from ogy.review import Dropped, Review
 from ogy.semdiff import SemanticDiff
 from ogy.show import Shown
 from ogy.status import Card, Status
+from ogy.workcause import Group
 
 
 def plain(value: object) -> str:
@@ -44,9 +45,18 @@ def render_impact(found: Impact) -> list[str]:
     return lines
 
 
-def render_work(found: list[Work]) -> list[str]:
-    return [f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})"
-            + (f" {item.note}" if item.note else "") for item in found] or ["no work left"]
+def render_work(found: list[Work], groups: list[Group] | None = None) -> list[str]:
+    """One line per piece of work; with `groups`, each group under a line naming its cause (`workcause`)."""
+    if groups is None:
+        return [_work_line(item) for item in found] or ["no work left"]
+    lines = [line for decision, realized, items in groups for line in (
+        f"by {decision or 'no decision'}, for {realized or 'nothing realized'} ({len(items)}):", *map(_work_line, items))]
+    return lines or ["no work left"]
+
+
+def _work_line(item: Work) -> str:
+    line = f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})"
+    return line + (f" {item.note}" if item.note else "")
 
 
 def render_diff(found: SemanticDiff) -> list[str]:

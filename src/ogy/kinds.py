@@ -258,6 +258,7 @@ class Flow(BaseModel):
     serves: str
     servers: tuple[str, ...]
     offers: str  # a serving entry offering only some choices lists them; without it, it offers all
+    group: str | None = None  # container link field naming what the flow realizes: `ogy work` groups its work by it
 
 
 class Was(BaseModel):

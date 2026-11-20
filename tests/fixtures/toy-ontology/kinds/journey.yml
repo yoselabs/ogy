@@ -21,7 +21,9 @@ flow:
   serves: serves_stages
   servers: [screen]
   offers: shows_moves
+  group: aims_at
 fields:
   tells: {required: true}
   clock: {type: text}
   first: {type: link, to: [stage], required: true}
+  aims_at: {type: link, to: [norm, person]}

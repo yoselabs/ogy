@@ -47,6 +47,9 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
     found += _keys(kinds, declared)
     found += _settling(kinds) + _roles(kinds)
     found += _link_direction(kinds)
+    found += [f"{name}: flow group {kind.flow.group} is no link field of the kind" for name, kind in kinds.items()
+              if kind.flow is not None and kind.flow.group is not None and (kind.flow.group not in kind.fields
+                                                                           or kind.fields[kind.flow.group].type is not FieldType.LINK)]
     return found
 
 

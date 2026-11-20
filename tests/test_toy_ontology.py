@@ -376,3 +376,14 @@ def test_a_toy_norm_nothing_links_to_is_idle_work(toy: Path) -> None:
     journey = toy / "docs/kb/business/shop/journey/buy.yml"
     journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
     assert not any(line.startswith("idle:") for line in w(toy, "work")[1])
+
+
+def test_toy_work_is_grouped_by_the_ruling_that_set_it_then_what_its_journey_aims_at(toy: Path) -> None:
+    """Display only: `ogy work` for a person puts each piece of work under the decision that set it (or a parent) and what its
+    container's `flow.group` link names."""
+    journey = toy / "docs/kb/business/shop/journey/buy.yml"
+    journey.write_text(journey.read_text() + "aims_at: business/shop/norm/limit\n")
+    lines = w(toy, "work")[1]
+    assert lines[lines.index("by business/shop/ruling/limit, for nothing realized (1):") + 1].startswith(
+        "unbuilt: business/shop/norm/limit ")
+    assert any(line.startswith("by no decision, for business/shop/norm/limit (") for line in lines)

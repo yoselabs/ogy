@@ -24,6 +24,7 @@ flow:                                                # makes it a graph: the kin
   serves: serves
   servers: [interface]                               # the kinds that serve a step to its actor
   offers: offers                                     # a server offering only some choices lists them
+  group: realizes                                    # `ogy work` groups the work of a workflow by the capability it realizes
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 fields:
   satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
