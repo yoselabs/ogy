@@ -1,9 +1,16 @@
 """`ogy kinds`: the kinds of an ontology as text, read from the kind files. Nothing is kept: the kind files are the one home."""
 
-from ogy.kinds import FieldSpec, Kind
+from ogy.kinds import FieldSpec, Input, Kind, Picked
 from ogy.near import hint
 from ogy.ontology import Ontology
 from ogy.verdict import NotFound
+
+
+def _input(given: Input | Picked) -> str:
+    """How a link enters the build hash, as words: `content`, `address`, or what of its targets it picks."""
+    if isinstance(given, Input):
+        return str(given)
+    return f"fields {'|'.join(given.fields)}" if given.fields else f"addresses of its {'|'.join(given.parts)}"
 
 
 def _field(name: str, spec: FieldSpec) -> str:
@@ -17,6 +24,8 @@ def _field(name: str, spec: FieldSpec) -> str:
     detail += [word for word, on in (("required", spec.required), ("note", spec.note)) if on]
     if spec.harm:
         detail.append("harm if wrong: " + "|".join(spec.harm))
+    if spec.input is not None:
+        detail.append("build input: " + _input(spec.input))
     return f"    {name}: {', '.join(detail)}"
 
 
@@ -43,6 +52,11 @@ def _facts(kind: Kind) -> list[str]:
         lines.append(f"  is: {', '.join(flags)}")
     if kind.harm:
         lines.append(f"  harm if wrong: {', '.join(kind.harm)}")
+    if kind.input:
+        lines.append(f"  build input: {', '.join(f'{name} {_input(given)}' for name, given in kind.input.items())}")
+    if kind.input_from:
+        found = (f"what links here by {name}, its {_input(given)}" for name, given in kind.input_from.items())
+        lines.append(f"  build input from: {', '.join(found)}")
     return lines
 
 

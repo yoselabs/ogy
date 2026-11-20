@@ -14,5 +14,5 @@ requires:
   - {if_set: actor, path: [/choice], kinds: [choice], without: [when], error: "an actor step offers at least one choice without `when`"}
 fields:
   says: {}
-  actor: {type: link, to: [actor]}
-  calls: {type: link, to: [workflow]}
+  actor: {type: link, to: [actor], input: none}
+  calls: {type: link, to: [workflow], input: none}

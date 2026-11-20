@@ -8,11 +8,10 @@ part_of: step
 key: timeout
 holds: one
 needs_proof: true
-fingerprint:
-  proofs: true
-  also: [[satisfies, "=@fingerprint"], [after, "=is"], [after, "=unit"]]
+fingerprint: {proofs: true}
+input: {satisfies: content}
 requires:
   - {if_part: effect, path: ["<-performs"], kinds: [handler], error: "a row with an effect has a handler performing it"}
 fields:
-  after: {type: link, to: [quantity], required: true}
-  then: {type: link, to: [step, end, workflow], required: true}
+  after: {type: link, to: [quantity], required: true, input: {fields: [is, unit]}}   # the number and unit, not its words
+  then: {type: link, to: [step, end, workflow], required: true, input: none}

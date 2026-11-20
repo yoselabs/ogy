@@ -56,8 +56,34 @@ class Evidence(StrEnum):
     NONE = "none"
 
 
+class Input(StrEnum):
+    """How a link enters the build hash of the entry that holds it (a build input, as in Bazel and Make). The meaning
+    fingerprint never reads it: agreements and review cards stay as they are."""
+
+    NONE = "none"  # the default: a change to the target, or a relink of a note field, is no work
+    ADDRESS = "address"  # the target's address: a relink of a note field is work (any other field has it in the meaning)
+    CONTENT = "content"  # the target's content, its build hash without proofs: a change in the target is work
+
+
+class Picked(BaseModel):
+    """A narrower input: only these fields of each target (`fields: [pin]`, a dependency's pin and not its description), or
+    only the addresses of these parts of each target (`parts: [choice]`, the choices of a served step)."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    fields: tuple[str, ...] = ()
+    parts: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def _one(self) -> Self:
+        if bool(self.fields) == bool(self.parts):
+            raise ValueError("a picked input names fields or parts, one of them")
+        return self
+
+
 class FieldSpec(BaseModel):
-    """One field of a kind. Every declared field is meaning and enters the fingerprint unless it is a `note`."""
+    """One field of a kind. Every declared field is meaning and enters the fingerprint unless it is a `note`. A link field
+    may declare its `input`: what of its targets enters the build hash. Unset reads as `none`; a link field of a kind that
+    needs proof states it, `none` included."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     type: FieldType = FieldType.TEXT
@@ -68,18 +94,15 @@ class FieldSpec(BaseModel):
     required: bool = False
     harm: tuple[str, ...] = ()  # what a wrong value of this field costs, for an entry that sets it (tags of `harms`)
     member_harm: dict[str, tuple[str, ...]] = {}  # an enum member's own cost, e.g. `delete: [irreversible]`
+    input: Input | Picked | None = None
 
 
 class Fingerprint(BaseModel):
-    """What besides the meaning enters the build hash, which only the built record compares. `also` are link paths ending in
-    `=field` (see paths)."""
+    """What besides the meaning and the inputs (`input`, `input_from`) enters the build hash, which only the built record
+    compares."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     proofs: bool = False  # the set of proof test ids: appending a proof (bug triage) makes the entry work again
-    also: tuple[tuple[str, ...], ...] = ()
-    # paths that enter it only where they reach a value (an entry without the final field is passed over): a kind that
-    # gains one stales nothing, such as the pins of the externals held to a rule
-    reached: tuple[tuple[str, ...], ...] = ()
 
 
 class Equals(BaseModel):
@@ -244,6 +267,12 @@ class Kind(BaseModel):
     part_of: tuple[str, ...] = ()  # an inline kind's parent kinds
     key: str | None = None  # an inline part's key inside the parent entry
     fingerprint: Fingerprint = Fingerprint()
+    # the input of what the entry holds besides its own fields: a common field (rows: `satisfies: content`) or a part kind
+    # (an entity: `attribute: content`); a field of its own declares its `input` itself
+    input: dict[str, Input | Picked] = {}
+    # reverse inputs: the entries that link here by the field named, these fields of theirs, only where set (a kind that
+    # gains such a field stales nothing): a rule reads the pin of a dependency held to it, `satisfies: {fields: [pin]}`
+    input_from: dict[str, Picked] = {}
     exactly_one_of: tuple[tuple[str, ...], ...] = ()  # of each group, exactly one field is set
     requires: tuple[Requirement, ...] = ()
     one_part: OnePart | None = None

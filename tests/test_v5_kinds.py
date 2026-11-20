@@ -81,6 +81,31 @@ def test_loader_refuses_inconsistent_kinds(text: str, message: str) -> None:
         load(text)
 
 
+LINK = ENTITY + "fields:\n  a: {type: link, to: [actor], input: %s}\n"
+
+
+@pytest.mark.parametrize(("texts", "message"), [
+    ((ENTITY + "fields:\n  a: {input: content}\n",), "only a link or expr field is an input"),
+    ((LINK % "address",), "is the meaning already"),
+    ((LINK % "{fields: [colour]}",), "picks colour, no field of actor"),
+    ((LINK % "{parts: [part]}",), "picks part, no part of actor"),
+    ((LINK % "{fields: [nature], parts: [part]}",), "fields or parts, one of them"),
+    ((ENTITY + "input: {nothing: content}\n",), "names a common field or a part kind"),
+    ((PARENT + "input: {part: {fields: [a]}}\n", PART), "a part is an input whole"),
+    ((ENTITY + "input_from: {satisfies: {fields: [pin]}}\n",), "names a link field that leads here"),
+    ((ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor]}\n",), "states its input"),
+])
+def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message: str) -> None:
+    with pytest.raises(OntologyError, match=message):
+        load(*texts)
+
+
+def test_inputs_that_name_what_their_targets_hold_load() -> None:
+    load(ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
+         "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address}\n")
+    load(PARENT + "input: {part: content}\n", PART)
+
+
 def test_link_has_one_direction() -> None:
     first = HEAD.replace("thing", "first") + "shape: file\nfields:\n  to: {type: link, to: [second]}\n"
     second = HEAD.replace("thing", "second") + "shape: file\nfields:\n  back: {type: links, to: [first]}\n"

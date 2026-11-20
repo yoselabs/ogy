@@ -2,12 +2,16 @@
 
 A path is a list of hops. `field` follows that link field forward, `<-field` follows it backward (entries whose
 `field` points here), `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
-the entries reached. A final `=@id` or `=@fingerprint` is answered by the snapshot (keys, or the reached entries' own
-fingerprints, so a performer goes stale when the row it performs changes).
+the entries reached. A final `=@id`, `=@address` or `=@fingerprint` is answered by the snapshot (keys, full addresses, or
+the reached entries' own fingerprints, so a performer goes stale when the row it performs changes).
+
+Kind files write no paths for the build hash: the `input` a kind declares on its link fields (and on its common fields and
+parts, `Kind.input`) and its reverse `input_from` are read as such paths (`inputs`, `inputs_from`).
 """
 
 from collections.abc import Mapping, Sequence
 
+from ogy.kinds import Input, Kind, Picked
 from ogy.links import link_items, resolve
 from ogy.model import Address, Entry
 from ogy.ontology import Ontology
@@ -16,6 +20,28 @@ BACK = "<-"
 VALUE = "="
 PARTS = "/"
 DERIVED = "=@"
+ID, ADDRESS, CONTENT = DERIVED + "id", DERIVED + "address", DERIVED + "fingerprint"
+
+type Hops = tuple[str, ...]
+
+
+def _input(start: Hops, given: Input | Picked | None) -> list[Hops]:
+    if isinstance(given, Picked):
+        return [(*start, VALUE + field) for field in given.fields] + [(*start, PARTS + part, ID) for part in given.parts]
+    return [] if given in (None, Input.NONE) else [(*start, ADDRESS if given is Input.ADDRESS else CONTENT)]
+
+
+def inputs(ontology: Ontology, kind: Kind) -> list[Hops]:
+    """The paths the build hash of an entry of `kind` reads: the kind's `input` of common fields and parts first, in its order,
+    then the `input` of each field (common, then the kind's own) in the order declared. Undeclared is `none`."""
+    parts = {part.kind for part in ontology.parts_of(kind.kind)} - set(ontology.specs(kind))
+    given = {**kind.input, **{name: spec.input for name, spec in ontology.specs(kind).items() if name not in kind.input}}
+    return [path for name, value in given.items() for path in _input((PARTS + name,) if name in parts else (name,), value)]
+
+
+def inputs_from(kind: Kind) -> list[Hops]:
+    """The reverse paths of the kind's `input_from`: the picked fields of the entries that link to it by each field named."""
+    return [(BACK + name, VALUE + field) for name, picked in kind.input_from.items() for field in picked.fields]
 
 
 class LinkIndex:

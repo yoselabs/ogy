@@ -8,4 +8,4 @@ needs_proof: true
 fingerprint: {proofs: true}
 fields:
   delay: {type: text, required: true}
-  next: {type: link, to: [stage, finish, journey], required: true}
+  next: {type: link, to: [stage, finish, journey], required: true, input: none}

@@ -10,7 +10,7 @@ from ogy.kinds import Holds, Kind
 from ogy.layout import BUILT_DIR, read_files
 from ogy.model import Address, Entry, Finding, Problem, link_values, parse_address
 from ogy.ontology import Ontology
-from ogy.paths import LinkIndex
+from ogy.paths import LinkIndex, inputs, inputs_from
 from ogy.retype import Retype, applied, problems
 from ogy.source import Source
 
@@ -31,8 +31,8 @@ def fingerprint(kind: Kind, entry: Entry, parts: Sequence[object] = (), also: Se
     """A short hash of the entry's kind, its fields that are set and are not notes, and the content of its unkeyed parts.
 
     `src` and the other common fields are outside it, and so is a field the entry leaves unset: a kind that gains a field
-    changes no fingerprint. A kind may add the set of its proof ids (`proofs`: the common field that holds them) and values
-    reached along link paths (`also`)."""
+    changes no fingerprint. The build hash adds the set of its proof ids (`proofs`: the common field that holds them) and what
+    its inputs read (`input`, then `input_from` only where set: `also`)."""
     payload: dict[str, object] = {"kind": kind.kind, **{name: _plain(entry.fields[name]) for name, spec in sorted(kind.fields.items())
                                                         if not spec.note and entry.fields.get(name) is not None}}
     if parts:
@@ -54,6 +54,7 @@ class Snapshot:
     _links: LinkIndex | None = field(default=None, repr=False)
     _prints: dict[tuple[Address, str], str] = field(default_factory=dict, repr=False)
     _visiting: set[Address] = field(default_factory=set, repr=False)
+    _inputs: dict[str, list[tuple[str, ...]]] = field(default_factory=dict, repr=False)
 
     @property
     def links(self) -> LinkIndex:
@@ -81,9 +82,10 @@ class Snapshot:
         return self._prints[key]
 
     def build_hash(self, address: Address, *, proofs: bool = True) -> str:
-        """What the built record and work left compare: the meaning, the proofs and what the kind's `also` and `reached`
-        paths read. Memoised. `proofs=False` is what reaches other entries along `=@fingerprint`: a delivery adding a proof
-        upstream must not make everything downstream stale. A cycle contributes the key."""
+        """What the built record and work left compare: the meaning, the proofs, what the kind's inputs read (`input` of its
+        link fields, common fields and parts) and its reverse inputs (`input_from`). Memoised. `proofs=False` is what reaches
+        other entries along `=@fingerprint`: a delivery adding a proof upstream must not make everything downstream stale. A
+        cycle contributes the key."""
         key = (address, "build" if proofs else "build-no-proofs")
         if key in self._prints:
             return self._prints[key]
@@ -92,8 +94,10 @@ class Snapshot:
         self._visiting.add(address)
         try:
             kind = self.kind_of(address)
-            also: list[object] = [self._along(address, path) for path in kind.fingerprint.also]
-            reached = [[n, found] for n, path in enumerate(kind.fingerprint.reached) if (found := self._along(address, path, True))]
+            if kind.kind not in self._inputs:
+                self._inputs[kind.kind] = inputs(self.ontology, kind)
+            also: list[object] = [self._along(address, path) for path in self._inputs[kind.kind]]
+            reached = [[n, found] for n, path in enumerate(inputs_from(kind)) if (found := self._along(address, path, True))]
             also += [["reached", reached]] if reached else []
             entry = self.entries[address]
             self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, self.ontology.roles.proof if proofs else None)
@@ -121,6 +125,8 @@ class Snapshot:
         match path[-1] if path else "":
             case "=@id":
                 return sorted(item.key for item in reached)
+            case "=@address":
+                return sorted(str(item) for item in reached)
             case "=@fingerprint":
                 return sorted(f"{item}={self.build_hash(item, proofs=False)}" for item in reached)
             case _:

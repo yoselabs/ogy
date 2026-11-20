@@ -11,5 +11,5 @@ key: workarounds
 needs_proof: true
 fingerprint: {proofs: true}
 fields:
-  when: {type: expr, to: [quantity, dependency], required: true}
+  when: {type: expr, to: [quantity, dependency], required: true, input: none}
   says: {required: true}                             # the workaround

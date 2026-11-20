@@ -32,7 +32,7 @@ CHANGES = {
                    ("dropped: [value]", 'dropped: [value, "on"]'), *((line, "") for line in EFFECT_PAIRS)],
     "answer.yml": [("  note: {note: true}", "  hedge: {note: true}"), ("", "renamed: {note: hedge}\n")],
     "decision.yml": [("  note: note\n", "  note: hedge\n")],
-    "timeout.yml": [('"=unit"', '"=per"')],
+    "timeout.yml": [("[is, unit]", "[is, per]")],
 }
 
 

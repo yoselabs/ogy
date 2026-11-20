@@ -17,7 +17,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 
 from ogy.fieldtypes import agreed_keys
-from ogy.kinds import FieldSpec, FieldType, Holds, Kind
+from ogy.kinds import FieldSpec, FieldType, Holds, Input, Kind, Picked
 from ogy.model import Address, Entry, parse_address
 from ogy.moves import renamed
 from ogy.ontology import Ontology
@@ -115,37 +115,40 @@ def migrated(snapshot: Snapshot) -> Snapshot:
     return renamed(changes(snapshot)[0], moved_table(snapshot))
 
 
-def _hop(hop: str, back: Mapping[str, str], kinds: Mapping[str, str]) -> str:
-    prefix = next((mark for mark in ("<-", "=", "/") if hop.startswith(mark)), "")
-    return prefix + (kinds if prefix == "/" else back).get(hop[len(prefix):], hop[len(prefix):])
+def _picked(given: Picked, back: Mapping[str, str], kinds: Mapping[str, str]) -> Picked:
+    """A picked input under the old names of the fields and part kinds it picks."""
+    return Picked(fields=tuple(back.get(name, name) for name in given.fields), parts=tuple(kinds.get(name, name) for name in given.parts))
 
 
-def _spec(spec: FieldSpec, kinds: Mapping[str, str]) -> FieldSpec:
-    return spec.model_copy(update={"to": tuple(kinds.get(name, name) for name in spec.to)}) if spec.to else spec
+def _input(given: Input | Picked | None, back: Mapping[str, str], kinds: Mapping[str, str]) -> Input | Picked | None:
+    return _picked(given, back, kinds) if isinstance(given, Picked) else given
+
+
+def _spec(spec: FieldSpec, kinds: Mapping[str, str], back: Mapping[str, str]) -> FieldSpec:
+    return spec.model_copy(update={"to": tuple(kinds.get(name, name) for name in spec.to), "input": _input(spec.input, back, kinds)})
 
 
 def before(ontology: Ontology, kinds_too: bool = True) -> Ontology:
     """The kinds as they were before their declared renames and drops: a renamed field under its old name, a dropped one back
     as text, a renamed common field under its old name and, with `kinds_too` (files that still hold the old kind names), a
-    renamed kind under its old name, file and key (`was`). A fingerprint path names a renamed field or part kind by its old name
-    too (the renames of every kind, as paths cross kinds)."""
+    renamed kind under its old name, file and key (`was`). An input and a reverse input name a renamed field or part kind by
+    its old name too (the renames of every kind, as they cross kinds)."""
     common = {new: old for old, new in ontology.declared.renamed.items()}
     back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()}
     names = {kind.kind: kind.was.kind for kind in ontology.kinds.values() if kind.was and kinds_too}
     kinds: dict[str, Kind] = {}
     for name, kind in ontology.kinds.items():
         mine = {new: old for old, new in kind.renamed.items()}
-        fields = {mine.get(field, field): _spec(spec, names) for field, spec in kind.fields.items()} | {
+        fields = {mine.get(field, field): _spec(spec, names, back) for field, spec in kind.fields.items()} | {
             old: FieldSpec() for old in kind.dropped}
-        also, reached = (tuple(tuple(_hop(hop, back, names) for hop in path) for path in paths)
-                         for paths in (kind.fingerprint.also, kind.fingerprint.reached))
-        printed = kind.fingerprint.model_copy(update={"also": also, "reached": reached})
-        update: dict[str, object] = {"fields": fields, "fingerprint": printed,
+        given = {common.get(key, names.get(key, key)): _input(value, back, names) for key, value in kind.input.items()}
+        given_from = {back.get(key, key): _picked(value, back, names) for key, value in kind.input_from.items()}
+        update: dict[str, object] = {"fields": fields, "input": given, "input_from": given_from,
                                      "part_of": tuple(names.get(parent, parent) for parent in kind.part_of)}
         if kind.was and kinds_too:
             update |= {"kind": kind.was.kind, "file": kind.was.file or kind.file, "key": kind.was.key or kind.key}
         kinds[names.get(name, name)] = kind.model_copy(update=update)
-    declared = ontology.declared.model_copy(update={"common": {common.get(field, field): _spec(spec, names)
+    declared = ontology.declared.model_copy(update={"common": {common.get(field, field): _spec(spec, names, back)
                                                                for field, spec in ontology.common.items()}})
     return Ontology.unchecked(kinds, declared)
 

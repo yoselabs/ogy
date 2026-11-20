@@ -7,9 +7,8 @@ shape: file
 sentence: says
 layers: [product, software]
 needs_proof: true
-fingerprint:
-  proofs: true
-  reached: [["<-satisfies", "=pin"]]                    # a dependency held to it changes its pin: its proofs are suspect
+fingerprint: {proofs: true}
+input_from: {satisfies: {fields: [pin]}}             # a dependency held to it changes its pin: its proofs are suspect
 fields:
   says: {required: true}
 dropped: ["on"]                                      # the entries held to it name it with `satisfies`

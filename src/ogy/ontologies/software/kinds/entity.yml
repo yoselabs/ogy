@@ -7,8 +7,7 @@ shape: file
 sentence: says
 layers: [product, software]
 needs_proof: true
-fingerprint:
-  proofs: true
-  also: [[/attribute, "=@fingerprint"], [/state, "=@fingerprint"], [/transition, "=@fingerprint"]]
+fingerprint: {proofs: true}
+input: {attribute: content, state: content, transition: content}   # its parts are what it is built from
 fields:
   says: {required: true}

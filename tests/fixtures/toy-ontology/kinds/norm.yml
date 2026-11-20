@@ -5,6 +5,7 @@ sentence: tells
 layers: [business, tech]
 needs_proof: true
 fingerprint: {proofs: true}
+input_from: {held_by: {fields: [rank]}}              # a branch held to it changes its rank
 fields:
   tells: {required: true}
   money: {type: flag, harm: [cash]}

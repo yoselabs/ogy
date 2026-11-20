@@ -6,8 +6,9 @@ part_of: journey
 key: stages
 needs_proof: true
 fingerprint: {proofs: true}
+input: {move: content}                              # its moves are what it is built from
 fields:
   tells: {}
-  who: {type: link, to: [person]}
-  next: {type: link, to: [stage, finish, journey]}
-  invokes: {type: link, to: [journey]}
+  who: {type: link, to: [person], input: {fields: [sort]}}
+  next: {type: link, to: [stage, finish, journey], input: none}
+  invokes: {type: link, to: [journey], input: none}

@@ -6,7 +6,8 @@ part_of: stage
 key: moves
 needs_proof: true
 fingerprint: {proofs: true}
+input: {held_by: content}                           # a norm it is held to changes: the move is work
 fields:
   caption: {required: true}
-  if: {type: expr, to: [norm, person]}
-  next: {type: link, to: [stage, finish, journey], required: true}
+  if: {type: expr, to: [norm, person], input: content}   # what the condition reads changes: work
+  next: {type: link, to: [stage, finish, journey], required: true, input: none}

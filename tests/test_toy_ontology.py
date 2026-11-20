@@ -10,7 +10,9 @@ from git_porcelain import run_git
 from tests.conftest import IDENTITY, ogy
 
 from ogy import cli
+from ogy.model import Address, parse_address
 from ogy.ontology import Ontology, named, packaged
+from ogy.snapshot import Snapshot, build
 
 TOY = Path(__file__).parent / "fixtures" / "toy-ontology"
 LIMIT = "business/shop/ruling/limit"
@@ -186,7 +188,7 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
     """The toy ontology renames its kind norm to canon (`was`) and its common field held_by to bound_by (`renamed`)."""
     folder = tmp_path_factory.mktemp("toy-renamed")
     for item in (TOY / "kinds").iterdir():
-        text = item.read_text().replace("[norm, person]", "[canon, person]")
+        text = item.read_text().replace("[norm, person]", "[canon, person]").replace("held_by", "bound_by")
         name = "canon" if item.name == "norm.yml" else item.stem
         text = text.replace("kind: norm\n", "kind: canon\nwas: {kind: norm}\n")
         (folder / "kinds").mkdir(exist_ok=True)
@@ -206,3 +208,43 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
     assert isinstance(bought, dict) and bought["bound_by"] == ["business/shop/canon/limit"] and "held_by" not in bought
     assert (toy / "docs/kb/business/shop/canon/limit.yml").is_file() and not (toy / "docs/kb/business/shop/norm").exists()
     assert "business/shop/canon/limit" in (toy / f"docs/kb/{LIMIT}.yml").read_text()  # the ruling gives the new address
+
+
+PICK = "business/shop/journey/buy/stage/pick"
+NORM = "business/shop/norm/limit"
+
+
+def _held(norm: str = NORM, tells: str = "A basket holds at most ten things.", rank: str = "") -> Snapshot:
+    """The toy shop with its move held to a norm (`input: {held_by: content}`) and a branch held to one (`address`)."""
+    texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}
+    journey = texts["business/shop/journey/buy.yml"].replace("next: done}", f"next: done, held_by: [{norm}]}}")
+    branch = f"    branches:\n      on: {{next: done, held_by: [{norm}]{rank}}}\n"
+    texts["business/shop/journey/buy.yml"] = journey.replace("    moves:", branch + "    moves:")
+    texts[f"{NORM}.yml"] = f"tells: {tells}\nmoney: true\n"
+    texts["business/shop/norm/other.yml"] = "tells: Another norm.\n"
+    return build(named(str(TOY), Path(".")), texts)
+
+
+def _at(snapshot: Snapshot, text: str) -> Address:
+    address = parse_address(text, snapshot.ontology)
+    assert address is not None and address in snapshot.entries, text
+    return address
+
+
+def test_a_content_input_makes_the_build_stale_and_an_address_input_only_on_a_relink() -> None:
+    before, reworded, relinked = _held(), _held(tells="A basket holds at most twenty things."), _held("business/shop/norm/other")
+    move, branch = f"{PICK}/move/go", f"{PICK}/branch/on"
+    def hashes(snapshot: Snapshot, text: str) -> tuple[str, str]:
+        return snapshot.fingerprint(_at(snapshot, text)), snapshot.build_hash(_at(snapshot, text))
+    assert hashes(reworded, move)[0] == hashes(before, move)[0]  # the meaning holds: nothing goes back to the owner
+    assert hashes(reworded, move)[1] != hashes(before, move)[1]  # content: the norm changed, the move is work
+    assert hashes(reworded, branch) == hashes(before, branch)  # address: the norm's words are no input of the branch
+    assert hashes(relinked, branch)[0] == hashes(before, branch)[0] and hashes(relinked, branch)[1] != hashes(before, branch)[1]
+    assert hashes(reworded, PICK)[1] != hashes(before, PICK)[1]  # a stage reads its moves (`input: {move: content}`)
+
+
+def test_a_reverse_input_reads_what_links_here_only_where_set() -> None:
+    before, ranked = _held(), _held(rank=", rank: 2")
+    norm = _at(before, NORM)
+    assert ranked.fingerprint(norm) == before.fingerprint(norm)
+    assert ranked.build_hash(norm) != before.build_hash(norm)  # `input_from: {held_by: {fields: [rank]}}`

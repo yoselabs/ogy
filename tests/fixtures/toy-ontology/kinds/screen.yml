@@ -7,5 +7,5 @@ needs_proof: true
 fingerprint: {proofs: true}
 fields:
   tells: {required: true}
-  serves_stages: {type: links, to: [stage], required: true}
-  shows_moves: {type: links, to: [move]}
+  serves_stages: {type: links, to: [stage], required: true, input: {parts: [move]}}
+  shows_moves: {type: links, to: [move], input: none}

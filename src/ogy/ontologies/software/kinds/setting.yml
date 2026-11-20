@@ -13,6 +13,6 @@ fingerprint: {proofs: true}
 fields:
   says: {required: true}
   name: {required: true}                             # the setting as written in the file or environment
-  default: {type: link, to: [quantity, enum]}
+  default: {type: link, to: [quantity, enum], input: none}
 renamed: {binds: default}
 dropped: [used_by]

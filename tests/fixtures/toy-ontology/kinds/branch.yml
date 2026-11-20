@@ -5,8 +5,9 @@ part_of: stage
 key: branches
 needs_proof: true
 fingerprint: {proofs: true}
+input: {held_by: address}                           # held to another norm: work; the norm changing: not
 fields:
   rank: {type: number}
-  if: {type: expr, to: [norm, person]}
-  answers_finishes: {type: links, to: [finish]}
-  next: {type: link, to: [stage, finish, journey], required: true}
+  if: {type: expr, to: [norm, person], input: none}
+  answers_finishes: {type: links, to: [finish], input: none}
+  next: {type: link, to: [stage, finish, journey], required: true, input: none}

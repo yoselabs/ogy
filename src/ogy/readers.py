@@ -1,16 +1,17 @@
 """`ogy kinds --readers`: what reads each field of each kind. A field nothing reads is text in a field's clothes
 (principle rigid-where-checked: a field names the check that reads it).
 
-Most readers come from the kind files themselves: the fingerprint (when something compares it), the paths of `requires`
-and `fingerprint.also`, `exactly_one_of` and `one_part`, the names `flow:` and `settling:` give, link resolution and impact
-(every link, links and expr field), and the review rank (`harm`). The checks and printers that read a field by its name follow
-from the roles the kinds declare (`named`): the sentence, the glossary, the printed-first kind, the settling names. `ogy show`
-prints every field and is no reader."""
+Most readers come from the kind files themselves: the fingerprint (when something compares it), the paths of `requires`,
+the build inputs (`input`, `input_from`), `exactly_one_of` and `one_part`, the names `flow:` and `settling:` give, link
+resolution and impact (every link, links and expr field), and the review rank (`harm`). The checks and printers that
+read a field by its name follow from the roles the kinds declare (`named`): the sentence, the glossary, the
+printed-first kind, the settling names. `ogy show` prints every field and is no reader."""
 
 from collections.abc import Iterable
 
 from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement
 from ogy.ontology import Ontology
+from ogy.paths import inputs, inputs_from
 
 AVOIDED, REVIEW, GLOSSARY = "check avoided-word", "printer review", "printer glossary"
 
@@ -116,8 +117,8 @@ def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
     for name, kind in kinds.items():
         for need in kind.requires:
             _requirement(found, kinds, name, need)
-        for path in (*kind.fingerprint.also, *kind.fingerprint.reached):
-            reached |= _walk(found, kinds, name, path, "fingerprint path")
+        for path in (*inputs(ontology, kind), *inputs_from(kind)):
+            reached |= _walk(found, kinds, name, path, "build input")
         for group in kind.exactly_one_of:
             for field in group:
                 _mark(found, name, field, "exactly_one_of", kinds)

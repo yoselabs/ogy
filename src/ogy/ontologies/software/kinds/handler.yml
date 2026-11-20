@@ -8,10 +8,8 @@ shape: file
 sentence: says
 layers: [software]
 needs_proof: true
-fingerprint:
-  proofs: true
-  also: [[performs, "=@fingerprint"], [uses, "=pin"]]
+fingerprint: {proofs: true}
 fields:
   says: {required: true}
-  performs: {type: links, to: [choice, case, timeout]}
-  uses: {type: links, to: [dependency]}
+  performs: {type: links, to: [choice, case, timeout], input: content}
+  uses: {type: links, to: [dependency], input: {fields: [pin]}}   # a new pin is work; a reworded dependency is not

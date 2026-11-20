@@ -7,11 +7,9 @@ shape: file
 sentence: says
 layers: [software]
 needs_proof: true
-fingerprint:
-  proofs: true
-  also: [[serves, /choice, "=@id"]]
+fingerprint: {proofs: true}
 fields:
   says: {required: true}
   invoked_as: {required: true}
-  serves: {type: links, to: [step], required: true}
-  offers: {type: links, to: [choice]}
+  serves: {type: links, to: [step], required: true, input: {parts: [choice]}}   # the served steps' set of choices changes: stale
+  offers: {type: links, to: [choice], input: none}

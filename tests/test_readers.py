@@ -14,7 +14,8 @@ def test_the_shipped_fields_name_their_readers(ontology: Ontology) -> None:
     found = readers(ontology)
     assert {"flow", "requires", "links and impact", "fingerprint"} <= set(found[("step", "actor")])
     assert found[("proposal", "sets")] == ["exactly_one_of", "settling"]
-    assert "fingerprint path" in found[("dependency", "pin")]  # an operation that uses the external reads its pin
+    assert "build input" in found[("dependency", "pin")]  # a handler that uses the dependency reads its pin (`input: {content: [pin]}`)
+    assert "build input" in found[("quantity", "unit")] and "build input" not in found[("dependency", "says")]
     assert found[("area", "unlike")] == [] and "check term-too-long" in found[("term", "says")]
     assert found[("decision", "context")] == ["check avoided-word"]  # a note: outside every fingerprint
 
