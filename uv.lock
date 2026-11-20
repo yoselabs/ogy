@@ -5,11 +5,9 @@ requires-python = ">=3.15"
 [manifest]
 constraints = [{ name = "mcp", specifier = "<2" }]
 overrides = [
-    { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-v0.1.1" },
     { name = "atomic-io", git = "https://github.com/yoselabs/shelf.git?subdirectory=packages%2Fatomic-io&tag=atomic-io-v0.2.0" },
     { name = "content-digest", git = "https://github.com/yoselabs/shelf.git?subdirectory=packages%2Fcontent-digest&tag=content-digest-v0.1.0" },
     { name = "process-lock", git = "https://github.com/yoselabs/shelf.git?subdirectory=packages%2Fprocess-lock&tag=process-lock-v0.2.1" },
-    { name = "stream-proc", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fstream-proc&tag=stream-proc-v0.9.0" },
     { name = "yaml-merge", git = "https://github.com/yoselabs/shelf.git?subdirectory=packages%2Fyaml-merge&tag=yaml-merge-v0.2.0" },
 ]
 
@@ -37,7 +35,7 @@ wheels = [
 [[package]]
 name = "any-gate"
 version = "0.1.1"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-v0.1.1#7a0aef03ab8c55956badc359ec9e83da58b7201d" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-python-v0.1.2#203e7e5ce6d38ce466ced9cecf36cb43c21821cd" }
 dependencies = [
     { name = "any-lease" },
     { name = "atomic-io" },
@@ -63,7 +61,7 @@ pytest = [
 [[package]]
 name = "any-lease"
 version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-lease&tag=any-gate-v0.1.1#7a0aef03ab8c55956badc359ec9e83da58b7201d" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-lease&tag=any-gate-python-v0.1.2#203e7e5ce6d38ce466ced9cecf36cb43c21821cd" }
 dependencies = [
     { name = "process-lock" },
 ]
@@ -859,7 +857,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-v0.1.1" },
+    { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-python-v0.1.2" },
     { name = "any-gate-python", extras = ["pytest"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=any-gate-python-v0.1.2" },
     { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.4.0" },
     { name = "codespell", specifier = "==2.4.3" },
@@ -1386,7 +1384,7 @@ wheels = [
 [[package]]
 name = "stream-proc"
 version = "0.9.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fstream-proc&tag=stream-proc-v0.9.0#b4e846fd63994d2f46b2e0ead9613fbfe974ba1f" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fstream-proc&tag=any-gate-python-v0.1.2#203e7e5ce6d38ce466ced9cecf36cb43c21821cd" }
 
 [[package]]
 name = "test-reach"
