@@ -29,7 +29,7 @@ iorlas-brainstorm).
 
 Work goes in stages: settle what the layer you work in must say (the business first, then the build), and leave what a
 later layer owes it (which service, which screen) to that layer as work, not as a question asked now. With ogy, stop at
-your layer and hand over with `ogy work <your layer>` (untested).
+your layer and hand over with `ogy work <your layer>` (what it still owes) and `ogy work <next layer>` (untested).
 
 ## 3. Group into decisions
 - One decision per sentence the owner could say to settle several gaps (same subject or same policy).

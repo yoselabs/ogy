@@ -178,7 +178,12 @@ def _writes(commands: Adder) -> None:
     putting.add_argument("records", nargs="*", metavar="records", help="a JSON or YAML mapping or array of mappings")
     putting.add_argument("--why", help="why the parts a record drops are removed: a decision address, or plain words")
     putting.add_argument("--file", help="a file of records (- for standard input)")
-    removing = _verb(commands, "remove", "delete an entry and record it in its area's removed.yml", "Always changes the worktree.")
+    removing = _verb(
+        commands,
+        "remove",
+        "delete an entry and record it in its area's removed.yml",
+        "Always changes the worktree. An entry the base commit never had is not recorded: Git keeps it.",
+    )
     removing.add_argument("address", help=ADDRESS)
     removing.add_argument(
         "--why",

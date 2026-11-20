@@ -76,16 +76,16 @@ def _flow_rules(name: str, flow: Flow) -> list[str]:
         ),
         (
             f"  {name} (flow): every {flow.step} is reached from `{flow.start}` and reaches an {flow.end} or a hand-off; every "
-            f"{flow.end} is reached"
+            f"{flow.end} is reached (that one when it lands: `check --landing`)"
         ),
         f"  {name} (flow): a calling {flow.step} names every {flow.end} of its callee in `{flow.covers}`",
         (
             f"  {name} (flow): the {' and '.join(item + 's' for item in flow.servers)} serving a {flow.step} offer every "
-            f"{flow.choice} between them"
+            f"{flow.choice} between them (else work for the one that lists `{flow.offers}`)"
         ),
         (
             f"  {name} (flow): every {name} is started: an {flow.actor} on its first {flow.step}, a "
-            f"{' or '.join(flow.roots)}, or led to from a started {name}"
+            f"{' or '.join(flow.roots)}, or led to from a started {name} (when it lands: `check --landing`)"
         ),
     ]
 
