@@ -20,3 +20,7 @@ answers:
   said: 'Owner: yes to all five (no-answer rule, term, prose removal, beads, sweep)'
   at: '2026-11-20T20:29:28+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+because:
+- constitution/principle/rigid-where-checked
+- constitution/principle/one-owner-per-fact
+- constitution/principle/fix-the-class
