@@ -195,7 +195,7 @@ def test_requirement_applies_when_part_present(kb: Make) -> None:
     effect = plain.replace("a: {order: 1,", 'a: {order: 1, effects: [{do: tell, "on": product/app/actor/member}],')
     unhandled = kb({"product/app/workflow/callee.yml": effect})  # no handler yet: work, never a fault
     assert only(unhandled.findings(), Problem.UNMET) == set()
-    assert [(str(item.address), item.status) for item in work_left(unhandled.snapshot, {}, _no_file) if item.status == "unhandled"] == [
+    assert [(item.address, item.status) for item in work_left(unhandled.snapshot, {}, _no_file) if item.status == "unhandled"] == [
         ("product/app/workflow/callee/step/only/case/a", "unhandled")
     ]
     assert only(kb({"product/app/workflow/callee.yml": plain}).findings(), Problem.UNMET) == set()

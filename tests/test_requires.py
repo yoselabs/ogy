@@ -51,7 +51,7 @@ def left(kb: Make, changes: Mapping[str, str | None], status: str) -> set[str]:
     """The entries with work of `status`, once the files hold no fault: a later layer missing is work, never a fault."""
     made = kb(changes)
     assert not {where for problem, where in made.findings() if problem is Problem.UNMET}
-    return {str(item.address) for item in work_left(made.snapshot, {}, _no_file) if item.status == status}
+    return {item.address for item in work_left(made.snapshot, {}, _no_file) if item.status == status}
 
 
 def test_the_good_files_meet_every_requirement(kb: Make) -> None:

@@ -161,7 +161,7 @@ def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
     work = [
         item
         for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source))
-        if scope is None or scope in _scopes(home_of(str(item.address), snapshot.ontology))
+        if scope is None or scope in _scopes(home_of(item.address, snapshot.ontology))
     ]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
 
