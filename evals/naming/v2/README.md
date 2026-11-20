@@ -1,7 +1,6 @@
 # Naming eval v2: old names against mainstream names, made sensitive
 
-Status: **designed, not run; all four arms built; runner and scorers smoke-tested; no-go until [GO.md](GO.md) is
-all ticked** (open there: the freeze commit) (2026-11-20, bead ogy-yy9.75). Replaces
+Status: **go: GO.md all ticked, frozen at 019b4a3; counted runs started 2026-11-20** (bead ogy-yy9.75). Replaces
 [v1](../README.md), whose arm A sat at a ceiling: kind 16.3 of 17, links 13 of 17, 0.67 misplacements, no error
 blamed on a name. v1's files and scores stay as they are; v2 results are not comparable with them.
 

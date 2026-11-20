@@ -121,7 +121,7 @@ No run that counts starts before every line is ticked. Write the date and the ev
 
 ## Paper
 
-- [ ] README.md: status, freeze commit, three model ids, B's commit, 6 runs per arm, 51 items, both gates.
+- [x] README.md: status, freeze commit, three model ids, B's commit, 6 runs per arm, 51 items, both gates. 2026-11-20: freeze 019b4a3 written.
       Done 2026-11-20: status, B's commit `43f15fc`, C0 and C on `dd9293d`, the exercise hash, 6 runs per arm, 51
       items (45 for B's second score), ceiling gate and floor gate ("more than 2 excluded runs of A or of C0").
       Model ids written 2026-11-20 (haiku 5.5, opus 5.5, scorer opus 5.5, effort medium). Open: the freeze commit
