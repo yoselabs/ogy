@@ -78,8 +78,8 @@ def test_harm_may_be_declared_on_a_field(kb: MakeKb) -> None:
 
 def test_a_link_to_a_removed_address_is_one_finding(repo: Path) -> None:
     ogy(repo, "--rev", ".", "remove", "software/app/handler/lend", "--why", "not needed")
-    (repo / "docs/kb/software/app/view/page.yml").write_text(
-        "says: The page.\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
+    (repo / "docs/kb/software/app/interface/page.yml").write_text(
+        "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
         "because: [software/app/handler/lend]\n")
     _, lines = ogy(repo, "--rev", ".", "check")
     assert [line.split(":")[0] for line in lines if "software/app/handler/lend" in line] == ["dangling-link"]

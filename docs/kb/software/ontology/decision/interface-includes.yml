@@ -1,0 +1,16 @@
+structure: true
+question: How does a page hold the cards inside it?
+context: "Bead ogy-yy9.75 (D12 b'): a card is an interface that serves no step; the page names it."
+options:
+  includes:
+    label: includes links to the interfaces inside it, a content input, never a cycle (link-cycle, from `acyclic:` in the kind file)
+  none:
+    label: No link between pages and cards
+proposal:
+  chose: includes
+  why: A changed card makes the pages that include it work, and a cycle is caught by a generic check.
+answers:
+- chose: includes
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:50:02+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

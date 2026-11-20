@@ -5,7 +5,9 @@ sentence: tells
 layers: [tech]
 needs_proof: true
 fingerprint: {proofs: true}
+acyclic: [nests]                                     # a panel never nests the screen that nests it
 fields:
   tells: {required: true}
   serves_stages: {type: links, to: [stage], required: true, input: {parts: [move]}}
   shows_moves: {type: links, to: [move], input: none}
+  nests: {type: links, to: [screen], input: content}

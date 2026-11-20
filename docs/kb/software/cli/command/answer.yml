@@ -1,6 +1,0 @@
-says: Choose an option of a decision, keeping a short paraphrase of what the person said, who, when and where.
-invoked_as: ogy answer <decision> <option> --said <paraphrase> --where <uri> [--at <iso>] [--from human|ai] [--note <words>] [--delegated <decision>]
-serves:
-- product/capture/workflow/store-owner-words/step/store
-src:
-- code:src/ogy/cli.py#_writes

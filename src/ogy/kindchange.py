@@ -130,12 +130,13 @@ def _spec(spec: FieldSpec, kinds: Mapping[str, tuple[str, ...]], back: Mapping[s
                                    "input": _input(spec.input, back, first)})
 
 
-def _old(kind: Kind, was: Was | None, back: Mapping[str, str], names: Mapping[str, tuple[str, ...]]) -> Kind:
+def _old(kind: Kind, was: Was | None, back: Mapping[str, str], names: Mapping[str, tuple[str, ...]], fields_too: bool) -> Kind:
     """One kind as it was: under the old name `was` (None: under its own name), its fields and inputs under their old names."""
-    mine = {new: old for old, new in kind.renamed.items()} | ({new: old for old, new in was.renamed.items()} if was else {})
+    own = {new: old for old, new in kind.renamed.items()} if fields_too else {}
+    mine = own | ({new: old for old, new in was.renamed.items()} if was else {})
     first = {new: olds[0] for new, olds in names.items()}  # an input names a part kind, never a merged one (shape file)
     fields = {mine.get(field, field): _spec(spec, names, back) for field, spec in kind.fields.items()} | {
-        old: FieldSpec() for old in kind.dropped}
+        old: FieldSpec() for old in (kind.dropped if fields_too else ())}
     given = {first.get(key, back.get(key, mine.get(key, key))): _input(value, back, first) for key, value in kind.input.items()}
     given_from = {back.get(key, key): _picked(value, back, first) for key, value in kind.input_from.items()}
     update: dict[str, object] = {"fields": fields, "input": given, "input_from": given_from,
@@ -145,19 +146,22 @@ def _old(kind: Kind, was: Was | None, back: Mapping[str, str], names: Mapping[st
     return kind.model_copy(update=update)
 
 
-def before(ontology: Ontology, kinds_too: bool = True) -> Ontology:
+def before(ontology: Ontology, kinds_too: bool = True, fields_too: bool = True) -> Ontology:
     """The kinds as they were before their declared renames and drops: a renamed field under its old name, a dropped one back
     as text, a renamed common field under its old name and, with `kinds_too` (files that still hold the old kind names), a
     renamed kind under its old name, file and key (`was`), a kind that absorbed several as each of them. An input and a
-    reverse input name a renamed field or part kind by its old name too (the renames of every kind, as they cross kinds)."""
-    common = {new: old for old, new in ontology.declared.renamed.items()}
-    back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()} | {
+    reverse input name a renamed field or part kind by its old name too (the renames of every kind, as they cross kinds).
+    Without `fields_too`, only the kind renames (with their own `was.renamed`): files already migrated to every field rename
+    that still hold an old kind name."""
+    common = {new: old for old, new in ontology.declared.renamed.items()} if fields_too else {}
+    fields = {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()} if fields_too else {}
+    back = common | fields | {
         new: old for kind in ontology.kinds.values() for was in kind.was for old, new in was.renamed.items()}
     names = {kind.kind: tuple(old.kind for old in kind.was) for kind in ontology.kinds.values() if kind.was and kinds_too}
     kinds: dict[str, Kind] = {}
     for name, kind in ontology.kinds.items():
         for was in kind.was if kind.was and kinds_too else (None,):
-            kinds[was.kind if was else name] = _old(kind, was, back, names)
+            kinds[was.kind if was else name] = _old(kind, was, back, names, fields_too)
     declared = ontology.declared.model_copy(update={"common": {common.get(field, field): _spec(spec, names, back)
                                                                for field, spec in ontology.common.items()}})
     return Ontology.unchecked(kinds, declared)
@@ -165,11 +169,13 @@ def before(ontology: Ontology, kinds_too: bool = True) -> Ontology:
 
 class Kept:
     """Which fingerprints stay current across a migration: `old` is the knowledge base as it was, read under `before`, and
-    `snapshot` the same files under the new kind names (`ogy.retype`); `back` gives a new address its old one."""
+    `snapshot` the same files under the new kind names (`ogy.retype`); `back` gives a new address its old one. `also` reads
+    the old files under the kind renames only (`before(..., fields_too=False)`): a hash may have been stamped either way."""
 
-    def __init__(self, snapshot: Snapshot, old: Snapshot | None = None, back: Callable[[str], str] = str) -> None:
+    def __init__(self, snapshot: Snapshot, old: Snapshot | None = None, back: Callable[[str], str] = str,
+                 also: Snapshot | None = None) -> None:
         was = old or Snapshot(before(snapshot.ontology, kinds_too=False), snapshot.entries, [])
-        self.back, self.was = back, was
+        self.back, self.was, self.also = back, was, also
         self.dropped = Snapshot(was.ontology, changes(was, renames=False)[0].entries, [])
         self.now = changes(snapshot)[0]
 
@@ -182,4 +188,5 @@ class Kept:
         def of(snapshot: Snapshot, at: Address) -> str:
             return snapshot.build_hash(at) if build else snapshot.fingerprint(at)
         then = of(self.was, was)
-        return of(self.now, address) if given == then and of(self.dropped, was) == then else None
+        thens = {then} | ({of(self.also, was)} if self.also is not None and was in self.also.entries else set())
+        return of(self.now, address) if given in thens and of(self.dropped, was) == then else None

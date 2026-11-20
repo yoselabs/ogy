@@ -20,35 +20,43 @@ from ogy.writes import WriteRefused
 PAGE, CLI, OLD = "software/app/view/page", "software/app/command/lend", "software/app/view/old"
 NEW_PAGE, NEW_CLI = "software/app/interface/page", "software/app/interface/lend"
 SERVES = "serves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
-WAS = "was: [{kind: view, defaults: {form: page}}, {kind: command, renamed: {invoked_as: form}}]\n"
+BEFORE = Path(__file__).parent / "fixtures" / "before-interface"  # view.yml and command.yml as they were before the merge
+SHIPPED = files("ogy").joinpath("ontologies", "software", "kinds")
 
 
-def _texts(was: str = WAS) -> dict[str, str]:
-    """The software kinds with view and command merged into interface: a command's `invoked_as` is the interface's `form`."""
-    root, texts = files("ogy").joinpath("ontologies", "software", "kinds"), {}
-    for item in root.iterdir():
-        text = item.read_text().replace("[view, command]", "[interface]")
-        if item.name == "view.yml":
-            text = was + text.replace("kind: view\n", "kind: interface\n") + "  form: {required: true}\n"
-        if item.name != "command.yml":
-            texts[f"kinds/{item.name.replace('view', 'interface')}"] = text
+def _texts(was: str | None = None) -> dict[str, str]:
+    """The shipped kinds; with `was`, interface's `was:` block replaced by it."""
+    texts = {f"kinds/{item.name}": item.read_text() for item in SHIPPED.iterdir()}
+    if was is not None:
+        head, rest = texts["kinds/interface.yml"].split("about:", 1)
+        texts["kinds/interface.yml"] = "kind: interface\n" + was + "about:" + rest
+        assert head.startswith("kind: interface\nwas:")
     return texts
 
 
-def merged() -> Ontology:
-    return parse_kinds(_texts(), packaged().declared)
+def unmerged() -> Ontology:
+    """The software kinds as they were before view and command merged into interface."""
+    texts = {rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ")
+             for rel, text in _texts().items() if rel != "kinds/interface.yml"}
+    texts |= {f"kinds/{item.name}": item.read_text() for item in BEFORE.iterdir()}
+    return parse_kinds(texts, packaged().declared)
 
 
 @dataclass(frozen=True)
-class Merged(Target):
+class Unmerged(Target):
     def kinds(self) -> Ontology:
-        return merged()
+        return unmerged()
 
 
 @pytest.fixture
 def before(repo: Path) -> str:
     """A view and a command agreed and built, a handler that cites the view, a removed view in the ledger: committed."""
-    target, kb = Target(repo), repo / "docs/kb"
+    target, kb = Unmerged(repo), repo / "docs/kb"
+    (kb / "software/app/interface/page.yml").rename(kb / "software/app/interface/view.tmp")
+    (kb / "software/app/view").mkdir(parents=True)
+    (kb / "software/app/interface/view.tmp").rename(kb / f"{PAGE}.yml")
+    (kb / "software/app/interface").rmdir()
+    (kb / f"{PAGE}.yml").write_text((kb / f"{PAGE}.yml").read_text().replace("form: web\n", ""))
     (kb / "software/app/command").mkdir(parents=True)
     (kb / f"{CLI}.yml").write_text(f"says: Lend from the command line.\ninvoked_as: ogy lend\n{SERVES}")
     (kb / f"{OLD}.yml").write_text(f"says: The old page.\n{SERVES}")
@@ -63,7 +71,7 @@ def before(repo: Path) -> str:
 
 
 def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path, before: str) -> None:
-    target, kb = Merged(repo), repo / "docs/kb"
+    target, kb = Target(repo), repo / "docs/kb"
     found = {(item.problem, item.path) for item in ops.run_check(target).value}
     assert {(Problem.NEEDS_MIGRATION, f"{PAGE}.yml"), (Problem.NEEDS_MIGRATION, f"{CLI}.yml")} <= found
     ledger = (kb / "software/app/removed.yml").read_text()
@@ -75,15 +83,15 @@ def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
     cli = entries[parse_address(NEW_CLI, target.kinds())].fields
-    assert cli["form"] == "ogy lend" and "invoked_as" not in cli  # the command's own field under the interface's name
-    assert entries[parse_address(NEW_PAGE, target.kinds())].fields["form"] == "page"  # the view's default
+    assert cli["form"] == "cli" and cli["invoked_as"] == "ogy lend"  # the command's default, its own field kept
+    assert entries[parse_address(NEW_PAGE, target.kinds())].fields["form"] == "web"  # the view's default
     for text in (NEW_PAGE, NEW_CLI):
         assert entries[parse_address(text, target.kinds())].fields["agreed"]["hash"] == fingerprint(target, text)
     work = {item.address for item in ops.run_work(target).value}
     assert NEW_PAGE not in work and NEW_CLI not in work  # built, and still built: a merge is no work
     assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
     commit(repo, "merged")
-    assert not ops.run_check(Merged(repo, rev="HEAD"), base=before).value  # the base read through the merge: nothing lost
+    assert not ops.run_check(Target(repo, rev="HEAD"), base=before).value  # the base read through the merge: nothing lost
 
 
 def test_a_view_and_a_command_of_one_id_are_refused_until_one_moves(repo: Path, before: str) -> None:
@@ -92,11 +100,11 @@ def test_a_view_and_a_command_of_one_id_are_refused_until_one_moves(repo: Path, 
     commit(repo, "a command of the view's id")
     why = (f"software/app/command/page and {PAGE} would both become {NEW_PAGE}: `ogy move` one of them to a new id first, "
            "with the ogy version (its kinds) from before the merge")
-    found = {(item.problem, item.path, item.detail) for item in ops.run_check(Merged(repo)).value}
+    found = {(item.problem, item.path, item.detail) for item in ops.run_check(Target(repo)).value}
     assert (Problem.NEEDS_MIGRATION, f"{PAGE}.yml", why) in found
     assert (Problem.NEEDS_MIGRATION, "software/app/command/page.yml", why) in found
     with pytest.raises(WriteRefused) as refused:
-        ops.run_migrate(Merged(repo))
+        ops.run_migrate(Target(repo))
     assert refused.value.reasons == [f"needs-migration: {why}"]
     assert (kb / f"{PAGE}.yml").is_file() and (kb / f"{CLI}.yml").is_file()  # nothing moved
     assert (kb / "built" / f"{PAGE}.yml").is_file()
@@ -118,29 +126,31 @@ def test_a_removed_command_is_read_under_the_merged_kind(repo: Path, before: str
     (kb / "product/app/decision").mkdir(parents=True)
     (kb / "product/app/decision/how.yml").write_text(HOW)
     early = commit(repo, "a command that goes")
-    ops.run_remove(Target(repo), gone, why="not needed")
+    ops.run_remove(Unmerged(repo), gone, why="not needed")
     commit(repo, "removed")
-    ops.run_migrate(Merged(repo))
+    ops.run_migrate(Target(repo))
     commit(repo, "merged")
     how = any_yaml.load((kb / "product/app/decision/how.yml").read_text())
-    assert isinstance(how, dict) and how["options"]["lend"]["sets"] == {NEW_CLI: {"form": "ogy lend"}}
+    assert isinstance(how, dict) and how["options"]["lend"]["sets"] == {NEW_CLI: {"invoked_as": "ogy lend"}}
     assert gone in (kb / "software/app/removed.yml").read_text()
-    assert not ops.run_check(Merged(repo, rev="HEAD"), base=early).value
+    assert not ops.run_check(Target(repo, rev="HEAD"), base=early).value
     handler = kb / "software/app/handler/lend.yml"
     handler.write_text(handler.read_text().replace(NEW_PAGE, "software/app/interface/gone"))
-    found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Merged(repo, rev=".")).value}
+    found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
     assert found == {(Problem.DANGLING_LINK, "software/app/handler/lend")}  # as a link to any removed entry, one finding
-    (kb / "software/app/interface/gone.yml").write_text(f"says: Back.\nform: ogy gone\n{SERVES}")
-    found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Merged(repo, rev=".")).value}
+    (kb / "software/app/interface/gone.yml").write_text(f"says: Back.\nform: cli\ninvoked_as: ogy gone\n{SERVES}")
+    found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
     assert (Problem.ID_REUSED, "software/app/interface/gone") in found
 
 
 def test_a_merge_keeps_one_file_per_entry_and_renames_into_fields() -> None:
+    renamed = "was: [{kind: view}, {kind: command, renamed: {invoked_as: shape}}]\n"
     with pytest.raises(OntologyError, match="was command renamed invoked_as to shape, which is no field"):
-        parse_kinds(_texts(WAS.replace("form", "shape")), packaged().declared)
+        parse_kinds(_texts(renamed), packaged().declared)
     with pytest.raises(OntologyError, match="was command renamed says, which is still a field"):
-        parse_kinds(_texts(WAS.replace("invoked_as: form", "says: form")), packaged().declared)
-    picked = {**_texts(), "kinds/step.yml": _texts()["kinds/step.yml"] + "input_from: {serves: {fields: [form]}}\n"}
+        parse_kinds(_texts(renamed.replace("invoked_as: shape", "says: form")), packaged().declared)
+    some = _texts("was: [{kind: view}, {kind: command, renamed: {invoked_as: form}}]\n")
+    picked = {**some, "kinds/step.yml": some["kinds/step.yml"] + "input_from: {serves: {fields: [form]}}\n"}
     with pytest.raises(OntologyError, match="form, which interface took from only some of the kinds"):
         parse_kinds(picked, packaged().declared)
     with pytest.raises(OntologyError, match="was view, as another kind was"):

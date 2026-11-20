@@ -58,11 +58,14 @@ def _walk(found: Reads, kinds: dict[str, Kind], start: str, hops: Iterable[str],
             for kind in current:
                 _mark(found, kind, hop[1:], reader, kinds)
             break
+        elif hop == "^":
+            current = {parent for kind in current if kind in kinds for parent in kinds[kind].part_of}
         elif hop.startswith("<-"):
-            name = hop[2:]
+            name, _, where = hop[2:].partition("?")
             current = {k for k, kind in kinds.items() if name in kind.fields and {*current, ANY} & set(kind.fields[name].to)}
             for kind in current:
                 _mark(found, kind, name, reader, kinds)
+                _mark(found, kind, where.partition("=")[0], reader, kinds)
         else:
             for kind in current:
                 _mark(found, kind, hop, reader, kinds)
@@ -73,10 +76,11 @@ def _walk(found: Reads, kinds: dict[str, Kind], start: str, hops: Iterable[str],
 
 def _requirement(found: Reads, kinds: dict[str, Kind], name: str, need: Requirement) -> None:
     """Its condition's field, the field it needs, its path and the `without` fields of the kinds it reaches."""
-    for field in (need.if_set, need.if_equals.field if need.if_equals else None, need.needs_field):
+    for field in (need.if_set, need.if_unset, need.if_equals.field if need.if_equals else None, need.needs_field):
         if field:
             _mark(found, name, field, "requires", kinds)
-    _walk(found, kinds, name, need.path, "requires")
+    for path in need.paths:
+        _walk(found, kinds, name, path, "requires")
     for target in need.kinds:
         for field in need.without:
             _mark(found, target, field, "requires", kinds)
@@ -122,6 +126,8 @@ def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
         for group in kind.exactly_one_of:
             for field in group:
                 _mark(found, name, field, "exactly_one_of", kinds)
+        for field in kind.acyclic:
+            _mark(found, name, field, "acyclic", kinds)
         if kind.one_part is not None:
             _mark(found, kind.one_part.kind, kind.one_part.field, "one_part", kinds)
         if kind.flow is not None:

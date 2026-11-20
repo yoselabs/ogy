@@ -30,4 +30,4 @@ reserved:
   computed: [open, assumed, origin, status, author, agreement, built, covers, sourced, in, retired, accepted_by, renamed_from,
              actors, subject, id, settles, settled_by, came_from, removed, replaced_by, superseded, superseded_by, deprecated,
              restored, scope, history, changelog, last_seen]    # facts the tool computes; no kind may store them (K22)
-  sentence: [states, means, holds, does, provides, shows, goal]  # a kind names its sentence with `sentence:` (K25)
+  sentence: [states, means, holds, does, provides, goal]  # a kind names its sentence with `sentence:` (K25)

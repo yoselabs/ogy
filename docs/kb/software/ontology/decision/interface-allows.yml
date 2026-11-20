@@ -1,0 +1,16 @@
+structure: true
+question: Where does an interface say who may use it?
+context: "Bead ogy-yy9.75: interface.allows links to actors, harm authorization; the owner's decision 3: only on an interface serving no step."
+options:
+  no-step-only:
+    label: allows only on an interface that serves no step; for one that serves steps, who may use it comes from their actors
+  always:
+    label: allows on any interface
+proposal:
+  chose: no-step-only
+  why: One home per fact; a served step already names its actor.
+answers:
+- chose: no-step-only
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:50:10+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

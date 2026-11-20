@@ -3,3 +3,7 @@
 
 def borrow_page() -> str:
     return "borrow"
+
+
+def loans_report() -> str:
+    return "loans.csv"

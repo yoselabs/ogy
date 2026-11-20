@@ -1,0 +1,11 @@
+says: The librarian lends a tool from the command line.
+invoked_as: library borrow <tool> <member>
+serves:
+- product/lending/workflow/borrow/step/ask
+offers:
+- product/lending/workflow/borrow/step/ask/choice/borrow
+src:
+- code:src/library/cli.py#borrow
+form: cli
+accepts:
+- product/lending/entity/tool/attribute/parts

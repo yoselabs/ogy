@@ -181,9 +181,12 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
     found: list[str] = []
     for group in kind.exactly_one_of:
         found += [f"{name}: exactly_one_of names no field {field}" for field in group if field not in kind.fields]
+    found += [f"{name}: acyclic names {field}, no link field of the kind to its own kind" for field in kind.acyclic
+              if field not in kind.fields or kind.fields[field].type not in (FieldType.LINK, FieldType.LINKS)
+              or name not in kind.fields[field].to]
     for need in kind.requires:
-        if need.if_set is not None and need.if_set not in kind.fields:
-            found.append(f"{name}: requirement if_set names no field {need.if_set}")
+        found += [f"{name}: requirement {key} names no field {field}" for key, field in (("if_set", need.if_set),
+                  ("if_unset", need.if_unset)) if field is not None and field not in kind.fields]
         if need.if_part is not None and not (need.if_part in kinds and kinds[need.if_part].is_part(name)):
             found.append(f"{name}: requirement if_part names no part kind {need.if_part}")
         found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
@@ -211,8 +214,11 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
     if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
         if need.if_part is not None:
             found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")
-        if need.path and (need.path[0] not in kind.fields or kind.fields[need.path[0]].type not in (FieldType.LINK, FieldType.LINKS)):
+        if any(path and (path[0] not in kind.fields or kind.fields[path[0]].type not in (FieldType.LINK, FieldType.LINKS))
+               for path in need.paths):
             found.append(f"{name}: the path of an item of a list part starts at one of its link fields")
+        if need.work:
+            found.append(f"{name}: an item of a list part has no address, so no requirement of it is work")
     return found
 
 

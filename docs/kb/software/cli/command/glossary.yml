@@ -1,6 +1,0 @@
-says: The terms of the product, grouped, with what they say, what they are not and the words to avoid.
-invoked_as: ogy glossary
-serves:
-- product/capture/workflow/capture-entries/step/read-glossary
-src:
-- code:src/ogy/cli.py#_asks

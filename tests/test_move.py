@@ -80,8 +80,8 @@ def test_move_rewrites_every_address_and_no_words(repo: Path) -> None:
     assert w(repo, "move", "product/app/workflow/borrow", "product/loans")[0] == cli.OK
     after = tree(repo)
     assert not any("product/app/workflow" in text for text in after.values())  # every link: one write
-    assert "product/loans/workflow/borrow/step/ask" in after[f"{KB}/software/app/view/page.yml"]
-    page = f"{KB}/software/app/view/page.yml"  # its link and the hash of its agreement changed, no word
+    assert "product/loans/workflow/borrow/step/ask" in after[f"{KB}/software/app/interface/page.yml"]
+    page = f"{KB}/software/app/interface/page.yml"  # its link and the hash of its agreement changed, no word
     assert [line for line in after[page].splitlines() if "said" in line] == [line for line in before[page].splitlines() if "said" in line]
 
 
@@ -124,7 +124,7 @@ def test_a_decision_moves_and_what_cites_it_follows(repo: Path) -> None:
     decision = {"address": "product/app/decision/fee", "question": "Keep the fee?", "options": sets,
                 "proposal": {"chose": "keep", "why": "g"}}
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
-    code, lines = w(repo, "remove", "software/app/view/page", "--why", "product/app/decision/fee")
+    code, lines = w(repo, "remove", "software/app/interface/page", "--why", "product/app/decision/fee")
     assert code == cli.OK, lines
     commit(repo, "removed")
     findings = w(repo, "check")  # the step no view serves now: the move adds nothing to it
@@ -141,7 +141,7 @@ def test_the_layer_may_change_when_the_kind_allows_it_and_is_refused_when_it_doe
     before = tree(repo)
     code, lines = w(repo, "move", "product/app/goal/lend", "software/app")
     assert code == cli.REFUSED and "goal may live in the layers" in lines[0] and tree(repo) == before
-    assert w(repo, "move", "software/app/view/page", "product/app")[0] == cli.REFUSED  # a view is software only
+    assert w(repo, "move", "software/app/interface/page", "product/app")[0] == cli.REFUSED  # a view is software only
     assert w(repo, "move", "product/app/quantity/fee", "software/app")[0] == cli.OK
     assert (repo / KB / "software/app/quantities.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
 

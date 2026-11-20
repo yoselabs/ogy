@@ -119,32 +119,46 @@ class Equals(BaseModel):
 
 
 class Requirement(BaseModel):
-    """When the entry has field `if_set`, a part `if_part` or a field value `if_equals` (every entry, without one), it sets
-    `needs_field`, or it reaches along `path` (none: the entry itself) an entry of `kinds` that sets none of `without`."""
+    """When the entry has field `if_set`, lacks field `if_unset`, has a part `if_part` or a field value `if_equals` (every entry,
+    without one), it sets `needs_field`, or it reaches along `path` (none: the entry itself), or along any one of `or_paths`, an
+    entry of `kinds` that sets none of `without`. Unmet, it is `unmet-requirement`; with `work`, it is work left instead (what
+    is still to be built, not a fault)."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     if_set: str | None = None
+    if_unset: str | None = None
     if_part: str | None = None
     if_equals: Equals | None = None
     needs_field: str | None = None
     path: tuple[str, ...] = ()
+    or_paths: tuple[tuple[str, ...], ...] = ()
     kinds: tuple[str, ...] = ()
     without: tuple[str, ...] = ()
+    work: bool = False
     error: str
 
     @model_validator(mode="after")
     def _one_condition(self) -> Self:
-        if sum(item is not None for item in (self.if_set, self.if_part, self.if_equals)) > 1:
-            raise ValueError("a requirement has one of if_set, if_part and if_equals, not both")
+        if sum(item is not None for item in (self.if_set, self.if_unset, self.if_part, self.if_equals)) > 1:
+            raise ValueError("a requirement has one of if_set, if_unset, if_part and if_equals, not both")
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
             raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
+        if self.or_paths and not (self.path and all(self.or_paths)):
+            raise ValueError("or_paths are further paths beside a path, none of them empty")
         return self
+
+    @property
+    def paths(self) -> tuple[tuple[str, ...], ...]:
+        """Every path the requirement may be met along (one empty path: the entry itself)."""
+        return (self.path, *self.or_paths)
 
     @property
     def condition(self) -> str:
         """The condition as words, empty for every entry."""
         if self.if_set:
             return f"with {self.if_set}"
+        if self.if_unset:
+            return f"without {self.if_unset}"
         if self.if_part:
             return f"with a {self.if_part}"
         if self.if_equals:
@@ -204,7 +218,7 @@ class Flow(BaseModel):
     Every name is a kind or field of this ontology, written out in its kind file, so another ontology can rename them; the
     checks are fixed:
     step shapes, every step reachable from the start, every step reaching an end or a hand-off, every end reached,
-    a calling step naming every end of its callee, the serving views offering every choice, and every container started: a root
+    a calling step naming every end of its callee, the serving entries offering every choice, and every container started: a root
     (an actor on its first step, or a `roots` field set) or led to from a started one.
     """
 
@@ -279,6 +293,7 @@ class Kind(BaseModel):
     # gains such a field stales nothing): a rule reads the pin of a dependency held to it, `satisfies: {fields: [pin]}`
     input_from: dict[str, Picked] = {}
     exactly_one_of: tuple[tuple[str, ...], ...] = ()  # of each group, exactly one field is set
+    acyclic: tuple[str, ...] = ()  # link fields that never lead back to the entry (`link-cycle`): a card that includes cards
     requires: tuple[Requirement, ...] = ()
     one_part: OnePart | None = None
     flow: Flow | None = None

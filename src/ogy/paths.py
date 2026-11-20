@@ -1,7 +1,8 @@
 """Link paths: a kind names a route through typed links, used by staleness and by `requires` checks.
 
 A path is a list of hops. `field` follows that link field forward, `<-field` follows it backward (entries whose
-`field` points here), `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
+`field` points here; `<-field?key=a|b` only where the entry, or the list part item that holds the link, has `key` a or b),
+`^` goes to the entry's parent, `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
 the entries reached. A final `=@id`, `=@address` or `=@fingerprint` is answered by the snapshot (keys, full addresses, or
 the reached entries' own fingerprints, so a performer goes stale when the row it performs changes).
 
@@ -17,6 +18,8 @@ from ogy.model import Address, Entry
 from ogy.ontology import Ontology
 
 BACK = "<-"
+WHERE, OR = "?", "|"
+PARENT = "^"
 VALUE = "="
 PARTS = "/"
 DERIVED = "=@"
@@ -50,7 +53,7 @@ class LinkIndex:
     def __init__(self, ontology: Ontology, entries: Mapping[Address, Entry]) -> None:
         self.entries = entries
         self._forward: dict[tuple[Address, str], set[Address]] = {}
-        self._backward: dict[tuple[Address, str], set[Address]] = {}
+        self._backward: dict[tuple[Address, str], list[tuple[Address, Mapping[str, object]]]] = {}
         self._parts: dict[tuple[Address, str], set[Address]] = {}
         for address, entry in entries.items():
             parent = address.parent()
@@ -60,13 +63,19 @@ class LinkIndex:
                 target = resolve(ontology, entries, address, item).target
                 if target is not None:
                     self._forward.setdefault((address, item.field), set()).add(target)
-                    self._backward.setdefault((target, item.field), set()).add(address)
+                    holder = item.item if item.item is not None else entry.fields
+                    self._backward.setdefault((target, item.field), []).append((address, holder))
 
     def forward(self, address: Address, field: str) -> set[Address]:
         return self._forward.get((address, field), set())
 
     def backward(self, address: Address, field: str) -> set[Address]:
-        return self._backward.get((address, field), set())
+        """The entries whose `field` points here; `field?key=a|b`: only those links whose holder (the entry, or the list part
+        item that holds the link) has `key` a or b."""
+        name, _, where = field.partition(WHERE)
+        key, _, values = where.partition("=")
+        wanted = set(values.split(OR))
+        return {source for source, holder in self._backward.get((address, name), []) if not where or holder.get(key) in wanted}
 
     def parts(self, address: Address, kind: str) -> list[Address]:
         """The parts of one kind, sorted."""
@@ -84,6 +93,8 @@ class LinkIndex:
             elif hop.startswith(VALUE):
                 values.extend(self.entries[address].fields.get(hop[1:]) for address in sorted(current))
                 break
+            elif hop == PARENT:
+                current = {parent for address in current if (parent := address.parent()) is not None and parent in self.entries}
             elif hop.startswith(BACK):
                 current = {source for address in current for source in self.backward(address, hop[len(BACK):])}
             else:

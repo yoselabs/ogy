@@ -141,10 +141,10 @@ def test_the_folder_is_the_layer_and_the_kind_says_which_layers_it_may_appear_in
     both = {"software/app/quantities.yml": VALUES, "product/app/decision/fee.yml": DECISION, "software/app/decision/fee.yml": DECISION}
     assert only(kb(both).findings(), Problem.BAD_LAYER) == set()  # a value and a decision may be in either layer
     goal = "- {id: lend, says: Members borrow tools.}\n"
-    view = "says: The page.\nserves: [product/app/workflow/sign-in/step/ask]\n"
-    found = kb({"software/app/goals.yml": goal, "product/app/view/page.yml": view,
+    view = "says: The page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\n"
+    found = kb({"software/app/goals.yml": goal, "product/app/interface/page.yml": view,
                 "software/app/actors.yml": "- {id: ci, says: The CI runner., nature: program}\n"}).findings()
-    assert only(found, Problem.BAD_LAYER) == {"software/app/goal/lend", "product/app/view/page"}  # an actor may be technical
+    assert only(found, Problem.BAD_LAYER) == {"software/app/goal/lend", "product/app/interface/page"}  # an actor may be technical
 
 
 def test_requirement_applies_when_part_present(kb: Make) -> None:

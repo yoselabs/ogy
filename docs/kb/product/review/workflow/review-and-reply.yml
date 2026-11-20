@@ -11,6 +11,9 @@ steps:
       shown:
         label: Show the round
         then: reply
+        effects:
+        - do: create
+          on: product/review/entity/review-round
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -4,5 +4,8 @@ shape: inline
 sentence: tells
 part_of: journey
 key: finishes
+requires:                                           # reached by a move captioned Buy or Pay, or its journey is invoked
+  - {if_unset: quiet, path: ["<-next?caption=Buy|Pay"], or_paths: [["^", "<-invokes"]], kinds: [move, stage], error: "a finish a sale reaches"}
 fields:
   tells: {required: true}
+  quiet: {type: flag}

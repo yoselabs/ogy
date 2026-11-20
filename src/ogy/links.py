@@ -15,6 +15,7 @@ class LinkItem:
     field: str
     text: str
     to: tuple[str, ...]
+    item: Mapping[str, object] | None = None  # the fields of the list part item that holds it (an effect); None: the entry's own
 
 
 @dataclass(frozen=True)
@@ -50,7 +51,7 @@ def link_items(ontology: Ontology, entry: Entry) -> Iterator[LinkItem]:
         for item in items:
             for name, spec in part.fields.items():
                 for text in _values(spec.type, item.get(name)) if spec.to and isinstance(item, dict) else ():
-                    yield LinkItem(name, text, spec.to)
+                    yield LinkItem(name, text, spec.to, item)
 
 
 def _full(ontology: Ontology, entries: Mapping[Address, Entry], item: LinkItem) -> Resolution:

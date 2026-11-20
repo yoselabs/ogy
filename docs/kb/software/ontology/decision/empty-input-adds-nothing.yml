@@ -1,0 +1,10 @@
+question: Does an input that reads nothing enter the build hash?
+context: 'Stage 2b: merging view and command into interface added link fields with content inputs, so every built line of a view or command read changed after ogy migrate. The build hash now leaves out an input that reads nothing and keys the others by path; the two fixture built lines that were current were re-stamped.'
+options:
+  nothing:
+    label: An input that reads nothing adds nothing; a kind that gains a link field makes no work
+  positional:
+    label: Every declared input enters the build hash, set or not
+proposal:
+  chose: nothing
+  why: Adding a field should make no work, as the README says, and a merge keeps what was built current.

@@ -10,7 +10,7 @@ key: steps
 needs_proof: true
 fingerprint: {proofs: true}
 requires:
-  - {if_set: actor, path: ["<-serves"], kinds: [view, command], error: "an actor step has a view or command that serves it"}
+  - {if_set: actor, path: ["<-serves"], kinds: [interface], work: true, error: "an actor step has an interface that serves it"}
   - {if_set: actor, path: [/choice], kinds: [choice], without: [when], error: "an actor step offers at least one choice without `when`"}
 fields:
   says: {}

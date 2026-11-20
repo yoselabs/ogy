@@ -101,16 +101,19 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
     return moved
 
 
-def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], Snapshot | None, list[tuple[str, str]]]:
-    """The files the kind renames change (none collide), the knowledge base as it was under the old kind names (None when no
-    kind was renamed) and each changed file as (old path, new path)."""
+def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], tuple[Snapshot, Snapshot] | None,
+                                                            list[tuple[str, str]]]:
+    """The files the kind renames change (none collide), the knowledge base as it was under the old kind names, read with
+    every declared rename and with the kind renames only (None when no kind was renamed), and each changed file as (old path,
+    new path)."""
     ontology = target.kinds()
     changed = retype(ontology, raw, stuck={})
     if not changed:
         return {}, None, []
     work, gone = Retype(ontology), [rel for rel, text in changed.items() if text is None]
     pairs = [(rel, work.path(rel)) for rel in gone] + [(rel, rel) for rel in changed if changed[rel] is not None and rel in raw]
-    return changed, build(before(ontology), {rel: raw[rel] for rel in kb_paths(raw)}), sorted(pairs)
+    old = {rel: raw[rel] for rel in kb_paths(raw)}
+    return changed, (build(before(ontology), old), build(before(ontology, fields_too=False), old)), sorted(pairs)
 
 
 def migrate(target: Target) -> Migrated:
@@ -119,7 +122,8 @@ def migrate(target: Target) -> Migrated:
     ontology, work, raw = target.kinds(), Retype(target.kinds()), files(target)
     if stuck := collisions(ontology, raw):
         raise WriteRefused(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
-    retyped, was, pairs = _retyped(target, raw)
+    retyped, olds, pairs = _retyped(target, raw)
+    was, also = olds if olds else (None, None)
     now = applied(ontology, raw, stuck={})
     snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
@@ -129,7 +133,8 @@ def migrate(target: Target) -> Migrated:
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
     if not found and not table and not tidied and not retyped and not _old_lines(target):
         return Migrated([], [], [], [])
-    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str)
+    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str,
+                also)
     agreed = _agreements(snapshot, kept)
     lines: list[str] = []
     moved: list[tuple[Address, Address]] = []

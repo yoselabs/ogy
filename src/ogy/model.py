@@ -113,6 +113,7 @@ class Problem(StrEnum):
     UNCOVERED_END = "uncovered-end"
     NOT_OFFERED = "choice-not-offered"
     NEVER_STARTED = "never-started"
+    LINK_CYCLE = "link-cycle"
     STORED_STATE = "stored-state"
     BAD_KEY = "bad-key"
     DUPLICATE_SAYS = "duplicate-says"

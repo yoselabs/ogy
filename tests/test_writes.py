@@ -100,7 +100,7 @@ def test_put_checks_the_batch_together_and_writes_nothing_when_one_is_refused(re
 def test_a_batch_that_breaks_the_base_is_put_back(repo: Path) -> None:
     before = tree(repo)
     ok = {"address": "product/app/quantity/wait", **WAIT}
-    code, lines = w(repo, "put", json.dumps([ok, {"address": "software/app/view/page2", "says": "Another page.",
+    code, lines = w(repo, "put", json.dumps([ok, {"address": "software/app/interface/page2", "says": "Another page.", "form": "web",
                                                   "src": ["code:app.py#lend"],
                                                    "serves": ["product/app/workflow/borrow/step/nowhere"]}]))
     assert code == cli.REFUSED and "dangling-link" in lines[0]

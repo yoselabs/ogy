@@ -1,0 +1,30 @@
+kind: interface
+was:                                                 # view and command merged (owner, bead ogy-yy9.75): `ogy migrate` moves their entries
+  - {kind: view, defaults: {form: web}}
+  - {kind: command, defaults: {form: cli}}
+about: "a point where an actor reaches the product: what it shows, accepts and offers"
+guidance: "Where an actor reaches the product: a screen, a command line, an API call, a file, a message (`form`). `serves` names its steps, `offers` some of their choices. One that only shows facts may serve no step; one that accepts input serves one. `includes` names its cards; `allows` who may use one serving none. A handler does the work."
+like: "ArchiMate application interface: the point where an actor reaches the product (a screen, a command line, an API call, an MCP tool)"
+unlike: "a UML, Java or TypeScript interface: a type contract with no user"
+shape: file
+sentence: says
+layers: [software]
+needs_proof: true
+fingerprint: {proofs: true}
+input: {satisfies: content}                         # a rule it is held to changes: it is stale
+acyclic: [includes]                                  # a card never includes the interface that includes it
+requires:
+  - {if_equals: {field: form, value: cli}, needs_field: invoked_as, error: "a command line interface says how it is invoked (`invoked_as`)"}
+  - {if_set: accepts, needs_field: serves, error: "an interface that accepts input serves a step"}
+  - {if_set: offers, needs_field: serves, error: "an interface that offers choices serves the step they belong to"}
+  - {if_set: allows, kinds: [interface], without: [serves], error: "an interface that serves a step takes who may use it from the steps' actors; `allows` is for one that serves none"}
+fields:
+  says: {required: true}
+  form: {type: enum, of: [web, cli, http, mcp, library, file, message], required: true}   # read by requires: a cli says how it is invoked
+  invoked_as: {}                                     # the exact command line or route
+  serves: {type: links, to: [step], input: {parts: [choice]}}   # the served steps' set of choices changes: stale
+  offers: {type: links, to: [choice], input: none}
+  shows: {type: links, to: [entity, attribute], input: content}     # what it displays changes: stale
+  accepts: {type: links, to: [entity, attribute], input: content}   # what it takes in changes: stale
+  includes: {type: links, to: [interface], input: content}   # the cards inside it; a card changes: stale
+  allows: {type: links, to: [actor], harm: [authorization], input: none}   # who may use it, when it serves no step

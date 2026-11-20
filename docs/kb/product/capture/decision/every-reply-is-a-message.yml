@@ -14,7 +14,7 @@ options:
         - code:src/ogy/writes.py#message
       software/writes/handler/store-message:
         says: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
-      software/cli/command/message:
+      software/cli/interface/message:
         says: Store a reply of a person or an agent, whole and once.
       software/storage/quantity/message-digest-length:
         says: The length of the digest in a message's id, after its date.
@@ -32,7 +32,7 @@ options:
         src:
         - code:src/ogy/writes.py#said
       software/writes/handler/store-message:
-      software/cli/command/message:
+      software/cli/interface/message:
       software/storage/quantity/message-digest-length:
       software/writes/handler/record-answer:
         says: 'Appends an answer to its decision: the option chosen, a short paraphrase of what was said, who, when and where.'

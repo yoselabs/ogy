@@ -42,8 +42,8 @@ GOOD: dict[str, str] = {
     **AREAS,
     "product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n",
     "product/app/workflow/sign-in.yml": SIGN_IN,
-    "software/app/view/sign-in-page.yml": (
-        "says: The sign-in page.\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/workflow/sign-in]\n"),
+    "software/app/interface/sign-in-page.yml": (
+        "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/workflow/sign-in]\n"),
 }
 
 
@@ -101,8 +101,8 @@ FILES = {
     "app.py": CODE,
     "docs/kb/product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human, src: ['code:app.py#lend']}\n",
     "docs/kb/product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: ['code:app.py#lend']}\n",
-    "docs/kb/software/app/view/page.yml": (
-        "says: The page.\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"),
+    "docs/kb/software/app/interface/page.yml": (
+        "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"),
     "docs/kb/product/app/workflow/borrow.yml": """\
 says: A tool is lent.
 src: ['code:app.py#lend']

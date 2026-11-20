@@ -1,6 +1,0 @@
-says: Counts per area, findings, work left and dropped in one screen; --coverage adds, per layer, the kinds with no entry. Saves nothing.
-invoked_as: ogy status [area] [--coverage]
-serves:
-- product/review/workflow/hand-over/step/list
-src:
-- code:src/ogy/cli.py#_reads
