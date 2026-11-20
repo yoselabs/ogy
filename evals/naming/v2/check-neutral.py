@@ -19,9 +19,16 @@ import sys
 from pathlib import Path
 
 ALLOWED = {"of", "is", "at", "on", "when", "then", "for", "do", "after", "from", "to"}
-STOP = set(
-    ["a", "an", "the", "and", "or", "but", "not", "no", "nor", "of", "is", "are", "was", "be", "been", "it", "its", "this", "that", "these", "those", "to", "from", "in", "on", "at", "by", "for", "with", "without", "as", "so", "than", "then", "when", "which", "who", "whose", "what", "where", "how", "why", "we", "us", "our", "you", "your", "they", "their", "them", "he", "she", "his", "her", "i", "me", "my", "one", "two", "three", "any", "all", "each", "every", "some", "other", "others", "more", "most", "less", "only", "also", "never", "ever", "always", "can", "may", "must", "will", "would", "should", "could", "do", "does", "did", "done", "has", "have", "had", "there", "here", "up", "down", "out", "over", "under", "into", "between", "before", "after", "once", "again", "per", "if", "else", "until", "while", "because", "about", "against", "own", "same", "such", "just", "yet", "still", "like", "unlike"]
-)
+STOP = {
+    "a", "an", "the", "and", "or", "but", "not", "no", "nor", "of", "is", "are", "was", "be", "been", "it", "its", "this", "that",
+    "these", "those", "to", "from", "in", "on", "at", "by", "for", "with", "without", "as", "so", "than", "then", "when", "which",
+    "who", "whose", "what", "where", "how", "why", "we", "us", "our", "you", "your", "they", "their", "them", "he", "she", "his",
+    "her", "i", "me", "my", "one", "two", "three", "any", "all", "each", "every", "some", "other", "others", "more", "most", "less",
+    "only", "also", "never", "ever", "always", "can", "may", "must", "will", "would", "should", "could", "do", "does", "did", "done",
+    "has", "have", "had", "there", "here", "up", "down", "out", "over", "under", "into", "between", "before", "after", "once",
+    "again", "per", "if", "else", "until", "while", "because", "about", "against", "own", "same", "such", "just", "yet", "still",
+    "like", "unlike"
+}
 HERE = Path(__file__).resolve().parent
 
 
