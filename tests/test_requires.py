@@ -282,3 +282,15 @@ def test_a_row_that_tells_a_program_actor_owes_a_no_answer_path_and_one_that_tel
     assert left(kb, PAYING, "no-answer-path") == {case}
     person = PAYING["product/app/actors.yml"].replace("program", "human")
     assert left(kb, {**PAYING, "product/app/actors.yml": person}, "no-answer-path") == set()
+
+
+def test_a_capability_no_workflow_realizes_and_a_goal_no_capability_realizes_are_work(kb: Make) -> None:
+    """The kind guidance said it in prose only: a capability is named before its workflows and a workflow realizes it; a
+    capability realizes a goal. Until the later entry is written, the earlier one is work, never a finding."""
+    goal = {"product/app/goals.yml": "- {id: tools, says: Members get tools.}\n"}
+    assert left(kb, goal, "unused") == {"product/app/goal/tools"}
+    lend = {**goal, "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
+    assert left(kb, lend, "unused") == set()
+    assert left(kb, lend, "no-workflow") == {"product/app/capability/lend"}
+    realized = SIGN_IN.replace("start: ask\n", "start: ask\nrealizes: product/app/capability/lend\n")
+    assert left(kb, {**lend, "product/app/workflow/sign-in.yml": realized}, "no-workflow") == set()

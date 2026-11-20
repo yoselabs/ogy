@@ -1,6 +1,6 @@
 kind: capability
 about: something the product can do, decided before its workflows
-guidance: "Something the product can do, named before its workflows; it realizes goals, and a workflow realizes it. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
+guidance: "Something the product can do, named before its workflows. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
 like: "an ArchiMate capability: what the product can do, named before how"
 unlike: "a workflow, which is how one result is reached"
 harm: [authorization]
@@ -10,6 +10,7 @@ file: capabilities.yml
 layers: [product]
 requires:                     # owner: a capability realizes a goal; until the goal is written it is work, not a finding
   - {path: [realizes], kinds: [goal], work: true, status: unrealized, error: "a capability realizes a goal"}
+  - {path: ["<-realizes"], kinds: [workflow], work: true, status: no-workflow, error: "a workflow realizes the capability"}
 fields:
   says: {required: true}
   realizes: {type: links, to: [goal]}
