@@ -38,8 +38,8 @@ def _index_env() -> dict[str, str] | None:
 
 def unaffected(repo: Path, kb: str) -> bool:
     """Whether the commit holds no change under the knowledge base or in a file it cites (two Git commands, one file read)."""
-    git = RealRepo(repo)
-    asked = git.run(repo, "rev-parse", "--git-path", CACHE, f"HEAD:{kb}", check=False)
+    git = RealRepo(repo, ambient=os.environ)
+    asked = git.try_run(repo, "rev-parse", "--git-path", CACHE, f"HEAD:{kb}")
     where, _, tree = asked.out.strip().partition("\n")
     if asked.rc != 0 or not tree:
         return False
@@ -50,15 +50,15 @@ def unaffected(repo: Path, kb: str) -> bool:
     if not isinstance(known, dict) or known.get("tree") != tree or not isinstance(known.get("paths"), list):
         return False
     paths = [str(path) for path in known["paths"]]
-    done = git.run(repo, "--literal-pathspecs", "diff", "--cached", "--quiet", "--", kb, *paths, check=False, env=_index_env())
+    done = git.try_run(repo, "--literal-pathspecs", "diff", "--cached", "--quiet", "--", kb, *paths, env=_index_env())
     return done.rc == 0
 
 
 def remember(repo: Path, kb: str, rev: str, snapshot: Snapshot) -> None:
     """Keep the cited paths of the knowledge base the commit `rev` holds, under its tree id."""
-    git = RealRepo(repo)
-    tree = git.run(repo, "rev-parse", f"{rev}:{kb}", check=False)
-    where = git.run(repo, "rev-parse", "--git-path", CACHE, check=False)
+    git = RealRepo(repo, ambient=os.environ)
+    tree = git.try_run(repo, "rev-parse", f"{rev}:{kb}")
+    where = git.try_run(repo, "rev-parse", "--git-path", CACHE)
     if tree.rc != 0 or where.rc != 0:
         return
     path = repo / where.out.strip()

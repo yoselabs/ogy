@@ -1,6 +1,7 @@
 """A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare
 against: what has landed on the land branch `ogy.yml` names (`land`), as its remote holds it."""
 
+import os
 from dataclasses import dataclass, replace
 lazy from pathlib import Path
 
@@ -21,7 +22,7 @@ NO_COMMIT = "0" * 40  # what a removal made before the first commit last saw
 def last_seen(repo: Path) -> str:
     """The commit a removal was made on (a removed item's `last_seen`): HEAD, or NO_COMMIT before the first commit."""
     try:
-        return head(repo)
+        return head(repo, ambient=os.environ)
     except MissingRevision:
         return NO_COMMIT
 
@@ -54,13 +55,13 @@ def landed(repo: Path) -> str:
     push of the land branch itself is checked against the commit the remote held (`hooks.pushed`), the same commit when
     fetched. Refuses (NoLandError) when `ogy.yml` names no land branch."""
     land = config.land(repo)
-    git = RealRepo(repo)
-    upstream = git.run(repo, "rev-parse", "-q", "--verify", "--symbolic-full-name", f"{land}@{{upstream}}", check=False)
+    git = RealRepo(repo, ambient=os.environ)
+    upstream = git.try_run(repo, "rev-parse", "-q", "--verify", "--symbolic-full-name", f"{land}@{{upstream}}")
     found = upstream.out.strip() if upstream.rc == 0 else ""
     if found.startswith("refs/remotes/"):
         return found
     origin = f"refs/remotes/origin/{land}"
-    return origin if git.run(repo, "rev-parse", "-q", "--verify", f"{origin}^{{commit}}", check=False).rc == 0 else land
+    return origin if git.try_run(repo, "rev-parse", "-q", "--verify", f"{origin}^{{commit}}").rc == 0 else land
 
 
 def merge_base(target: Target) -> str | None:
@@ -73,7 +74,7 @@ def merge_base(target: Target) -> str | None:
     base = landed(target.repo)
     rev = "HEAD" if target.rev == "." else target.rev
     try:
-        repo = RealRepo(target.repo)
+        repo = RealRepo(target.repo, ambient=os.environ)
         found = repo.merge_base(rev, base)
         return None if found is None or found == repo.commit(rev) else str(found)
     except GitError, ValueError:

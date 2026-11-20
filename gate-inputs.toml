@@ -1,0 +1,12 @@
+# Files each gate step reads (fnmatch, `*` crosses `/`); a step none of whose inputs changed is not started. `["*"]` = whole repo.
+guard = ["*"]
+blueprint = ["*"]
+secrets = ["*"]
+render = ["*"]
+spell = ["*"]
+test = ["*"]
+preset = ["pyproject.toml"]
+lint = ["*.py", "pyproject.toml"]
+typecheck = ["*.py", "pyproject.toml"]
+deps = ["*.py", "pyproject.toml", "uv.lock"]
+scripts = ["*.sh", ".shellcheckrc"]

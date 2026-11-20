@@ -301,7 +301,7 @@ def test_a_second_writer_is_refused_while_the_lock_is_held(repo: Path) -> None:
     git = git_dir(repo)
     assert git is not None
     before = tree(repo)
-    with ProcessLock.acquire(git / "ogy.lock", reentrant=False):
+    with ProcessLock.acquire_exclusive(git / "ogy.lock"):
         code, lines = w(repo, "put", json.dumps({"address": "product/app/quantity/fee", "is": 9}))
     assert code == cli.REFUSED and "another ogy write" in lines[0] and tree(repo) == before
 

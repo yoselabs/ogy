@@ -1,5 +1,6 @@
 """Words nobody agreed yet wait for the owner (an error only on a land), and `review --from docs|code` pages them."""
 
+import os
 lazy from pathlib import Path
 
 from git_porcelain import run_git
@@ -28,7 +29,7 @@ def terms(repo: Path, text: str = TERMS) -> Path:
     if not (repo / "docs/spec.md").exists():
         (repo / "docs/spec.md").write_text(SPEC)
         commit(repo, "the spec")
-    rev = run_git(repo, "log", "-1", "--format=%H", "--", "docs/spec.md").strip()
+    rev = run_git(repo, "log", "-1", "--format=%H", "--", "docs/spec.md", ambient=os.environ).strip()
     (repo / "docs/kb/product/shared").mkdir(parents=True, exist_ok=True)
     (repo / "docs/kb/product/shared/area.yml").write_text("says: What two areas use.\n")
     (repo / "docs/kb/product/shared/glossary.yml").write_text(SLOT.replace("<rev>", rev))
@@ -134,7 +135,7 @@ def test_a_question_without_options_is_answered_in_words(repo: Path) -> None:
 
 def test_anchors_lists_a_files_headings_and_missing_doc_offers_the_nearest(repo: Path) -> None:
     terms(repo)
-    rev = run_git(repo, "log", "-1", "--format=%H", "--", "docs/spec.md").strip()
+    rev = run_git(repo, "log", "-1", "--format=%H", "--", "docs/spec.md", ambient=os.environ).strip()
     code, lines = w(repo, "anchors", "docs/spec.md")
     assert code == cli.OK and lines == ["spec   # Spec", "land     ## Land", "work     ## Work"]
     assert w(repo, "anchors", "docs/none.md")[0] == cli.NOT_FOUND

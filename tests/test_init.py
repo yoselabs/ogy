@@ -1,6 +1,7 @@
 """`ogy init` and `ogy.yml`: set-up that is idempotent and never clobbers, and settings read as flag defaults."""
 
 import json
+import os
 import shlex
 lazy from pathlib import Path
 
@@ -108,7 +109,7 @@ def test_config_path_can_be_moved_by_the_environment(tmp_path: Path, monkeypatch
 
 def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("ogy.init.shutil.which", lambda _: "/usr/bin/ogy")
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
     block = read(tmp_path, "AGENTS.md")
     assert "ogy check --rev ." not in block  # a global flag after the command is `unrecognized arguments`
@@ -176,17 +177,17 @@ def test_init_records_the_remotes_default_branch_as_land_on_a_feature_branch(tmp
     feature branch it is the remote's default branch, not the branch checked out."""
     origin, here = tmp_path / "origin", tmp_path / "here"
     origin.mkdir()
-    run_git(origin, "init", "-q", "-b", "trunk")
+    run_git(origin, "init", "-q", "-b", "trunk", ambient=os.environ)
     (origin / "README.md").write_text("A project.\n")
     commit(origin, "first")
-    run_git(tmp_path, "clone", "-q", str(origin), str(here))
-    run_git(here, "switch", "-q", "-c", "feature")
+    run_git(tmp_path, "clone", "-q", str(origin), str(here), ambient=os.environ)
+    run_git(here, "switch", "-q", "-c", "feature", ambient=os.environ)
     (here / "ogy.yml").write_text("ontology: software\n")
     code, lines = cli.run(["--repo", str(here), "init"])
     assert code == cli.OK and "wrote ogy.yml" in lines, lines
     assert read(here, "ogy.yml") == "ontology: software\nland: trunk\n"
     assert cli.run(["--repo", str(here), "init", "--check"]) == (cli.OK, ["ogy is set up here"])
-    run_git(here, "switch", "-q", "-c", "later")
+    run_git(here, "switch", "-q", "-c", "later", ambient=os.environ)
     assert not [line for line in cli.run(["--repo", str(here), "init"])[1] if line.startswith("wrote")]  # kept, not re-guessed
     (here / "ogy.yml").write_text("ontology: software\n")
     lines = cli.run(["--repo", str(here), "init", "--check"])[1]
@@ -194,7 +195,7 @@ def test_init_records_the_remotes_default_branch_as_land_on_a_feature_branch(tmp
 
 
 def test_init_with_no_remote_refuses_to_guess_the_land_branch_until_it_is_given(tmp_path: Path) -> None:
-    run_git(tmp_path, "init", "-q", "-b", "feature")
+    run_git(tmp_path, "init", "-q", "-b", "feature", ambient=os.environ)
     code, lines = cli.run(["--repo", str(tmp_path), "init"])
     assert code == cli.REFUSED and any("--land <branch>" in line for line in lines), lines
     assert sorted(p.name for p in tmp_path.iterdir()) == [".git"]  # refused before writing anything
@@ -206,13 +207,13 @@ def test_init_with_no_remote_refuses_to_guess_the_land_branch_until_it_is_given(
 
 
 def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
     hook = tmp_path / ".githooks/pre-commit"
     assert code == cli.OK and ".githooks/pre-commit" in "".join(lines) and ".githooks/pre-push" in "".join(lines)
     assert hook.stat().st_mode & 0o111 and 'hook pre-commit "$@"' in hook.read_text()
     assert "diff --cached" not in hook.read_text()  # every commit: a code rename can break a `code:` source
-    assert run_git(tmp_path, "config", "core.hooksPath").strip() == ".githooks"
+    assert run_git(tmp_path, "config", "core.hooksPath", ambient=os.environ).strip() == ".githooks"
     assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # idempotent
     hook.unlink()
     assert any("pre-commit" in line for line in cli.run(["--repo", str(tmp_path), "init", "--check"])[1])
@@ -221,7 +222,7 @@ def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
 def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(repo: Path) -> None:
     """Fable's review, problem 5: a starter removed before any commit held it (the base never had it) is still recorded, so
     `ogy init` does not add it again; the branch's check accepts the item though the base has no such entry."""
-    run_git(repo, "checkout", "-q", "-b", "later")
+    run_git(repo, "checkout", "-q", "-b", "later", ambient=os.environ)
     assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
     actors = read(repo, "docs/kb/product/shared/actors.yml")
     assert "id: owner" in actors and "nature: human" in actors and "id: agent" in actors and "agreed" not in actors
@@ -235,7 +236,7 @@ def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(
 
 
 def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -> None:
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
     code, lines = cli.run(["--repo", str(tmp_path), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
     assert code == cli.OK and "recorded in product/shared/removed.yml" in lines[0], lines
@@ -253,11 +254,11 @@ def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -
     ],
 )
 def test_a_refusal_on_the_shape_of_a_file_writes_nothing(tmp_path: Path, rel: str, text: str, fault: str) -> None:
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     (tmp_path / rel).parent.mkdir(exist_ok=True)
     (tmp_path / rel).write_text(text)
     code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
     assert code == cli.REFUSED and lines == [f"not set up: {fault}"], lines
     assert sorted(p.name for p in tmp_path.iterdir()) == sorted({".git", rel.split("/", 1)[0]})  # no ogy.yml, AGENTS.md or docs/
     assert read(tmp_path, rel) == text
-    assert run_git(tmp_path, "config", "--default", "", "core.hooksPath").strip() == ""
+    assert run_git(tmp_path, "config", "--default", "", "core.hooksPath", ambient=os.environ).strip() == ""

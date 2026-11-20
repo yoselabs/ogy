@@ -1,6 +1,7 @@
 """The removed ledgers in `ogy check`: R2 and R4 to R8 on one commit, and the checks against the base commit (C1 to C3, R1, R3, R7)."""
 
 import dataclasses
+import os
 lazy from collections.abc import Collection
 
 from git_porcelain import RealRepo
@@ -127,7 +128,7 @@ class _Branch:
             self.shas = []
             if isinstance(self.base, GitSource):
                 try:
-                    log = RealRepo(self.base.repo).history([self.checked], not_on=[self.base.rev], limit=HISTORY)
+                    log = RealRepo(self.base.repo, ambient=os.environ).history([self.checked], not_on=[self.base.rev], limit=HISTORY)
                     self.shas = [entry.sha for entry in log]
                 except GitError:
                     self.shas = []

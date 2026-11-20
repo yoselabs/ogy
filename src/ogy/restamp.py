@@ -3,6 +3,7 @@ a term's the sentence it names (`Snapshot.agreed_print`). An agreement whose has
 re-set to the new hash only when the entry and every part read with it are as they were in the commit that wrote the
 agreement; otherwise it stays as it is, and the entry comes back to the owner as changed since agreed."""
 
+import os
 lazy from collections.abc import Sequence
 lazy from pathlib import Path
 
@@ -49,7 +50,7 @@ def proven(repo: Path, kb: str, snapshot: Snapshot) -> dict[Address, dict[str, o
     if not stale:
         return {}
     try:
-        shas = [entry.sha for entry in RealRepo(repo).history(["HEAD"], limit=LIMIT)]
+        shas = [entry.sha for entry in RealRepo(repo, ambient=os.environ).history(["HEAD"], limit=LIMIT)]
     except GitError:
         return {}
     then: dict[str, Snapshot] = {}

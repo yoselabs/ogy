@@ -1,6 +1,7 @@
 """`ogy hook`: the one entry point every Git hook calls; it decides from the ref being updated whether the update is a land."""
 
 import io
+import os
 from typing import Any
 lazy from pathlib import Path
 
@@ -17,9 +18,9 @@ ZERO = "0" * 40
 @pytest.fixture
 def fresh(tmp_path: Path) -> Path:
     """A repository `ogy init` just set up: its starting principle waits for the owner's yes, so it is not ready to land."""
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
-    run_git(tmp_path, "add", "-A")
+    run_git(tmp_path, "add", "-A", ambient=os.environ)
     return tmp_path
 
 
@@ -29,8 +30,8 @@ def hook(repo: Path, monkeypatch: pytest.MonkeyPatch, name: str, stdin: str = ""
 
 
 def first_commit(repo: Path) -> str:
-    run_git(repo, *IDENTITY, "-c", "core.hooksPath=/dev/null", "commit", "-q", "-m", "init")
-    return run_git(repo, "rev-parse", "HEAD").strip()
+    run_git(repo, *IDENTITY, "-c", "core.hooksPath=/dev/null", "commit", "-q", "-m", "init", ambient=os.environ)
+    return run_git(repo, "rev-parse", "HEAD", ambient=os.environ).strip()
 
 
 def test_a_fresh_repository_makes_its_first_commit_on_main(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -44,7 +45,7 @@ def test_the_pre_commit_check_reads_the_staged_tree(fresh: Path, monkeypatch: py
     broken = fresh / "docs/kb/product/shared/actors.yml"
     broken.write_text(broken.read_text() + "- {id: ghost, nature: robot, says: A ghost.}\n")
     assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK  # unstaged: the commit does not hold it
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     code, lines = hook(fresh, monkeypatch, "pre-commit")
     assert code == cli.FINDINGS and any("ghost" in line for line in lines), lines
 
@@ -96,7 +97,7 @@ def test_the_gate_lands_with_main_checked_out_and_not_on_a_branch(fresh: Path, m
     first_commit(fresh)
     code, lines = hook(fresh, monkeypatch, "gate")
     assert code == cli.FINDINGS and lines[0] == "land refs/heads/main at ." and any("term-not-agreed" in line for line in lines)
-    run_git(fresh, "switch", "-q", "-c", "later")
+    run_git(fresh, "switch", "-q", "-c", "later", ambient=os.environ)
     assert hook(fresh, monkeypatch, "gate") == (cli.OK, ["check refs/heads/later at .", "ok"])
 
 
@@ -104,14 +105,14 @@ def test_a_branch_push_checks_against_the_merge_base_like_a_removal(fresh: Path,
     """An entry born on a branch and pushed, then removed there: the removal records nothing (the merge base never had it), so
     the next push of the branch is checked against the merge base too, not the commit the remote branch held."""
     sha = first_commit(fresh)
-    run_git(fresh, "switch", "-q", "-c", "later")
+    run_git(fresh, "switch", "-q", "-c", "later", ambient=os.environ)
     actors = fresh / "docs/kb/product/shared/actors.yml"
     actors.write_text(actors.read_text() + "- {id: clerk, nature: human, says: A clerk at the desk.}\n")
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     pushed = first_commit(fresh)
     code, lines = cli.run(["--repo", str(fresh), "--rev", ".", "remove", "product/shared/actor/clerk", "--why", "No clerks"])
     assert code == cli.OK, lines
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     now = first_commit(fresh)
     code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/later {now} refs/heads/later {pushed}\n")
     assert code == cli.OK, lines
@@ -123,10 +124,10 @@ def test_a_land_is_checked_against_the_commit_main_held(fresh: Path, monkeypatch
     actors = fresh / "docs/kb/product/shared/actors.yml"
     before = actors.read_text()
     actors.write_text(before + "- {id: clerk, nature: human, says: A clerk at the desk.}\n")
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     old = first_commit(fresh)
     actors.write_text(before)  # gone by hand, no removed.yml item
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     new = first_commit(fresh)
     code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/main {new} refs/heads/main {old}\n")
     assert code == cli.FINDINGS and any("removed-unrecorded" in line and "clerk" in line for line in lines), lines
@@ -143,10 +144,10 @@ def test_ogys_own_push_runs_the_landing_hook_outside_the_gate_record() -> None:
 
 def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Fable's second review, problem 4: `ogy init` records the land branch, and the hooks read it; no `main` is assumed."""
-    run_git(tmp_path, "init", "-q", "-b", "trunk")
+    run_git(tmp_path, "init", "-q", "-b", "trunk", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "trunk"])[0] == cli.OK
     assert "land: trunk" in (tmp_path / "ogy.yml").read_text()
-    run_git(tmp_path, "add", "-A")
+    run_git(tmp_path, "add", "-A", ambient=os.environ)
     sha = first_commit(tmp_path)
     code, lines = hook(tmp_path, monkeypatch, "pre-push", f"refs/heads/trunk {sha} refs/heads/trunk {ZERO}\n")
     assert code == cli.FINDINGS and lines[0].startswith("land refs/heads/trunk"), lines
@@ -159,13 +160,13 @@ def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: p
 
 def _spawned(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, ...]]:
     seen: list[tuple[str, ...]] = []
-    real = RealRepo.run
+    real = RealRepo.try_run
 
     def counting(self: RealRepo, cwd: Path, *args: str, **kwargs: Any) -> Any:
         seen.append(args)
         return real(self, cwd, *args, **kwargs)
 
-    monkeypatch.setattr(RealRepo, "run", counting)
+    monkeypatch.setattr(RealRepo, "try_run", counting)
     return seen
 
 
@@ -175,7 +176,7 @@ def cited(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     (fresh / "lib.py").write_text("def lend() -> None:\n    return None\n")
     actors = fresh / "docs/kb/product/shared/actors.yml"
     actors.write_text(actors.read_text().replace("  nature: human\n", "  nature: human\n  src: ['code:lib.py#lend']\n", 1))
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK
     first_commit(fresh)
     return fresh
@@ -187,7 +188,7 @@ def test_affected_selection_a_commit_that_changes_nothing_the_check_reads_does_n
     """Owner rule: when no file the check reads changed (the knowledge base and the files it cites), the hook runs two Git
     commands and reads no entry. If this test needs a looser bound, the rule is broken, not the test."""
     (cited / "notes.txt").write_text("not a cited file\n")
-    run_git(cited, "add", "-A")
+    run_git(cited, "add", "-A", ambient=os.environ)
     seen = _spawned(monkeypatch)
     code, lines = hook(cited, monkeypatch, "pre-commit")
     assert code == cli.OK, lines
@@ -197,7 +198,7 @@ def test_affected_selection_a_commit_that_changes_nothing_the_check_reads_does_n
 def test_a_change_to_a_cited_file_is_checked(cited: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """A code rename that breaks a `code:` source is the case `check-every-commit` was decided for."""
     (cited / "lib.py").write_text("def borrow() -> None:\n    return None\n")
-    run_git(cited, "add", "-A")
+    run_git(cited, "add", "-A", ambient=os.environ)
     code, lines = hook(cited, monkeypatch, "pre-commit")
     assert code == cli.FINDINGS and any("missing-code" in line for line in lines), lines
 
@@ -205,7 +206,7 @@ def test_a_change_to_a_cited_file_is_checked(cited: Path, monkeypatch: pytest.Mo
 def test_a_change_under_the_knowledge_base_is_checked(cited: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     kb = cited / "docs/kb/product/shared/actors.yml"
     kb.write_text(kb.read_text() + "- {id: ghost, nature: robot, says: A ghost.}\n")
-    run_git(cited, "add", "-A")
+    run_git(cited, "add", "-A", ambient=os.environ)
     assert hook(cited, monkeypatch, "pre-commit")[0] == cli.FINDINGS
 
 
@@ -213,7 +214,7 @@ def test_with_no_remembered_paths_the_hook_checks(fresh: Path, monkeypatch: pyte
     """It cannot tell what the commit affects, so it checks (a clone, a new Git directory)."""
     first_commit(fresh)
     (fresh / "notes.txt").write_text("x\n")
-    run_git(fresh, "add", "-A")
+    run_git(fresh, "add", "-A", ambient=os.environ)
     seen = _spawned(monkeypatch)
     assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK
     assert len(seen) > 2

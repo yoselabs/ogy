@@ -74,7 +74,7 @@ def _folder(repo: Path) -> Path | None:
 
 def _read(path: Path) -> Round | None:
     try:
-        return Round.model_validate_json(path.read_text())
+        return Round.model_validate_json(path.read_text(encoding="utf-8"))
     except ValidationError, OSError:
         return None
 

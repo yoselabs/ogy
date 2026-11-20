@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 lazy from pathlib import Path
 
 import any_yaml
-from atomic_io import atomic_write_text
+from atomic_io import atomic_replace_text
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Iterable, Mapping
@@ -270,7 +270,7 @@ def drop(root: Path, home: str, ids: Collection[str]) -> None:
     if before is None or after is None or [item for item in before.items if item.id not in ids] != list(after.items):
         raise RemovedError([_bad(home, "the ledger is not a block list its items can be taken out of")])
     if kept:
-        atomic_write_text(path, result, keep_mode=True)
+        atomic_replace_text(path, result)
     else:
         path.unlink()
 
