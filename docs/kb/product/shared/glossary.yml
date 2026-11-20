@@ -1,6 +1,6 @@
 - id: actor
   word: actor
-  says: 'Who uses or operates the product: human, ai or program; never an external.'
+  says: 'Who uses or operates the product: human, ai or program; never a dependency.'
   avoid:
   - persona
   - role
@@ -71,7 +71,7 @@
     hash: 0113cfa7a3b8
 - id: decision
   word: decision
-  says: One question with its options, guess and answers; a tracker only mirrors it.
+  says: One question with its options, proposal and answers; a tracker only mirrors it.
   avoid:
   - settles
   - ?open
@@ -192,7 +192,7 @@
     hash: 2e792e702432
 - id: read-back
   word: read-back
-  says: Entries played back as said, concluded, guessed; neither a summary nor a review round.
+  says: Entries played back as said, concluded, proposed; neither a summary nor a review round.
   agreed:
     at: '2026-11-19T20:32:19+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
