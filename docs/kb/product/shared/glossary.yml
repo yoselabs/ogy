@@ -252,7 +252,7 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
     hash: 281f3d1b5c4c
-- id: guess
+- id: proposal
   word: proposal
   says: The option or values the AI builds on until the owner answers a decision.
   avoid:
