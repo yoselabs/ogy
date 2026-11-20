@@ -8,7 +8,7 @@ from typing import override
 lazy from collections.abc import Mapping
 lazy from pathlib import Path
 
-from git_porcelain import git_dir, head
+from git_porcelain import git_dir
 from process_lock import LockHeldError, ProcessLock
 
 from ogy import hooks, near, put, removal, removed, reply, rounds, writes
@@ -37,7 +37,7 @@ from ogy.semdiff import SemanticDiff, diff
 from ogy.show import Shown, absent, show
 from ogy.since import card_changes
 from ogy.source import Source, open_source
-from ogy.target import Target, merge_base, removal_base
+from ogy.target import Target, last_seen, merge_base, removal_base
 from ogy.terms import waiting
 from ogy.verdict import NotFoundError, RefusalError, Verdict
 from ogy.writes import Answered, WriteRefusedError
@@ -295,7 +295,7 @@ def run_remove(target: Target, text: str, why: str | None = None, to: str | None
                 why=why,
                 to=to,
                 now=clock(),
-                last_seen=head(target.repo),
+                last_seen=last_seen(target.repo),
                 base=removal_base(target),
             )
     except LockHeldError as error:

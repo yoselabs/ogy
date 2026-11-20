@@ -12,7 +12,7 @@ from ogy.kindchange import before, migrated
 from ogy.layout import REMOVED_FILE
 from ogy.links import link_items, resolve
 from ogy.model import Address, Finding, Problem, home_of, link_values, parse_address
-from ogy.removal import known_addresses, snapshot_problems
+from ogy.removal import known_addresses, snapshot_problems, starters
 from ogy.retype import Retype
 from ogy.snapshot import Snapshot, load
 from ogy.source import GitSource, Source
@@ -96,12 +96,14 @@ def check_against_base(snapshot: Snapshot, source: Source, base: Snapshot, base_
     in_base, rename = {item.id for ledger in old.values() for item in ledger.items}, Retype(snapshot.ontology).address
     new = [item for ledger in written.values() for item in ledger.items if rename(item.id) not in in_base]
     then = load(base_source, before(snapshot.ontology)) if any(rename(item.id) != item.id for item in new) else base
-    branch = _Branch(snapshot, source, base_source)
+    branch, starts = _Branch(snapshot, source, base_source), starters(snapshot.ontology)
 
     def problems(item: removed.Item) -> list[str]:
         if rename(item.id) != item.id:
             return snapshot_problems(then, item)
         found, address = snapshot_problems(base, item), parse_address(item.id, snapshot.ontology)
+        if address in starts and address not in base.entries:
+            return []  # a starter removed before the base had it: recorded so `ogy init` does not add it again
         if not found or address is None or address not in base.entries:
             return found  # no entry in the base: nothing on the branch stands in for it
         last = branch.last_version(address)

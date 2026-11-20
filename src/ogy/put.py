@@ -8,14 +8,13 @@ from dataclasses import dataclass
 lazy from collections.abc import Mapping
 
 import any_yaml
-from git_porcelain import head
 
 from ogy import near, removal, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import fields_problems
 from ogy.kinds import NAME, Holds, Kind, Shape
 from ogy.model import Address, parse_address
-from ogy.target import removal_base
+from ogy.target import last_seen, removal_base
 from ogy.writes import Data, WriteRefusedError, commit, utc_now
 lazy from ogy.snapshot import Snapshot
 lazy from ogy.target import Target
@@ -182,12 +181,12 @@ def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: li
         and before.kind_of(address).holding is Holds.MAP
     ]  # a single part is a field of its parent: its change shows there
     base = removal_base(target)
-    dropped = [address for address in dropped if removal.recorded(base, address)]  # one born since the base: Git keeps it
+    dropped = [address for address in dropped if removal.recorded(base, address, before.ontology)]  # one born since the base: Git keeps it
     if not dropped:
         return
     if not why or not why.strip():
         raise WriteRefusedError([f"the batch drops {', '.join(map(str, dropped))}: give --why (a decision address, or plain words)"])
-    at, seen = utc_now(), head(target.repo)
+    at, seen = utc_now(), last_seen(target.repo)
     items = [removal.build_item(before, address, why, None, at=at, last_seen=seen, ontology=target.ontology) for address in dropped]
     problems = removed.check_why(items, removal.known_addresses(before), before.ontology.roles.agreed)
     if problems:

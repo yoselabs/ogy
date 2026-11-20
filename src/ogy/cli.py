@@ -192,7 +192,8 @@ def _writes(commands: Adder) -> None:
         commands,
         "remove",
         "delete an entry and record it in its area's removed.yml",
-        "Always changes the worktree. An entry the base commit never had is not recorded: Git keeps it.",
+        "Always changes the worktree. An entry the base commit never had is not recorded (Git keeps it), except one ogy init "
+        "starts with, which init would add again.",
     )
     removing.add_argument("address", help=ADDRESS)
     removing.add_argument(

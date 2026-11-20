@@ -1,5 +1,6 @@
 """`ogy remove`: delete an entry or a part, and append its item (envelope and snapshot) to its area's removed ledger when the
-base had it. One born since the base leaves no item: Git keeps it, and its id is free again."""
+base had it. One born since the base leaves no item: Git keeps it, and its id is free again; except an entry `ogy init` starts
+with, always recorded so init does not add it again."""
 
 import datetime as dt
 from collections.abc import Callable, Collection, Mapping
@@ -34,9 +35,16 @@ class Removed:
     recorded: bool
 
 
-def recorded(base: Collection[Address], address: Address) -> bool:
-    """Whether a removal of `address` is written to a ledger: only when the base (`target.removal_base`) holds it."""
-    return address in base
+def starters(ontology: Ontology) -> frozenset[Address]:
+    """The addresses `ogy init` starts a knowledge base with (the ontology's `starts.yml`)."""
+    found = (parse_address(str(record.get("address", "")), ontology) for record in ontology.starts)
+    return frozenset(address for address in found if address is not None)
+
+
+def recorded(base: Collection[Address], address: Address, ontology: Ontology) -> bool:
+    """Whether a removal of `address` is written to a ledger: when the base (`target.removal_base`) holds it, and always for an
+    entry `ogy init` starts with, which init would add again without its item."""
+    return address in base or address in starters(ontology)
 
 
 def entry_snapshot(snapshot: Snapshot, address: Address) -> dict[str, object]:
@@ -163,7 +171,7 @@ def remove(
     reasons += [f"{p.code}: {p.detail}" for p in problems]
     if reasons:
         raise RemoveRefusedError(reasons)
-    kept = recorded(base, address)
+    kept = recorded(base, address, snapshot.ontology)
     if kept:
         removed.append(root / kb, address.home, item, lambda new: snapshot_problems(snapshot, new))
     editor.remove(address)

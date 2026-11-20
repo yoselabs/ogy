@@ -185,12 +185,26 @@ def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
 
 
 def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(repo: Path) -> None:
+    """Fable's review, problem 5: a starter removed before any commit held it (the base never had it) is still recorded, so
+    `ogy init` does not add it again; the branch's check accepts the item though the base has no such entry."""
+    run_git(repo, "checkout", "-q", "-b", "later")
     assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
     actors = read(repo, "docs/kb/product/shared/actors.yml")
     assert "id: owner" in actors and "nature: human" in actors and "id: agent" in actors and "agreed" not in actors
-    commit(repo, "init")  # a removal is recorded against what was committed
     code, lines = cli.run(["--repo", str(repo), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
-    assert code == cli.OK, lines
+    assert code == cli.OK and "recorded in product/shared/removed.yml" in lines[0], lines
     assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
     assert "id: agent" not in read(repo, "docs/kb/product/shared/actors.yml")
     assert not any("actor/agent" in line for line in cli.run(["--repo", str(repo), "init", "--check"])[1])
+    commit(repo, "init without the agent")
+    assert ogy(repo, "--rev", ".", "check") == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
+
+
+def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main")
+    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    code, lines = cli.run(["--repo", str(tmp_path), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
+    assert code == cli.OK and "recorded in product/shared/removed.yml" in lines[0], lines
+    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert "id: agent" not in read(tmp_path, "docs/kb/product/shared/actors.yml")
+    assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])

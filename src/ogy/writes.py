@@ -11,7 +11,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 
 from atomic_io import atomic_write_text
-from git_porcelain import git_dir, head
+from git_porcelain import git_dir
 from process_lock import LockHeldError, ProcessLock
 
 from ogy import near, removal
@@ -20,7 +20,7 @@ from ogy.fieldtypes import AGREED_HASH
 from ogy.model import Address, Finding, Problem, parse_address
 from ogy.removal import RemoveRefusedError
 from ogy.settle import Decision, answers_key, decision_of, decisions
-from ogy.target import Target, removal_base, worktree_findings
+from ogy.target import Target, last_seen, removal_base, worktree_findings
 from ogy.verdict import RefusalError
 lazy from ogy.kinds import Settling
 lazy from ogy.snapshot import Snapshot
@@ -232,7 +232,7 @@ def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Cloc
                     why=str(decision.address),
                     to=None,
                     now=now(),
-                    last_seen=head(target.repo),
+                    last_seen=last_seen(target.repo),
                     base=base,
                 )
             except (RemoveRefusedError, LookupError) as error:

@@ -1372,7 +1372,7 @@
       "openWorldHint": false,
       "readOnlyHint": false
     },
-    "description": "delete an entry and record it in its area's removed.yml. Always changes the worktree. An entry the base commit never had is not recorded: Git keeps it.",
+    "description": "delete an entry and record it in its area's removed.yml. Always changes the worktree. An entry the base commit never had is not recorded (Git keeps it), except one ogy init starts with, which init would add again.",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {

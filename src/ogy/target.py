@@ -3,7 +3,7 @@
 from dataclasses import dataclass, replace
 lazy from pathlib import Path
 
-from git_porcelain import GitError, RealRepo
+from git_porcelain import GitError, MissingRevision, RealRepo, head
 
 from ogy.check import check
 from ogy.kindchange import migrated
@@ -14,6 +14,15 @@ from ogy.verdict import MissingTargetError
 lazy from ogy.model import Address, Finding
 
 MAIN = "main"  # the branch a land updates; the base a branch is checked against
+NO_COMMIT = "0" * 40  # what a removal made before the first commit last saw
+
+
+def last_seen(repo: Path) -> str:
+    """The commit a removal was made on (a removed item's `last_seen`): HEAD, or NO_COMMIT before the first commit."""
+    try:
+        return head(repo)
+    except MissingRevision:
+        return NO_COMMIT
 
 
 @dataclass(frozen=True)
