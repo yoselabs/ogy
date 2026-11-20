@@ -98,9 +98,9 @@ def _reads(commands: Adder) -> None:
 
 
 def _asks(commands: Adder) -> None:
-    _verb(commands, "work", "what is built against the entries and what is left", "Exit 1 when work is left. Takes an area.").add_argument(
-        "area", nargs="?", help="only this area"
-    )
+    _verb(
+        commands, "work", "what is built against the entries and what is left", "Exit 1 when work is left. Takes a layer or an area."
+    ).add_argument("area", nargs="?", help="only this layer (product, software), <layer>/<area>, or an area in every layer")
     _verb(
         commands,
         "glossary",

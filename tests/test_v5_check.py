@@ -7,6 +7,7 @@ import pytest
 from tests.conftest import SIGN_IN
 
 from ogy.model import Problem
+from ogy.receipts import work_left
 from ogy.status import Agreement, agreement, harm
 
 if TYPE_CHECKING:
@@ -192,9 +193,11 @@ def test_the_folder_is_the_layer_and_the_kind_says_which_layers_it_may_appear_in
 def test_requirement_applies_when_part_present(kb: Make) -> None:
     plain = CALLEE.replace("called", "actor")
     effect = plain.replace("a: {order: 1,", 'a: {order: 1, effects: [{do: tell, "on": product/app/actor/member}],')
-    assert only(kb({"product/app/workflow/callee.yml": effect}).findings(), Problem.UNMET) == {
-        "product/app/workflow/callee/step/only/case/a"
-    }
+    unhandled = kb({"product/app/workflow/callee.yml": effect})  # no handler yet: work, never a fault
+    assert only(unhandled.findings(), Problem.UNMET) == set()
+    assert [(str(item.address), item.status) for item in work_left(unhandled.snapshot, {}, _no_file) if item.status == "unhandled"] == [
+        ("product/app/workflow/callee/step/only/case/a", "unhandled")
+    ]
     assert only(kb({"product/app/workflow/callee.yml": plain}).findings(), Problem.UNMET) == set()
     operation = "says: Sends.\nperforms: [product/app/workflow/callee/step/only/case/a]\n"
     assert kb({"product/app/workflow/callee.yml": effect, "software/app/handler/send.yml": operation}).findings() == set()
@@ -301,3 +304,7 @@ def test_a_step_is_agreed_with_its_rows_and_a_term_with_the_sentence_it_names(kb
         }
     ).snapshot
     assert agreement(relabelled, at) is Agreement.CHANGED and agreement(relabelled, named) is Agreement.CHANGED
+
+
+def _no_file(path: str, rev: str | None = None) -> str | None:
+    return None

@@ -83,6 +83,14 @@ def test_check_work_and_review_take_an_area(repo: Path) -> None:
         assert ogy(repo, command, "nope")[0] == cli.NOT_FOUND
 
 
+def test_work_takes_a_layer_so_the_business_sees_its_own_gaps(repo: Path) -> None:
+    every = ogy(repo, "work")[1]
+    product, software = ogy(repo, "work", "product")[1], ogy(repo, "work", "software")[1]
+    assert any("product/" in line for line in product) and not any("software/" in line for line in product)
+    assert not any("product/" in line for line in software)
+    assert ogy(repo, "work", "product/app")[1] == product and len(every) >= len(product)
+
+
 def test_an_agent_gets_a_table_with_its_header_even_when_empty(repo: Path) -> None:
     assert cli.run(["--repo", str(repo), "find", "zzz"], agent=True) == (cli.OK, ["address\tkind\tstate\tsays\tnote"])
     assert cli.run(["--repo", str(repo), "dropped"], agent=True) == (cli.OK, ["why\taddress"])

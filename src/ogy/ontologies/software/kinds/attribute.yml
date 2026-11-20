@@ -13,7 +13,7 @@ requires:
   - {if_set: derived, kinds: [attribute], without: [max, optional], error: "a derived attribute has no max and is never optional"}
   # never-written: written by a write effect on it or its entity, or a create of its entity (`|create`: the owner's switch,
   # decision create-writes-attributes), or accepted by an interface (it or its entity)
-  - {if_unset: derived, path: ["<-accepts"], or_paths: [["<-on?do=write"], ["^", "<-on?do=write|create"], ["^", "<-accepts"]], kinds: [interface, choice, case, timeout], error: "never-written: an attribute that is not derived is written by an effect or accepted by an interface (it or its entity)"}
+  - {if_unset: derived, path: ["<-accepts"], or_paths: [["<-on?do=write"], ["^", "<-on?do=write|create"], ["^", "<-accepts"]], kinds: [interface, choice, case, timeout], work: true, status: unwritten, error: "never-written: an attribute that is not derived is written by an effect or accepted by an interface (it or its entity)"}
 fields:
   says: {}
   type: {type: enum, of: [text, number, flag, money, date, datetime, duration]}

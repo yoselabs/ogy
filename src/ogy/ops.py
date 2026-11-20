@@ -26,7 +26,7 @@ from ogy.init import Initialised, InitRefusedError, init
 from ogy.kindmap import map_lines
 from ogy.kindtext import kinds_lines
 from ogy.migrate import Migrated, migrate
-from ogy.model import Address, Finding, area_of, parse_address
+from ogy.model import Address, Finding, area_of, home_of, parse_address
 from ogy.overview import Overview
 from ogy.readers import readers_lines
 from ogy.receipts import Work, work_left
@@ -145,14 +145,23 @@ def _ledger(source: Source) -> dict[str, removed.Item]:
     return {item.id: item for ledger in read_ledgers(source)[0].values() for item in ledger.items}
 
 
-def run_work(target: Target, area: str | None = None) -> Run[list[Work]]:
-    """What the built record says is still to do (in one area when given); findings when some is."""
+def _scopes(home: str) -> set[str]:
+    """What a home answers to: itself (`<layer>/<area>`), its layer and its area."""
+    return {home, *home.split("/")}
+
+
+def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
+    """What the built record says is still to do; given a scope, only in one layer (`product`: what the business still
+    has to say, without the build behind it), one `<layer>/<area>`, or one area in every layer."""
     source, snapshot = target.read()
-    only = _area(snapshot, area)
+    homes = {address.home for address in snapshot.entries}
+    known = set().union(*(_scopes(home) for home in homes))
+    if scope is not None and scope not in known:
+        raise NotFoundError(f"no layer or area {scope}" + near.hint(scope, known))
     work = [
         item
         for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source))
-        if only is None or area_of(item.address, snapshot.ontology) == only
+        if scope is None or scope in _scopes(home_of(str(item.address), snapshot.ontology))
     ]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
 

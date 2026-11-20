@@ -47,6 +47,13 @@ def unmet(kb: Make, changes: Mapping[str, str | None]) -> set[str]:
     return {where for problem, where in kb(changes).findings() if problem is Problem.UNMET}
 
 
+def left(kb: Make, changes: Mapping[str, str | None], status: str) -> set[str]:
+    """The entries with work of `status`, once the files hold no fault: a later layer missing is work, never a fault."""
+    made = kb(changes)
+    assert not {where for problem, where in made.findings() if problem is Problem.UNMET}
+    return {str(item.address) for item in work_left(made.snapshot, {}, _no_file) if item.status == status}
+
+
 def test_the_good_files_meet_every_requirement(kb: Make) -> None:
     assert kb({**SERVED, "product/app/workflow/ask.yml": STEP}).findings() == set()
 
@@ -85,19 +92,19 @@ def test_an_attribute_has_a_type_or_names_what_it_holds(kb: Make) -> None:
 def test_an_attribute_nothing_writes_or_accepts_is_never_written(kb: Make) -> None:
     page = PAGE.replace("accepts: [product/app/entity/loan]\n", "")
     flow = {**SERVED, "software/app/interface/ask-page.yml": page, "product/app/workflow/ask.yml": STEP}
-    assert unmet(kb, flow) == {"product/app/entity/loan/attribute/member"}  # days is written, late derived
+    assert left(kb, flow, "unwritten") == {"product/app/entity/loan/attribute/member"}  # days is written, late derived
     accepted = page + "accepts: [product/app/entity/loan/attribute/member]\n"
-    assert unmet(kb, {**flow, "software/app/interface/ask-page.yml": accepted}) == set()
+    assert left(kb, {**flow, "software/app/interface/ask-page.yml": accepted}, "unwritten") == set()
     created = STEP.replace(
         '"on": product/app/entity/loan/attribute/days}',
         '"on": product/app/entity/loan/attribute/days}, {do: create, "on": product/app/entity/loan}',
     )
-    assert unmet(kb, {**flow, "product/app/workflow/ask.yml": created}) == set()  # creating the entity writes its facts
+    assert left(kb, {**flow, "product/app/workflow/ask.yml": created}, "unwritten") == set()  # creating the entity writes its facts
     told = STEP.replace(
         '"on": product/app/entity/loan/attribute/days}',
         '"on": product/app/entity/loan/attribute/days}, {do: delete, "on": product/app/entity/loan}',
     )
-    assert unmet(kb, {**flow, "product/app/workflow/ask.yml": told}) == {"product/app/entity/loan/attribute/member"}
+    assert left(kb, {**flow, "product/app/workflow/ask.yml": told}, "unwritten") == {"product/app/entity/loan/attribute/member"}
 
 
 PAY = """\
@@ -124,12 +131,12 @@ def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_depe
     """A party the business deals with lives in product whatever its nature (decision actor-layers): a product row tells it,
     a software handler performing the row uses the dependency that realizes it."""
     case = "product/app/workflow/pay/step/charge/case/otherwise"
-    assert unmet(kb, PAYING) == {case}
-    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS}) == {case}  # nobody uses it for this row
+    assert left(kb, PAYING, "unhandled") == {case}
+    assert left(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS}, "unhandled") == {case}  # nobody uses it for this row
     used = PAYING["software/app/handler/charge.yml"] + "uses: [software/app/dependency/cards]\n"
-    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS, "software/app/handler/charge.yml": used}) == set()
+    assert left(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS, "software/app/handler/charge.yml": used}, "unhandled") == set()
     person = PAYING["product/app/actors.yml"].replace("program", "human")  # only a program actor is realized by a dependency
-    assert unmet(kb, {**PAYING, "product/app/actors.yml": person}) == set()
+    assert left(kb, {**PAYING, "product/app/actors.yml": person}, "unhandled") == set()
 
 
 def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:

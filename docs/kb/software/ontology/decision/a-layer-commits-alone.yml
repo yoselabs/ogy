@@ -1,0 +1,16 @@
+structure: true
+question: May the product layer be committed before the software that builds it?
+context: 'Owner 2026-11-20: a requirement is worked in stages (product, UX, software), often by different people; ogy check must not refuse a product commit because software is missing. Three requirements made it a fault: a row with an effect has a handler (case, choice, timeout), a row that tells a program actor has a handler using a dependency realizing it (was on effect, now on the rows, since an item of a list part cannot carry work), and never-written on attribute. Fable checked it on a fixture with its software layer deleted: 5 faults before, none after. No stage kind: planned order is tracker data, and links already compute what is left. ogy work takes a layer (product, software) or <layer>/<area>, so a stage reads its own gaps. The decisions dependency-realizes-actor and never-written keep their rule; only its weight changes.'
+options:
+  work:
+    label: 'Each layer commits alone: the three requirements are work (unhandled for the two handler rules, unwritten for never-written), and ogy work takes a layer'
+  fault:
+    label: The three requirements stay faults, so a product row with an effect waits for its software
+proposal:
+  chose: work
+  why: Business facts and build facts are kept apart (layers-split-business-from-technical); a gap in a later stage is work left, as unserved already is.
+answers:
+- chose: work
+  said: 'Yes, build it: the three rules as work, plus a layer filter on ogy work (after Fable)'
+  at: '2026-11-20T13:41:42+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
