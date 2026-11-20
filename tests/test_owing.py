@@ -23,7 +23,10 @@ def test_a_requirement_that_goes_back_to_a_later_layer_is_work_owed_by_it() -> N
         for need in kind.requires
         if need.work
     }
-    assert owed[("step", "unserved")] == owed[("case", "unhandled")] == owed[("attribute", "unwritten")] == "software"
+    assert owed[("step", "unserved")] == owed[("case", "unhandled")] == "software"
+    # Fable's review, problem 4: an attribute may be written by a product effect or accepted by an interface; only when every
+    # alternative crosses does a later layer owe it, so this is the product's own work (work all the same, never a fault)
+    assert owed[("attribute", "unwritten")] is None
     assert owed[("quantity", "unused")] is None and owed[("capability", "unrealized")] is None  # same layer: set by hand
     assert all(kinds.owed_by(name, need, "software") is None for name, kind in kinds.kinds.items() for need in kind.requires)
     tell = next(need for need in kinds.kinds["effect"].requires if need.if_equals and "tell" in need.if_equals.values)
