@@ -5,4 +5,8 @@ set -eu
 tree=$(git write-tree) || exit 1
 parent=$(git rev-parse -q --verify HEAD || true)
 commit=$(git commit-tree "$tree" ${parent:+-p $parent} -m staged) || exit 1
+# A commit straight on the base branch lands: it must also pass the landing checks.
+case $(git symbolic-ref --short -q HEAD || true) in
+  main | master) exec just ogy --rev "$commit" check --landing ;;
+esac
 exec just ogy --rev "$commit" check

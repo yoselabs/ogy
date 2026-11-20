@@ -46,9 +46,15 @@ shell-test:
     command -v bats >/dev/null || { echo "shell-test: bats is not installed -- run just tools" >&2; exit 2; }
     bats tests/shell
 
+# The knowledge base is ready to land: `ogy check --landing` (an unfinished layer, a word nobody agreed). The pre-push hook runs it
+# through `just check`.
+[group('gate')]
+kb-landing:
+    uv run --frozen --no-sync python -I -m ogy check --landing
+
 # The gate's one extension point (see .blueprint/base.just).
 [private]
-check-extra: arch shfmt shell-test
+check-extra: arch shfmt shell-test kb-landing
 
 # The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).
 [group('gate')]

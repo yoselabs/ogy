@@ -14,7 +14,7 @@ setup() {
   git add other.txt
   run sh "$ROOT/tools/kb-staged-check.sh"
   [ "$status" -eq 0 ]
-  read -r _ _ _ rev verb <"$STUB_LOG"
+  read -r _ _ _ rev verb _ <"$STUB_LOG"
   [ "$verb" = "check" ]
   [ "$(git show "$rev:other.txt")" = "x" ]
 }
@@ -25,7 +25,7 @@ setup() {
   echo three >docs/kb/a.txt # unstaged on top: the check must not see it
   run sh "$ROOT/tools/kb-staged-check.sh"
   [ "$status" -eq 0 ]
-  read -r _ _ _ rev verb <"$STUB_LOG"
+  read -r _ _ _ rev verb _ <"$STUB_LOG"
   [ "$verb" = "check" ]
   [ "$(git show "$rev:docs/kb/a.txt")" = "two" ]
 }
@@ -44,4 +44,22 @@ setup() {
   run sh "$ROOT/tools/kb-staged-check.sh"
   [ "$status" -eq 0 ]
   grep -q -- "--rev" "$STUB_LOG"
+}
+
+@test "a commit on main lands: the landing checks run" {
+  git checkout -q -B main
+  echo two >docs/kb/a.txt
+  git add docs/kb/a.txt
+  run sh "$ROOT/tools/kb-staged-check.sh"
+  [ "$status" -eq 0 ]
+  grep -q -- "check --landing" "$STUB_LOG"
+}
+
+@test "a commit on a branch runs the plain check" {
+  git checkout -q -b later
+  echo two >docs/kb/a.txt
+  git add docs/kb/a.txt
+  run sh "$ROOT/tools/kb-staged-check.sh"
+  [ "$status" -eq 0 ]
+  if grep -q -- "--landing" "$STUB_LOG"; then false; fi
 }
