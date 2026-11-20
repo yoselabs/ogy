@@ -1,7 +1,7 @@
 """The command surface: flags before or after the verb, help on everything, find, near misses, status, and what an agent is given."""
 
 import asyncio
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 from fastmcp.exceptions import ToolError
@@ -38,7 +38,7 @@ def test_the_renamed_commands_are_gone_and_the_new_ones_are_there(repo: Path) ->
 
 
 def test_the_mcp_descriptions_are_the_commands_own() -> None:
-    tools = {tool.name: tool.description for tool in asyncio.run(build().list_tools())}
+    tools = {tool.name: tool.description or "" for tool in asyncio.run(build().list_tools())}
     assert "usage:" not in " ".join(tools.values()) and tools["find"].startswith("search live and removed entries")
 
 
@@ -50,7 +50,7 @@ def test_find_lists_live_and_removed_entries_as_a_table(repo: Path) -> None:
     assert [line.split("   ")[0] for line in ogy(repo, "find", "--removed")[1]] == ["software/app/handler/lend"]
     assert [line.split("   ")[0] for line in ogy(repo, "find", "--kind", "quantity")[1]] == ["product/app/quantity/fee"]
     assert ogy(repo, "find", "nothing-like-it") == (cli.OK, ["nothing found"])
-    assert ogy(repo, "find", "--kind", "quantit")[0] == cli.NOT_FOUND
+    assert ogy(repo, "find", "--kind", "quantty")[0] == cli.NOT_FOUND
 
 
 def test_find_by_parent_lists_the_parts(repo: Path) -> None:

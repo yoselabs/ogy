@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from ogy.declared import Reader
 from ogy.evidence import Link, parse_link
 from ogy.model import link_values
-from ogy.snapshot import Snapshot
 from ogy.status import Card, Label, Status, agreed_hashes, dependants, entry_card, label, status
+lazy from ogy.snapshot import Snapshot
 
 PAGE = 12
 SOURCES = {"docs": Label.DOCS, "code": Label.CODE}
@@ -28,8 +28,14 @@ def _group(snapshot: Snapshot, card: Card, source: Label) -> str:
     if card.word:
         return f"{card.address.home}: terms"
     schemes = snapshot.ontology.declared.evidence
-    where = next((link for item in link_values(fields.get(snapshot.ontology.roles.src))
-                  if isinstance(link := parse_link(item, schemes), Link) and link.reads is Reader.SECTION), None)
+    where = next(
+        (
+            link
+            for item in link_values(fields.get(snapshot.ontology.roles.src))
+            if isinstance(link := parse_link(item, schemes), Link) and link.reads is Reader.SECTION
+        ),
+        None,
+    )
     return f"{card.address.home}: {f'{where.path}#{where.fragment}' if where else ''}"
 
 
@@ -49,6 +55,6 @@ def pages(snapshot: Snapshot, source: str, area: str | None = None) -> list[Page
     found: list[Page] = []
     for title, cards in sorted(groups.items()):
         ordered = sorted(cards, key=lambda c: (snapshot.ontology.declared.rank(c.harm), -c.dependants, str(c.address)))
-        chunks = [ordered[at:at + PAGE] for at in range(0, len(ordered), PAGE)]
+        chunks = [ordered[at : at + PAGE] for at in range(0, len(ordered), PAGE)]
         found += [Page(title if len(chunks) == 1 else f"{title} ({n}/{len(chunks)})", tuple(chunk)) for n, chunk in enumerate(chunks, 1)]
     return found

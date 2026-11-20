@@ -8,12 +8,12 @@ data checks, T4 and T5 take what another module computed, T6 reads the decisions
 import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
-from ogy.kinds import Glossary
 from ogy.model import Address, Entry, Finding, Problem, link_values
 from ogy.settle import decisions
-from ogy.snapshot import Snapshot
-from ogy.source import Source
 from ogy.status import Agreement, Status, agreed_hashes, agreement, status
+lazy from ogy.kinds import Glossary
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
 
 _CODE = re.compile(r"`[^`]*`")
 _WORD = re.compile(r"[a-z0-9]+")  # ids split at - and _ too
@@ -54,7 +54,7 @@ def _texts(value: object, names: frozenset[str]) -> Iterator[str]:
 
 def _contains(words: list[str], phrase: list[str]) -> bool:
     size = len(phrase)
-    return bool(phrase) and any(words[at:at + size] == phrase for at in range(len(words) - size + 1))
+    return bool(phrase) and any(words[at : at + size] == phrase for at in range(len(words) - size + 1))
 
 
 def _word(glossary: Glossary, entry: Entry) -> str:
@@ -78,8 +78,11 @@ def _compressed(glossary: Glossary, sentence: str, entry: Entry) -> list[Finding
     says, limit = entry.text(sentence) or "", glossary.words
     if "\n" in says.strip() or len(says.split()) >= limit:
         kind = entry.address.kind
-        return [Finding(Problem.TERM_TOO_LONG, entry.path, f"a {kind} says one line of under {limit} words, not {len(says.split())}",
-                        entry.address)]
+        return [
+            Finding(
+                Problem.TERM_TOO_LONG, entry.path, f"a {kind} says one line of under {limit} words, not {len(says.split())}", entry.address
+            )
+        ]
     return []
 
 
@@ -91,15 +94,16 @@ def _clashes(glossary: Glossary, entries: list[Entry]) -> list[Finding]:
         if (word := _word(glossary, entry)) in seen:
             found.append(Finding(Problem.WORD_CLASH, entry.path, f"word {word!r} is also the word of {seen[word].address}", entry.address))
         seen.setdefault(word, entry)
-    for entry in entries:
-        for item in link_values(entry.fields.get(glossary.avoid)):
-            if (other := seen.get(item.strip().lower())) is not None:
-                found.append(Finding(Problem.WORD_CLASH, entry.path, f"{glossary.avoid} {item!r} is the word of {other.address}",
-                                     entry.address))
+    found.extend(
+        Finding(Problem.WORD_CLASH, entry.path, f"{glossary.avoid} {item!r} is the word of {other.address}", entry.address)
+        for entry in entries
+        for item in link_values(entry.fields.get(glossary.avoid))
+        if (other := seen.get(item.strip().lower())) is not None
+    )
     return found
 
 
-def check_terms(snapshot: Snapshot, source: Source | None = None) -> list[Finding]:
+def check_terms(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
     """T1, T2 and T3."""
     if (found := role(snapshot)) is None:
         return check_term_sets(snapshot)
@@ -119,22 +123,34 @@ def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[F
             for text, given in sets.items():
                 address = snapshot.resolve(text)
                 if address is not None and kind and address.kind == kind.kind and text in agreed and given is not None:
-                    found.append(Finding(Problem.AGREED_TERM_IN_SETS, decision.entry.path,
-                                         f"{text} is agreed: a decision may only set it to null", decision.address))
+                    found.append(
+                        Finding(
+                            Problem.AGREED_TERM_IN_SETS,
+                            decision.entry.path,
+                            f"{text} is agreed: a decision may only set it to null",
+                            decision.address,
+                        )
+                    )
     return found
 
 
 def terms_not_agreed(snapshot: Snapshot, agreed: Callable[[Address], bool] | Collection[Address]) -> list[Finding]:
     """T4: `agreed` says whether a person agreed to the term or a decision with no answer yet settles it."""
     test = agreed if callable(agreed) else agreed.__contains__
-    return [Finding(Problem.TERM_NOT_AGREED, e.path, f"a {k} is agreed in a review round or proposed by a decision", e.address)
-            for e in agreeable(snapshot) if not test(e.address) and (k := snapshot.kind_of(e.address).kind)]
+    return [
+        Finding(Problem.TERM_NOT_AGREED, e.path, f"a {k} is agreed in a review round or proposed by a decision", e.address)
+        for e in agreeable(snapshot)
+        if not test(e.address) and (k := snapshot.kind_of(e.address).kind)
+    ]
 
 
 def proposed_terms(snapshot: Snapshot, proposed: Collection[Address]) -> list[Finding]:
     """T5, an error for landing only: terms that only an unanswered decision proposes."""
-    return [Finding(Problem.PROPOSED_TERM, e.path, f"only an unanswered decision proposes this {k}", e.address)
-            for e in agreeable(snapshot) if e.address in proposed and (k := snapshot.kind_of(e.address).kind)]
+    return [
+        Finding(Problem.PROPOSED_TERM, e.path, f"only an unanswered decision proposes this {k}", e.address)
+        for e in agreeable(snapshot)
+        if e.address in proposed and (k := snapshot.kind_of(e.address).kind)
+    ]
 
 
 def glossary_homes(snapshot: Snapshot, home: str | None = None) -> list[str]:
@@ -145,7 +161,7 @@ def glossary_homes(snapshot: Snapshot, home: str | None = None) -> list[str]:
     shared = [f"{layer}/{snapshot.ontology.shared}" for layer in layers]
     if home is None:
         return [*shared, *sorted({entry.address.home for entry in terms(snapshot)} - set(shared))]
-    seen = shared[:layers.index(home.split("/")[0]) + 1]
+    seen = shared[: layers.index(home.split("/")[0]) + 1]
     return [*seen, *([home] if home not in seen else [])]
 
 

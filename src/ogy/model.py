@@ -1,11 +1,11 @@
 """Addresses, entries and the problems found while reading them."""
 
-from collections.abc import Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
+lazy from collections.abc import Mapping
 
 from ogy.kinds import NAME, Kind, Shape
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
 
 @dataclass(frozen=True, order=True)
@@ -78,6 +78,12 @@ def home_of(text: str, ontology: Ontology) -> str:
     """The folder an address names without parsing it (a removed address may name nothing live): `<layer>/<area>`, or a fixed folder."""
     segments = text.split("/")
     return "/".join(segments[:2]) if segments[0] in ontology.layers else segments[0]
+
+
+def home_address(home: str) -> Address:
+    """The address with no path of a `<layer>/<area>` home."""
+    layer, area = home.split("/")
+    return Address(layer, area, ())
 
 
 def area_of(text: str, ontology: Ontology) -> str:

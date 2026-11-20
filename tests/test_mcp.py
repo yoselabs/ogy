@@ -2,12 +2,12 @@
 
 import argparse
 import asyncio
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
-from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 from tests.conftest import GOOD
+lazy from fastmcp import FastMCP
 
 from ogy import cli
 from ogy.mcp_server import build

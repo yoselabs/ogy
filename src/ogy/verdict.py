@@ -13,7 +13,7 @@ class Verdict(IntEnum):
     NOT_FOUND = 4  # the entry or the round named does not exist
 
 
-class Refusal(Exception):
+class RefusalError(Exception):
     """A command that stops before it changes anything. `reasons` say why, `lines()` print them."""
 
     verdict = Verdict.REFUSED
@@ -27,21 +27,21 @@ class Refusal(Exception):
         return [f"{self.prefix}{reason}" for reason in self.reasons]
 
 
-class NotFound(Refusal):
+class NotFoundError(RefusalError):
     """The thing named does not exist."""
 
     verdict = Verdict.NOT_FOUND
     prefix = ""
 
 
-class Unusable(Refusal):
+class UnusableError(RefusalError):
     """The flags or settings cannot be used."""
 
     verdict = Verdict.USAGE
     prefix = ""
 
 
-class MissingTarget(Refusal):
+class MissingTargetError(RefusalError):
     """The knowledge base asked for is not there: its folder at that commit, or the commit."""
 
     prefix = ""

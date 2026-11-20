@@ -2,7 +2,7 @@
 
 import json
 import shlex
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 from git_porcelain import run_git
@@ -29,8 +29,10 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
     assert "prints the constitution" in agents
     assert not (tmp_path / "CLAUDE.md").exists()
     assert json.loads(read(tmp_path, ".mcp.json"))["mcpServers"]["ogy"]["args"][-2:] == ["ogy", "mcp"]
-    assert json.loads(read(tmp_path, ".claude/settings.json"))["permissions"]["deny"] == ["Edit(/docs/kb/**/*.yml)",
-                                                                                          "Write(/docs/kb/**/*.yml)"]
+    assert json.loads(read(tmp_path, ".claude/settings.json"))["permissions"]["deny"] == [
+        "Edit(/docs/kb/**/*.yml)",
+        "Write(/docs/kb/**/*.yml)",
+    ]
     waiting = (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])  # the starters wait for the owner
     assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == waiting
 
@@ -110,12 +112,12 @@ def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor
     assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
     block = read(tmp_path, "AGENTS.md")
     assert "ogy check --rev ." not in block  # a global flag after the command is `unrecognized arguments`
-    flags = [snippet for snippet in block.split("`") if snippet.startswith("ogy --rev ") or snippet.startswith("ogy check")]
+    flags = [snippet for snippet in block.split("`") if snippet.startswith(("ogy --rev ", "ogy check"))]
     assert flags, "the block names the flag form"
     parser = cli.parser()
     for snippet in flags:
         assert parser.parse_args(shlex.split(snippet)[1:] if "<" not in snippet else ["--rev", "HEAD", "show", "x"])
-    actor = next(snippet for snippet in block.split("`") if snippet.startswith("ogy put '[{\"address\": \"product/"))
+    actor = next(snippet for snippet in block.split("`") if snippet.startswith('ogy put \'[{"address": "product/'))
     argv = shlex.split(actor.replace("<area>", "owner-area").replace("...", "A person."))[1:]
     code, lines = cli.run(["--repo", str(tmp_path), *argv])  # an actor needs no evidence
     assert code == cli.OK and lines == ["added product/owner-area/area/owner-area", "added product/owner-area/actor/human"], lines
@@ -126,8 +128,9 @@ def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor
 
 def test_init_denies_only_the_yaml_and_replaces_the_rule_an_earlier_init_wrote(tmp_path: Path) -> None:
     (tmp_path / ".claude").mkdir()
-    (tmp_path / ".claude/settings.json").write_text(json.dumps({"permissions": {"deny": ["Edit(/docs/kb/**)", "Write(/docs/kb/**)",
-                                                                                         "Read(.env)"]}}))
+    (tmp_path / ".claude/settings.json").write_text(
+        json.dumps({"permissions": {"deny": ["Edit(/docs/kb/**)", "Write(/docs/kb/**)", "Read(.env)"]}})
+    )
     cli.run(["--repo", str(tmp_path), "init"])
     deny = json.loads(read(tmp_path, ".claude/settings.json"))["permissions"]["deny"]
     assert deny == ["Read(.env)", "Edit(/docs/kb/**/*.yml)", "Write(/docs/kb/**/*.yml)"]  # docs/kb/README.md stays editable

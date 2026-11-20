@@ -1,7 +1,7 @@
 """`ogy review` keeps its rounds by id; `ogy reply` applies the grammar to the round it answers, keeping a paraphrase, never a quote."""
 
 import asyncio
-from pathlib import Path
+lazy from pathlib import Path
 
 import any_yaml
 import pytest
@@ -11,8 +11,8 @@ from tests.test_writes import OPTIONS, put, tree, w
 from ogy import cli
 from ogy import status as status_of
 from ogy.mcp_server import build
-from ogy.status import Agreed
 from ogy.target import Target
+lazy from ogy.status import Agreed
 
 WHO = ("--said", "Agreed to the cards", "--where", "ai:claude/1", "--at", "2026-11-12T10:05:00+01:00")
 
@@ -36,8 +36,13 @@ def asked(repo: Path) -> Path:
     """Two sentences decided by AI (cards 1 and 2) and one unanswered decision (Q1), reviewed."""
     for ident, says in (("a-cap", "A member can borrow."), ("b-cap", "A member can return.")):
         assert put(repo, f"product/app/capability/{ident}", says=says, because=["product/app/quantity/fee"])[0] == cli.OK
-    code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS),
-                      proposal={"chose": "two", "why": "a guess"})
+    code, lines = put(
+        repo,
+        "product/app/decision/fee-amount",
+        question="How much?",
+        options=any_yaml.load(OPTIONS),
+        proposal={"chose": "two", "why": "a guess"},
+    )
     assert code == cli.OK, lines
     code, lines = w(repo, "review")
     assert code == cli.OK, lines
@@ -99,8 +104,9 @@ def test_reply_chooses_an_option_by_letter_or_key(asked: Path) -> None:
 def test_reply_takes_several_items_at_once(asked: Path) -> None:
     code, lines = r(asked, "yes 1, 2: A member can return a tool., Q1 b, later")
     assert code == cli.OK and len(lines) == 4, lines
-    assert "decided by you" in status(asked, "product/app/capability/a-cap") and "decided by you" in status(asked,
-                                                                                                            "product/app/capability/b-cap")
+    assert "decided by you" in status(asked, "product/app/capability/a-cap") and "decided by you" in status(
+        asked, "product/app/capability/b-cap"
+    )
 
 
 def test_a_card_that_changed_since_it_was_shown_is_refused_and_stays(asked: Path) -> None:
@@ -175,8 +181,9 @@ def test_over_mcp_the_round_is_required(asked: Path) -> None:
         asyncio.run(build().call_tool("reply", {"repo": str(asked), "rev": ".", "text": "yes", "said": "Fine", "where": "ai:x"}))
     assert "name the round" in str(error.value)
     wide = round_of(w(asked, "review")[1])
-    done = asyncio.run(build().call_tool("reply", {"repo": str(asked), "rev": ".", "text": "yes 1", "said": "Fine", "where": "ai:x",
-                                                   "round": wide}))
+    done = asyncio.run(
+        build().call_tool("reply", {"repo": str(asked), "rev": ".", "text": "yes 1", "said": "Fine", "where": "ai:x", "round": wide})
+    )
     assert (done.structured_content or {}).get("exit_code") == cli.OK
 
 

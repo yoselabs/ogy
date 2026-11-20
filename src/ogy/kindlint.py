@@ -1,8 +1,8 @@
 """Load-time lints on the kinds themselves: every problem is a sentence, none is fixed or guessed."""
 
-from collections.abc import Mapping
+lazy from collections.abc import Mapping
 
-from ogy.declared import Declared
+from ogy.kindlint_change import migration, moved, was
 from ogy.kinds import (
     ANY,
     FILED,
@@ -18,8 +18,8 @@ from ogy.kinds import (
     Picked,
     Requirement,
     Shape,
-    Was,
 )
+lazy from ogy.declared import Declared
 
 REMOVED_FILE = "removed.yml"
 
@@ -28,8 +28,11 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
     found: list[str] = []
     layers = declared.layers
     fixed = {kind.area for kind in kinds.values() if kind.area} | {kind.moved_folder for kind in kinds.values() if kind.moved_folder}
-    found += [f"layer {layer!r} is no valid folder name" for layer in layers
-              if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed or layer == declared.shared.area]
+    found += [
+        f"layer {layer!r} is no valid folder name"
+        for layer in layers
+        if not NAME.match(layer) or layer in RESERVED_AREAS or layer in fixed or layer == declared.shared.area
+    ]
     if not NAME.match(declared.shared.area) or declared.shared.area in RESERVED_AREAS:
         found.append(f"shared area {declared.shared.area!r} is no valid area name")
     if not layers:
@@ -39,8 +42,10 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         found += _shape(kinds, name, kind) + _per_area(name, kind)
         found += _fields(kinds, declared, name, kind)
         found += _rules(kinds, name, kind) + _inputs(kinds, declared, name, kind)
-        found += _migration(declared, name, kind) + _moved(name, kind) + _was(kinds, declared, name, kind)
-    found += [problem for field, spec in declared.common.items() for problem in _picked(kinds, f"common {field}", spec, spec.input, True)]
+        found += migration(declared, name, kind) + moved(name, kind) + was(kinds, declared, name, kind)
+    found += [
+        problem for field, spec in declared.common.items() for problem in _picked(kinds, f"common {field}", spec, spec.input, common=True)
+    ]
     found += _files(kinds)
     found += _keys(kinds, declared)
     found += _settling(kinds) + _roles(kinds)
@@ -97,8 +102,12 @@ def _fields(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
             found.append(f"{where}: another name for a sentence; the kind names its sentence field")
         found += [f"{where}: harm {tag} is no harm of the ontology" for tag in spec.harm if tag not in declared.harms]
         found += [f"{where}: member {member} is not in of" for member in spec.member_harm if member not in spec.of]
-        found += [f"{where}: harm {tag} of {member} is no harm of the ontology" for member, tags in spec.member_harm.items()
-                  for tag in tags if tag not in declared.harms]
+        found += [
+            f"{where}: harm {tag} of {member} is no harm of the ontology"
+            for member, tags in spec.member_harm.items()
+            for tag in tags
+            if tag not in declared.harms
+        ]
         if "?" in field or any("?" in member for member in spec.of):
             found.append(f"{where}: no name contains `?`")
         found += _spec(kinds, where, spec)
@@ -117,7 +126,7 @@ def _spec(kinds: Mapping[str, Kind], where: str, spec: FieldSpec) -> list[str]:
     return found + _picked(kinds, where, spec, spec.input)
 
 
-def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input | Picked | None, common: bool = False) -> list[str]:
+def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input | Picked | None, *, common: bool = False) -> list[str]:
     """An input is declared on a link or expr field; `address` only on a note or a common field (a kind's own field that is not
     a note has the address in the meaning already); a picked one names fields, or part kinds, of every kind it links to."""
     if given in (None, Input.NONE):
@@ -129,11 +138,26 @@ def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input
     if not isinstance(given, Picked):
         return []
     targets = [kinds[target] for target in spec.to if target in kinds]
-    return [f"{where}: input picks {field}, no field of {target.kind}" for field in given.fields for target in targets
-            if field not in target.fields] + [f"{where}: input picks {part}, no part of {target.kind}" for part in given.parts
-                                              for target in targets if not (part in kinds and kinds[part].is_part(target.kind))] + [
-        f"{where}: input picks {field}, {_SOME.format(target.kind)}" for field in given.fields for target in targets
-        if field in _partial(target)]
+    return (
+        [
+            f"{where}: input picks {field}, no field of {target.kind}"
+            for field in given.fields
+            for target in targets
+            if field not in target.fields
+        ]
+        + [
+            f"{where}: input picks {part}, no part of {target.kind}"
+            for part in given.parts
+            for target in targets
+            if not (part in kinds and kinds[part].is_part(target.kind))
+        ]
+        + [
+            f"{where}: input picks {field}, {_SOME.format(target.kind)}"
+            for field in given.fields
+            for target in targets
+            if field in _partial(target)
+        ]
+    )
 
 
 _SOME = "which {} took from only some of the kinds it absorbed (`was.renamed`); a build before the merge has no one name for it"
@@ -160,20 +184,32 @@ def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
         elif part and isinstance(given, Picked):
             found.append(f"{where}: a part is an input whole (content) or by address")
         elif not part:
-            found += _picked(kinds, where, declared.common[key], given, True)
+            found += _picked(kinds, where, declared.common[key], given, common=True)
     for key, picked in kind.input_from.items():
-        holders = [other for other in kinds.values() if (spec := {**declared.common, **other.fields}.get(key)) is not None
-                   and {name, ANY} & set(spec.to)]
+        holders = [
+            other
+            for other in kinds.values()
+            if (spec := {**declared.common, **other.fields}.get(key)) is not None and {name, ANY} & set(spec.to)
+        ]
         if not holders or picked.parts:
             found.append(f"{kind.kind}.input_from.{key}: names a link field that leads here, and picks fields of its holders")
-        found += [f"{name}.input_from.{key}: picks {field}, no field of a kind linking here by {key}" for field in picked.fields
-                  if holders and not any(field in other.fields for other in holders)]
-        found += [f"{name}.input_from.{key}: {field}, {_SOME.format(other.kind)}" for other in holders
-                  for field in (key, *picked.fields) if field in _partial(other)]
+        found += [
+            f"{name}.input_from.{key}: picks {field}, no field of a kind linking here by {key}"
+            for field in picked.fields
+            if holders and not any(field in other.fields for other in holders)
+        ]
+        found += [
+            f"{name}.input_from.{key}: {field}, {_SOME.format(other.kind)}"
+            for other in holders
+            for field in (key, *picked.fields)
+            if field in _partial(other)
+        ]
     if kind.needs_proof:
-        found += [f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
-                  for field, spec in {**declared.common, **kind.fields}.items()
-                  if spec.type in LINKING and spec.input is None and field not in kind.input]
+        found += [
+            f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
+            for field, spec in {**declared.common, **kind.fields}.items()
+            if spec.type in LINKING and spec.input is None and field not in kind.input
+        ]
     return found
 
 
@@ -181,12 +217,17 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
     found: list[str] = []
     for group in kind.exactly_one_of:
         found += [f"{name}: exactly_one_of names no field {field}" for field in group if field not in kind.fields]
-    found += [f"{name}: acyclic names {field}, no link field of the kind to its own kind" for field in kind.acyclic
-              if field not in kind.fields or kind.fields[field].type not in (FieldType.LINK, FieldType.LINKS)
-              or name not in kind.fields[field].to]
+    found += [
+        f"{name}: acyclic names {field}, no link field of the kind to its own kind"
+        for field in kind.acyclic
+        if field not in kind.fields or kind.fields[field].type not in (FieldType.LINK, FieldType.LINKS) or name not in kind.fields[field].to
+    ]
     for need in kind.requires:
-        found += [f"{name}: requirement {key} names no field {field}" for key, field in (("if_set", need.if_set),
-                  ("if_unset", need.if_unset)) if field is not None and field not in kind.fields]
+        found += [
+            f"{name}: requirement {key} names no field {field}"
+            for key, field in (("if_set", need.if_set), ("if_unset", need.if_unset))
+            if field is not None and field not in kind.fields
+        ]
         if need.if_part is not None and not (need.if_part in kinds and kinds[need.if_part].is_part(name)):
             found.append(f"{name}: requirement if_part names no part kind {need.if_part}")
         found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
@@ -205,79 +246,26 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
         if spec is None:
             found.append(f"{name}: requirement if_equals names no field {equals.field}")
         elif spec.type is FieldType.ENUM:
-            found += [f"{name}: requirement if_equals: {value} is no member of {equals.field}" for value in equals.values
-                      if value not in spec.of]
+            found += [
+                f"{name}: requirement if_equals: {value} is no member of {equals.field}" for value in equals.values if value not in spec.of
+            ]
     if need.needs_field is not None and need.needs_field not in kind.fields:
         found.append(f"{name}: requirement needs_field names no field {need.needs_field}")
-    found += [f"{name}: requirement without names {field}, no field of {list(need.kinds)}" for field in need.without
-              if not any(field in kinds[target].fields for target in need.kinds if target in kinds)]
+    found += [
+        f"{name}: requirement without names {field}, no field of {list(need.kinds)}"
+        for field in need.without
+        if not any(field in kinds[target].fields for target in need.kinds if target in kinds)
+    ]
     if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
         if need.if_part is not None:
             found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")
-        if any(path and (path[0] not in kind.fields or kind.fields[path[0]].type not in (FieldType.LINK, FieldType.LINKS))
-               for path in need.paths):
+        if any(
+            path and (path[0] not in kind.fields or kind.fields[path[0]].type not in (FieldType.LINK, FieldType.LINKS))
+            for path in need.paths
+        ):
             found.append(f"{name}: the path of an item of a list part starts at one of its link fields")
         if need.work:
             found.append(f"{name}: an item of a list part has no address, so no requirement of it is work")
-    return found
-
-
-def _migration(declared: Declared, name: str, kind: Kind) -> list[str]:
-    """A renamed field's old name is no field, its new one is; a dropped field is no field and was not renamed."""
-    found = [f"{name}: renamed {old} is still a field or common to every kind" for old in kind.old_names
-             if old in kind.fields or old in declared.common]
-    found += [f"{name}: renamed {old} to {new}, which is no field" for old, new in kind.renamed.items() if new not in kind.fields]
-    found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
-    found += [f"{name}: revalued or folded {field}, which is no field" for field in (*kind.revalued, *kind.folded)
-              if field not in kind.fields]
-    return found
-
-
-def _was(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -> list[str]:
-    """A renamed kind's old name is no kind any more and no other kind's old name; an old file belongs to a list or single kind
-    and an old key to a part; a kind that absorbed several kinds keeps one file per entry; an old kind's renamed field is now a
-    field."""
-    found = [f"{name}: a kind that absorbed several kinds has shape file"] if len(kind.was) > 1 and kind.shape is not Shape.FILE \
-        else []
-    for old in kind.was:
-        found += [f"{name}: was {old.kind}, which is still a kind or no snake_case name"] if old.kind in kinds or not KIND_NAME.match(
-            old.kind) else []
-        found += [f"{name}: was {old.kind}, as another kind was"] if sum(
-            other.kind == old.kind for each in kinds.values() for other in each.was) > 1 else []
-        if old.file is not None and (kind.shape not in FILED or not old.file.endswith(".yml") or old.file == kind.file):
-            found.append(f"{name}: was.file is the other .yml file a list or single kind kept its entries in")
-        if old.key is not None and (kind.shape is not Shape.INLINE or old.key == kind.key):
-            found.append(f"{name}: was.key is the other key a part was kept under")
-        found += _was_fields(declared, name, kind, old)
-    return found
-
-
-def _was_fields(declared: Declared, name: str, kind: Kind, old: Was) -> list[str]:
-    """An old kind's renamed field is now a field and was none, two old fields never become one, a default fills a field;
-    either needs the old entries told apart from the new: by their folder (shape file), their old file or their old key."""
-    fields = {*kind.fields, *declared.common}
-    found = [f"{name}: was {old.kind} renamed {field} to {new}, which is no field" for field, new in old.renamed.items()
-             if new not in fields]
-    found += [f"{name}: was {old.kind} renamed {field}, which is still a field" for field in old.renamed if field in fields]
-    found += [f"{name}: was {old.kind} renamed two fields to {new}" for new in set(old.renamed.values())
-              if list(old.renamed.values()).count(new) > 1]
-    found += [f"{name}: was {old.kind} defaults {field}, which is no field" for field in old.defaults if field not in kind.fields]
-    if (old.renamed or old.defaults) and kind.shape is not Shape.FILE and not old.file and not old.key:
-        found.append(f"{name}: was {old.kind} renames or defaults fields only with a new folder, file or key to tell its entries by")
-    return found
-
-
-def _moved(name: str, kind: Kind) -> list[str]:
-    """A kind may live in `shared` only under a layer; one that moved out of a fixed folder names `<folder>/<file>.yml` and moves
-    there, so it is a list kind that may live in `shared`."""
-    found = [f"{name}: shared belongs to kinds that live under a layer"] if kind.shared and (kind.area or not kind.layers) else []
-    if kind.moved_from is None:
-        return found
-    folder, _, file = kind.moved_from.partition("/")
-    if not NAME.match(folder) or folder in RESERVED_AREAS or "/" in file or not file.endswith(".yml"):
-        found.append(f"{name}: moved_from is `<folder>/<file>.yml`, the fixed-folder file it was kept in")
-    if kind.shape is not Shape.LIST or not kind.shared:
-        found.append(f"{name}: moved_from belongs to a list kind that may live in shared")
     return found
 
 
@@ -327,12 +315,19 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
     if not settlers or settlers[0][1].settling is None:
         return []
     name, settling = settlers[0][0], settlers[0][1].settling
-    found = [f"{name}: settling names no kind {item}" for item in (settling.option, settling.answer, settling.guess)
-             if item not in kinds]
-    wanted = [(settling.option, settling.sets), (settling.answer, settling.chose), (settling.answer, settling.said),
-              (settling.answer, settling.at), (settling.answer, settling.where),
-              (settling.guess, settling.chose), (settling.guess, settling.value), (name, settling.context),
-              (settling.guess, settling.why), (settling.guess, settling.heard)]
+    found = [f"{name}: settling names no kind {item}" for item in (settling.option, settling.answer, settling.guess) if item not in kinds]
+    wanted = [
+        (settling.option, settling.sets),
+        (settling.answer, settling.chose),
+        (settling.answer, settling.said),
+        (settling.answer, settling.at),
+        (settling.answer, settling.where),
+        (settling.guess, settling.chose),
+        (settling.guess, settling.value),
+        (name, settling.context),
+        (settling.guess, settling.why),
+        (settling.guess, settling.heard),
+    ]
     found += [f"{name}: settling names no field {kind}.{field}" for kind, field in wanted if not _field_of(kinds, kind, field)]
     return found
 
@@ -340,8 +335,11 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
 def _roles(kinds: Mapping[str, Kind]) -> list[str]:
     """A sentence is a text field of its kind; the glossary and the printed-first kind are one kind each, with a sentence, and
     name their own fields."""
-    found = [f"{name}: sentence {kind.sentence} is no text field" for name, kind in kinds.items() if kind.sentence is not None
-             and (kind.sentence not in kind.fields or kind.fields[kind.sentence].type is not FieldType.TEXT)]
+    found = [
+        f"{name}: sentence {kind.sentence} is no text field"
+        for name, kind in kinds.items()
+        if kind.sentence is not None and (kind.sentence not in kind.fields or kind.fields[kind.sentence].type is not FieldType.TEXT)
+    ]
     glossary = [(name, kind, kind.glossary) for name, kind in kinds.items() if kind.glossary]
     printed = [(name, kind, kind.printed_first) for name, kind in kinds.items() if kind.printed_first]
     found += ["at most one kind is the glossary"] if len(glossary) > 1 else []

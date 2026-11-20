@@ -2,11 +2,15 @@
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import TYPE_CHECKING
+lazy from collections.abc import Mapping
 
-from ogy.model import Address, Entry
-from ogy.ontology import Ontology
 from ogy.snapshot import build, kb_paths
-from ogy.source import Source
+lazy from ogy.ontology import Ontology
+lazy from ogy.source import Source
+
+if TYPE_CHECKING:
+    from ogy.model import Address, Entry
 
 
 class Change(StrEnum):
@@ -40,9 +44,13 @@ class SemanticDiff:
 
 
 def _fields(old: Entry | None, new: Entry | None) -> tuple[FieldChange, ...]:
-    before, after = (old.fields if old else {}), (new.fields if new else {})
-    return tuple(FieldChange(name, before.get(name), after.get(name)) for name in sorted(set(before) | set(after))
-                 if before.get(name) != after.get(name))
+    before: Mapping[str, object] = old.fields if old else {}
+    after: Mapping[str, object] = new.fields if new else {}
+    return tuple(
+        FieldChange(name, before.get(name), after.get(name))
+        for name in sorted(set(before) | set(after))
+        if before.get(name) != after.get(name)
+    )
 
 
 def diff(before: Source, after: Source, ontology: Ontology) -> SemanticDiff:

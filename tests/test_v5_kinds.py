@@ -16,8 +16,10 @@ FIXED = "kind: principle\nabout: x\nshape: list\nfile: principles.yml\narea: glo
 HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: file\n"
 PARENT = "kind: parent\nabout: x\nshape: file\nlayers: [product]\n"
-SETTLING = ("settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
-            "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n")
+SETTLING = (
+    "settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
+    "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n"
+)
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
 
 
@@ -39,43 +41,46 @@ def test_software_kinds_load() -> None:
     assert ontology.kinds["step"].holding is Holds.MAP
 
 
-@pytest.mark.parametrize(("text", "message"), [
-    (ENTITY + "fields:\n  a: {type: enum}\n", "enum fields"),
-    (ENTITY + "fields:\n  a: {of: [x]}\n", "enum fields"),
-    (ENTITY + "fields:\n  a: {type: uri}\n", "uri fields"),
-    (ENTITY + "fields:\n  a: {type: expr}\n", "name target kinds"),
-    (ENTITY + "fields:\n  a: {type: link, to: [nobody]}\n", "unknown kind nobody"),
-    (ENTITY + "fields:\n  a: {normative: true}\n", "normative"),
-    (ENTITY + "delivered: true\n", "delivered"),
-    (ENTITY + "subjects: [x]\n", "subjects"),
-    (ENTITY + "fields:\n  title: {}\n", "common to every kind"),
-    (HEAD + "shape: list\n", "names its file"),
-    (ENTITY + "file: things.yml\n", "file belongs to list and single kinds"),
-    (HEAD + "shape: list\nfile: actors.yml\n", "also the file of actor"),
-    (HEAD + "shape: list\nfile: actor.yml\n", "equals a kind name"),
-    (HEAD + "shape: list\nfile: removed.yml\n", "removed ledger"),
-    (HEAD.replace("product", "nowhere") + "shape: file\n", "not a layer of the ontology"),
-    ("kind: thing\nabout: x\nshape: file\n", "declares the layers it may appear in"),
-    (HEAD + "shape: inline\nkey: k\npart_of: actor\n", "a part is in its parent's layer"),
-    (ENTITY + "area: glossary\n", "has no layers"),
-    (HEAD + "shape: inline\nkey: k\npart_of: nobody\n", "unknown kind nobody"),
-    (ENTITY + "holds: list\n", "inline kinds only"),
-    (ENTITY + "append_only: true\n", "inline kinds that hold a list"),
-    (HEAD + "shape: file\nimmutable: true\n", "immutable"),
-    (ENTITY + "area: Not_An_Area\n", "no valid area name"),
-    (ENTITY + "area: built\n", "no valid area name"),
-    (ENTITY + "fields:\n  status: {}\n", "computed, never stored"),
-    (ENTITY + "fields:\n  does: {}\n", "another name for a sentence"),
-    (ENTITY + "fields:\n  ok?: {}\n", "no name contains"),
-    (ENTITY + "fields:\n  a: {type: enum, of: ['yes?']}\n", "no name contains"),
-    (ENTITY + "requires:\n  - {if_set: a, if_part: b, path: [], kinds: [], error: x}\n", "not both"),
-    (ENTITY + "requires:\n  - {if_part: nothing, path: [], kinds: [actor], error: x}\n", "no part kind"),
-    (ENTITY + "requires:\n  - {path: [], kinds: [actor], says: x}\n", "says"),
-    (ENTITY + SETTLING, "settling names no kind"),
-    (HEAD + "shape: single\n", "names its file"),
-    ("kind: thing\nabout: x\nshape: single\nfile: thing.yml\narea: glossary\n", "belong to kinds that live under a layer"),
-    (ENTITY + "must_be_agreed: true\nasked: false\n", "never asked cannot need agreement"),
-])
+@pytest.mark.parametrize(
+    ("text", "message"),
+    [
+        (ENTITY + "fields:\n  a: {type: enum}\n", "enum fields"),
+        (ENTITY + "fields:\n  a: {of: [x]}\n", "enum fields"),
+        (ENTITY + "fields:\n  a: {type: uri}\n", "uri fields"),
+        (ENTITY + "fields:\n  a: {type: expr}\n", "name target kinds"),
+        (ENTITY + "fields:\n  a: {type: link, to: [nobody]}\n", "unknown kind nobody"),
+        (ENTITY + "fields:\n  a: {normative: true}\n", "normative"),
+        (ENTITY + "delivered: true\n", "delivered"),
+        (ENTITY + "subjects: [x]\n", "subjects"),
+        (ENTITY + "fields:\n  title: {}\n", "common to every kind"),
+        (HEAD + "shape: list\n", "names its file"),
+        (ENTITY + "file: things.yml\n", "file belongs to list and single kinds"),
+        (HEAD + "shape: list\nfile: actors.yml\n", "also the file of actor"),
+        (HEAD + "shape: list\nfile: actor.yml\n", "equals a kind name"),
+        (HEAD + "shape: list\nfile: removed.yml\n", "removed ledger"),
+        (HEAD.replace("product", "nowhere") + "shape: file\n", "not a layer of the ontology"),
+        ("kind: thing\nabout: x\nshape: file\n", "declares the layers it may appear in"),
+        (HEAD + "shape: inline\nkey: k\npart_of: actor\n", "a part is in its parent's layer"),
+        (ENTITY + "area: glossary\n", "has no layers"),
+        (HEAD + "shape: inline\nkey: k\npart_of: nobody\n", "unknown kind nobody"),
+        (ENTITY + "holds: list\n", "inline kinds only"),
+        (ENTITY + "append_only: true\n", "inline kinds that hold a list"),
+        (HEAD + "shape: file\nimmutable: true\n", "immutable"),
+        (ENTITY + "area: Not_An_Area\n", "no valid area name"),
+        (ENTITY + "area: built\n", "no valid area name"),
+        (ENTITY + "fields:\n  status: {}\n", "computed, never stored"),
+        (ENTITY + "fields:\n  does: {}\n", "another name for a sentence"),
+        (ENTITY + "fields:\n  ok?: {}\n", "no name contains"),
+        (ENTITY + "fields:\n  a: {type: enum, of: ['yes?']}\n", "no name contains"),
+        (ENTITY + "requires:\n  - {if_set: a, if_part: b, path: [], kinds: [], error: x}\n", "not both"),
+        (ENTITY + "requires:\n  - {if_part: nothing, path: [], kinds: [actor], error: x}\n", "no part kind"),
+        (ENTITY + "requires:\n  - {path: [], kinds: [actor], says: x}\n", "says"),
+        (ENTITY + SETTLING, "settling names no kind"),
+        (HEAD + "shape: single\n", "names its file"),
+        ("kind: thing\nabout: x\nshape: single\nfile: thing.yml\narea: glossary\n", "belong to kinds that live under a layer"),
+        (ENTITY + "must_be_agreed: true\nasked: false\n", "never asked cannot need agreement"),
+    ],
+)
 def test_loader_refuses_inconsistent_kinds(text: str, message: str) -> None:
     with pytest.raises(OntologyError, match=message):
         load(text)
@@ -84,27 +89,32 @@ def test_loader_refuses_inconsistent_kinds(text: str, message: str) -> None:
 LINK = ENTITY + "fields:\n  a: {type: link, to: [actor], input: %s}\n"
 
 
-@pytest.mark.parametrize(("texts", "message"), [
-    ((ENTITY + "fields:\n  a: {input: content}\n",), "only a link or expr field is an input"),
-    ((LINK % "address",), "is the meaning already"),
-    ((LINK % "{fields: [colour]}",), "picks colour, no field of actor"),
-    ((LINK % "{parts: [part]}",), "picks part, no part of actor"),
-    ((LINK % "{fields: [nature], parts: [part]}",), "fields or parts, one of them"),
-    ((ENTITY + "input: {nothing: content}\n",), "names a common field or a part kind"),
-    ((PARENT + "input: {part: {fields: [a]}}\n", PART), "a part is an input whole"),
-    ((ENTITY + "input_from: {satisfies: {fields: [pin]}}\n",), "names a link field that leads here"),
-    ((ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor]}\n",), "states its input"),
-    ((LINK % "none" + "input: {a: content}\n",), "a field of its own declares its input itself"),
-    ((PARENT + "fields:\n  part: {type: link, to: [actor], input: none}\ninput: {part: content}\n", PART), "declares its input itself"),
-])
+@pytest.mark.parametrize(
+    ("texts", "message"),
+    [
+        ((ENTITY + "fields:\n  a: {input: content}\n",), "only a link or expr field is an input"),
+        ((LINK % "address",), "is the meaning already"),
+        ((LINK % "{fields: [colour]}",), "picks colour, no field of actor"),
+        ((LINK % "{parts: [part]}",), "picks part, no part of actor"),
+        ((LINK % "{fields: [nature], parts: [part]}",), "fields or parts, one of them"),
+        ((ENTITY + "input: {nothing: content}\n",), "names a common field or a part kind"),
+        ((PARENT + "input: {part: {fields: [a]}}\n", PART), "a part is an input whole"),
+        ((ENTITY + "input_from: {satisfies: {fields: [pin]}}\n",), "names a link field that leads here"),
+        ((ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor]}\n",), "states its input"),
+        ((LINK % "none" + "input: {a: content}\n",), "a field of its own declares its input itself"),
+        ((PARENT + "fields:\n  part: {type: link, to: [actor], input: none}\ninput: {part: content}\n", PART), "declares its input itself"),
+    ],
+)
 def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message: str) -> None:
     with pytest.raises(OntologyError, match=message):
         load(*texts)
 
 
 def test_inputs_that_name_what_their_targets_hold_load() -> None:
-    load(ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
-         "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address, because: address}\n")
+    load(
+        ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
+        "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address, because: address}\n"
+    )
     load(PARENT + "input: {part: content}\n", PART)
 
 
@@ -159,8 +169,13 @@ def test_the_ontology_file_declares_the_layers() -> None:
     for bad in ("layers: product\n", text + "extra: 1\n", "[a]\n", text.replace("layers: [product, software]", "layers: [1]")):
         with pytest.raises(OntologyError, match=ONTOLOGY_FILE):
             parse_declared(bad)
-    for layers, why in (((), "declares no layers"), (("Product",), "no valid folder name"), (("kinds",), "no valid folder name"),
-                        (("glossary",), "no valid folder name"), (("shared",), "no valid folder name")):
+    for layers, why in (
+        ((), "declares no layers"),
+        (("Product",), "no valid folder name"),
+        (("kinds",), "no valid folder name"),
+        (("glossary",), "no valid folder name"),
+        (("shared",), "no valid folder name"),
+    ):
         with pytest.raises(OntologyError, match=why):
             texts = {"kinds/actor.yml": ACTOR.replace("[product]", "[]"), "kinds/principle.yml": FIXED}
             parse_kinds(texts, declared().model_copy(update={"layers": layers}))
@@ -169,8 +184,10 @@ def test_the_ontology_file_declares_the_layers() -> None:
 def test_the_ontology_file_names_what_the_engine_reads() -> None:
     found = packaged().declared
     assert found.roles.agreed in found.common and found.harms[0] == "structure" and found.rank(None) == len(found.harms)
-    for change, why in (({"asked_alone": ("nope",)}, "asked_alone: nope is no harm"),
-                        ({"roles": found.roles.model_copy(update={"src": "source"})}, "roles: src names no common field source")):
+    for change, why in (
+        ({"asked_alone": ("nope",)}, "asked_alone: nope is no harm"),
+        ({"roles": found.roles.model_copy(update={"src": "source"})}, "roles: src names no common field source"),
+    ):
         with pytest.raises(OntologyError, match=why):
             parse_kinds({"kinds/actor.yml": ACTOR}, found.model_copy(update=change))
     with pytest.raises(OntologyError, match="harm late is no harm"):
@@ -195,6 +212,6 @@ def test_fields_are_meaning_unless_note() -> None:
 
 
 def test_settling_names_are_checked() -> None:
-    decision = (HEAD.replace("thing", "decision") + "shape: file\n" + SETTLING.replace("sets: sets", "sets: nothing"))
+    decision = HEAD.replace("thing", "decision") + "shape: file\n" + SETTLING.replace("sets: sets", "sets: nothing")
     with pytest.raises(OntologyError, match="settling names no kind option"):
         load(decision)

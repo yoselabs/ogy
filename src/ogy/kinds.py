@@ -77,7 +77,8 @@ class Picked(BaseModel):
     @model_validator(mode="after")
     def _one(self) -> Self:
         if bool(self.fields) == bool(self.parts):
-            raise ValueError("a picked input names fields or parts, one of them")
+            msg = "a picked input names fields or parts, one of them"
+            raise ValueError(msg)
         return self
 
 
@@ -140,11 +141,14 @@ class Requirement(BaseModel):
     @model_validator(mode="after")
     def _one_condition(self) -> Self:
         if sum(item is not None for item in (self.if_set, self.if_unset, self.if_part, self.if_equals)) > 1:
-            raise ValueError("a requirement has one of if_set, if_unset, if_part and if_equals, not both")
+            msg = "a requirement has one of if_set, if_unset, if_part and if_equals, not both"
+            raise ValueError(msg)
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
-            raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
+            msg = "a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both"
+            raise ValueError(msg)
         if self.or_paths and not (self.path and all(self.or_paths)):
-            raise ValueError("or_paths are further paths beside a path, none of them empty")
+            msg = "or_paths are further paths beside a path, none of them empty"
+            raise ValueError(msg)
         return self
 
     @property

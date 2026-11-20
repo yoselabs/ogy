@@ -1,12 +1,12 @@
 """`ogy kinds <kind>` with its guidance, and `ogy kinds --map`: the ontology on one screen."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 from tests.conftest import ogy
 
 from ogy import cli
 from ogy.kindmap import map_lines
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
 
 def test_every_shipped_kind_says_how_to_decide(ontology: Ontology) -> None:
@@ -22,17 +22,24 @@ def test_a_kind_prints_about_guidance_and_fields(repo: Path) -> None:
 
 def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> None:
     lines = map_lines(ontology)
-    named = {line.split(":")[0].strip().removesuffix("[]") for line in lines[1:lines.index("rules:")] if line.startswith("  ")}
+    named = {line.split(":")[0].strip().removesuffix("[]") for line in lines[1 : lines.index("rules:")] if line.startswith("  ")}
     assert named == set(ontology.kinds)
     assert [line for line in lines if not line.startswith(" ")][1:] == [
-        "product and software:", "product:", "software:", "constitution/ (fixed folder):", "rules:", "kinds, like and unlike:"]
-    assert "  workflow: !says schedule->quantity event->transition !start->step" \
-        " realizes->capability" in lines
+        "product and software:",
+        "product:",
+        "software:",
+        "constitution/ (fixed folder):",
+        "rules:",
+        "kinds, like and unlike:",
+    ]
+    assert "  workflow: !says schedule->quantity event->transition !start->step realizes->capability" in lines
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
     assert "  attribute: exactly one of type, of" in lines
     assert "  case, choice, timeout: a row with an effect has a handler performing it" in lines
-    assert "  handler: like a command or event handler: the code unit that performs a row's effects; unlike a UML operation, " \
+    assert (
+        "  handler: like a command or event handler: the code unit that performs a row's effects; unlike a UML operation, "
         "a signature on a class; an OpenAPI operation" in lines
+    )
     assert 80 <= len(lines) <= 110
 
 

@@ -1,7 +1,7 @@
 """`ogy kinds --readers`: what reads each field, from the kind files and the checks that read a field by name."""
 
 from importlib.resources import files
-from pathlib import Path
+lazy from pathlib import Path
 
 from tests.conftest import declared, ogy
 

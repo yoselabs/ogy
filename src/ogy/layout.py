@@ -3,14 +3,14 @@ folder for a kind that names one (`constitution/<file>`), a home's `removed.yml`
 knowledge base is one of these; any other is `bad-path`, and no level can be skipped. The reserved area `shared` of a layer holds
 only the kinds marked `shared`. A kind that moved out of a fixed folder (`moved_from`) is read there until `ogy migrate` moves it."""
 
-from collections.abc import Mapping
 from dataclasses import dataclass
+lazy from collections.abc import Mapping
 
 import any_yaml
 
 from ogy.kinds import FILED, NAME, Holds, Kind, Shape
 from ogy.model import Address, Entry, Finding, Problem
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
 SUFFIX = ".yml"
 BUILT_DIR = "built"  # the tool-written built record: read by its owner, never by this reader

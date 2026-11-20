@@ -1,8 +1,9 @@
 """Tests for the removed ledger."""
 
 import dataclasses
-import datetime
-from pathlib import Path
+import datetime as dt
+from typing import Any
+lazy from pathlib import Path
 
 import pytest
 
@@ -14,12 +15,23 @@ HOME = "product/land"
 STEP = "product/land/workflow/land/step/summarize"
 
 
-def make(id: str = STEP, **over: object) -> Item:
-    parts = id.split("/")
+def make(address: str = STEP, **over: Any) -> Item:
+    parts = address.split("/")
     parent = Parent("/".join(parts[:-2]), "steps", 12) if len(parts) > 4 else None
-    base = Item(id, parts[-2], parent, None, "Facts of the land are shown.", "product/land/decision/d1", None,
-                datetime.datetime(2026, 11, 18, 9, 12, tzinfo=datetime.timezone(datetime.timedelta(hours=1))),
-                SHA, HASH, "v5", {"says": "Facts of the land are shown.", "then": "reported"})
+    base = Item(
+        address,
+        parts[-2],
+        parent,
+        None,
+        "Facts of the land are shown.",
+        "product/land/decision/d1",
+        None,
+        dt.datetime(2026, 11, 18, 9, 12, tzinfo=dt.timezone(dt.timedelta(hours=1))),
+        SHA,
+        HASH,
+        "v5",
+        {"says": "Facts of the land are shown.", "then": "reported"},
+    )
     return dataclasses.replace(base, **over)
 
 
@@ -52,7 +64,7 @@ def test_part_under_removed_id_is_refused() -> None:
 
 
 def test_removed_envelope_is_strict(tmp_path: Path) -> None:
-    raw = removed._raw(make())
+    raw = removed.raw_item(make())
     assert removed.check_envelope(raw, HOME) == []
     assert removed.check_envelope({**raw, "extra": 1}, HOME)[0].code == "bad-removed"
     assert removed.check_envelope({**raw, "kind": "case"}, HOME)
@@ -91,8 +103,10 @@ def test_removed_item_may_not_change(tmp_path: Path) -> None:
 
 
 def test_agreed_entry_needs_why_as_an_address_and_plain_words_do_for_the_rest() -> None:
-    yes = {"says": "Facts of the land are shown.", "agreed": {"at": "2026-11-12T10:00:00+01:00", "where": "ai:x", "from": "human",
-                                                              "said": "Fine", "hash": HASH}}
+    yes = {
+        "says": "Facts of the land are shown.",
+        "agreed": {"at": "2026-11-12T10:00:00+01:00", "where": "ai:x", "from": "human", "said": "Fine", "hash": HASH},
+    }
     agreed = make(why=None, snapshot=yes)
     items = [agreed, make("product/land/decision/d2", why="product/land/decision/gone")]
     assert {p.address for p in removed.check_why(items, ["product/land/decision/d1"], "agreed")} == {STEP, "product/land/decision/d2"}
@@ -102,8 +116,12 @@ def test_agreed_entry_needs_why_as_an_address_and_plain_words_do_for_the_rest() 
     assert removed.is_address("product/land/decision/d1") and not removed.is_address("we no longer lend") and not removed.is_address(None)
     assert removed.check_why([make(why=None)], [], "agreed") == []
     assert removed.check_why([make()], ["product/land/decision/d1"], "agreed") == []
-    assert removed.check_why([make(why="product/land/decision/d2"), make("product/land/decision/d2", why="product/land/decision/d2")],
-                             [], "agreed") == []
+    assert (
+        removed.check_why(
+            [make(why="product/land/decision/d2"), make("product/land/decision/d2", why="product/land/decision/d2")], [], "agreed"
+        )
+        == []
+    )
 
 
 def test_replaced_by_chain_reaches_live_entry() -> None:
@@ -136,8 +154,9 @@ def test_old_snapshot_is_never_rechecked() -> None:
 
 def test_link_to_removed_names_the_replacement() -> None:
     gone = make("product/land/workflow/a", replaced_by="product/land/workflow/b")
-    problems = removed.check_links([("product/land/rule/r", "product/land/workflow/a"), ("product/land/rule/r",
-                                                                                         "product/land/workflow/z")], [gone])
+    problems = removed.check_links(
+        [("product/land/rule/r", "product/land/workflow/a"), ("product/land/rule/r", "product/land/workflow/z")], [gone]
+    )
     assert len(problems) == 1 and "product/land/decision/d1" in problems[0].detail and "product/land/workflow/b" in problems[0].detail
 
 

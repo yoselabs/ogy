@@ -4,9 +4,9 @@ and `doc:<commit>:<path>#<anchor>`, checked and hashed by the reader each scheme
 A pinned scheme names a Git revision: the file may be deleted later, its history stays."""
 
 import re
-from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Protocol
+lazy from collections.abc import Mapping
 
 import py_symbols
 from any_markdown import find, outline
@@ -84,8 +84,11 @@ def _check_doc(item: str, link: Link, text: str | None, files: tuple[str, ...]) 
         return EvidenceProblem(Problem.MISSING_DOC, item, f"no Markdown file {link.path} at {link.rev}")
     if section_hash(text, link.fragment) is None:
         near = hint(link.fragment, (anchor for anchor, _, _ in anchors(text)))
-        return EvidenceProblem(Problem.MISSING_DOC, item, f"no heading with anchor {link.fragment} in {link.path}{near}"
-                               + ("" if near else f"; `ogy anchors {link.path}` lists them"))
+        return EvidenceProblem(
+            Problem.MISSING_DOC,
+            item,
+            f"no heading with anchor {link.fragment} in {link.path}{near}" + ("" if near else f"; `ogy anchors {link.path}` lists them"),
+        )
     return None
 
 

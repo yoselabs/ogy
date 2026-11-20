@@ -9,16 +9,20 @@ needs the item of a decided removal.
 """
 
 import dataclasses
-from collections.abc import Callable, Mapping
+from typing import TYPE_CHECKING
 
 from ogy import removed
 from ogy.kinds import Holds
 from ogy.layout import REMOVED_FILE
 from ogy.model import Address, Entry, Finding, Problem, parse_address
 from ogy.moves import detect, renamed, retyped
-from ogy.removed import Item, Ledger
-from ogy.snapshot import Snapshot
-from ogy.source import Source
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
+
+    from ogy.removed import Item, Ledger
 
 
 def read_ledgers(source: Source) -> tuple[dict[str, Ledger], list[removed.Problem]]:
@@ -27,8 +31,9 @@ def read_ledgers(source: Source) -> tuple[dict[str, Ledger], list[removed.Proble
     return removed.parse(source.read(paths))
 
 
-def check_base(current: Snapshot, base: Snapshot, ledgers: Mapping[str, Ledger] | None = None,
-               base_ledgers: Mapping[str, Ledger] | None = None) -> list[Finding]:
+def check_base(
+    current: Snapshot, base: Snapshot, ledgers: Mapping[str, Ledger] | None = None, base_ledgers: Mapping[str, Ledger] | None = None
+) -> list[Finding]:
     """Everything the base forbids changing: append-only parts (C2) other than by a move, ids gone without a ledger item and
     not moved (C3, R1), and edited ledgers (R3)."""
     now, before = ledgers or {}, base_ledgers or {}
@@ -49,11 +54,17 @@ def check_base(current: Snapshot, base: Snapshot, ledgers: Mapping[str, Ledger] 
 def _same(current: Snapshot) -> Callable[[Item, Item], bool]:
     """R3's equality: an item may change only where its `why` or `replaced_by` follows a move (same kinds and ids, the old
     address gone, the new one live)."""
+
     def follows(old: str | None, new: str | None) -> bool:
         before = parse_address(old, current.ontology) if old else None
         after = parse_address(new, current.ontology) if new else None
-        return before is not None and after is not None and before.path == after.path and after in current.entries \
+        return (
+            before is not None
+            and after is not None
+            and before.path == after.path
+            and after in current.entries
             and before not in current.entries
+        )
 
     def same(old: Item, new: Item) -> bool:
         why = new.why if follows(old.why, new.why) else old.why
@@ -78,11 +89,10 @@ def _kept(current: Snapshot, base: Snapshot) -> list[Finding]:
 
 def _appended(address: Address, entry: Entry, old: Entry, key: str) -> list[Finding]:
     before, after = old.fields.get(key), entry.fields.get(key)
-    before = before if isinstance(before, list) else []
-    after = after if isinstance(after, list) else []
-    for place, item in enumerate(before):
-        if place >= len(after) or after[place] != item:
-            what = "removed" if place >= len(after) else "changed"
-            return [Finding(Problem.EDITED_APPEND_ONLY, entry.path, f"{key} item {place} was {what}; only add after it",
-                            address)]
+    was: list[object] = before if isinstance(before, list) else []
+    now: list[object] = after if isinstance(after, list) else []
+    for place, item in enumerate(was):
+        if place >= len(now) or now[place] != item:
+            what = "removed" if place >= len(now) else "changed"
+            return [Finding(Problem.EDITED_APPEND_ONLY, entry.path, f"{key} item {place} was {what}; only add after it", address)]
     return []

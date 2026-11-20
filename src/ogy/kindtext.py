@@ -2,8 +2,8 @@
 
 from ogy.kinds import FieldSpec, Input, Kind, Picked
 from ogy.near import hint
-from ogy.ontology import Ontology
-from ogy.verdict import NotFound
+from ogy.verdict import NotFoundError
+lazy from ogy.ontology import Ontology
 
 
 def _input(given: Input | Picked) -> str:
@@ -41,10 +41,19 @@ def _facts(kind: Kind) -> list[str]:
         where.append("also in the area shared, when two areas use it")
     if kind.moved_from:
         where.append(f"moved from {kind.moved_from} (`ogy migrate`)")
-    flags = [text for text, on in (("in every area", kind.every_area), ("never asked", not kind.asked),
-                                   ("needs proof", kind.needs_proof), ("must be agreed", kind.must_be_agreed),
-                                   ("append only", kind.append_only), ("settles entries", kind.settling is not None),
-                                   ("is a flow", kind.flow is not None)) if on]
+    flags = [
+        text
+        for text, on in (
+            ("in every area", kind.every_area),
+            ("never asked", not kind.asked),
+            ("needs proof", kind.needs_proof),
+            ("must be agreed", kind.must_be_agreed),
+            ("append only", kind.append_only),
+            ("settles entries", kind.settling is not None),
+            ("is a flow", kind.flow is not None),
+        )
+        if on
+    ]
     lines = [f"  lives: {', '.join(where)}"]
     if kind.layers:
         lines.append(f"  layers: {', '.join(kind.layers)}")
@@ -62,16 +71,18 @@ def _facts(kind: Kind) -> list[str]:
 
 def _rules(kind: Kind) -> list[str]:
     lines = [f"  exactly one of: {', '.join(group)}" for group in kind.exactly_one_of]
-    for need in kind.requires:
-        lines.append(f"  requires{' ' + need.condition if need.condition else ''}: {need.error}")
+    lines.extend(f"  requires{' ' + need.condition if need.condition else ''}: {need.error}" for need in kind.requires)
     if kind.one_part:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
     lines += [f"  was: {', '.join(old.kind for old in kind.was)} (`ogy migrate`)"] if kind.was else []
     lines += [f"  renamed in a {old.kind}: {field} is now {new} (`ogy migrate`)" for old in kind.was for field, new in old.renamed.items()]
     lines += [f"  default in a {old.kind}: {field} {value!r} (`ogy migrate`)" for old in kind.was for field, value in old.defaults.items()]
     lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
-    lines += [f"  revalued: {field} {old} is now {', '.join(f'{k} {v}' for k, v in now.items())} (`ogy migrate`)"
-              for field, values in kind.revalued.items() for old, now in values.items()]
+    lines += [
+        f"  revalued: {field} {old} is now {', '.join(f'{k} {v}' for k, v in now.items())} (`ogy migrate`)"
+        for field, values in kind.revalued.items()
+        for old, now in values.items()
+    ]
     lines += [f"  folded: {field} held a part, now its {inner} (`ogy migrate`)" for field, inner in kind.folded.items()]
     return lines + [f"  dropped: {old} (`ogy migrate`)" for old in kind.dropped]
 
@@ -82,15 +93,18 @@ def _likeness(kind: Kind) -> list[str]:
 
 def likeness_lines(ontology: Ontology) -> list[str]:
     """One line per kind that says what mainstream notion it matches and which of the same name it does not mean."""
-    found = [f"  {name}: " + "; ".join(f"{word} {text}" for word, text in (("like", kind.like), ("unlike", kind.unlike)) if text)
-             for name, kind in sorted(ontology.kinds.items()) if kind.like or kind.unlike]
+    found = [
+        f"  {name}: " + "; ".join(f"{word} {text}" for word, text in (("like", kind.like), ("unlike", kind.unlike)) if text)
+        for name, kind in sorted(ontology.kinds.items())
+        if kind.like or kind.unlike
+    ]
     return ["kinds, like and unlike:", *found] if found else []
 
 
 def kinds_lines(ontology: Ontology, only: str | None = None) -> list[str]:
-    """Every kind, or the one named (NotFound with near misses when the ontology has none of that name)."""
+    """Every kind, or the one named (NotFoundError with near misses when the ontology has none of that name)."""
     if only is not None and only not in ontology.kinds:
-        raise NotFound(f"no kind {only}" + hint(only, ontology.kinds))
+        raise NotFoundError(f"no kind {only}" + hint(only, ontology.kinds))
     lines: list[str] = []
     for name, kind in sorted(ontology.kinds.items()):
         if only not in (None, name):

@@ -2,18 +2,21 @@
 
 import json
 import string
+from typing import TYPE_CHECKING
 
 from ogy import rounds
-from ogy.find import Found
-from ogy.graph import Context, Impact
-from ogy.history import History
-from ogy.model import Finding
-from ogy.overview import Overview
-from ogy.receipts import Work
-from ogy.review import Dropped, Review
-from ogy.semdiff import SemanticDiff
-from ogy.show import Shown
 from ogy.status import Card, Status
+lazy from ogy.find import Found
+lazy from ogy.history import History
+lazy from ogy.model import Finding
+lazy from ogy.overview import Overview
+lazy from ogy.receipts import Work
+lazy from ogy.semdiff import SemanticDiff
+lazy from ogy.show import Shown
+
+if TYPE_CHECKING:
+    from ogy.graph import Context, Impact
+    from ogy.review import Dropped, Review
 
 
 def plain(value: object) -> str:
@@ -45,8 +48,10 @@ def render_impact(found: Impact) -> list[str]:
 
 
 def render_work(found: list[Work]) -> list[str]:
-    return [f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})"
-            + (f" {item.note}" if item.note else "") for item in found] or ["no work left"]
+    return [
+        f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})" + (f" {item.note}" if item.note else "")
+        for item in found
+    ] or ["no work left"]
 
 
 def render_diff(found: SemanticDiff) -> list[str]:
@@ -107,7 +112,7 @@ def render_show(found: Shown) -> list[str]:
 
 
 def _card(label: str, card: Card) -> list[str]:
-    harm = str(card.harm).replace("-", " ") if card.harm else ""
+    harm = card.harm.replace("-", " ") if card.harm else ""
     notes = [text for text in (harm, f"{card.dependants} depend on it" if card.dependants else "") if text]
     lines = [f"{label}. {card.kind}  {card.address}" + (f"  ({'; '.join(notes)})" if notes else "")]
     if card.context:
@@ -117,8 +122,10 @@ def _card(label: str, card: Card) -> list[str]:
         lines.append(f"   not: {'; '.join(card.avoid)}")
     if card.members:
         lines.append(f"   one yes agrees to {len(card.members)}:")
-        lines += [f"   - {str(address).removeprefix(str(card.address) + '/') if address != card.address else 'itself'}: {text}"
-                  for address, text, _ in card.members]
+        lines += [
+            f"   - {str(address).removeprefix(str(card.address) + '/') if address != card.address else 'itself'}: {text}"
+            for address, text, _ in card.members
+        ]
     for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
         mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
         lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))
@@ -149,11 +156,16 @@ def _from(found: Review) -> list[str]:
 def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
     """What a bare `yes` will change, and what it leaves for a letter of its own: the same rule as `reply`."""
     keys = {label: [key for key, _ in card.options] for label, card in cards}
-    confirms = [f"{label} as {string.ascii_uppercase[keys[label].index(card.guess)]}" for label, card in cards
-                if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.guess in keys[label]]
+    confirms = [
+        f"{label} as {string.ascii_uppercase[keys[label].index(card.guess)]}"
+        for label, card in cards
+        if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.guess in keys[label]
+    ]
     agrees = [label for label, card in cards if card.kind in rounds.ENTRY_CARDS]
-    will = [*([f"confirm {', '.join(confirms)}"] if confirms else []),
-            *([f"agree to {len(agrees)} sentence(s) ({', '.join(agrees)})"] if agrees else [])]
+    will = [
+        *([f"confirm {', '.join(confirms)}"] if confirms else []),
+        *([f"agree to {len(agrees)} sentence(s) ({', '.join(agrees)})"] if agrees else []),
+    ]
     lines = [f"A bare `yes` will: {'; '.join(will)}." if will else "A bare `yes` changes nothing."]
     own = [label for label, card in cards if card.alone]
     return lines + ([f"Structural, not covered by yes or yes all: {', '.join(own)}; each needs its own letter."] if own else [])
@@ -168,9 +180,13 @@ def render_review(found: Review) -> list[str]:
     if found.waiting:
         lines += ["", f"{found.waiting} more waiting: ogy review {found.area + ' ' if found.area else ''}--all"]
     if found.cards:
-        lines += ["", *bare_yes(rounds.labelled(found.cards)), REPLY,
-                  "yes agrees to the sentences and confirms every 'You said' reading; yes Q2 confirms one;",
-                  "yes all (or decide) takes every recommendation"]
+        lines += [
+            "",
+            *bare_yes(rounds.labelled(found.cards)),
+            REPLY,
+            "yes agrees to the sentences and confirms every 'You said' reading; yes Q2 confirms one;",
+            "yes all (or decide) takes every recommendation",
+        ]
     return lines or ["nothing to ask"]
 
 
@@ -199,17 +215,26 @@ def render_dropped(found: Dropped) -> list[str]:
 
 
 def render_found(found: list[Found]) -> list[str]:
-    return [f"{item.address}   {item.kind}   {item.state or '-'}   {item.says}" + (f"   {item.note}" if item.note else "")
-            for item in found] or ["nothing found"]
+    return [
+        f"{item.address}   {item.kind}   {item.state or '-'}   {item.says}" + (f"   {item.note}" if item.note else "") for item in found
+    ] or ["nothing found"]
 
 
 def render_status(found: Overview) -> list[str]:
     none = "every kind has entries"
-    coverage = [] if found.coverage is None else [
-        "coverage (kinds with no entry):", *(f"  {layer}: {', '.join(kinds) or none}" for layer, kinds in found.coverage.items())]
-    return [*(str(header) for header in found.areas), *waiting_line(found.waiting),
-            f"findings: {found.findings} (ogy check)", f"work left: {found.work} (ogy work)", f"dropped: {found.dropped} (ogy dropped)",
-            *coverage]
+    coverage = (
+        []
+        if found.coverage is None
+        else ["coverage (kinds with no entry):", *(f"  {layer}: {', '.join(kinds) or none}" for layer, kinds in found.coverage.items())]
+    )
+    return [
+        *(str(header) for header in found.areas),
+        *waiting_line(found.waiting),
+        f"findings: {found.findings} (ogy check)",
+        f"work left: {found.work} (ogy work)",
+        f"dropped: {found.dropped} (ogy dropped)",
+        *coverage,
+    ]
 
 
 def render_history(found: History) -> list[str]:

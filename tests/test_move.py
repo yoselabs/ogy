@@ -3,7 +3,7 @@ write and nothing is recorded: `check --base` tells the move from a loss."""
 
 import asyncio
 import json
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 from tests.conftest import commit, ogy
@@ -121,8 +121,12 @@ def test_an_actor_moves_and_the_steps_that_name_it_stay_agreed(repo: Path) -> No
 
 def test_a_decision_moves_and_what_cites_it_follows(repo: Path) -> None:
     sets = {"keep": {"label": "Keep", "sets": {"product/app/quantity/fee": {"is": 2}}}}
-    decision = {"address": "product/app/decision/fee", "question": "Keep the fee?", "options": sets,
-                "proposal": {"chose": "keep", "why": "g"}}
+    decision = {
+        "address": "product/app/decision/fee",
+        "question": "Keep the fee?",
+        "options": sets,
+        "proposal": {"chose": "keep", "why": "g"},
+    }
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
     code, lines = w(repo, "remove", "software/app/interface/page", "--why", "product/app/decision/fee")
     assert code == cli.OK, lines
@@ -153,8 +157,12 @@ def test_a_move_is_refused_when_the_target_exists_or_was_removed(repo: Path) -> 
     before = tree(repo)
     code, lines = w(repo, "move", "product/app/actor/member", "product/other")
     assert code == cli.REFUSED and "exists" in lines[0] and tree(repo) == before
-    for argv in (["product/app/actor/member", "product/app"], ["product/app/actor/member", "product/a/b/c"],
-                 [STEP, "product/loans"], ["product/shared/term/land", "product/loans"]):
+    for argv in (
+        ["product/app/actor/member", "product/app"],
+        ["product/app/actor/member", "product/a/b/c"],
+        [STEP, "product/loans"],
+        ["product/shared/term/land", "product/loans"],
+    ):
         assert w(repo, "move", *argv)[0] in (cli.REFUSED, cli.USAGE, cli.NOT_FOUND), argv
     assert tree(repo) == before
     fee = "- {id: fee, says: Another fee., is: 1, unit: EUR, src: ['code:app.py#lend']}\n"
@@ -176,8 +184,9 @@ def test_an_entry_a_decision_in_force_sets_can_move_and_the_answer_still_counts(
     sets = {n: {"label": n, "sets": {"product/app/quantity/fee": {"is": i}}} for i, n in ((1, "one"), (2, "two"))}
     decision = {"address": "product/app/decision/fee", "question": "How much?", "options": sets, "proposal": {"chose": "two", "why": "g"}}
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
-    code, lines = w(repo, "answer", "product/app/decision/fee", "one", "--said", "One", "--where", "ai:x",
-                    "--at", "2026-11-12T10:05:00+01:00")
+    code, lines = w(
+        repo, "answer", "product/app/decision/fee", "one", "--said", "One", "--where", "ai:x", "--at", "2026-11-12T10:05:00+01:00"
+    )
     assert code == cli.OK, lines
     commit(repo, "answered")
     dropped = w(repo, "dropped")
@@ -200,12 +209,16 @@ def test_a_move_into_an_area_without_its_area_entry_is_refused_and_the_area_entr
 
 def test_the_fingerprint_breaks_a_tie_between_two_of_one_kind_and_id() -> None:
     def kb(**areas: str) -> Snapshot:
-        return snapshot_build(packaged(), {f"product/{area}/actors.yml": f"- {{id: member, says: {says}, nature: human}}\n"
-                                           for area, says in areas.items()})
+        return snapshot_build(
+            packaged(), {f"product/{area}/actors.yml": f"- {{id: member, says: {says}, nature: human}}\n" for area, says in areas.items()}
+        )
+
     base, now = kb(app="A member.", other="Another member."), kb(loans="Another member.", people="A member.")
     found = detect(base, now)
     assert {str(old): str(new) for old, new in found.items()} == {
-        "product/app/actor/member": "product/people/actor/member", "product/other/actor/member": "product/loans/actor/member"}
+        "product/app/actor/member": "product/people/actor/member",
+        "product/other/actor/member": "product/loans/actor/member",
+    }
     assert detect(base, kb(loans="A changed member.", people="Another changed member.")) == {}  # no fingerprint matches: a loss
 
 

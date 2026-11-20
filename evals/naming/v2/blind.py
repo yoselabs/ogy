@@ -65,7 +65,7 @@ def main(runs_dir: Path, out_dir: Path, seed: int) -> None:
         rng.shuffle(batch)
         batches.append(" ".join(batch))
     (out_dir / "batches.txt").write_text("".join(line + "\n" for line in batches))
-    print("\n".join(batches))
+    sys.stdout.write(("\n".join(batches)) + "\n")
 
 
 if __name__ == "__main__":

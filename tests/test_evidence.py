@@ -1,12 +1,13 @@
 """Evidence links: `code:` symbols, `doc:` headings by GitHub anchor, and the hashes for `sourced`."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
-from ogy.evidence import EvidenceProblem, check_item, check_items, receipt, section_hash, symbol_hash
+from ogy.evidence import EvidenceProblem, Read, check_item, check_items, receipt, section_hash, symbol_hash
+from ogy.model import Problem
 from ogy.ontology import packaged
 
 SCHEMES = packaged().declared.evidence
-CODE = '''
+CODE = """
 FEE = 3
 RATE: float = 0.5
 type Money = int
@@ -16,8 +17,14 @@ class Loan:
     limit = 2
     def renew(self):
         def inner(): pass
-'''
+"""
 DOC = "# Title\n\nintro\n\n## Late `fees`!\n\nbody one\n\n### Detail\n\nd\n\n## Next\n\n```\n# not a heading\n```\n\n## Next\n"
+
+
+def found(item: str, read: Read) -> EvidenceProblem:
+    problem = check_item(item, read, SCHEMES)
+    assert problem is not None, item
+    return problem
 
 
 def reader(tmp_path: Path):
@@ -38,7 +45,7 @@ def project(tmp_path: Path):
 def test_an_address_is_no_source(tmp_path):
     read = project(tmp_path)
     for item in ("product/library/message/2026-11-12-a41c", "product/library/decision/d4"):
-        assert check_item(item, read, SCHEMES).code == "bad-src"
+        assert found(item, read).code == "bad-src"
 
 
 def test_code_link_finds_function_method_constant(tmp_path):
@@ -50,14 +57,14 @@ def test_code_link_finds_function_method_constant(tmp_path):
 def test_code_link_to_missing_symbol(tmp_path):
     read = project(tmp_path)
     for item in ("code:fee.py#nope", "code:fee.py#inner", "code:fee.py#Loan.renew.inner", "code:fee.py#Loan.nope"):
-        assert check_item(item, read, SCHEMES) == EvidenceProblem("missing-code", item, check_item(item, read, SCHEMES).detail)
-    assert check_item("code:gone.py#x", read, SCHEMES).code == "missing-code"
+        assert found(item, read) == EvidenceProblem(Problem.MISSING_CODE, item, found(item, read).detail)
+    assert found("code:gone.py#x", read).code == "missing-code"
 
 
 def test_src_targets_only_source_kinds_and_code(tmp_path):
     read = project(tmp_path)
     for item in ("https://example.com/x", "doc:notes.md", "code:fee.py", "code:fee.py#", "code:data.json#x", "code:../x.py#a", "plain"):
-        assert check_item(item, read, SCHEMES).code == "bad-src", item
+        assert found(item, read).code == "bad-src", item
 
 
 def test_doc_link_needs_file_and_heading(tmp_path):
@@ -65,15 +72,15 @@ def test_doc_link_needs_file_and_heading(tmp_path):
     assert check_item("doc:abc1234:notes.md#late-fees", read, SCHEMES) is None
     assert check_item("doc:abc1234:notes.md#detail", read, SCHEMES) is None
     assert check_item("doc:abc1234:notes.md#next-1", read, SCHEMES) is None
-    assert check_item("doc:abc1234:notes.md#not-a-heading", read, SCHEMES).code == "missing-doc"
-    assert check_item("doc:abc1234:gone.md#late-fees", read, SCHEMES).code == "missing-doc"
-    assert check_item("doc:abc1234:fee.py#late-fees", read, SCHEMES).code == "missing-doc"
+    assert found("doc:abc1234:notes.md#not-a-heading", read).code == "missing-doc"
+    assert found("doc:abc1234:gone.md#late-fees", read).code == "missing-doc"
+    assert found("doc:abc1234:fee.py#late-fees", read).code == "missing-doc"
 
 
 def test_a_doc_link_pins_a_revision(tmp_path):
     read = project(tmp_path)
     for item in ("doc:notes.md#late-fees", "doc:main:notes.md#late-fees", "doc:abc12:notes.md#late-fees"):
-        problem = check_item(item, read, SCHEMES)
+        problem = found(item, read)
         assert problem.code == "bad-src" and "pins a Git revision" in problem.detail, item
     seen = []
 

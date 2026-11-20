@@ -13,8 +13,8 @@ from collections.abc import Callable, Mapping
 from ogy.fieldtypes import AGREED_HASH
 from ogy.kinds import FieldSpec, FieldType, Holds, Kind
 from ogy.model import Address, Entry, parse_address
-from ogy.ontology import Ontology
 from ogy.snapshot import Snapshot
+lazy from ogy.ontology import Ontology
 
 type Rename = Callable[[str], str]
 type Data = dict[str, object]
@@ -27,7 +27,7 @@ def renamer(table: Table) -> Rename:
 
     def rename(text: str) -> str:
         key = max((old for old in pairs if text == old or text.startswith(old + "/")), key=len, default=None)
-        return text if key is None else pairs[key] + text[len(key):]
+        return text if key is None else pairs[key] + text[len(key) :]
 
     return rename
 
@@ -120,7 +120,8 @@ def _named(snapshot: Snapshot) -> set[str]:
 def retyped(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
     """The entries whose kind was renamed in the ontology: the base names `<layer>/<area>/<gone kind>/<id>`, a kind the ontology
     no longer has, and `now` has exactly one new entry with that layer, area and id under another kind."""
-    ontology, table = now.ontology, {}
+    ontology = now.ontology
+    table: dict[Address, Address] = {}
     arrived = [address for address in now.entries if address.parent() is None and address not in base.entries]
     for text in sorted(_named(base)):
         parts = text.split("/")
@@ -136,10 +137,8 @@ def retyped(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
 def _ties(base: Snapshot, now: Snapshot, olds: list[Address], news: list[Address], table: Table) -> dict[Address, Address]:
     """Several entries of one kind and id gone and arrived: an old and a new pair only when the fingerprint, the moves
     already found written in, matches for exactly that one pair."""
-    matches = [(old, new) for old in olds for new in news
-               if renamed(base, {**table, old: new}).fingerprint(new) == now.fingerprint(new)]
-    return {old: new for old, new in matches
-            if sum(1 for o, _ in matches if o == old) == 1 and sum(1 for _, n in matches if n == new) == 1}
+    matches = [(old, new) for old in olds for new in news if renamed(base, {**table, old: new}).fingerprint(new) == now.fingerprint(new)]
+    return {old: new for old, new in matches if sum(1 for o, _ in matches if o == old) == 1 and sum(1 for _, n in matches if n == new) == 1}
 
 
 def detect(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
@@ -161,8 +160,13 @@ def detect(base: Snapshot, now: Snapshot) -> dict[Address, Address]:
     return table | _renames(base, now, gone, arrived, table)
 
 
-def _renames(base: Snapshot, now: Snapshot, gone: Mapping[tuple[str, str], list[Address]],
-             arrived: Mapping[tuple[str, str], list[Address]], table: Table) -> dict[Address, Address]:
+def _renames(
+    base: Snapshot,
+    now: Snapshot,
+    gone: Mapping[tuple[str, str], list[Address]],
+    arrived: Mapping[tuple[str, str], list[Address]],
+    table: Table,
+) -> dict[Address, Address]:
     """Entries of one kind gone under one id and arrived under another (`ogy move` to a new id): paired by the fingerprint,
     only where exactly one pair matches."""
     left = [old for key, olds in gone.items() if key not in arrived for old in olds if old not in table]

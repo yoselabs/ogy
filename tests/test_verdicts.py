@@ -1,6 +1,6 @@
 """One verdict on every result: exit codes, refusals on stderr, and a target that fails closed."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 from git_porcelain import run_git
@@ -20,7 +20,7 @@ def test_every_op_result_carries_its_verdict(repo: Path) -> None:
     assert ops.run_check(target).verdict is Verdict.OK
     assert ops.run_work(target).verdict is Verdict.FINDINGS
     assert ops.run_show(target, "product/app/quantity/fee").verdict is Verdict.OK
-    with pytest.raises(ops.UnknownEntry) as error:
+    with pytest.raises(ops.UnknownEntryError) as error:
         ops.run_show(target, "product/app/quantity/nope")
     assert error.value.verdict is Verdict.NOT_FOUND
 
@@ -55,7 +55,8 @@ def test_a_diff_may_start_before_the_knowledge_base_existed(repo: Path) -> None:
 
 def test_reads_default_to_the_worktree_and_say_so(repo: Path) -> None:
     (repo / "docs/kb/product/app/quantities.yml").write_text(
-        "- {id: fee, says: The fee., is: 9, unit: EUR, src: [product/app/message/m1]}\n")
+        "- {id: fee, says: The fee., is: 9, unit: EUR, src: [product/app/message/m1]}\n"
+    )
     assert "is: 9" in "\n".join(ogy(repo, "show", "product/app/quantity/fee")[1])
     assert "is: 2" in "\n".join(ogy(repo, "--rev", "HEAD", "show", "product/app/quantity/fee")[1])
     assert "the worktree" in cli.parser().format_help()

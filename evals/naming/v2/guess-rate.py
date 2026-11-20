@@ -29,14 +29,14 @@ def main(scoring: Path) -> None:
             exact += guess == truth
             coarse += guess != "?" and (guess == "old") == (truth == "old")
     if not total:
-        print("no guesses read")
+        sys.stdout.write(("no guesses read") + "\n")
         return
     arms = len(set(arm_of.values()))
     old_share = sum(1 for label in arm_of.values() if label == "old") / len(arm_of)
-    print(f"guesses: {total}; arms: {arms}")
-    print(f"exact arm: {exact / total:.0%} (blind guessing: {1 / arms:.0%})")
-    print(f"old against not old: {coarse / total:.0%} (always saying 'not old': {1 - old_share:.0%})")
-    print(f"could not tell: {unsure / total:.0%}")
+    sys.stdout.write((f"guesses: {total}; arms: {arms}") + "\n")
+    sys.stdout.write((f"exact arm: {exact / total:.0%} (blind guessing: {1 / arms:.0%})") + "\n")
+    sys.stdout.write((f"old against not old: {coarse / total:.0%} (always saying 'not old': {1 - old_share:.0%})") + "\n")
+    sys.stdout.write((f"could not tell: {unsure / total:.0%}") + "\n")
 
 
 if __name__ == "__main__":

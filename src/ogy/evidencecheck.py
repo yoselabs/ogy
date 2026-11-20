@@ -4,14 +4,14 @@ are `path::function` (E5). The common fields are read in the roles `ontology.yml
 
 import re
 
-from ogy.declared import Declared
 from ogy.evidence import check_items
 from ogy.kinds import Evidence
 from ogy.links import link_items, resolve
 from ogy.model import Address, Entry, Finding, Problem, link_values
 from ogy.settle import decisions, settles
-from ogy.snapshot import Snapshot
-from ogy.source import Source
+lazy from ogy.declared import Declared
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
 
 
 def _proofs(declared: Declared, entry: Entry) -> list[Finding]:
@@ -19,9 +19,12 @@ def _proofs(declared: Declared, entry: Entry) -> list[Finding]:
     name, suffixes = declared.roles.proof, declared.proof.files
     form = re.compile(rf"^[\w./-]+(?:{'|'.join(map(re.escape, suffixes))})(::[A-Za-z_]\w*)+$")
     raw = entry.fields.get(name)
-    items = raw if isinstance(raw, list) else [] if raw is None else [raw]
-    return [Finding(Problem.MISSING_PROOF, entry.path, f"{name} {item!r} is not <path>{'|'.join(suffixes)}::<function>", entry.address)
-            for item in items if not isinstance(item, str) or not form.match(item) or item.startswith("/") or ".." in item.split("/")]
+    items: list[object] = raw if isinstance(raw, list) else [] if raw is None else [raw]
+    return [
+        Finding(Problem.MISSING_PROOF, entry.path, f"{name} {item!r} is not <path>{'|'.join(suffixes)}::<function>", entry.address)
+        for item in items
+        if not isinstance(item, str) or not form.match(item) or item.startswith("/") or ".." in item.split("/")
+    ]
 
 
 def _grounded(snapshot: Snapshot, settled: set[str], address: Address, seen: set[Address]) -> bool:
@@ -54,9 +57,11 @@ def _no_evidence(snapshot: Snapshot) -> list[Finding]:
         if kind.evidence_mode is not Evidence.OWN or _grounded(snapshot, settled, address, set()):
             continue
         roles = snapshot.ontology.roles
-        why = (f"a {roles.because} chain that reaches no {roles.src}, no decision and no agreement"
-               if link_values(entry.fields.get(roles.because))
-               else f"no {roles.src}, no {roles.because}, no decision settling it and no person's yes")
+        why = (
+            f"a {roles.because} chain that reaches no {roles.src}, no decision and no agreement"
+            if link_values(entry.fields.get(roles.because))
+            else f"no {roles.src}, no {roles.because}, no decision settling it and no person's yes"
+        )
         out.append(Finding(Problem.NO_EVIDENCE, entry.path, f"{kind.kind} needs evidence of its own: {why}", address))
     return out
 
@@ -67,6 +72,8 @@ def check_evidence(snapshot: Snapshot, source: Source) -> list[Finding]:
     for entry in snapshot.entries.values():
         found += _proofs(declared, entry)
         items = link_values(entry.fields.get(declared.roles.src))
-        found += [Finding(problem.code, entry.path, f"{problem.address}: {problem.detail}", entry.address)
-                  for problem in check_items(list(items), source.repo_file, declared.evidence)]
+        found += [
+            Finding(problem.code, entry.path, f"{problem.address}: {problem.detail}", entry.address)
+            for problem in check_items(list(items), source.repo_file, declared.evidence)
+        ]
     return found

@@ -17,7 +17,7 @@ defaults to it):
 
 import contextlib
 import io
-from collections.abc import Sequence
+lazy from collections.abc import Sequence
 
 from argparse_mcp import tools_from_parser
 from fastmcp import FastMCP

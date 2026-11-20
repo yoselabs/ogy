@@ -3,10 +3,12 @@ indented under it; then the rules the kind files declare, as sentences. Read fro
 
 from ogy.kinds import FieldSpec, FieldType, Flow, Holds, Kind, Shape
 from ogy.kindtext import likeness_lines
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
-LEGEND = ("! required, -> one link, ->> many links (an expression: the links it reads), [] a list part, (a|b) enum members, "
-          "indentation = part of; every kind also takes ")
+LEGEND = (
+    "! required, -> one link, ->> many links (an expression: the links it reads), [] a list part, (a|b) enum members, "
+    "indentation = part of; every kind also takes "
+)
 MANY = frozenset({FieldType.LINKS, FieldType.EXPR})
 
 
@@ -61,17 +63,29 @@ def _rules(ontology: Ontology) -> list[str]:
 
 def _flow_rules(name: str, flow: Flow) -> list[str]:
     """The fixed checks a `flow:` turns on (see `flowcheck`), in the names that kind file gives."""
-    return [f"  {name} (flow): an actor {flow.step} offers {flow.choice}s (maybe a {flow.timeout}) and nothing else; a system "
-            f"{flow.step} has {flow.case}s or one `{flow.then}`; a calling {flow.step} continues by {flow.case}s",
+    return [
+        (
+            f"  {name} (flow): an actor {flow.step} offers {flow.choice}s (maybe a {flow.timeout}) and nothing else; a system "
+            f"{flow.step} has {flow.case}s or one `{flow.then}`; a calling {flow.step} continues by {flow.case}s"
+        ),
+        (
             f"  {name} (flow): a system {flow.step} has one `{flow.otherwise}` {flow.case} without `{flow.when}`; every other "
-            f"{flow.case} has `{flow.when}` and its own `{flow.order}`",
+            f"{flow.case} has `{flow.when}` and its own `{flow.order}`"
+        ),
+        (
             f"  {name} (flow): every {flow.step} is reached from `{flow.start}` and reaches an {flow.end} or a hand-off; every "
-            f"{flow.end} is reached",
-            f"  {name} (flow): a calling {flow.step} names every {flow.end} of its callee in `{flow.covers}`",
+            f"{flow.end} is reached"
+        ),
+        f"  {name} (flow): a calling {flow.step} names every {flow.end} of its callee in `{flow.covers}`",
+        (
             f"  {name} (flow): the {' and '.join(item + 's' for item in flow.servers)} serving a {flow.step} offer every "
-            f"{flow.choice} between them",
+            f"{flow.choice} between them"
+        ),
+        (
             f"  {name} (flow): every {name} is started: an {flow.actor} on its first {flow.step}, a "
-            f"{' or '.join(flow.roots)}, or led to from a started {name}"]
+            f"{' or '.join(flow.roots)}, or led to from a started {name}"
+        ),
+    ]
 
 
 def map_lines(ontology: Ontology) -> list[str]:

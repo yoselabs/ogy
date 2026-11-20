@@ -8,10 +8,10 @@ from collections.abc import Mapping
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from ogy.kinds import Settling
 from ogy.model import Address, Entry, Finding, Problem, parse_address
-from ogy.snapshot import Snapshot
-from ogy.source import Source
+lazy from ogy.kinds import Settling
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
 
 type Sets = Mapping[str, object]  # {address text: {field: value} | None}
 
@@ -56,17 +56,22 @@ class Decision:
         return value if isinstance(value, str) and value.strip() else None
 
     @property
+    def newest(self) -> Answer | None:
+        """The answer with the newest `at`, None when none is dated."""
+        dated = [(answer.at, answer) for answer in self.answers if answer.at is not None]
+        return max(dated, key=lambda item: item[0])[1] if dated else None
+
+    @property
     def in_force(self) -> Force | None:
         """The answer with the newest `at`; with no answer, the guess."""
-        dated = [(answer.at, answer) for answer in self.answers if answer.at is not None]
-        if dated and (newest := max(dated, key=lambda item: item[0])[1]) and newest.chose in self.options:
-            return Force(self.options[newest.chose], True, newest.chose, newest.note, newest.who != "human")
+        if (newest := self.newest) is not None and newest.chose in self.options:
+            return Force(self.options[newest.chose], by_answer=True, option=newest.chose, note=newest.note, delegated=newest.who != "human")
         if self.guess is None:
             return None
         chose, value = self.guess.fields.get(self.names.chose), self.guess.fields.get(self.names.value)
         if isinstance(chose, str):
-            return Force(self.options.get(chose, {}), False, chose)
-        return Force(value, False, None) if isinstance(value, dict) else None
+            return Force(self.options.get(chose, {}), by_answer=False, option=chose)
+        return Force(value, by_answer=False, option=None) if isinstance(value, dict) else None
 
     def sets_all(self) -> list[Sets]:
         """Every `sets` of the decision: its options' and the guess's."""
@@ -117,7 +122,8 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}
-        items = entry.fields.get(key) or []
+        given = entry.fields.get(key)
+        items: list[object] = given if isinstance(given, list) else []
         decision.answers += [_answer(snapshot, address, names, item) for item in items if isinstance(item, dict)]
         found.append(decision)
     return found
@@ -130,9 +136,15 @@ def _text(item: Mapping[str, object], name: str) -> str | None:
 
 def _answer(snapshot: Snapshot, decision: Address, names: Settling, item: Mapping[str, object]) -> Answer:
     who = "ai" if item.get(names.delegated) is not None else "human"  # computed: an answer with `delegated` is an agent's
-    return Answer(str(item.get(names.chose)), _text(item, names.said) or "", who, moment(item.get(names.at)),
-                  _text(item, names.where) or "", _text(item, names.note),
-                  resolve(snapshot, decision, item.get(names.delegated), decision.kind))
+    return Answer(
+        str(item.get(names.chose)),
+        _text(item, names.said) or "",
+        who,
+        moment(item.get(names.at)),
+        _text(item, names.where) or "",
+        _text(item, names.note),
+        resolve(snapshot, decision, item.get(names.delegated), decision.kind),
+    )
 
 
 def settles(decision: Decision) -> tuple[dict[str, set[str]], set[str]]:
@@ -174,10 +186,10 @@ def _finding(decision: Decision, problem: Problem, detail: str) -> Finding:
 def _uneven(decision: Decision) -> list[Finding]:
     """D2: every option names the same addresses and, where two give fields, the same fields."""
     named = [set(sets) for sets in decision.options.values()]
-    uneven = sorted(set.union(*named) - set.intersection(*named)) if named else []
+    uneven: list[str] = sorted(set.union(*named) - set.intersection(*named)) if named else []
     found = [_finding(decision, Problem.UNEVEN_OPTIONS, f"options name {uneven} unevenly")] if uneven else []
     for address in sorted(set.union(*named) if named else set()):
-        given = [set(sets[address]) for sets in decision.options.values() if isinstance(sets.get(address), dict)]
+        given = [set(value) for sets in decision.options.values() if isinstance(value := sets.get(address), dict)]
         if any(item != given[0] for item in given):
             found.append(_finding(decision, Problem.UNEVEN_OPTIONS, f"{address}: options give different fields"))
     return found
@@ -189,14 +201,20 @@ def _two_homes(found: list[Decision]) -> list[Finding]:
     for decision in found:
         fields, absent = settles(decision)
         for address in fields:
-            by_address.setdefault(address, {})[decision.address] = set(fields[address]) | ({None} if address in absent else set())
+            owned: set[str | None] = set(fields[address])
+            if address in absent:
+                owned.add(None)
+            by_address.setdefault(address, {})[decision.address] = owned
     problems: list[Finding] = []
     for address, owners in sorted(by_address.items()):
         for number, (one, names) in enumerate(owners.items()):
-            for other, more in list(owners.items())[number + 1:]:
+            for other, more in list(owners.items())[number + 1 :]:
                 if (names & more) or None in names or None in more:
-                    problems.append(_finding(next(item for item in found if item.address == other), Problem.TWO_HOMES,
-                                             f"{address} is also settled by {one}"))
+                    problems.append(
+                        _finding(
+                            next(item for item in found if item.address == other), Problem.TWO_HOMES, f"{address} is also settled by {one}"
+                        )
+                    )
     return problems
 
 
@@ -218,8 +236,11 @@ def _in_force(snapshot: Snapshot, decision: Decision) -> list[Finding]:
         elif isinstance(given, dict) and entry is None:
             problems.append(_finding(decision, Problem.NOT_IN_FORCE, f"{text} is absent but the option in force gives it fields"))
         elif isinstance(given, dict) and entry is not None:
-            problems += [_finding(decision, Problem.NOT_IN_FORCE, f"{text}.{name} is {entry.fields.get(name)!r}, in force: {value!r}")
-                         for name, value in given.items() if entry.fields.get(name) != value]
+            problems += [
+                _finding(decision, Problem.NOT_IN_FORCE, f"{text}.{name} is {entry.fields.get(name)!r}, in force: {value!r}")
+                for name, value in given.items()
+                if entry.fields.get(name) != value
+            ]
     return problems
 
 
@@ -229,9 +250,12 @@ def _delegation(found: list[Decision], decision: Decision, answer: Answer) -> li
         problems: list[str] = []
     else:
         given = next((d for d in found if d.address == answer.delegated), None)
-        newest = max((a for a in given.answers if a.at is not None), key=lambda a: a.at, default=None) if given else None
-        problems = [] if newest is not None and newest.who == "human" else [
-            "an agent's answer names in delegated the decision whose answer in force is the person's that let it decide"]
+        newest = given.newest if given else None
+        problems = (
+            []
+            if newest is not None and newest.who == "human"
+            else ["an agent's answer names in delegated the decision whose answer in force is the person's that let it decide"]
+        )
     return [_finding(decision, Problem.BAD_DELEGATION, detail) for detail in problems]
 
 
@@ -240,8 +264,12 @@ def check_decisions(snapshot: Snapshot, _source: Source) -> list[Finding]:
     found = decisions(snapshot)
     problems = _two_homes(found)
     for decision in found:
-        problems += [*_uneven(decision), *_times(decision), *_in_force(snapshot, decision),
-                     *(item for answer in decision.answers for item in _delegation(found, decision, answer))]
+        problems += [
+            *_uneven(decision),
+            *_times(decision),
+            *_in_force(snapshot, decision),
+            *(item for answer in decision.answers for item in _delegation(found, decision, answer)),
+        ]
         if not decision.answers and decision.guess is None:
             problems.append(_finding(decision, Problem.NO_GUESS, "a decision with no answer needs a guess"))
     return problems

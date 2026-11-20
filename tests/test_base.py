@@ -1,15 +1,15 @@
 """Checks against the base commit: two snapshots, the base and now."""
 
 import dataclasses
-import datetime
+import datetime as dt
 from collections.abc import Callable, Mapping
 
 from tests.conftest import GOOD, Kb
 
 from ogy.base import check_base, read_ledgers
-from ogy.ontology import Ontology
 from ogy.removed import Item, Ledger
 from ogy.snapshot import Snapshot, build
+lazy from ogy.ontology import Ontology
 
 type MakeKb = Callable[[Mapping[str, str | None] | None], Kb]
 
@@ -29,9 +29,9 @@ def snap(ontology: Ontology, changes: Mapping[str, str | None] | None = None) ->
     return build(ontology, {path: text for path, text in files.items() if text is not None})
 
 
-def removal(id: str) -> Item:
-    when = datetime.datetime(2026, 11, 18, tzinfo=datetime.UTC)
-    return Item(id, id.split("/")[-2], None, None, None, None, None, when, "a" * 40, "b" * 12, "v5", {})
+def removal(address: str) -> Item:
+    when = dt.datetime(2026, 11, 18, tzinfo=dt.UTC)
+    return Item(address, address.split("/")[-2], None, None, None, None, None, when, "a" * 40, "b" * 12, "v5", {})
 
 
 def kinds(base: Snapshot, snapshot: Snapshot, **ledgers: Ledger) -> set[tuple[str, str]]:
@@ -58,7 +58,8 @@ def test_id_removed_is_removal_work(ontology: Ontology) -> None:
 def test_removal_without_item(ontology: Ontology) -> None:
     base = snap(ontology, {"product/app/workflow/sign-in.yml": None})
     assert kinds(base, snap(ontology, {"product/app/workflow/sign-in.yml": None, "software/app/interface/sign-in-page.yml": None})) == {
-        ("removed-unrecorded", "software/app/interface/sign-in-page")}
+        ("removed-unrecorded", "software/app/interface/sign-in-page")
+    }
     # a recorded removal, and a part covered by its entity's item, are fine
     full, now = snap(ontology), snap(ontology, {"product/app/workflow/sign-in.yml": None, "software/app/interface/sign-in-page.yml": None})
     ledger = Ledger("product/app", 1, (removal("product/app/workflow/sign-in"), removal("software/app/interface/sign-in-page")))
@@ -77,9 +78,14 @@ def test_removed_item_may_not_change(ontology: Ontology) -> None:
 
 
 def test_read_ledgers_reads_removed_files(kb: MakeKb) -> None:
-    text = ("format: 1\nitems:\n  - {id: product/app/quantity/a, kind: quantity, parent: null, title: null, said: null, why: null,"
-            " replaced_by: null, at: '2026-11-18T09:12:00+01:00', last_seen: " + "a" * 40 + ", hash: " + "b" * 12
-            + ", ontology: v5, snapshot: {says: A}}\n")
+    text = (
+        "format: 1\nitems:\n  - {id: product/app/quantity/a, kind: quantity, parent: null, title: null, said: null, why: null,"
+        " replaced_by: null, at: '2026-11-18T09:12:00+01:00', last_seen: "
+        + "a" * 40
+        + ", hash: "
+        + "b" * 12
+        + ", ontology: v5, snapshot: {says: A}}\n"
+    )
     ledgers, problems = read_ledgers(kb({"product/app/removed.yml": text}).source)
     assert problems == []
     assert [item.id for item in ledgers["product/app"].items] == ["product/app/quantity/a"]

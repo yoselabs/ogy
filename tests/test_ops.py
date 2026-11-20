@@ -5,7 +5,7 @@ from collections.abc import Callable, Mapping
 from pathlib import Path
 
 import pytest
-from tests.conftest import Kb, commit, ogy
+from tests.conftest import Kb, commit, entry, ogy
 
 from ogy import cli, ops
 from ogy.model import Problem
@@ -25,15 +25,17 @@ def example(tmp_path: Path) -> list[str]:
     return ["--repo", str(tmp_path), "--rev", "."]
 
 
-def codes(kb: Kb, landing: bool = False) -> set[Problem]:
+def codes(kb: Kb, *, landing: bool = False) -> set[Problem]:
     return {problem for problem, _ in kb.findings(landing=landing)}
 
 
 def test_checks_are_registered_for_evidence_stored_state_and_one_sentence(kb: MakeKb) -> None:
     actor = "- {{id: {}, says: A person., nature: human{}}}\n"
-    changed = {"product/app/actors.yml": actor.format("member", ", src: [code:nowhere.py#f]") + actor.format("other",
-                                                                                                                   ", status: open")
-               + actor.format("third", ", \"why?\": x")}
+    changed = {
+        "product/app/actors.yml": actor.format("member", ", src: [code:nowhere.py#f]")
+        + actor.format("other", ", status: open")
+        + actor.format("third", ', "why?": x')
+    }
     assert {Problem.MISSING_CODE, Problem.STORED_STATE, Problem.BAD_KEY} <= codes(kb(changed))
     twice = {"product/app/actors.yml": actor.format("member", "") + actor.format("other", "")}
     assert Problem.DUPLICATE_SAYS in codes(kb(twice))
@@ -41,10 +43,17 @@ def test_checks_are_registered_for_evidence_stored_state_and_one_sentence(kb: Ma
 
 def test_decisions_terms_and_ledgers_are_registered(kb: MakeKb) -> None:
     decision = "question: Q?\noptions:\n  a: {label: A, sets: {product/app/quantity/fee: {is: 1}}}\n"
-    found = codes(kb({"product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
-                      "product/app/decision/q.yml": decision,
-                      "product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
-                      "product/app/removed.yml": "format: 1\n"}), landing=True)
+    found = codes(
+        kb(
+            {
+                "product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
+                "product/app/decision/q.yml": decision,
+                "product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
+                "product/app/removed.yml": "format: 1\n",
+            }
+        ),
+        landing=True,
+    )
     assert {Problem.NO_GUESS, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
 
 
@@ -59,28 +68,35 @@ def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
 
 def test_harm_is_read_from_the_kind_files(kb: MakeKb, ontology: Ontology) -> None:
     snapshot = kb(None).snapshot
-    assert harm(snapshot, snapshot.resolve("product/app/actor/member") or snapshot_error()) is None
+    assert harm(snapshot, entry(snapshot, "product/app/actor/member")) is None
     text = "kind: risky\nabout: x\nharm: [irreversible, tells-outside]\nshape: file\nlayers: [product]\nfields:\n  says: {}\n"
     kinds = parse_kinds({"kinds/risky.yml": text}, ontology.declared)
     risky = build(kinds, {"product/app/risky/x.yml": "says: x\n"})
     assert harm(risky, next(iter(risky.entries))) == "tells-outside"
 
 
-def snapshot_error() -> None:
-    raise AssertionError("missing entry")
-
-
 def test_glossary_and_kinds_print_from_the_data(kb: MakeKb) -> None:
-    root = kb({"product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
-               "product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
-               "software/app/glossary.yml": "- {id: page, word: page, says: What a member sees.}\n"}).repo()
+    root = kb(
+        {
+            "product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
+            "product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
+            "software/app/glossary.yml": "- {id: page, word: page, says: What a member sees.}\n",
+        }
+    ).repo()
     target = ["--repo", str(root), "--rev", "."]
     land = ["product/shared:", "  land: To finish.", "    avoid: merge"]
     code, whole = cli.run([*target, "glossary"])
-    assert code == cli.OK and whole[:whole.index("")] == [*land, "product/app:", "  fee: What a loan costs.", "software/app:",
-                                                          "  page: What a member sees."]
-    assert "  quantity: like an ISO 80000 quantity value: a number times a unit, decided once; unlike a measured reading or a " \
+    assert code == cli.OK and whole[: whole.index("")] == [
+        *land,
+        "product/app:",
+        "  fee: What a loan costs.",
+        "software/app:",
+        "  page: What a member sees.",
+    ]
+    assert (
+        "  quantity: like an ISO 80000 quantity value: a number times a unit, decided once; unlike a measured reading or a "
         "running count, which are attributes; a DDD value object" in whole
+    )
     assert cli.run([*target, "glossary", "software/app"]) == (cli.OK, [*land, "software/app:", "  page: What a member sees."])
     assert cli.run([*target, "glossary", "product/shared"]) == (cli.OK, land)
     assert cli.run([*target, "glossary", "app"])[0] == cli.NOT_FOUND  # an area is named with its layer
@@ -142,12 +158,12 @@ def test_remove_part_keeps_its_place_and_the_id_is_not_reused(repo: Path) -> Non
     code, _ = ogy(repo, "--rev", ".", "remove", "product/app/workflow/borrow/step/ask/choice/go", "--why", "not needed")
     assert code == cli.OK
     run = ops.run_find(ops.Target(repo, rev="."), [], parent="product/app/workflow/borrow/step/ask")
-    assert [row.address for row in run.value if row.state == "removed"] == [
-        "product/app/workflow/borrow/step/ask/choice/go"]
+    assert [row.address for row in run.value if row.state == "removed"] == ["product/app/workflow/borrow/step/ask/choice/go"]
     path = repo / "docs/kb/product/app/workflow/borrow.yml"
     path.write_text(path.read_text().replace("choices: {}", "choices: {go: {label: Again, then: done}}"))
     assert (Problem.ID_REUSED, "product/app/workflow/borrow/step/ask/choice/go") in {
-        (item.problem, str(item.address)) for item in ops.run_check(ops.Target(repo, rev=".")).value}
+        (item.problem, str(item.address)) for item in ops.run_check(ops.Target(repo, rev=".")).value
+    }
 
 
 def test_a_deletion_without_an_item_is_found_against_the_base(repo: Path) -> None:

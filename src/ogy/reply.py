@@ -23,18 +23,21 @@ refused and stays in the queue; the other items still apply."""
 import re
 from dataclasses import dataclass
 from string import ascii_uppercase
+from typing import TYPE_CHECKING
 
 from ogy import rounds
 from ogy.edit import Editor
 from ogy.kinds import NAME
 from ogy.model import Address
-from ogy.rounds import Round, Shown
 from ogy.settle import Decision, decisions
-from ogy.snapshot import Snapshot
 from ogy.status import delegated
-from ogy.target import Target
-from ogy.verdict import NotFound
-from ogy.writes import Clock, Said, WriteRefused, agree, answer, commit, current, files, said, stamp, utc_now
+from ogy.verdict import NotFoundError
+from ogy.writes import Clock, Said, WriteRefusedError, agree, answer, commit, current, files, said, stamp, utc_now
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.target import Target
+
+if TYPE_CHECKING:
+    from ogy.rounds import Round, Shown
 
 SPLIT = re.compile(r"\s*(?:\n|;|,(?=\s*(?:(?:yes|no|later|Q\d+)\b|\d+\s*:)))\s*", re.IGNORECASE)
 YES = re.compile(r"(?:yes(?:\s+(all|Q?\d+(?:[\s,]+Q?\d+)*))?|(decide))", re.IGNORECASE)
@@ -61,21 +64,21 @@ def _stale(target: Target, card: Shown) -> str | None:
 
 def _fresh(target: Target, card: Shown) -> None:
     if (why := _stale(target, card)) is not None:
-        raise WriteRefused([why])
+        raise WriteRefusedError([why])
 
 
-def _card(found: Round, label: str, entry: bool) -> Shown:
+def _card(found: Round, label: str, *, entry: bool) -> Shown:
     card = next((item for item in found.cards if item.label.upper() == label.upper()), None)
     if card is None or (card.kind in rounds.ENTRY_CARDS) is not entry:
-        raise WriteRefused([f"no {'card' if entry else 'question'} {label} in round {found.id}"])
+        raise WriteRefusedError([f"no {'card' if entry else 'question'} {label} in round {found.id}"])
     return card
 
 
 def _one(found: Round, label: str) -> Shown:
     """The card `2: <sentence>` or `no 2` acts on: one entry, never a parent's card of several."""
-    card = _card(found, label, True)
+    card = _card(found, label, entry=True)
     if len(card.members) > 1:
-        raise WriteRefused([f"card {label} lists {len(card.members)} entries: say which and in what words; the agent changes it"])
+        raise WriteRefusedError([f"card {label} lists {len(card.members)} entries: say which and in what words; the agent changes it"])
     if card.members:
         address, fingerprint = card.members[0]
         return card.model_copy(update={"address": address, "fingerprint": fingerprint})
@@ -87,7 +90,7 @@ def _sentence_field(target: Target, address: str) -> str:
     found = snapshot.resolve(address)
     kind = snapshot.kind_of(found) if found else None
     if kind is None or kind.sentence is None or not snapshot.ontology.carded(kind):
-        raise WriteRefused([f"{address} has no sentence to replace"])
+        raise WriteRefusedError([f"{address} has no sentence to replace"])
     return kind.sentence
 
 
@@ -96,7 +99,8 @@ def _change(target: Target, words: Said, card: Shown, sentence: str) -> None:
 
     def act(ed: Editor) -> None:
         address = ed.snapshot().resolve(card.address)
-        assert address is not None
+        if address is None:
+            raise WriteRefusedError([f"{card.address} is no longer an entry"])
         ed.update(address, {field: sentence.strip()})
         stamp(ed, words, current(ed.snapshot(), [address]))
 
@@ -118,7 +122,7 @@ def _question(snapshot: Snapshot, words: Said, card: Shown, field: str) -> tuple
     names = kind.settling if kind else None
     option, guess = (ontology.get(names.option), ontology.get(names.guess)) if names else (None, None)
     if kind is None or names is None or option is None or guess is None or not (kind.sentence and option.sentence):
-        raise WriteRefused(["the ontology has no settling kind with a question and options: nothing can ask"])
+        raise WriteRefusedError(["the ontology has no settling kind with a question and options: nothing can ask"])
 
     def choice(label: str, sets: object) -> dict[str, object]:
         return {option.sentence or "": label, names.sets: {card.address: sets}}
@@ -127,13 +131,15 @@ def _question(snapshot: Snapshot, words: Said, card: Shown, field: str) -> tuple
         kind.sentence: f"Is this still right: {card.shown}",
         names.context: f"The owner said no on {words.at[:10]} ({words.where}): {words.said}. Built as it is until answered.",
         option.key or "": {"keep": choice("Keep it as it is", {field: card.shown}), "drop": choice("Drop it", None)},
-        guess.key or "": {names.chose: "keep", names.why: "Built as it is until the owner answers."}}
+        guess.key or "": {names.chose: "keep", names.why: "Built as it is until the owner answers."},
+    }
 
 
 def _reconsider(target: Target, words: Said, card: Shown) -> Address:
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     subject = snapshot.resolve(card.address)
-    assert subject is not None
+    if subject is None:
+        raise WriteRefusedError([f"{card.address} is no longer an entry"])
     field = _sentence_field(target, card.address)
     layer = subject.layer or snapshot.ontology.layers[0]  # a term has no layer: its question is the owner's, in the first layer
     key = re.sub(r"[^a-z0-9]+", "-", (subject.key or subject.kind).lower()).strip("-")
@@ -160,23 +166,25 @@ def _heard(target: Target, card: Shown) -> tuple[str, str] | None:
 
 def _confirm(target: Target, found: Round, label: str, words: Said) -> str:
     """One yes to a "You said ... Read as B" card: the answer is B, by what the owner said earlier."""
-    card = _card(found, label, False)
+    card = _card(found, label, entry=False)
     _fresh(target, card)
     heard = _heard(target, card)
     if heard is None:
-        raise WriteRefused([f"{card.label} rests on nothing you said: choose an option ({card.label} b)"])
+        raise WriteRefusedError([f"{card.label} rests on nothing you said: choose an option ({card.label} b)"])
     answer(target, card.address, heard[0], Said(heard[1], words.where, words.at, words.who, words.note))
     return f"{card.address} answered: {heard[0]}"
 
 
 def _yes(target: Target, found: Round, words: Said, group: str | None) -> str:
     if not group and found.everything:
-        raise WriteRefused([f"round {found.id} was shown with --all: name the cards (yes 1 3), or reply to a round of 7"])
+        raise WriteRefusedError([f"round {found.id} was shown with --all: name the cards (yes 1 3), or reply to a round of 7"])
     labels = re.findall(r"Q?\d+", group, re.IGNORECASE) if group else [c.label for c in found.cards]
     wanted = [label for label in labels if label.upper().startswith("Q")]
     if not group:  # a bare yes confirms a "You said" reading, never a structural decision
-        wanted = [label for label in wanted if not _card(found, label, False).structure and _heard(target, _card(found, label, False))]
-    cards = [_card(found, label, True) for label in labels if not label.upper().startswith("Q")]
+        wanted = [
+            label for label in wanted if not _card(found, label, entry=False).structure and _heard(target, _card(found, label, entry=False))
+        ]
+    cards = [_card(found, label, entry=True) for label in labels if not label.upper().startswith("Q")]
     if not group:
         cards = [card for card in cards if card.kind in rounds.ENTRY_CARDS]
     for card in cards:
@@ -227,21 +235,21 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
     if fresh:
         done.append(f"agreed to {_agree(target, words, fresh)} sentence(s)")
     if not done:
-        raise WriteRefused(kept or [f"round {found.id} has nothing to accept"])
+        raise WriteRefusedError(kept or [f"round {found.id} has nothing to accept"])
     return "; ".join([*done, *(f"not done: {why}" for why in kept)])
 
 
 def _fill(target: Target, found: Round, number: str) -> str:
     """`Q1: <words>`: the owner answered a question that has no option; nothing is written, an agent writes the option."""
-    card = _card(found, f"Q{number}", False)
+    card = _card(found, f"Q{number}", entry=False)
     if card.options:
-        raise WriteRefused([f"{card.address} has options: choose one (Q{number} a)"])
+        raise WriteRefusedError([f"{card.address} has options: choose one (Q{number} a)"])
     _fresh(target, card)
     return f"{card.address} has no option yet: add one that says it (`put`), then `answer` it with a paraphrase"
 
 
 def _apply(target: Target, found: Round, words: Said, item: str) -> str:
-    """Do one item; the line says what happened. Raises WriteRefused."""
+    """Do one item; the line says what happened. Raises WriteRefusedError."""
     if item.lower() == "later":
         return "later: nothing changes"
     if match := YES.fullmatch(item):
@@ -257,31 +265,40 @@ def _apply(target: Target, found: Round, words: Said, item: str) -> str:
         _fresh(target, card)
         return f"{card.address} is now a question: {_reconsider(target, words, card)}"
     if match := CHOOSE.fullmatch(item):
-        card = _card(found, f"Q{match.group(1)}", False)
+        card = _card(found, f"Q{match.group(1)}", entry=False)
         _fresh(target, card)
         done = answer(target, card.address, _option(card, match.group(2)), words)
         return f"{done.decision} answered: {done.option}"
     if match := FILL.fullmatch(item):
         return _fill(target, found, match.group(1))
-    raise WriteRefused([f"{item!r} is none of: yes, yes all, yes 1 3, 2: <sentence>, no 4, Q1 b, Q1: <words>, later"])
+    raise WriteRefusedError([f"{item!r} is none of: yes, yes all, yes 1 3, 2: <sentence>, no 4, Q1 b, Q1: <words>, later"])
 
 
 def _round(target: Target, round_id: str | None) -> Round:
     found = rounds.load(target.repo, round_id)
     if found is None:
-        raise NotFound(f"no round {round_id}" if round_id else "no review round: run `ogy review` first")
+        raise NotFoundError(f"no round {round_id}" if round_id else "no review round: run `ogy review` first")
     return found
 
 
-def reply(target: Target, text: str, paraphrase: str, where: str, at: str | None = None, round_id: str | None = None,
-          now: Clock = utc_now, note: str | None = None) -> Replied:
+def reply(
+    target: Target,
+    text: str,
+    paraphrase: str,
+    where: str,
+    *,
+    at: str | None = None,
+    round_id: str | None = None,
+    now: Clock = utc_now,
+    note: str | None = None,
+) -> Replied:
     """Apply every item of `text` (a grammar line) to the round, each on its own; the lock is held. Each answer and agreement
     keeps `paraphrase`, `at`, `where` and `from: human`."""
     found = _round(target, round_id)
     items = [item for item in SPLIT.split(text.strip()) if item]
     if not items:
-        raise WriteRefused(["the reply is empty"])
-    words = said(paraphrase, where, at, now, "human", note)
+        raise WriteRefusedError(["the reply is empty"])
+    words = said(paraphrase, where, at, now, who="human", note=note)
     before = files(target)
     applied: list[str] = []
     refused: list[str] = []
@@ -289,7 +306,7 @@ def reply(target: Target, text: str, paraphrase: str, where: str, at: str | None
     for item in items:
         try:
             applied.append(f"{item}: {_apply(target, _rest(found, item, handled), words, item)}")
-        except WriteRefused as error:
+        except WriteRefusedError as error:
             refused.append(f"{item}: {'; '.join(error.reasons)}")
         handled |= _labels(item)
     return Replied(applied, refused, files(target) != before)

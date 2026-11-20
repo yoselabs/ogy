@@ -7,7 +7,7 @@ from pathlib import Path
 import any_yaml
 import pytest
 from git_porcelain import run_git
-from tests.conftest import IDENTITY, ogy
+from tests.conftest import IDENTITY, dig, ogy
 
 from ogy import built, cli, ops, writes
 from ogy.model import Address, parse_address
@@ -55,7 +55,8 @@ hunch: {picked: flat, grounds: Keep it flat.}
 """,
     "docs/kb/tech/shop/region.yml": "tells: The pages of the shop.\n",
     "docs/kb/tech/shop/screen/page.yml": (
-        "tells: The buying page.\nserves_stages: [business/shop/journey/buy/stage/pick]\nsource: ['py:app.py#buy']\n"),
+        "tells: The buying page.\nserves_stages: [business/shop/journey/buy/stage/pick]\nsource: ['py:app.py#buy']\n"
+    ),
 }
 
 
@@ -90,7 +91,7 @@ def read(repo: Path, rel: str) -> object:
 
 
 def test_the_toy_ontology_shares_no_name_with_the_software_one() -> None:
-    toy = named(str(TOY), Path("."))
+    toy = named(str(TOY), Path())
     assert _names(toy) & _names(packaged()) == set()
     assert toy.layers == ("business", "tech") and toy.roles.agreed == "accepted" and toy.declared.asked_alone == ("layout",)
 
@@ -98,8 +99,10 @@ def test_the_toy_ontology_shares_no_name_with_the_software_one() -> None:
 def test_check_and_the_glossary_read_the_toy_names(toy: Path) -> None:
     assert w(toy, "check")[0] == cli.OK
     code, lines = w(toy, "glossary")
-    assert code == cli.OK and lines[:2] == ["charter (every decision is judged against these):",
-                                            "  plain-words: A sentence says one thing in plain words."]
+    assert code == cli.OK and lines[:2] == [
+        "charter (every decision is judged against these):",
+        "  plain-words: A sentence says one thing in plain words.",
+    ]
     assert "    reasoning: Read once." in lines and "  basket: What a shopper holds before paying." in lines and "    shun: cart" in lines
 
 
@@ -136,7 +139,8 @@ def test_answer_writes_a_verdict_and_the_boss_accepts_what_it_gives(toy: Path) -
     ruling, norm = read(toy, f"{LIMIT}.yml"), read(toy, "business/shop/norm/limit.yml")
     assert isinstance(ruling, dict) and isinstance(norm, dict)
     assert [{key: item[key] for key in ("picked", "gist", "place")} for item in ruling["verdicts"]] == [
-        {"picked": "twenty", "gist": "Fine", "place": "ai:test/1"}]
+        {"picked": "twenty", "gist": "Fine", "place": "ai:test/1"}
+    ]
     assert norm["tells"] == "A basket holds at most twenty things." and set(norm["accepted"]) == {"moment", "place", "gist", "hash"}
 
 
@@ -165,8 +169,10 @@ def test_no_to_a_card_asks_a_ruling_in_the_toy_names(toy: Path) -> None:
     assert code == cli.OK and lines == ["no 1: business/shop/norm/receipt is now a question: business/shop/ruling/reconsider-receipt"]
     asked = read(toy, "business/shop/ruling/reconsider-receipt.yml")
     assert isinstance(asked, dict) and set(asked) == {"ask", "background", "picks", "hunch"}
-    assert asked["picks"]["keep"] == {"caption": "Keep it as it is",
-                                      "gives": {"business/shop/norm/receipt": {"tells": "A purchase prints a receipt."}}}
+    assert asked["picks"]["keep"] == {
+        "caption": "Keep it as it is",
+        "gives": {"business/shop/norm/receipt": {"tells": "A purchase prints a receipt."}},
+    }
     assert asked["hunch"] == {"picked": "keep", "grounds": "Built as it is until the owner answers."} and w(toy, "check")[0] == cli.OK
 
 
@@ -175,7 +181,8 @@ def test_remove_records_the_entry_in_its_ledger(toy: Path) -> None:
     assert code == cli.OK and not (toy / "docs/kb/tech/shop/screen/page.yml").exists()
     ledger = read(toy, "tech/shop/removed.yml")
     assert isinstance(ledger, dict) and [(item["id"], item["said"]) for item in ledger["items"]] == [
-        ("tech/shop/screen/page", "The buying page.")]
+        ("tech/shop/screen/page", "The buying page.")
+    ]
     code, lines = w(toy, "find", "page", "--removed")
     assert code == cli.OK and any("tech/shop/screen/page" in line for line in lines)
 
@@ -209,8 +216,11 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
         text = text.replace("kind: norm\n", "kind: canon\nwas: {kind: norm}\n")
         (folder / "kinds").mkdir(exist_ok=True)
         (folder / "kinds" / f"{name}.yml").write_text(text)
-    declared = (TOY / "ontology.yml").read_text().replace("  held_by: {type: links, to: [norm], note: true,",
-                                                         "  bound_by: {type: links, to: [canon], note: true,")
+    declared = (
+        (TOY / "ontology.yml")
+        .read_text()
+        .replace("  held_by: {type: links, to: [norm], note: true,", "  bound_by: {type: links, to: [canon], note: true,")
+    )
     (folder / "ontology.yml").write_text(declared.replace("roles:", "renamed: {held_by: bound_by}\nroles:"))
     journey = toy / "docs/kb/business/shop/journey/buy.yml"
     journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
@@ -238,7 +248,7 @@ def _held(norm: str = NORM, tells: str = "A basket holds at most ten things.", r
     texts["business/shop/journey/buy.yml"] = journey.replace("    moves:", branch + "    moves:")
     texts[f"{NORM}.yml"] = f"tells: {tells}\nmoney: true\n"
     texts["business/shop/norm/other.yml"] = "tells: Another norm.\n"
-    return build(named(str(TOY), Path(".")), texts)
+    return build(named(str(TOY), Path()), texts)
 
 
 def _at(snapshot: Snapshot, text: str) -> Address:
@@ -250,8 +260,10 @@ def _at(snapshot: Snapshot, text: str) -> Address:
 def test_a_content_input_makes_the_build_stale_and_an_address_input_only_on_a_relink() -> None:
     before, reworded, relinked = _held(), _held(tells="A basket holds at most twenty things."), _held("business/shop/norm/other")
     move, branch = f"{PICK}/move/go", f"{PICK}/branch/on"
+
     def hashes(snapshot: Snapshot, text: str) -> tuple[str, str]:
         return snapshot.fingerprint(_at(snapshot, text)), snapshot.build_hash(_at(snapshot, text))
+
     assert hashes(reworded, move)[0] == hashes(before, move)[0]  # the meaning holds: nothing goes back to the owner
     assert hashes(reworded, move)[1] != hashes(before, move)[1]  # content: the norm changed, the move is work
     assert hashes(reworded, branch) == hashes(before, branch)  # address: the norm's words are no input of the branch
@@ -273,8 +285,9 @@ def _folder(root: Path, kinds: dict[str, str], servers: str) -> Path:
     texts = {item.stem: item.read_text() for item in (TOY / "kinds").iterdir()} | kinds
     for name, text in texts.items():
         if text:
-            (root / "kinds" / f"{name}.yml").write_text(text.replace("servers: [screen]", f"servers: {servers}").replace(
-                "kinds: [screen]", f"kinds: {servers}"))
+            (root / "kinds" / f"{name}.yml").write_text(
+                text.replace("servers: [screen]", f"servers: {servers}").replace("kinds: [screen]", f"kinds: {servers}")
+            )
     return root
 
 
@@ -283,13 +296,15 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     screen = "".join(line for line in (TOY / "kinds/screen.yml").read_text().splitlines(keepends=True) if "nests" not in line)
     console = screen.replace("kind: screen", "kind: console").replace("  shows_moves:", "  typed_as: {}\n  shows_moves:")
     surface = "was: [{kind: screen}, {kind: console, renamed: {typed_as: typed}}]\n" + screen.replace(
-        "kind: screen", "kind: surface").replace("  shows_moves:", "  typed: {}\n  shows_moves:")
+        "kind: screen", "kind: surface"
+    ).replace("  shows_moves:", "  typed: {}\n  shows_moves:")
     two = _folder(tmp_path_factory.mktemp("toy-console"), {"console": console}, "[screen, console]")
     one = _folder(tmp_path_factory.mktemp("toy-merged"), {"screen": "", "surface": surface}, "[surface]")
     (toy / "ogy.yml").write_text(f"ontology: {two}\n")
     (toy / "docs/kb/tech/shop/console/till.yml").parent.mkdir(parents=True)
     (toy / "docs/kb/tech/shop/console/till.yml").write_text(
-        "tells: The till.\nserves_stages: [business/shop/journey/buy/stage/pick]\ntyped_as: buy\nsource: ['py:app.py#buy']\n")
+        "tells: The till.\nserves_stages: [business/shop/journey/buy/stage/pick]\ntyped_as: buy\nsource: ['py:app.py#buy']\n"
+    )
     (toy / "docs/kb/tech/shop/norm").mkdir()
     (toy / "docs/kb/tech/shop/norm/quick.yml").write_text("tells: Paying takes a minute.\nreason: [tech/shop/console/till]\n")
     old, served = Target(toy, ontology=str(two)), ("tech/shop/screen/page", "tech/shop/console/till")
@@ -314,7 +329,7 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     snapshot, work = now.read()[1], {item.address for item in ops.run_work(now).value}
     for text in ("tech/shop/surface/page", "tech/shop/surface/till"):
         at = parse_address(text, now.kinds())
-        assert at is not None and snapshot.entries[at].fields["accepted"]["hash"] == snapshot.fingerprint(at) and at not in work
+        assert at is not None and dig(snapshot.entries[at].fields, "accepted", "hash") == snapshot.fingerprint(at) and at not in work
     run_git(toy, *IDENTITY, "add", "-A")
     run_git(toy, *IDENTITY, "commit", "-qm", "merged")
     assert not ops.run_check(Target(toy, rev="HEAD", ontology=str(one)), base=base).value
@@ -323,10 +338,10 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
 def test_a_kind_gaining_an_input_field_makes_no_work_and_unsetting_an_input_does(tmp_path: Path) -> None:
     extra = "fields:\n  extra: {type: links, to: [norm], input: content}\n"
     stage = (TOY / "kinds" / "stage.yml").read_text().replace("fields:\n", extra, 1)
-    grown = named(str(_folder(tmp_path / "grown", {"stage": stage}, "[screen]")), Path("."))
+    grown = named(str(_folder(tmp_path / "grown", {"stage": stage}, "[screen]")), Path())
     before = _held()
     texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}
-    same, plain = build(grown, texts), build(named(str(TOY), Path(".")), texts)
+    same, plain = build(grown, texts), build(named(str(TOY), Path()), texts)
     assert same.build_hash(_at(same, PICK)) == plain.build_hash(_at(plain, PICK))  # a new, unset input adds nothing: no work
     move = f"{PICK}/move/go"
     assert before.build_hash(_at(before, move)) != plain.build_hash(_at(plain, move))  # set -> unset of `held_by` moves the hash

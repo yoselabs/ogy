@@ -1,25 +1,28 @@
 """Addresses, paths, parts and local keys."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import TYPE_CHECKING
 
 from tests.conftest import GOOD
 
 from ogy.layout import locate, path_for
 from ogy.model import Address, Problem, parse_address
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
 if TYPE_CHECKING:
     from conftest import Kb
 
-type Make = Callable[[dict[str, str | None] | None], Kb]
+type Make = Callable[[Mapping[str, str | None] | None], Kb]
 
 
 def test_entity_path_is_its_address(kb: Make, ontology: Ontology) -> None:
     snapshot = kb(None).snapshot
     address = Address("product", "app", (("workflow", "sign-in"),))
-    assert snapshot.entries[address].path == "product/app/workflow/sign-in.yml" == path_for(ontology.kinds["workflow"], address.home,
-                                                                                            "sign-in")
+    assert (
+        snapshot.entries[address].path
+        == "product/app/workflow/sign-in.yml"
+        == path_for(ontology.kinds["workflow"], address.home, "sign-in")
+    )
     assert str(address) == "product/app/workflow/sign-in" and address.home == "product/app"
 
 
@@ -39,8 +42,15 @@ def test_the_layer_level_cannot_be_skipped(kb: Make) -> None:
     """The ontology declares `<layer>/<area>/<kind>/<id>`; the area or the kind at the top, or an unknown layer, is `bad-path`."""
     value = "- {id: fee, says: The fee., is: 2, unit: EUR}\n"
     flow = GOOD["product/app/workflow/sign-in.yml"]
-    skipped = {"app/quantities.yml": value, "app/workflow/sign-in-2.yml": flow, "workflow/sign-in-3.yml": flow, "quantities.yml": value,
-               "tech/app/quantities.yml": value, "product/quantities.yml": value, "product/workflow/sign-in-4.yml": flow}
+    skipped = {
+        "app/quantities.yml": value,
+        "app/workflow/sign-in-2.yml": flow,
+        "workflow/sign-in-3.yml": flow,
+        "quantities.yml": value,
+        "tech/app/quantities.yml": value,
+        "product/quantities.yml": value,
+        "product/workflow/sign-in-4.yml": flow,
+    }
     found = kb(skipped).findings()
     assert {(problem, path) for problem, path in found if problem is Problem.BAD_PATH} == {(Problem.BAD_PATH, path) for path in skipped}
 
@@ -139,10 +149,20 @@ ends:
 
 
 def test_every_file_under_the_knowledge_base_is_accounted_for(kb: Make) -> None:
-    stray = ("README.md", "product/app/notes.txt", "product/app/data.json", "product/app/message/x.md", "glossary/notes.md",
-             "tools/x.yml", "product/removed.yml", "product/app/quantity/deep/er.yml", "glossary/removed.yml")
-    found = kb({**dict.fromkeys(stray, "x\n"), "product/app/removed.yml": "format: 1\nitems: []\n",
-                "built/anything.json": "{}\n"}).findings()
+    stray = (
+        "README.md",
+        "product/app/notes.txt",
+        "product/app/data.json",
+        "product/app/message/x.md",
+        "glossary/notes.md",
+        "tools/x.yml",
+        "product/removed.yml",
+        "product/app/quantity/deep/er.yml",
+        "glossary/removed.yml",
+    )
+    found = kb(
+        {**dict.fromkeys(stray, "x\n"), "product/app/removed.yml": "format: 1\nitems: []\n", "built/anything.json": "{}\n"}
+    ).findings()
     assert {path for problem, path in found if problem is Problem.BAD_PATH} == set(stray)
 
 
@@ -154,7 +174,14 @@ def test_an_area_entry_is_its_area_yml_and_its_id_is_the_folder(kb: Make, ontolo
 
 
 def test_an_area_folder_without_its_area_yml_is_missing_entry_and_a_fixed_folder_is_no_area(kb: Make) -> None:
-    found = kb({"product/app/area.yml": None, "software/loans/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
-                "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings()
+    found = kb(
+        {
+            "product/app/area.yml": None,
+            "software/loans/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n",
+            "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
+        }
+    ).findings()
     assert {item for item in found if item[0] is Problem.MISSING_ENTRY} == {
-        (Problem.MISSING_ENTRY, "product/app/area/app"), (Problem.MISSING_ENTRY, "software/loans/area/loans")}
+        (Problem.MISSING_ENTRY, "product/app/area/app"),
+        (Problem.MISSING_ENTRY, "software/loans/area/loans"),
+    }

@@ -3,10 +3,11 @@ value comes back to the owner."""
 
 from dataclasses import dataclass
 from importlib.resources import files
-from pathlib import Path
+from typing import override
+lazy from pathlib import Path
 
 import pytest
-from tests.conftest import commit
+from tests.conftest import address_of, commit, dig
 
 from ogy import built, ops, writes
 from ogy.model import Problem, parse_address
@@ -28,8 +29,11 @@ EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith("
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
     "quantity.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: per}\n")],
-    "effect.yml": [('  "on": {type: link, to: [transition, entity, attribute, actor, dependency], required: true}\n', ""),
-                   ("dropped: [value]", 'dropped: [value, "on"]'), *((line, "") for line in EFFECT_PAIRS)],
+    "effect.yml": [
+        ('  "on": {type: link, to: [transition, entity, attribute, actor, dependency], required: true}\n', ""),
+        ("dropped: [value]", 'dropped: [value, "on"]'),
+        *((line, "") for line in EFFECT_PAIRS),
+    ],
     "answer.yml": [("  note: {note: true}", "  hedge: {note: true}"), ("", "renamed: {note: hedge}\n")],
     "decision.yml": [("  note: note\n", "  note: hedge\n")],
     "timeout.yml": [("[is, unit]", "[is, per]")],
@@ -52,6 +56,7 @@ def changed(changes: dict[str, list[tuple[str, str]]] = CHANGES) -> Ontology:
 class Changed(Target):
     """The repository read with the changed kinds, as a newer ogy would ship them."""
 
+    @override
     def kinds(self) -> Ontology:
         return changed()
 
@@ -79,8 +84,9 @@ def before(repo: Path) -> str:
     ops.run_answer(target, ASKED, "two", "Two is fine", "ai:claude/1", note="for now")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
     for text in (FEE, GO, TIMEOUT):
-        built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
-                    built.Line(build_hash(target, text)))
+        built.stamp(
+            repo / "docs/kb", target.read()[1].entries[address_of(text, target.kinds())].path, text, built.Line(build_hash(target, text))
+        )
     assert not ops.run_check(target).value
     return commit(repo, "before the kind change")
 
@@ -97,9 +103,9 @@ def test_a_rename_keeps_agreements_and_built_lines_current(repo: Path, before: s
     done = ops.run_migrate(target).value
     assert f"renamed {FEE} unit to per" in done.lines()
     assert not ops.run_check(target).value
-    fee = target.read()[1].entries[parse_address(FEE, target.kinds())].fields
+    fee = target.read()[1].entries[address_of(FEE, target.kinds())].fields
     assert fee["per"] == "EUR" and "unit" not in fee
-    assert fee["agreed"]["hash"] == fingerprint(target, FEE)  # the owner's yes still holds
+    assert dig(fee, "agreed", "hash") == fingerprint(target, FEE)  # the owner's yes still holds
     work = {item.address: item.status for item in ops.run_work(target).value}
     assert FEE not in work and TIMEOUT not in work  # a rename is no work
     assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
@@ -110,9 +116,9 @@ def test_a_dropped_value_comes_back_to_the_owner(repo: Path, before: str) -> Non
     lines = ops.run_migrate(target).value.lines()
     assert f"dropped {GO} effects.on (it held 'product/app/actor/member'): the owner sees this entry as changed" in lines
     entries = target.read()[1].entries
-    go, lend = (entries[parse_address(text, target.kinds())].fields for text in (GO, LEND))
-    assert go["agreed"]["hash"] != fingerprint(target, GO)  # changed since the owner agreed
-    assert lend["agreed"]["hash"] == fingerprint(target, LEND)  # a changed row it performs is no change of its meaning
+    go, lend = (entries[address_of(text, target.kinds())].fields for text in (GO, LEND))
+    assert dig(go, "agreed", "hash") != fingerprint(target, GO)  # changed since the owner agreed
+    assert dig(lend, "agreed", "hash") == fingerprint(target, LEND)  # a changed row it performs is no change of its meaning
     assert {item.address: item.status for item in ops.run_work(target).value}[GO] is Status.CHANGED
 
 
@@ -130,10 +136,11 @@ def test_a_rename_names_a_field_of_the_kind() -> None:
 
 def test_migrate_strips_the_old_deps_of_a_built_line_and_keeps_it_current(repo: Path, before: str) -> None:
     target = Target(repo)
-    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(FEE, target.kinds())].path
+    path = repo / "docs/kb/built" / target.read()[1].entries[address_of(FEE, target.kinds())].path
     path.write_text(path.read_text().replace("covers:", f"deps: {{{LEND}: aaaaaaaaaaaa}}, covers:"))
     assert [(item.problem, item.path) for item in ops.run_check(target).value] == [
-        (Problem.NEEDS_MIGRATION, f"built/{path.relative_to(repo / 'docs/kb/built')}")]
+        (Problem.NEEDS_MIGRATION, f"built/{path.relative_to(repo / 'docs/kb/built')}")
+    ]
     assert f"kept the built line current: {FEE}" in ops.run_migrate(target).value.lines()
     assert "deps" not in path.read_text()
     assert not ops.run_check(target).value

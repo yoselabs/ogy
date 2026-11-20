@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from ogy.review import Header
+lazy from ogy.review import Header
 
 
 @dataclass(frozen=True)

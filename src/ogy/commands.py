@@ -1,129 +1,156 @@
 """What each command runs and prints: one `ogy.ops` call, then lines for a person or, with `wire`, a table or record for an agent."""
 
-import argparse
 import sys
-from collections.abc import Callable
 from pathlib import Path
+from typing import Protocol
+lazy import argparse
 
 from ogy import ops, put, render, wire
 from ogy.model import home_of
-from ogy.target import Target
+lazy from ogy.target import Target
 
 type Result = tuple[int, list[str]]
-type Handler = Callable[[Target, argparse.Namespace, bool], Result]
 
 
-def _check(target: Target, args: argparse.Namespace, agent: bool) -> Result:
-    done = ops.run_check(target, args.base, args.landing, args.area)
+class Handler(Protocol):
+    """One command: what it runs and prints; `agent` asks for tables and records instead of lines for a person."""
+
+    def __call__(self, target: Target, args: argparse.Namespace, /, *, agent: bool) -> Result: ...
+
+
+def _check(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
+    done = ops.run_check(target, args.base, landing=args.landing, area=args.area)
     if agent:  # a table stays a table; `status` carries the count
         return done.verdict, wire.findings(done.value)
     return done.verdict, [*render.render_findings(done.value), *render.waiting_line(ops.run_waiting(target, args.area))]
 
 
-def _status(target: Target, args: argparse.Namespace, agent: bool) -> Result:
-    done = ops.run_status(target, args.area, args.coverage)
+def _status(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
+    done = ops.run_status(target, args.area, with_coverage=args.coverage)
     return done.verdict, wire.status(done.value) if agent else render.render_status(done.value)
 
 
-def _show(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _show(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_show(target, args.address)
     return done.verdict, wire.show(done.value) if agent else render.render_show(done.value)
 
 
-def _find(target: Target, args: argparse.Namespace, agent: bool) -> Result:
-    done = ops.run_find(target, args.words, args.kind, args.area, "removed" if args.removed else args.state, args.parent, args.cites)
+def _find(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
+    done = ops.run_find(
+        target, args.words, args.kind, args.area, state="removed" if args.removed else args.state, parent=args.parent, cites=args.cites
+    )
     return done.verdict, wire.entries(done.value) if agent else render.render_found(done.value)
 
 
-def _anchors(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _anchors(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_anchors(target, args.file)
     return done.verdict, wire.anchors(done.value) if agent else render.render_anchors(done.value)
 
 
-def _impact(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _impact(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_impact(target, args.address)
     return done.verdict, wire.impact(done.value) if agent else render.render_impact(done.value)
 
 
-def _diagram(target: Target, args: argparse.Namespace, _: bool) -> Result:
+def _diagram(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_diagram(target, args.address)
     return done.verdict, done.value
 
 
-def _diff(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _diff(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_diff(target, args.before, args.after)
     return done.verdict, wire.diff(done.value) if agent else render.render_diff(done.value)
 
 
-def _work(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _work(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_work(target, args.area)
     return done.verdict, wire.work(done.value) if agent else render.render_work(done.value)
 
 
-def _review(target: Target, args: argparse.Namespace, _: bool) -> Result:
-    asked = ops.run_review(target, args.all, args.area, args.source, args.page)
+def _review(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    asked = ops.run_review(target, everything=args.all, area=args.area, source_of=args.source, page=args.page)
     return asked.verdict, render.render_review_md(asked.value) if args.md else render.render_review(asked.value)
 
 
-def _dropped(target: Target, _: argparse.Namespace, agent: bool) -> Result:
+def _dropped(target: Target, _: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_dropped(target)
     return done.verdict, wire.dropped(done.value) if agent else render.render_dropped(done.value)
 
 
-def _glossary(target: Target, args: argparse.Namespace, _: bool) -> Result:
+def _glossary(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_glossary(target, args.area)
     return done.verdict, done.value or ["no terms"]
 
 
-def _history(target: Target, args: argparse.Namespace, _: bool) -> Result:
+def _history(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_history(target, args.address, args.limit)
     return done.verdict, render.render_history(done.value)
 
 
-def _kinds(target: Target, args: argparse.Namespace, _: bool) -> Result:
-    done = ops.run_kinds(target, args.kind, args.readers, args.map)
+def _kinds(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    done = ops.run_kinds(target, args.kind, with_readers=args.readers, as_map=args.map)
     return done.verdict, done.value
 
 
-def _remove(target: Target, args: argparse.Namespace, _: bool) -> Result:
+def _remove(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_remove(target, args.address, args.why, args.to)
     home = home_of(done.value.id, target.kinds())
     return done.verdict, [f"removed {done.value.id} (fingerprint {done.value.hash}); recorded in {home}/removed.yml"]
 
 
-def _move(target: Target, args: argparse.Namespace, _: bool) -> Result:
+def _move(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_move(target, args.address, args.area)
     return done.verdict, [str(done.value)]
 
 
-def _migrate(target: Target, _: argparse.Namespace, __: bool) -> Result:
+def _migrate(target: Target, _: argparse.Namespace, **__: object) -> Result:
     done = ops.run_migrate(target)
     return done.verdict, done.value.lines()
 
 
-def _put(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _put(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     if args.file == "-" and agent:  # over MCP stdin is the protocol, not the caller's text
-        raise ops.WriteRefused(["--file - reads standard input, which an MCP tool cannot: pass the records"])
+        raise ops.WriteRefusedError(["--file - reads standard input, which an MCP tool cannot: pass the records"])
     texts = [*args.records, *([sys.stdin.read() if args.file == "-" else Path(args.file).read_text()] if args.file else [])]
     done = ops.run_put(target, put.read_records(texts), args.why)
     return done.verdict, [str(item) for item in done.value]
 
 
-def _answer(target: Target, args: argparse.Namespace, _: bool) -> Result:
-    done = ops.run_answer(target, args.decision, args.option, args.said, args.where, args.at, args.note, args.delegated)
-    return done.verdict, [f"{done.value.decision}: answered {done.value.option}", *(f"set {text}" for text in done.value.changed),
-                          *(f"removed {text}" for text in done.value.removed)]
+def _answer(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    done = ops.run_answer(target, args.decision, args.option, args.said, args.where, at=args.at, note=args.note, delegated=args.delegated)
+    return done.verdict, [
+        f"{done.value.decision}: answered {done.value.option}",
+        *(f"set {text}" for text in done.value.changed),
+        *(f"removed {text}" for text in done.value.removed),
+    ]
 
 
-def _reply(target: Target, args: argparse.Namespace, agent: bool) -> Result:
+def _reply(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     if agent and args.round is None:  # an agent names the round it means; only a person at a terminal may take the newest
-        raise ops.WriteRefused(["name the round: --round <id> (the id is printed by `review`)"])
-    done = ops.run_reply(target, args.text, args.said, args.where, args.at, args.round, note=args.note)
+        raise ops.WriteRefusedError(["name the round: --round <id> (the id is printed by `review`)"])
+    done = ops.run_reply(target, args.text, args.said, args.where, at=args.at, round_id=args.round, note=args.note)
     return done.verdict, [*done.value.applied, *(f"refused {line}" for line in done.value.refused)]
 
 
 HANDLERS: dict[str, Handler] = {
-    "check": _check, "anchors": _anchors, "status": _status, "show": _show, "find": _find, "impact": _impact, "diagram": _diagram,
-    "diff": _diff, "work": _work, "review": _review, "dropped": _dropped, "glossary": _glossary, "history": _history, "kinds": _kinds,
-    "remove": _remove, "move": _move, "migrate": _migrate, "put": _put, "answer": _answer, "reply": _reply,
+    "check": _check,
+    "anchors": _anchors,
+    "status": _status,
+    "show": _show,
+    "find": _find,
+    "impact": _impact,
+    "diagram": _diagram,
+    "diff": _diff,
+    "work": _work,
+    "review": _review,
+    "dropped": _dropped,
+    "glossary": _glossary,
+    "history": _history,
+    "kinds": _kinds,
+    "remove": _remove,
+    "move": _move,
+    "migrate": _migrate,
+    "put": _put,
+    "answer": _answer,
+    "reply": _reply,
 }

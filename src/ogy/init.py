@@ -8,7 +8,7 @@ ogy server in `.mcp.json` and Claude Code deny rules for editing the folder by h
 import json
 import shutil
 from dataclasses import dataclass
-from pathlib import Path
+lazy from pathlib import Path
 
 import any_yaml
 from atomic_io import atomic_write_text
@@ -21,7 +21,7 @@ from ogy.kinds import Shape
 from ogy.model import Address, parse_address
 from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
 from ogy.source import KB_DIR
-from ogy.verdict import Refusal
+from ogy.verdict import RefusalError
 
 START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
 HOOKS_DIR = ".githooks"
@@ -39,7 +39,7 @@ CHECKOUT = ["run", "--frozen", "--no-sync", "python", "-I", "-m", "ogy"]  # ogy'
 PUBLISHED = "uvx --from git+https://github.com/yoselabs/ogy ogy"
 
 
-class InitRefused(Refusal):
+class InitRefusedError(RefusalError):
     """A file ogy would change cannot be read, or the flags contradict `ogy.yml`."""
 
     prefix = "not set up: "
@@ -55,7 +55,8 @@ class Initialised:
 def _settings(repo: Path, ontology: str | None) -> str:
     held = config.read(repo).ontology
     if ontology is not None and held is not None and ontology != held:
-        raise InitRefused(f"{config.CONFIG_FILE} already says ontology: {held}, not {ontology}")
+        msg = f"{config.CONFIG_FILE} already says ontology: {held}, not {ontology}"
+        raise InitRefusedError(msg)
     return ontology or held or DEFAULT_ONTOLOGY
 
 
@@ -102,6 +103,8 @@ def block(repo: Path, ontology: Ontology, body: str) -> str:
 def _block(repo: Path, ontology: Ontology, rel: str, written: list[str]) -> None:
     path = repo / rel
     _put(repo, rel, block(repo, ontology, path.read_text() if path.exists() else ""), written)
+
+
 def _hook(repo: Path, written: list[str]) -> None:
     """The tracked pre-commit hook that runs `ogy check` on the staged tree, and `core.hooksPath` pointing at it."""
     rel = f"{HOOKS_DIR}/pre-commit"
@@ -123,9 +126,11 @@ def _json(repo: Path, rel: str) -> dict[str, object]:
     try:
         data = json.loads(path.read_text())
     except json.JSONDecodeError as error:
-        raise InitRefused(f"{rel} is not JSON ({error}); fix it and run again") from error
+        msg = f"{rel} is not JSON ({error}); fix it and run again"
+        raise InitRefusedError(msg) from error
     if not isinstance(data, dict):
-        raise InitRefused(f"{rel} is not a JSON object")
+        msg = f"{rel} is not a JSON object"
+        raise InitRefusedError(msg)
     return data
 
 
@@ -136,7 +141,8 @@ def _dump(data: dict[str, object]) -> str:
 def _mapping(data: dict[str, object], key: str, rel: str) -> dict[str, object]:
     found = data.setdefault(key, {})
     if not isinstance(found, dict):
-        raise InitRefused(f"{rel}: {key} is not an object")
+        msg = f"{rel}: {key} is not an object"
+        raise InitRefusedError(msg)
     return found
 
 
@@ -153,7 +159,8 @@ def _deny(repo: Path, written: list[str]) -> None:
     data = _json(repo, rel)
     deny = _mapping(data, "permissions", rel).setdefault("deny", [])
     if not isinstance(deny, list):
-        raise InitRefused(f"{rel}: permissions.deny is not a list")
+        msg = f"{rel}: permissions.deny is not a list"
+        raise InitRefusedError(msg)
     wide = f"/{KB_DIR}/**"
     folder = f"/{KB_DIR}/**/*.yml"  # the YAML only: a README beside it is for people to edit
     deny[:] = [rule for rule in deny if rule not in (f"Edit({wide})", f"Write({wide})")]  # what an earlier init wrote
@@ -162,7 +169,7 @@ def _deny(repo: Path, written: list[str]) -> None:
 
 
 def init(repo: Path, ontology: str | None = None) -> Initialised:
-    """Set `repo` up; run again to repair it. Refuses (InitRefused, OntologyError) before writing when it cannot go on."""
+    """Set `repo` up; run again to repair it. Refuses (InitRefusedError, OntologyError) before writing when it cannot go on."""
     name = _settings(repo, ontology)
     kinds = named(name, repo)
     written: list[str] = []
@@ -222,7 +229,7 @@ def doctor(repo: Path) -> list[str]:
     try:
         server = _mapping(_json(repo, ".mcp.json"), "mcpServers", ".mcp.json").get("ogy")
         deny = _mapping(_json(repo, ".claude/settings.json"), "permissions", ".claude/settings.json").get("deny")
-    except InitRefused as error:
+    except InitRefusedError as error:
         return [*lines, str(error)]
     if server is None:
         lines.append(".mcp.json has no ogy server: run `ogy init`")

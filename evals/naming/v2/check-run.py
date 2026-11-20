@@ -44,7 +44,7 @@ def main(paths: list[str]) -> int:
         found = problems(text)
         extra = sum(1 for line in text.splitlines() if line.strip() and not line.lstrip().startswith("|"))
         note = f" ({extra} lines outside the table)" if extra else ""
-        print(f"{name}: {'MALFORMED: ' + '; '.join(found) if found else 'ok'}{note}")
+        sys.stdout.write((f"{name}: {'MALFORMED: ' + '; '.join(found) if found else 'ok'}{note}") + "\n")
         bad += bool(found)
     return 1 if bad else 0
 

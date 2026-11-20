@@ -30,7 +30,7 @@ def main(runs_dir: Path, out_dir: Path, seed: int) -> None:
         rng.shuffle(group)
         groups.append(group)
     for group in groups:
-        print(" ".join(group))
+        sys.stdout.write((" ".join(group)) + "\n")
 
 
 if __name__ == "__main__":

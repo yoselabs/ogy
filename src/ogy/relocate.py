@@ -7,14 +7,14 @@ Git keeps the record, and `ogy check --base` tells the move from a loss (`ogy.mo
 
 from dataclasses import dataclass
 
-from ogy import near, removed
+from ogy import near, removed, removed_moves
 from ogy.edit import Editor
 from ogy.kinds import NAME, Shape
 from ogy.model import Address, Entry, parse_address
 from ogy.moves import Table, rehash, renamer, rewrite_fields
 from ogy.snapshot import Snapshot
-from ogy.target import Target
-from ogy.writes import WriteRefused, commit
+from ogy.writes import WriteRefusedError, commit
+lazy from ogy.target import Target
 
 
 @dataclass(frozen=True)
@@ -34,7 +34,7 @@ def _renamed(snapshot: Snapshot, address: Address, text: str) -> tuple[str, str,
     new = parse_address(text, snapshot.ontology)
     if new is None or new.parent() is not None or new.kind != address.kind:
         shapes = f"<area>, <layer>/<area> or <layer>/<area>/{address.kind}/<id>"
-        raise WriteRefused([f"{text!r} is no address of a {address.kind}: give {shapes}"])
+        raise WriteRefusedError([f"{text!r} is no address of a {address.kind}: give {shapes}"])
     return new.layer, new.area, new.key
 
 
@@ -46,22 +46,24 @@ def destination(snapshot: Snapshot, address: Address, text: str) -> Address:
     layer, area = renamed[:2] if renamed else (parts[0], parts[1]) if layered else (address.layer, parts[0])
     key = renamed[2] if renamed else address.key
     if address.parent() is not None:
-        raise WriteRefused([f"{address} is a part: it moves with its {address.parent()}"])
+        raise WriteRefusedError([f"{address} is a part: it moves with its {address.parent()}"])
     if kind.area is not None:
-        raise WriteRefused([f"{address.kind} lives only in the folder {kind.area}: it has no area to move to"])
+        raise WriteRefusedError([f"{address.kind} lives only in the folder {kind.area}: it has no area to move to"])
     if not address.layer:
-        raise WriteRefused([f"{address} is in a folder {address.kind} moved out of: run `ogy migrate` first"])
+        raise WriteRefusedError([f"{address} is in a folder {address.kind} moved out of: run `ogy migrate` first"])
     if kind.shape is Shape.SINGLE:
-        raise WriteRefused([f"{address.kind} is the entry of its area itself: it does not move"])
+        raise WriteRefusedError([f"{address.kind} is the entry of its area itself: it does not move"])
     if (not renamed and (len(parts) > 2 or (len(parts) == 2 and not layered))) or not NAME.match(area):
-        raise WriteRefused([f"{text!r} is no area: give <area> or <layer>/<area> (kebab-case, layers {list(snapshot.ontology.layers)})"])
+        raise WriteRefusedError(
+            [f"{text!r} is no area: give <area> or <layer>/<area> (kebab-case, layers {list(snapshot.ontology.layers)})"]
+        )
     if layer not in kind.layers:
-        raise WriteRefused([f"{address.kind} may live in the layers {list(kind.layers)}, not {layer}"])
+        raise WriteRefusedError([f"{address.kind} may live in the layers {list(kind.layers)}, not {layer}"])
     if area == (shared := snapshot.ontology.shared) and not kind.shared:
-        raise WriteRefused([f"the area {shared} holds only what two areas use; {address.kind} stays in the area that owns it"])
+        raise WriteRefusedError([f"the area {shared} holds only what two areas use; {address.kind} stays in the area that owns it"])
     new = Address(layer, area, ((address.kind, key),))
     if new == address:
-        raise WriteRefused([f"{address} is already {'there' if renamed else f'in {layer}/{area}'}"])
+        raise WriteRefusedError([f"{address} is already {'there' if renamed else f'in {layer}/{area}'}"])
     return new
 
 
@@ -79,8 +81,14 @@ def rename_all(ed: Editor, target: Target, before: Snapshot, table: Table) -> No
     rename = renamer(table)
     ontology = target.kinds()
     seen = ed.snapshot()  # moved, nothing renamed yet; the paths do not change below, so one read serves every update
-    after = Snapshot(ontology, {address: Entry(address, entry.path, rewrite_fields(ontology, seen.kind_of(address), entry.fields, rename))
-                                for address, entry in seen.entries.items()}, [])
+    after = Snapshot(
+        ontology,
+        {
+            address: Entry(address, entry.path, rewrite_fields(ontology, seen.kind_of(address), entry.fields, rename))
+            for address, entry in seen.entries.items()
+        },
+        [],
+    )
     back = renamer({new: old for old, new in table.items()})
     for address, entry in seen.entries.items():
         now = dict(after.entries[address].fields)
@@ -89,7 +97,7 @@ def rename_all(ed: Editor, target: Target, before: Snapshot, table: Table) -> No
             now[name] = rehash(before, after, was, address, agreed)
         if changes := {name: value for name, value in now.items() if value != entry.fields.get(name)}:
             ed.update(address, changes, snap=seen)
-    removed.follow(target.repo / target.kb, rename)
+    removed_moves.follow(target.repo / target.kb, rename)
 
 
 def move(target: Target, text: str, area: str) -> Moved:
@@ -98,10 +106,10 @@ def move(target: Target, text: str, area: str) -> Moved:
     snapshot = editor.snapshot()
     old = snapshot.resolve(text)
     if old is None:
-        raise WriteRefused([near.no_entry(snapshot, text)])
+        raise WriteRefusedError([near.no_entry(snapshot, text)])
     new = destination(snapshot, old, area)
     if reasons := _taken(target, snapshot, new):
-        raise WriteRefused(reasons)
+        raise WriteRefusedError(reasons)
 
     def act(ed: Editor) -> None:
         ed.relocate(old, new.home, new.key if new.key != old.key else "")

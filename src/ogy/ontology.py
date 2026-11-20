@@ -5,8 +5,8 @@ An ontology is named: a folder shipped in `ogy/ontologies`, or a folder on disk 
 
 from collections.abc import Mapping
 from importlib.resources import files
-from importlib.resources.abc import Traversable
-from pathlib import Path
+lazy from importlib.resources.abc import Traversable
+lazy from pathlib import Path
 
 import any_yaml
 from pydantic import ValidationError
@@ -15,7 +15,7 @@ from ogy import declared as declaring
 from ogy.declared import Declared, Roles
 from ogy.kindlint import problems
 from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind, Shape
-from ogy.verdict import Unusable
+from ogy.verdict import UnusableError
 
 DEFAULT_ONTOLOGY = "software"  # the shipped ontology a repository uses when neither a flag nor `ogy.yml` names one
 STARTS_FILE = "starts.yml"  # the entries `ogy init` starts a knowledge base with
@@ -23,7 +23,7 @@ AGENTS_FILE = "agents.md"  # the block `ogy init` writes into AGENTS.md: `{ogy}`
 type Record = Mapping[str, object]
 
 
-class OntologyError(Unusable):
+class OntologyError(UnusableError):
     """The kinds themselves are inconsistent, or no ontology has the name; nothing can be loaded against them."""
 
     prefix = "the kinds are inconsistent: "
@@ -151,7 +151,8 @@ def parse_kinds(texts: Mapping[str, str], declared: Declared, starts: tuple[Reco
         try:
             kinds[name] = Kind.model_validate(any_yaml.read(text))
         except ValidationError as error:
-            raise OntologyError(f"{path}: {error}") from error
+            msg = f"{path}: {error}"
+            raise OntologyError(msg) from error
     return Ontology(kinds, declared, starts, agents)
 
 
@@ -160,13 +161,15 @@ def parse_declared(text: str) -> Declared:
     try:
         return Declared.model_validate(any_yaml.read(text))
     except ValidationError as error:
-        raise OntologyError(f"{ONTOLOGY_FILE}: {error}") from error
+        msg = f"{ONTOLOGY_FILE}: {error}"
+        raise OntologyError(msg) from error
 
 
 def _starts(text: str) -> tuple[Record, ...]:
     records = any_yaml.load(text)
     if not isinstance(records, list) or not all(isinstance(item, dict) and isinstance(item.get("address"), str) for item in records):
-        raise OntologyError(f"{STARTS_FILE} is a list of records, each with an address")
+        msg = f"{STARTS_FILE} is a list of records, each with an address"
+        raise OntologyError(msg)
     return tuple(records)
 
 
@@ -174,7 +177,8 @@ def folder(root: Traversable, name: str) -> Ontology:
     """The ontology in the folder `root`: its `ontology.yml`, `kinds/` and, when there, `starts.yml` and `agents.md`."""
     kinds = root.joinpath(KINDS_DIR)
     if not kinds.is_dir() or not root.joinpath(ONTOLOGY_FILE).is_file():
-        raise OntologyError(f"no ontology named {name!r}: a folder with {ONTOLOGY_FILE} and {KINDS_DIR}/")
+        msg = f"no ontology named {name!r}: a folder with {ONTOLOGY_FILE} and {KINDS_DIR}/"
+        raise OntologyError(msg)
     texts = {f"{KINDS_DIR}/{item.name}": item.read_text() for item in kinds.iterdir() if item.name.endswith(".yml")}
     starts, agents = root.joinpath(STARTS_FILE), root.joinpath(AGENTS_FILE)
     records = _starts(starts.read_text()) if starts.is_file() else ()

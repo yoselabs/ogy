@@ -1,12 +1,16 @@
 """`context` and `impact`: what an entry is connected to, through typed links and parts."""
 
 from collections import deque
-from collections.abc import Callable, Iterable
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from ogy.links import link_items, resolve
-from ogy.model import Address, Entry
-from ogy.snapshot import Snapshot
+lazy from ogy.snapshot import Snapshot
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+    from ogy.model import Address, Entry
 
 PARENT = "of"  # the edge from a part to its parent
 

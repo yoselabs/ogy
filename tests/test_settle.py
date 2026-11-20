@@ -2,6 +2,8 @@
 
 from pathlib import Path
 
+from tests.conftest import entry
+
 from ogy.check import check
 from ogy.model import Problem
 from ogy.ontology import Ontology, packaged
@@ -94,16 +96,18 @@ def test_equal_at_is_an_error() -> None:
 
 
 def test_entry_must_equal_option_in_force() -> None:
-    assert problems(snap(decision(), values="- {id: fee, says: The fee., is: 1, unit: EUR}\n")) == {("not-in-force",
-                                                                                                     "product/app/decision/fee")}
+    assert problems(snap(decision(), values="- {id: fee, says: The fee., is: 1, unit: EUR}\n")) == {
+        ("not-in-force", "product/app/decision/fee")
+    }
 
 
 def test_absent_in_force_means_no_entry() -> None:
     no = decision("  no: {label: No, sets: {product/app/quantity/fee: null}}\n", "proposal: {chose: no, why: x}\n")
     assert problems(snap(no)) == {("not-in-force", "product/app/decision/fee")}
     assert problems(snap(no, values="- {id: wait, says: The wait., is: 3, unit: days}\n")) == set()
-    assert problems(snap(decision(), values="- {id: wait, says: The wait., is: 3, unit: days}\n")) == {("not-in-force",
-                                                                                                        "product/app/decision/fee")}
+    assert problems(snap(decision(), values="- {id: wait, says: The wait., is: 3, unit: days}\n")) == {
+        ("not-in-force", "product/app/decision/fee")
+    }
 
 
 def test_unanswered_decision_needs_a_guess() -> None:
@@ -112,9 +116,10 @@ def test_unanswered_decision_needs_a_guess() -> None:
 
 def test_an_answer_chooses_the_option_and_agrees_to_no_sentence() -> None:
     silent = snap(decision(answers=answer("2026-11-12T10:00:00+01:00", "two")))
-    assert problems(silent) == set() and status(silent, silent.resolve(FEE)) is Status.NOBODY
-    no = decision(OPTIONS + "  no: {label: No, sets: {product/app/quantity/fee: null}}\n",
-                  answers=answer("2026-11-12T10:00:00+01:00", "no"))
+    assert problems(silent) == set() and status(silent, entry(silent, FEE)) is Status.NOBODY
+    no = decision(
+        OPTIONS + "  no: {label: No, sets: {product/app/quantity/fee: null}}\n", answers=answer("2026-11-12T10:00:00+01:00", "no")
+    )
     assert problems(snap(no, values="- {id: wait, says: x, is: 3, unit: days}\n")) == set()
 
 
@@ -130,51 +135,50 @@ def agreed_kb(fingerprint: str | None = None) -> Snapshot:
 
 def test_status_question_waiting() -> None:
     snapshot = snap(decision())
-    assert status(snapshot, snapshot.resolve(FEE)) is Status.QUESTION
+    assert status(snapshot, entry(snapshot, FEE)) is Status.QUESTION
 
 
 def test_status_decided_by_you() -> None:
     snapshot = agreed_kb()
-    assert agreement(snapshot, snapshot.resolve(FEE)) is Agreement.AGREED
-    assert status(snapshot, snapshot.resolve(FEE)) is Status.BY_YOU
+    assert agreement(snapshot, entry(snapshot, FEE)) is Agreement.AGREED
+    assert status(snapshot, entry(snapshot, FEE)) is Status.BY_YOU
 
 
 def test_status_changed_since_agreed() -> None:
     snapshot = agreed_kb("000000000000")
-    assert agreement(snapshot, snapshot.resolve(FEE)) is Agreement.CHANGED
-    assert status(snapshot, snapshot.resolve(FEE)) is Status.CHANGED
+    assert agreement(snapshot, entry(snapshot, FEE)) is Agreement.CHANGED
+    assert status(snapshot, entry(snapshot, FEE)) is Status.CHANGED
     snapshot = agreed_kb()
-    assert status(snapshot, snapshot.resolve(FEE)) is Status.BY_YOU and evidence_findings(snapshot) == set()
+    assert status(snapshot, entry(snapshot, FEE)) is Status.BY_YOU and evidence_findings(snapshot) == set()
 
 
 def test_status_decided_by_ai() -> None:
     snapshot = snap()
-    assert status(snapshot, snapshot.resolve(FEE)) is Status.NOBODY and label(snapshot, snapshot.resolve(FEE)) is Label.AI
+    assert status(snapshot, entry(snapshot, FEE)) is Status.NOBODY and label(snapshot, entry(snapshot, FEE)) is Label.AI
 
 
 def test_label_follows_src() -> None:
     def labelled(src: str) -> Label:
         values = f"- {{id: fee, says: The fee., is: 2, unit: EUR, src: {src}}}\n"
         snapshot = snap(values=values)
-        return label(snapshot, snapshot.resolve(FEE))
+        return label(snapshot, entry(snapshot, FEE))
 
     answered = snap(decision(answers=answer("2026-11-12T10:00:00+01:00", "two")))
-    assert label(answered, answered.resolve(FEE)) is Label.WORDS
-    assert labelled("[\"code:src/a.py#f\", \"doc:docs/a.md#x\"]") is Label.DOCS
-    assert labelled("[\"code:src/a.py#f\"]") is Label.CODE
+    assert label(answered, entry(answered, FEE)) is Label.WORDS
+    assert labelled('["code:src/a.py#f", "doc:docs/a.md#x"]') is Label.DOCS
+    assert labelled('["code:src/a.py#f"]') is Label.CODE
     assert labelled("[]") is Label.AI
 
 
 def test_an_answered_entry_names_the_choice_and_its_code_source() -> None:
-    values = "- {id: fee, says: The fee., is: 2, unit: EUR, src: [\"code:src/a.py#f\"]}\n"
+    values = '- {id: fee, says: The fee., is: 2, unit: EUR, src: ["code:src/a.py#f"]}\n'
     snapshot = snap(decision(answers=answer("2026-11-12T10:00:00+01:00", "two")), values=values)
-    shown = evidence(snapshot, snapshot.resolve(FEE))
+    shown = evidence(snapshot, entry(snapshot, FEE))
     assert shown == "You chose two in product/app/decision/fee; from code: code:src/a.py#f"
 
 
 def test_only_ai_decided_entries_are_cards() -> None:
-    values = ("- {id: fee, says: The fee., is: 2, unit: EUR, src: [\"code:src/a.py#f\"]}\n"
-              "- {id: wait, says: The wait., is: 3, unit: days}\n")
+    values = '- {id: fee, says: The fee., is: 2, unit: EUR, src: ["code:src/a.py#f"]}\n- {id: wait, says: The wait., is: 3, unit: days}\n'
     cards = queue(snap(values=values))
     assert [(card.kind, str(card.address)) for card in cards if card.address.kind == "quantity"] == [("yes", "product/app/quantity/wait")]
     assert "product/app/actor/member" in {str(card.address) for card in cards}
@@ -222,8 +226,10 @@ def test_a_guess_that_rests_on_the_owner_keeps_a_paraphrase() -> None:
 
 
 def test_an_agent_answers_only_under_a_persons_answer() -> None:
-    gave = ("question: Who decides the fee?\noptions:\n  agent: {label: The agent, sets: {product/app/quantity/wait: {is: 3}}}\n"
-            "proposal: {chose: agent, why: x}\n")
+    gave = (
+        "question: Who decides the fee?\noptions:\n  agent: {label: The agent, sets: {product/app/quantity/wait: {is: 3}}}\n"
+        "proposal: {chose: agent, why: x}\n"
+    )
     person = {"product/app/decision/fees-delegated.yml": gave + "answers:\n" + answer("2026-11-11T10:00:00+01:00", "agent")}
     nobody = {"product/app/decision/fees-delegated.yml": gave}
     delegated = ", delegated: product/app/decision/fees-delegated"
@@ -235,8 +241,11 @@ def test_an_agent_answers_only_under_a_persons_answer() -> None:
 
 def evidence_findings(snapshot: Snapshot) -> set[tuple[str, str]]:
     """No-evidence findings: a person's yes is evidence of its own."""
-    return {(str(i.problem), str(i.address)) for i in check(snapshot, WorktreeSource(V5, "")) if i.problem is Problem.NO_EVIDENCE
-            and str(i.address) == FEE}
+    return {
+        (str(i.problem), str(i.address))
+        for i in check(snapshot, WorktreeSource(V5, ""))
+        if i.problem is Problem.NO_EVIDENCE and str(i.address) == FEE
+    }
 
 
 def test_a_question_card_reads_alone_with_why_and_what_each_option_makes_true() -> None:
@@ -245,5 +254,4 @@ def test_a_question_card_reads_alone_with_why_and_what_each_option_makes_true() 
     body[path] = body[path].replace("question: How much?\n", "question: How much?\ncontext: Members asked for a lower fee.\n")
     card = queue(snap(body))[0]
     assert card.context == "Members asked for a lower fee."
-    assert dict(zip((key for key, _ in card.options), card.then, strict=True)) == {
-        "two": (f"{FEE}: is = 2",), "one": (f"{FEE}: is = 1",)}
+    assert dict(zip((key for key, _ in card.options), card.then, strict=True)) == {"two": (f"{FEE}: is = 2",), "one": (f"{FEE}: is = 1",)}

@@ -1,13 +1,16 @@
 """`requires:` of a kind, checked on one entry or on one item of a `holds: list` part (an effect): its condition, then the
 field it needs or the kinds it reaches along a link path (see `paths`)."""
 
-from collections.abc import Callable, Mapping
 from functools import partial
+from typing import TYPE_CHECKING
 
 from ogy.kinds import Holds, Requirement
 from ogy.links import LinkItem, resolve
 from ogy.model import Address, link_values
-from ogy.snapshot import Snapshot
+lazy from ogy.snapshot import Snapshot
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
 
 
 def applies(need: Requirement, fields: Mapping[str, object], has_part: Callable[[str], bool]) -> bool:
@@ -34,13 +37,18 @@ def _reached(snapshot: Snapshot, path: tuple[str, ...], origin: Address, fields:
         return snapshot.links.walk(origin, path)[0]
     first, rest = path[0], path[1:]
     spec = snapshot.ontology.kinds[item].fields.get(first)
-    targets = [resolve(snapshot.ontology, snapshot.entries, origin, LinkItem(first, text, spec.to)).target
-               for text in (link_values(fields.get(first)) if spec is not None else ())]
+    if spec is None:
+        return set()
+    targets = [
+        resolve(snapshot.ontology, snapshot.entries, origin, LinkItem(first, text, spec.to)).target
+        for text in link_values(fields.get(first))
+    ]
     return {reached for target in targets if target is not None for reached in snapshot.links.walk(target, rest)[0]}
 
 
-def satisfied(snapshot: Snapshot, need: Requirement, kind: str, origin: Address, fields: Mapping[str, object],
-              item: bool = False) -> bool:
+def satisfied(
+    snapshot: Snapshot, need: Requirement, kind: str, origin: Address, fields: Mapping[str, object], *, item: bool = False
+) -> bool:
     """Whether the entry (or the item of kind `kind` held by `origin`) meets what the requirement asks."""
     if need.needs_field is not None:
         return fields.get(need.needs_field) is not None
@@ -58,9 +66,12 @@ def has_part(snapshot: Snapshot, address: Address, kind: str) -> bool:
     return bool(snapshot.links.parts(address, kind))
 
 
-def unmet(snapshot: Snapshot, address: Address, work: bool) -> list[Requirement]:
+def unmet(snapshot: Snapshot, address: Address, *, work: bool) -> list[Requirement]:
     """The requirements of the entry's kind it does not meet: the faults (`work` False) or the work left (`work` True)."""
     kind, fields = snapshot.kind_of(address), snapshot.entries[address].fields
     held = partial(has_part, snapshot, address)
-    return [need for need in kind.requires if need.work is work and applies(need, fields, held)
-            and not satisfied(snapshot, need, kind.kind, address, fields)]
+    return [
+        need
+        for need in kind.requires
+        if need.work is work and applies(need, fields, held) and not satisfied(snapshot, need, kind.kind, address, fields)
+    ]

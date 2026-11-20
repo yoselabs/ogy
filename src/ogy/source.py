@@ -1,12 +1,12 @@
 """Read a knowledge base from a Git commit (git-porcelain: one tree listing, one batch read) or from the worktree, counting files read."""
 
-from collections.abc import Iterable
-from pathlib import Path
 from typing import Protocol
+lazy from collections.abc import Iterable
+lazy from pathlib import Path
 
 from git_porcelain import GitError, MissingRevision, RealRepo, Tree, worktree_tree
 
-from ogy.verdict import MissingTarget
+from ogy.verdict import MissingTargetError
 
 WORKTREE = "."
 KB_DIR = "docs/kb"  # where the knowledge base lives in every repository
@@ -28,7 +28,7 @@ class Source(Protocol):
         """`{kb-relative path: blob id}` for every file under the knowledge base."""
         ...
 
-    def read(self, paths: Iterable[str]) -> dict[str, str]:
+    def read(self, paths: Iterable[str], /) -> dict[str, str]:
         """The text of knowledge-base files; each one read counts once."""
         ...
 
@@ -55,6 +55,10 @@ class _TreeSource:
         self.reads = 0
         self._kb = tree
         self._texts: dict[str, str] = {}
+
+    @property
+    def present(self) -> bool:
+        return self._kb is not None
 
     def listing(self) -> dict[str, str]:
         return {} if self._kb is None else {path: str(sha) for path, (_, sha) in self._kb.files.items()}
@@ -118,17 +122,20 @@ class WorktreeSource(_TreeSource):
         return target.read_text()
 
 
-def open_source(repo: Path, rev: str, kb: str, required: bool = True) -> Source:
-    """A commit's snapshot, or the worktree for `.`. Refuses (MissingTarget) an unknown commit, and, when `required`, a
+def open_source(repo: Path, rev: str, kb: str, *, required: bool = True) -> Source:
+    """A commit's snapshot, or the worktree for `.`. Refuses (MissingTargetError) an unknown commit, and, when `required`, a
     knowledge-base folder that is not there: an empty answer for a typo would read as a green check."""
     try:
-        found: _TreeSource = WorktreeSource(repo, kb) if rev == WORKTREE else GitSource(repo, rev, kb)
+        found: GitSource | WorktreeSource = WorktreeSource(repo, kb) if rev == WORKTREE else GitSource(repo, rev, kb)
     except MissingRevision as error:
-        raise MissingTarget(f"no revision {rev!r} in {repo}: name a commit, or . for the worktree") from error
+        msg = f"no revision {rev!r} in {repo}: name a commit, or . for the worktree"
+        raise MissingTargetError(msg) from error
     except GitError as error:
-        raise MissingTarget(f"{repo} cannot be read at {rev!r}: {str(error).splitlines()[0]}") from error
-    if required and found._kb is None:
+        msg = f"{repo} cannot be read at {rev!r}: {str(error).splitlines()[0]}"
+        raise MissingTargetError(msg) from error
+    if required and not found.present:
         where = "the worktree" if rev == WORKTREE else f"revision {rev}"
         hint = "" if rev == WORKTREE else "; --rev . reads the worktree"
-        raise MissingTarget(f"no knowledge-base folder {kb or '.'}/ in {where}{hint}")
+        msg = f"no knowledge-base folder {kb or '.'}/ in {where}{hint}"
+        raise MissingTargetError(msg)
     return found

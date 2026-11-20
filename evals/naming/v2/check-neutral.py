@@ -20,21 +20,131 @@ from pathlib import Path
 
 ALLOWED = {"of", "is", "at", "on", "when", "then", "for", "do", "after", "from", "to"}
 STOP = {
-    "a", "an", "the", "and", "or", "but", "not", "no", "nor", "of", "is", "are", "was", "be", "been", "it", "its", "this", "that",
-    "these", "those", "to", "from", "in", "on", "at", "by", "for", "with", "without", "as", "so", "than", "then", "when", "which",
-    "who", "whose", "what", "where", "how", "why", "we", "us", "our", "you", "your", "they", "their", "them", "he", "she", "his",
-    "her", "i", "me", "my", "one", "two", "three", "any", "all", "each", "every", "some", "other", "others", "more", "most", "less",
-    "only", "also", "never", "ever", "always", "can", "may", "must", "will", "would", "should", "could", "do", "does", "did", "done",
-    "has", "have", "had", "there", "here", "up", "down", "out", "over", "under", "into", "between", "before", "after", "once",
-    "again", "per", "if", "else", "until", "while", "because", "about", "against", "own", "same", "such", "just", "yet", "still",
-    "like", "unlike"
+    "a",
+    "an",
+    "the",
+    "and",
+    "or",
+    "but",
+    "not",
+    "no",
+    "nor",
+    "of",
+    "is",
+    "are",
+    "was",
+    "be",
+    "been",
+    "it",
+    "its",
+    "this",
+    "that",
+    "these",
+    "those",
+    "to",
+    "from",
+    "in",
+    "on",
+    "at",
+    "by",
+    "for",
+    "with",
+    "without",
+    "as",
+    "so",
+    "than",
+    "then",
+    "when",
+    "which",
+    "who",
+    "whose",
+    "what",
+    "where",
+    "how",
+    "why",
+    "we",
+    "us",
+    "our",
+    "you",
+    "your",
+    "they",
+    "their",
+    "them",
+    "he",
+    "she",
+    "his",
+    "her",
+    "i",
+    "me",
+    "my",
+    "one",
+    "two",
+    "three",
+    "any",
+    "all",
+    "each",
+    "every",
+    "some",
+    "other",
+    "others",
+    "more",
+    "most",
+    "less",
+    "only",
+    "also",
+    "never",
+    "ever",
+    "always",
+    "can",
+    "may",
+    "must",
+    "will",
+    "would",
+    "should",
+    "could",
+    "do",
+    "does",
+    "did",
+    "done",
+    "has",
+    "have",
+    "had",
+    "there",
+    "here",
+    "up",
+    "down",
+    "out",
+    "over",
+    "under",
+    "into",
+    "between",
+    "before",
+    "after",
+    "once",
+    "again",
+    "per",
+    "if",
+    "else",
+    "until",
+    "while",
+    "because",
+    "about",
+    "against",
+    "own",
+    "same",
+    "such",
+    "just",
+    "yet",
+    "still",
+    "like",
+    "unlike",
 }
 HERE = Path(__file__).resolve().parent
 
 
 def forms(word: str) -> set[str]:
     """The word and its plain inflections: plural, past, -ing, with a dropped e or a doubled last letter."""
-    base = word[:-1] if word.endswith("e") else word
+    base = word.removesuffix("e")
     out = {word, word + "s", word + "es", word + "d", base + "ed", base + "ing", word + "ing"}
     out |= {word + word[-1] + "ed", word + word[-1] + "ing"}
     if word.endswith("y"):
@@ -87,15 +197,16 @@ def main() -> int:
     fact_words = set(words(re.sub(r"`[^`]*`", " ", facts)))
     name_hits = sorted(f"{w} ({banned[w]})" if w != banned[w] else w for w in fact_words if w in banned)
     line_hits = sorted(w for w in fact_words if w in only and w not in banned)
-    print(f"arms read: {' '.join(p.stem for p in inputs) or 'none'}; names checked: {len(names)}; "
-          f"arm-only words: {len(arm_only)}")
+    sys.stdout.write(
+        f"arms read: {' '.join(p.stem for p in inputs) or 'none'}; names checked: {len(names)}; arm-only words: {len(arm_only)}\n"
+    )
     if name_hits:
-        print("names used in the facts: " + ", ".join(name_hits))
+        sys.stdout.write(("names used in the facts: " + ", ".join(name_hits)) + "\n")
     if line_hits:
-        print("arm-only words used in the facts: " + ", ".join(line_hits))
+        sys.stdout.write(("arm-only words used in the facts: " + ", ".join(line_hits)) + "\n")
     if name_hits or line_hits:
         return 1
-    print("facts are neutral")
+    sys.stdout.write(("facts are neutral") + "\n")
     return 0
 
 

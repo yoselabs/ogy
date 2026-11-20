@@ -5,8 +5,8 @@ Stored-state and `?` keys in entries (S2, S3) are found where fields are read, i
 
 from ogy import built
 from ogy.model import Address, Finding, Problem
-from ogy.snapshot import Snapshot
-from ogy.source import Source
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
 
 
 def _twice(snapshot: Snapshot) -> list[Finding]:
@@ -39,12 +39,12 @@ def _leads_back(snapshot: Snapshot, start: Address, field: str) -> bool:
 
 def _cycles(snapshot: Snapshot) -> list[Finding]:
     """An entry a link field its kind declares `acyclic` leads back to, by that field: a card that includes itself."""
-    found: list[Finding] = []
-    for address, entry in snapshot.entries.items():
-        for field in snapshot.kind_of(address).acyclic:
-            if _leads_back(snapshot, address, field):
-                found.append(Finding(Problem.LINK_CYCLE, entry.path, f"{field} leads back to this entry", address))
-    return found
+    return [
+        Finding(Problem.LINK_CYCLE, entry.path, f"{field} leads back to this entry", address)
+        for address, entry in snapshot.entries.items()
+        for field in snapshot.kind_of(address).acyclic
+        if _leads_back(snapshot, address, field)
+    ]
 
 
 def check_lints(snapshot: Snapshot, source: Source) -> list[Finding]:
