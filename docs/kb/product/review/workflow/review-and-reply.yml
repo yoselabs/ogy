@@ -15,10 +15,10 @@ steps:
         - do: create
           on: product/review/entity/review-round
     agreed:
-      at: '2026-11-19T18:56:21+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
-      hash: 9d77d36e93ef
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 86a1a87ac257
   reply:
     says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase.
     actor: product/shared/actor/owner
@@ -54,10 +54,10 @@ steps:
           - product/review/entity/review-round/attribute/everything
         then: refused
     agreed:
-      at: '2026-11-19T18:56:21+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
-      hash: 29b256827549
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 6a8ea61c9761
 ends:
   applied:
     result: success

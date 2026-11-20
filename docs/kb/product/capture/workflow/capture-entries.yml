@@ -56,10 +56,10 @@ steps:
         - do: write
           on: product/capture/entity/entry
     agreed:
-      at: '2026-11-19T18:04:45+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: Agreed to the seven capture and hand-over sentences
-      hash: 45eb70a58cf2
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 5d6a60604f25
 ends:
   written:
     result: success

@@ -39,10 +39,10 @@ steps:
         - do: transition
           on: product/review/entity/decision/transition/answer
     agreed:
-      at: '2026-11-19T19:12:53+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to the reworded store-owner-words, the trimmed decision entity and the review round'
-      hash: c4a969674d24
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 78cdbd7723e6
 ends:
   stored:
     result: success

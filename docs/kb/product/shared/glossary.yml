@@ -6,10 +6,10 @@
   - role
   - user
   agreed:
-    at: '2026-11-19T20:31:06+01:00'
+    at: '2026-11-20T20:52:40+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: e0e105851d2f
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: bb709399fd5d
 - id: address
   word: address
   says: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
@@ -76,10 +76,10 @@
   - settles
   - ?open
   agreed:
-    at: '2026-11-19T20:31:30+01:00'
+    at: '2026-11-20T20:52:40+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: f0f45bda213e
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: 76f404306ba2
 - id: entry
   word: entry
   says: One item of a kind with a permanent id; one file may hold many.
@@ -194,10 +194,10 @@
   word: read-back
   says: Entries played back as said, concluded, proposed; neither a summary nor a review round.
   agreed:
-    at: '2026-11-19T20:32:19+01:00'
+    at: '2026-11-20T20:52:40+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: 823fb37341e6
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: c8a52e7c1550
 - id: removed-ledger
   word: removed ledger
   says: "An area's append-only removed.yml: each removed entry's snapshot; its id is never reused."
@@ -259,13 +259,18 @@
   - assumed
   - ?assumed
   agreed:
-    at: '2026-11-19T20:31:53+01:00'
+    at: '2026-11-20T20:52:40+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: a288ca325260
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: c6325ce685f2
 - id: no-answer-path
   word: no-answer path
   says: What a row that tells an outside system does when no answer comes.
   avoid:
   - unknown result
   - unknown end
+  agreed:
+    at: '2026-11-20T20:52:40+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: 3368e90015bf

@@ -25,17 +25,17 @@ steps:
       otherwise:
         then: set-up
     agreed:
-      at: '2026-11-19T19:50:03+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: d5ff27d8e918
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 69d699d40fbb
   report:
     says: ogy lists what is not set up and writes nothing.
     agreed:
-      at: '2026-11-19T19:50:03+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: 6fa2ddbd04b6
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 5a5fc5af624d
     cases:
       otherwise:
         then: reported

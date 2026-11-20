@@ -9,3 +9,8 @@ options:
 proposal:
   chose: work
   why: 'A capability is named before its workflows, so until one realizes it the product does not yet do it: work, never a finding, as unrealized is for a missing goal.'
+answers:
+- chose: work
+  said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+  at: '2026-11-20T20:52:40+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -16,10 +16,10 @@ steps:
       otherwise:
         then: clean
     agreed:
-      at: '2026-11-19T20:31:06+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-      hash: 0aa0d5f0f2c6
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 5f05d9c8ff31
 ends:
   clean:
     result: success

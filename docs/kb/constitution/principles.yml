@@ -30,6 +30,16 @@
 - id: one-owner-per-fact
   says: 'Each fact has one owner: a rule is a check or prose on its entry, never both; a copy elsewhere points to its owner.'
   why: Copies drift, and a rule kept in prose that a check could read hides the gaps the check would find.
+  agreed:
+    at: '2026-11-20T20:53:04+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    said: 'Owner: I agree those (the two new principles)'
+    hash: 4a55e35eb0a6
 - id: fix-the-class
   says: 'A gap found is fixed for its whole class: every fix asks where else the same cause applies, and the answer becomes a check, work, or a listed item.'
   why: A fix that closes one case leaves its siblings hidden.
+  agreed:
+    at: '2026-11-20T20:53:04+01:00'
+    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+    said: 'Owner: I agree those (the two new principles)'
+    hash: a101fa87c7fd

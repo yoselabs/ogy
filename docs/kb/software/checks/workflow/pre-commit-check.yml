@@ -11,10 +11,10 @@ steps:
         label: Commit
         then: check
     agreed:
-      at: '2026-11-19T18:56:21+01:00'
+      at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
-      hash: 251acf4754cf
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 1f90afd2a0c1
   check:
     says: The hook writes the staged tree as a commit and runs the shared check on it.
     calls: product/checks/workflow/check
