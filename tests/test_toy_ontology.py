@@ -9,10 +9,11 @@ import pytest
 from git_porcelain import run_git
 from tests.conftest import IDENTITY, ogy
 
-from ogy import cli
+from ogy import built, cli, ops, writes
 from ogy.model import Address, parse_address
 from ogy.ontology import Ontology, named, packaged
 from ogy.snapshot import Snapshot, build
+from ogy.target import Target
 
 TOY = Path(__file__).parent / "fixtures" / "toy-ontology"
 LIMIT = "business/shop/ruling/limit"
@@ -275,9 +276,16 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
         "tells: The till.\nserves_stages: [business/shop/journey/buy/stage/pick]\ntyped_as: buy\nsource: ['py:app.py#buy']\n")
     (toy / "docs/kb/tech/shop/norm").mkdir()
     (toy / "docs/kb/tech/shop/norm/quick.yml").write_text("tells: Paying takes a minute.\nreason: [tech/shop/console/till]\n")
+    old, served = Target(toy, ontology=str(two)), ("tech/shop/screen/page", "tech/shop/console/till")
+    writes.agree(old, writes.said("Yes", "ai:test/1", None), list(served))
+    for text in served:
+        at = parse_address(text, old.kinds())
+        assert at is not None
+        built.stamp(toy / "docs/kb", old.read()[1].entries[at].path, text, built.Line(old.read()[1].build_hash(at), {}))
     assert w(toy, "check")[0] == cli.OK
     run_git(toy, *IDENTITY, "add", "-A")
     run_git(toy, *IDENTITY, "commit", "-qm", "a console")
+    base = run_git(toy, "rev-parse", "HEAD").strip()
     (toy / "ogy.yml").write_text(f"ontology: {one}\n")
     assert any(line.startswith("needs-migration: tech/shop/console/till.yml") for line in w(toy, "check")[1])
     assert w(toy, "migrate")[0] == cli.OK and w(toy, "check")[1][0] == "ok"
@@ -286,3 +294,11 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     assert (toy / "docs/kb/tech/shop/surface/page.yml").is_file() and not (toy / "docs/kb/tech/shop/screen").exists()
     norm = read(toy, "tech/shop/norm/quick.yml")
     assert isinstance(norm, dict) and norm["reason"] == ["tech/shop/surface/till"]
+    now = Target(toy, ontology=str(one))
+    snapshot, work = now.read()[1], {item.address for item in ops.run_work(now).value}
+    for text in ("tech/shop/surface/page", "tech/shop/surface/till"):
+        at = parse_address(text, now.kinds())
+        assert at is not None and snapshot.entries[at].fields["accepted"]["hash"] == snapshot.fingerprint(at) and at not in work
+    run_git(toy, *IDENTITY, "add", "-A")
+    run_git(toy, *IDENTITY, "commit", "-qm", "merged")
+    assert not ops.run_check(Target(toy, rev="HEAD", ontology=str(one)), base=base).value

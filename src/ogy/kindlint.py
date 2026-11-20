@@ -18,6 +18,7 @@ from ogy.kinds import (
     Picked,
     Requirement,
     Shape,
+    Was,
 )
 
 REMOVED_FILE = "removed.yml"
@@ -227,8 +228,22 @@ def _was(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -
             found.append(f"{name}: was.file is the other .yml file a list or single kind kept its entries in")
         if old.key is not None and (kind.shape is not Shape.INLINE or old.key == kind.key):
             found.append(f"{name}: was.key is the other key a part was kept under")
-        found += [f"{name}: was {old.kind} renamed {field} to {new}, which is no field" for field, new in old.renamed.items()
-                  if new not in kind.fields and new not in declared.common]
+        found += _was_fields(declared, name, kind, old)
+    return found
+
+
+def _was_fields(declared: Declared, name: str, kind: Kind, old: Was) -> list[str]:
+    """An old kind's renamed field is now a field and was none, two old fields never become one, a default fills a field;
+    either needs the old entries told apart from the new: by their folder (shape file), their old file or their old key."""
+    fields = {*kind.fields, *declared.common}
+    found = [f"{name}: was {old.kind} renamed {field} to {new}, which is no field" for field, new in old.renamed.items()
+             if new not in fields]
+    found += [f"{name}: was {old.kind} renamed {field}, which is still a field" for field in old.renamed if field in fields]
+    found += [f"{name}: was {old.kind} renamed two fields to {new}" for new in set(old.renamed.values())
+              if list(old.renamed.values()).count(new) > 1]
+    found += [f"{name}: was {old.kind} defaults {field}, which is no field" for field in old.defaults if field not in kind.fields]
+    if (old.renamed or old.defaults) and kind.shape is not Shape.FILE and not old.file and not old.key:
+        found.append(f"{name}: was {old.kind} renames or defaults fields only with a new folder, file or key to tell its entries by")
     return found
 
 

@@ -151,8 +151,9 @@ outside it), so nothing goes stale. A rename or a drop is declared in the kind f
 it serves are migrated: `renamed: {old: new}` (the new name is a field of the kind) and `dropped: [old]`; a common field renamed
 in `ontology.yml` says `renamed: {old: new}` there. A renamed kind says what it was, `was: {kind, file, key}` (its old name, and
 its old list file or part key when those changed). A kind that absorbed several kinds lists them, `was: [{kind: view},
-{kind: command, renamed: {invoked_as: form}}]` (shape `file` only); `renamed` inside an item names the fields an entry of that
-old kind held under another name. A value given a new form says `revalued: {field: {old value: {field: new
+{kind: command, renamed: {invoked_as: form}, defaults: {form: cli}}]` (shape `file` only); `renamed` inside an item names the
+fields an entry of that old kind held under another name (also in the `sets` that give it values), and `defaults` fills a field
+the new kind requires that the old kind lacked. A kind renamed earlier and not yet migrated everywhere lists every old name. A value given a new form says `revalued: {field: {old value: {field: new
 value or null}}}`, and a part folded into a field `folded: {field: inner field}`. An entry that still
 holds an old name is the finding `needs-migration`. `ogy migrate` writes the migration in one checked write:
 - every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
@@ -166,7 +167,8 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
   file that still holds an old kind name as `needs-migration`, and the agreements and built lines stay current;
 - a merge of kinds is the same rename for each old kind, with its own field renames. Two entries that would become one (a view
   and a command of one area and id) are `needs-migration` naming both, and `migrate` refuses, moving nothing, until one is
-  `ogy move`d to a new id under the kinds before the merge;
+  `ogy move`d to a new id with the ogy version from before the merge (an entry moving onto a file already there is named as
+  such). A removed ledger keeps the old names; `check` reads its items under the new ones, so an id stays taken;
 - a kind that moved out of a fixed folder declares the file it was in, `moved_from: <folder>/<file>`. Its entries there are `needs-migration`; `migrate` moves them to the area `shared` of the kind's first
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
   removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the

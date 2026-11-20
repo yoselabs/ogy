@@ -20,7 +20,7 @@ from ogy.layout import BUILT_DIR, REMOVED_FILE
 from ogy.ontology import Ontology
 
 type Files = Mapping[str, str]
-type Parts = Mapping[str, tuple[Kind, Mapping[str, str]]]  # a key in an entry -> the part kind under it, the old kind's renames
+type Parts = Mapping[str, tuple[Kind, Was | None]]  # a key in an entry -> the part kind under it, the old kind it was kept as
 
 
 class Retype:
@@ -114,39 +114,52 @@ class Retype:
             return self._mapping(value, {}, {})
         return value
 
+    def _old(self, text: str) -> Was | None:
+        """The old kind an address names its entry by, when that kind was renamed (a `sets` key: the fields it gives follow)."""
+        if self.address(text) == text:
+            return None
+        ends = text.split("/")[-2:]
+        return next((old for name in ends if name in self.kinds for old in self.kinds[name].was if old.kind == name), None)
+
     def _mapping(self, data: dict[object, object], parts: Parts, renames: Mapping[str, str]) -> dict[object, object]:
         """The mapping renamed in place, its order kept: a part's old key becomes its key and the part's own entries follow, an
-        old kind's field its new name."""
+        old kind's field its new name, and the fields given to an entry named by an old kind theirs."""
         items = list(data.items())
         data.clear()
         for key, value in items:
             if isinstance(key, str) and key in parts:
-                part, inner = parts[key]
-                data[part.key] = self._parts(part, value, inner)
+                part, old = parts[key]
+                data[part.key] = self._parts(part, value, old)
+            elif isinstance(key, str) and isinstance(value, dict) and (old := self._old(key)) and old.renamed:
+                data[self.address(key)] = self._mapping(value, {}, old.renamed)
             else:
                 data[renames[key] if isinstance(key, str) and key in renames else self._value(key)] = self._value(value)
         return data
 
-    def _parts(self, part: Kind, value: object, renames: Mapping[str, str]) -> object:
+    def _parts(self, part: Kind, value: object, old: Was | None) -> object:
         """The parts under one key, renamed in place (a mapping or a list keeps its YAML style)."""
         if part.holding is Holds.MAP and isinstance(value, dict):
             for key, item in value.items():
-                value[key] = self.entry(part, item, renames)
+                value[key] = self.entry(part, item, old)
             return value
         if part.holding is Holds.LIST and isinstance(value, list):
-            value[:] = [self.entry(part, item, renames) for item in value]
+            value[:] = [self.entry(part, item, old) for item in value]
             return value
-        return self.entry(part, value, renames)
+        return self.entry(part, value, old)
 
-    def entry(self, kind: Kind, data: object, renames: Mapping[str, str] | None = None) -> object:
-        """One entry's mapping with its parts, renamed; `renames`: the fields the entry's old kind held under other names."""
+    def entry(self, kind: Kind, data: object, old: Was | None = None) -> object:
+        """One entry's mapping with its parts, renamed; `old`: the kind it was written under, whose own field names follow and
+        whose defaults fill the fields it lacks."""
         if not isinstance(data, dict):
             return self._value(data)
-        parts: dict[str, tuple[Kind, Mapping[str, str]]] = {}
+        parts: dict[str, tuple[Kind, Was | None]] = {}
         for part in self.ontology.parts_of(kind.kind):
-            parts |= {part.key: (part, {})} if part.key else {}
-            parts |= {key: (part, old.renamed) for old in part.was if (key := old.key or part.key)}
-        return self._mapping(data, parts, renames or {})
+            parts |= {part.key: (part, None)} if part.key else {}
+            parts |= {was.key: (part, was) for was in part.was if was.key}  # only an old key tells an old part from a new one
+        done = self._mapping(data, parts, old.renamed if old else {})
+        for field, value in (old.defaults if old else {}).items():
+            done.setdefault(field, value)
+        return done
 
     def text(self, rel: str, text: str) -> str:
         """The file's text under the new names (the same text when nothing changed)."""
@@ -154,32 +167,36 @@ class Retype:
             data = any_yaml.load(text)
         except any_yaml.YAMLError:
             return text
-        kind, was = self.kind_of(self.path(rel)), self.was(rel)
-        renames = was.renamed if was else {}
+        kind, old = self.kind_of(self.path(rel)), self.was(rel)
         if kind is None:
             done = self._value(data)
         elif kind.shape is Shape.LIST and isinstance(data, list):
-            data[:] = [self.entry(kind, item, renames) for item in data]
+            data[:] = [self.entry(kind, item, old) for item in data]
             done = data
         else:
-            done = self.entry(kind, data, renames)
+            done = self.entry(kind, data, old)
         after = any_yaml.dump(done)
         return text if after == any_yaml.dump(any_yaml.load(text)) else after
 
 
 def collisions(ontology: Ontology, files: Files) -> dict[str, str]:
     """`{path: why}` for the files a migration would write over each other: two entries of kinds merged into one, with one area
-    and id, or an entry moving onto a file that is already there."""
+    and id, or an entry moving onto a file that is already there. The built records of these entries stay with them."""
     work, onto = Retype(ontology), defaultdict[str, list[str]](list)
-    for rel in (rel for rel in files if rel.split("/")[0] != BUILT_DIR):  # a built record follows its entry
+    for rel in (rel for rel in files if rel.split("/")[0] != BUILT_DIR):
         onto[work.path(rel) if work.stale(rel, files[rel]) else rel].append(rel)
     found: dict[str, str] = {}
     for new, rels in onto.items():
-        if len(rels) > 1:
-            names = [_named(rel) for rel in sorted(rels)]
-            why = (f"{' and '.join(names)} would both become {_named(new)}: `ogy move` one of them to a new id first, under the "
-                   "kinds before the merge")
-            found |= dict.fromkeys(rels, why)
+        moving = sorted(rel for rel in rels if rel != new)
+        if len(rels) < 2:
+            continue
+        if new in rels:
+            why = (f"{' and '.join(map(_named, moving))} would move onto {_named(new)}, which is already there: `ogy move` one "
+                   "of them to a new id first")
+        else:
+            why = (f"{' and '.join(map(_named, moving))} would both become {_named(new)}: `ogy move` one of them to a new id "
+                   "first, with the ogy version (its kinds) from before the merge")
+        found |= dict.fromkeys(rels, why)
     return found
 
 
@@ -189,13 +206,14 @@ def _named(rel: str) -> str:
     return rel.removesuffix(".yml") if len(parts) == 4 else rel
 
 
-def retype(ontology: Ontology, files: Files) -> dict[str, str | None]:
+def retype(ontology: Ontology, files: Files, stuck: Mapping[str, str] | None = None) -> dict[str, str | None]:
     """The files a migration to the new kind names writes: `{path: new text}`, and `{old path: None}` for a file that moved. A
-    file in a collision stays where it is."""
-    work, stuck = Retype(ontology), collisions(ontology, files)
+    file in a collision (`stuck`, computed when not given) and its built record stay where they are."""
+    work, stuck = Retype(ontology), collisions(ontology, files) if stuck is None else stuck
+    held = {*stuck, *(f"{BUILT_DIR}/{rel}" for rel in stuck)}
     changed: dict[str, str | None] = {}
     for rel, text in files.items():
-        if rel in stuck or not work.stale(rel, text):
+        if rel in held or not work.stale(rel, text):
             continue
         new, after = work.path(rel), work.text(rel, text)
         if new != rel:
@@ -205,9 +223,9 @@ def retype(ontology: Ontology, files: Files) -> dict[str, str | None]:
     return changed
 
 
-def applied(ontology: Ontology, files: Files) -> dict[str, str]:
+def applied(ontology: Ontology, files: Files, stuck: Mapping[str, str] | None = None) -> dict[str, str]:
     """The files as `ogy migrate` leaves them after the kind renames."""
-    changes = retype(ontology, files)
+    changes = retype(ontology, files, stuck)
     return {**{rel: text for rel, text in files.items() if rel not in changes}, **{rel: text for rel, text in changes.items()
                                                                                   if text is not None}}
 

@@ -93,11 +93,11 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
     return moved
 
 
-def _retyped(target: Target) -> tuple[dict[str, str | None], Snapshot | None, list[tuple[str, str]]]:
-    """The files the kind renames change, the knowledge base as it was under the old kind names (None when no kind was renamed)
-    and each changed file as (old path, new path)."""
-    ontology, raw = target.kinds(), files(target)
-    changed = retype(ontology, raw)
+def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], Snapshot | None, list[tuple[str, str]]]:
+    """The files the kind renames change (none collide), the knowledge base as it was under the old kind names (None when no
+    kind was renamed) and each changed file as (old path, new path)."""
+    ontology = target.kinds()
+    changed = retype(ontology, raw, stuck={})
     if not changed:
         return {}, None, []
     work, gone = Retype(ontology), [rel for rel, text in changed.items() if text is None]
@@ -108,11 +108,11 @@ def _retyped(target: Target) -> tuple[dict[str, str | None], Snapshot | None, li
 def migrate(target: Target) -> Migrated:
     """Write the migration of the worktree (the lock is held); refuses, writing nothing, when two files would become one or
     when it leaves a new error."""
-    ontology, work = target.kinds(), Retype(target.kinds())
-    if stuck := collisions(ontology, files(target)):
+    ontology, work, raw = target.kinds(), Retype(target.kinds()), files(target)
+    if stuck := collisions(ontology, raw):
         raise WriteRefused(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
-    retyped, was, pairs = _retyped(target)
-    now = applied(ontology, files(target))
+    retyped, was, pairs = _retyped(target, raw)
+    now = applied(ontology, raw, stuck={})
     snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
     root, homes = target.repo / target.kb, snapshot.ontology.moved_homes()

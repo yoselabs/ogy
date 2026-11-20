@@ -231,13 +231,14 @@ class Flow(BaseModel):
 class Was(BaseModel):
     """A kind's name before a rename or a merge, and where its entries were kept under it: `ogy migrate` moves them to the new
     name. A kind that absorbed several kinds lists one for each; `renamed` names the fields an entry of that old kind kept under
-    another name."""
+    another name, and `defaults` fills a field the new kind requires that the old kind did not have."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     kind: str
     file: str | None = None  # a list or single kind's file before the rename
     key: str | None = None  # a part's key inside its parent before the rename
     renamed: dict[str, str] = {}  # old field name -> new, for the entries of this old kind only
+    defaults: dict[str, str | bool | int] = {}  # a field the new kind has -> the value an entry of this old kind gets without it
 
 
 class Kind(BaseModel):

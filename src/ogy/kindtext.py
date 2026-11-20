@@ -68,6 +68,7 @@ def _rules(kind: Kind) -> list[str]:
         lines.append(f"  exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
     lines += [f"  was: {', '.join(old.kind for old in kind.was)} (`ogy migrate`)"] if kind.was else []
     lines += [f"  renamed in a {old.kind}: {field} is now {new} (`ogy migrate`)" for old in kind.was for field, new in old.renamed.items()]
+    lines += [f"  default in a {old.kind}: {field} {value!r} (`ogy migrate`)" for old in kind.was for field, value in old.defaults.items()]
     lines += [f"  renamed: {old} is now {new} (`ogy migrate`)" for old, new in kind.renamed.items()]
     lines += [f"  revalued: {field} {old} is now {', '.join(f'{k} {v}' for k, v in now.items())} (`ogy migrate`)"
               for field, values in kind.revalued.items() for old, now in values.items()]

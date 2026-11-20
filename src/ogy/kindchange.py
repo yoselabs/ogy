@@ -151,7 +151,8 @@ def before(ontology: Ontology, kinds_too: bool = True) -> Ontology:
     renamed kind under its old name, file and key (`was`), a kind that absorbed several as each of them. An input and a
     reverse input name a renamed field or part kind by its old name too (the renames of every kind, as they cross kinds)."""
     common = {new: old for old, new in ontology.declared.renamed.items()}
-    back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()}
+    back = common | {new: old for kind in ontology.kinds.values() for old, new in kind.renamed.items()} | {
+        new: old for kind in ontology.kinds.values() for was in kind.was for old, new in was.renamed.items()}
     names = {kind.kind: tuple(old.kind for old in kind.was) for kind in ontology.kinds.values() if kind.was and kinds_too}
     kinds: dict[str, Kind] = {}
     for name, kind in ontology.kinds.items():
