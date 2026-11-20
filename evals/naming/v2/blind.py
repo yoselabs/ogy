@@ -4,7 +4,8 @@ Usage: python3 -I blind.py RUNS_DIR OUT_DIR SEED
 Runs are files named <arm>-<n>.md (A-1.md, C0-3.md, B-5.md). Every run is rewritten with vocab.tsv (the same table
 for every arm), copied to OUT_DIR/blind/R<id>.md, and listed in OUT_DIR/map.txt. Writes and prints the batches
 (OUT_DIR/batches.txt, one per line): batch i holds one run of every arm while runs last, so no run is dropped
-whatever the count per arm. Every batch goes to two scorers who do not see each other's marks (score.sh). Unlike evals/blind.py, which reads the arm from the first letter and
+whatever the count per arm. Every batch goes to two scorers who do not see each other's marks (score.sh).
+Unlike evals/blind.py, which reads the arm from the first letter and
 forms groups of two runs per arm (a fifth run falls out).
 """
 
