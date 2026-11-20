@@ -14,3 +14,4 @@ dist/
 .beads/hooks/
 .claude/worktrees/
 .worktrees/
+.coverage
