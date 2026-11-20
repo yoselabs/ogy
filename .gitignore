@@ -9,3 +9,6 @@ dist/
 .beads-credential-key
 .beads/proxieddb/
 *.gate.lock*
+
+# bd hook files: prek owns the hooks (blueprint recipe)
+.beads/hooks/

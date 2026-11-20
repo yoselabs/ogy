@@ -10,6 +10,16 @@
         ],
         "matcher": ""
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "(bd list --status in_progress --json 2>/dev/null || echo '[]') | jq -c 'if length > 0 then {systemMessage: (\"beads left in_progress: \" + ([.[] | .id] | join(\", \")))} else empty end'"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
@@ -17,5 +27,8 @@
       "Edit(/docs/kb/**/*.yml)",
       "Write(/docs/kb/**/*.yml)"
     ]
+  },
+  "env": {
+    "BD_DISABLE_METRICS": "1"
   }
 }

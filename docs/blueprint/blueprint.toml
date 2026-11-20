@@ -1,0 +1,18 @@
+[[override]]
+id = "knowledge.glossary"
+reason = "OGY keeps its glossary and decisions in the KB (owner delegated this to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
+[[override]]
+id = "knowledge.adr-format"
+reason = "OGY keeps its glossary and decisions in the KB (owner delegated this to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
+[[override]]
+id = "knowledge.adr-index"
+reason = "OGY keeps its glossary and decisions in the KB (owner delegated this to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
