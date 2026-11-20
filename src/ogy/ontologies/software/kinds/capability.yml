@@ -8,6 +8,8 @@ shape: list
 sentence: says
 file: capabilities.yml
 layers: [product]
+requires:                     # owner: a capability realizes a goal; until the goal is written it is work, not a finding
+  - {path: [realizes], kinds: [goal], work: true, status: unrealized, error: "a capability realizes a goal"}
 fields:
   says: {required: true}
   realizes: {type: links, to: [goal]}

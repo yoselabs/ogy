@@ -55,6 +55,14 @@ Imagine the task done and forgotten. If nothing in the ontology becomes false, i
   the bug, add the missing rule or proof.
 - **Which database to use.** A question with options: a decision. Its answer changes what should be true.
 
+## Code, entries and decisions
+
+- **What the code does today** is an entry with `src` (`code:<path>#<symbol>`): captured as it is, agreed by the owner
+  in a review round. It is not a decision: nobody chose it in front of the owner.
+- **A decision** needs an alternative the owner could pick: two or more options a reasonable owner might choose. A
+  question with one real answer is a sentence to agree to, not a decision.
+- **Why an entry is so** is a `because` to a principle or a decision; where it came from is its `src`.
+
 ## Rigid where checked
 
 Principle `rigid-where-checked` (decision `software/ontology/decision/rigid-where-checked`): a fact a check, the work

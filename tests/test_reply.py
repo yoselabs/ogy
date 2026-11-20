@@ -34,11 +34,11 @@ def round_of(lines: list[str]) -> str:
 @pytest.fixture
 def asked(repo: Path) -> Path:
     """Two sentences decided by AI (cards 1 and 2) and one unanswered decision (Q1), reviewed."""
-    for ident, says in (("a-cap", "A member can borrow."), ("b-cap", "A member can return.")):
-        assert put(repo, f"product/app/capability/{ident}", says=says, because=["product/app/quantity/fee"])[0] == cli.OK
     code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS),
                       proposal={"chose": "two", "why": "a guess"})
     assert code == cli.OK, lines
+    for ident, says in (("a-cap", "A member can borrow."), ("b-cap", "A member can return.")):
+        assert put(repo, f"product/app/capability/{ident}", says=says, because=["product/app/decision/fee-amount"])[0] == cli.OK
     code, lines = w(repo, "review")
     assert code == cli.OK, lines
     return repo

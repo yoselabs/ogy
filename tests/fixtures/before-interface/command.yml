@@ -8,8 +8,8 @@ sentence: says
 layers: [software]
 needs_proof: true
 fingerprint: {proofs: true}
-input: {satisfies: content}                         # a rule it is held to changes: it is stale
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: content}   # a rule it is held to changes: it is stale
   says: {required: true}
   invoked_as: {required: true}
   serves: {type: links, to: [step], required: true, input: {parts: [choice]}}   # the served steps' set of choices changes: stale

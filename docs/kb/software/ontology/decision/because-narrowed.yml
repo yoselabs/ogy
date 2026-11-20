@@ -1,0 +1,16 @@
+structure: true
+question: What may because cite?
+context: 'Bead ogy-yy9.75 (harmony finding 11): because linked to any kind and mixed the reason with the source. Narrowed to principle and decision. The one because to a rule (product/language/rule/shared-entries-home because rule/glossary-homes) now cites the decision product/language/decision/shared-entries-home; taskloop-fit: two because from rules to quantities became constrains, one because between quantities dropped.'
+options:
+  principle-or-decision:
+    label: 'A principle or a decision: the reason, never a source'
+  any:
+    label: Any entry, as before
+proposal:
+  chose: principle-or-decision
+  why: One meaning; evidence is src, a settling decision or the owner yes.
+answers:
+- chose: principle-or-decision
+  said: 'Yes, all: because narrowed to principle or decision; the one because to a rule becomes the decision'
+  at: '2026-11-20T03:09:20+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -1,3 +1,6 @@
 says: A member holds at most max-loans tools at once.
+constrains:
+- product/lending/entity/loan/attribute/renewals
+- product/lending/quantity/max-loans
 src:
 - code:src/library/loans.py#lend

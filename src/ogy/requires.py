@@ -1,17 +1,21 @@
 """`requires:` of a kind, checked on one entry or on one item of a `holds: list` part (an effect): its condition, then the
-field it needs or the kinds it reaches along a link path (see `paths`)."""
+field it needs or the kinds it reaches along a link path (see `paths`), or, with `same`, a path that comes back to it."""
 
 from collections.abc import Callable, Mapping
 from functools import partial
 
-from ogy.kinds import Holds, Requirement
+from ogy.kinds import ANY, Holds, Requirement, where
 from ogy.links import LinkItem, resolve
 from ogy.model import Address, link_values
+from ogy.paths import kept
 from ogy.snapshot import Snapshot
 
+type Reaches = Callable[[tuple[str, ...]], bool]
 
-def applies(need: Requirement, fields: Mapping[str, object], has_part: Callable[[str], bool]) -> bool:
-    """Whether the condition holds: a field set, a part held, a field equal to one of the values (none: always)."""
+
+def applies(need: Requirement, fields: Mapping[str, object], has_part: Callable[[str], bool], reaches: Reaches) -> bool:
+    """Whether the condition holds: a field set, a part held, a field equal to one of the values, a path reaching anything
+    (none: always)."""
     if need.if_set is not None:
         return fields.get(need.if_set) is not None
     if need.if_unset is not None:
@@ -20,6 +24,8 @@ def applies(need: Requirement, fields: Mapping[str, object], has_part: Callable[
         return has_part(need.if_part)
     if need.if_equals is not None:
         return fields.get(need.if_equals.field) in need.if_equals.values
+    if need.if_reaches:
+        return reaches(need.if_reaches)
     return True
 
 
@@ -32,11 +38,17 @@ def _reached(snapshot: Snapshot, path: tuple[str, ...], origin: Address, fields:
     resolved from the entry that holds it."""
     if item is None:
         return snapshot.links.walk(origin, path)[0]
-    first, rest = path[0], path[1:]
+    (first, key, wanted), rest = where(path[0]), path[1:]
     spec = snapshot.ontology.kinds[item].fields.get(first)
     targets = [resolve(snapshot.ontology, snapshot.entries, origin, LinkItem(first, text, spec.to)).target
                for text in (link_values(fields.get(first)) if spec is not None else ())]
-    return {reached for target in targets if target is not None for reached in snapshot.links.walk(target, rest)[0]}
+    return {reached for target in targets if target is not None and kept(snapshot.entries[target].fields, key, wanted)
+            for reached in snapshot.links.walk(target, rest)[0]}
+
+
+def reaching(snapshot: Snapshot, origin: Address, fields: Mapping[str, object], item: str | None = None) -> Reaches:
+    """Whether a path from the entry (or from the item of the part kind `item` that it holds) reaches anything."""
+    return lambda path: bool(_reached(snapshot, path, origin, fields, item))
 
 
 def satisfied(snapshot: Snapshot, need: Requirement, kind: str, origin: Address, fields: Mapping[str, object],
@@ -47,7 +59,10 @@ def satisfied(snapshot: Snapshot, need: Requirement, kind: str, origin: Address,
     if not need.path:
         return kind in need.kinds and _bare(fields, need.without)
     reached = {found for path in need.paths for found in _reached(snapshot, path, origin, fields, kind if item else None)}
-    return any(address.kind in need.kinds and _bare(snapshot.entries[address].fields, need.without) for address in reached)
+    if need.same:
+        return origin in reached and snapshot.kind_of(origin).kind in need.kinds
+    return any((ANY in need.kinds or address.kind in need.kinds) and _bare(snapshot.entries[address].fields, need.without)
+               for address in reached)
 
 
 def has_part(snapshot: Snapshot, address: Address, kind: str) -> bool:
@@ -62,5 +77,5 @@ def unmet(snapshot: Snapshot, address: Address, work: bool) -> list[Requirement]
     """The requirements of the entry's kind it does not meet: the faults (`work` False) or the work left (`work` True)."""
     kind, fields = snapshot.kind_of(address), snapshot.entries[address].fields
     held = partial(has_part, snapshot, address)
-    return [need for need in kind.requires if need.work is work and applies(need, fields, held)
+    return [need for need in kind.requires if need.work is work and applies(need, fields, held, reaching(snapshot, address, fields))
             and not satisfied(snapshot, need, kind.kind, address, fields)]

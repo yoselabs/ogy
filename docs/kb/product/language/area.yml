@@ -1,4 +1,4 @@
-says: 'The words of the product: what the glossary holds, where a term or another shared entry lives, and what folders and addresses are called.'
+says: 'The words of the product: what the glossary holds, where a term or another shared entry lives, and what folders and addresses are called. Not here: the kinds and their fields: ontology; who uses the product: shared.'
 unlike:
-- 'the kinds and their fields: ontology'
-- 'who uses the product: shared'
+- product/ontology/area/ontology
+- product/shared/area/shared

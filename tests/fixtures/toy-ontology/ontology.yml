@@ -1,6 +1,7 @@
 # A toy ontology for the tests: every kind, field, layer, harm tag, scheme and folder has another name than the software
 # ontology's, so a test that passes on it shows the engine knows none of those names.
 layers: [business, tech]
+link_direction: later-to-earlier                     # tech names business, never the reverse
 shared:
   area: common
   says: "What two regions of this layer both use."

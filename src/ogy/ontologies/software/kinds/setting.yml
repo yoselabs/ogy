@@ -10,6 +10,8 @@ file: settings.yml
 layers: [software]
 needs_proof: true
 fingerprint: {proofs: true}
+requires:
+  - {path: ["<-*"], kinds: [any], work: true, status: unused, error: "a setting nothing links to"}
 fields:
   says: {required: true}
   name: {required: true}                             # the setting as written in the file or environment

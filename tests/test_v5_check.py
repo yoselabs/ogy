@@ -4,9 +4,10 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import pytest
+from tests.conftest import SIGN_IN
 
 from ogy.model import Problem
-from ogy.status import harm
+from ogy.status import Agreement, agreement, harm
 
 if TYPE_CHECKING:
     from conftest import Kb
@@ -128,10 +129,10 @@ def test_agreed_entry_shape(kb: Make) -> None:
 
 def test_common_fields(kb: Make) -> None:
     changed = {"product/app/actors.yml": "- {id: member, title: Member, says: x, nature: human, src: [], agreed: "
-                                         + stamp() + ", because: [product/app/workflow/sign-in], proof: [tests/t.py::test_a]}\n"}
+                                         + stamp() + ", because: [product/app/decision/sign-in], proof: [tests/t.py::test_a]}\n"}
     assert kb(changed).findings() == set()
     wrong = {"product/app/actors.yml":
-             "- {id: member, says: x, nature: human, src: one, because: [product/app/workflow/nothing], layer: product}\n"}
+             "- {id: member, says: x, nature: human, src: one, because: [product/app/decision/nothing], layer: product}\n"}
     found = kb(wrong).findings()
     assert {problem for problem, _ in found} == {Problem.WRONG_TYPE, Problem.DANGLING_LINK, Problem.UNKNOWN_FIELD,
                                                  Problem.BAD_SRC}  # `layer` is no field: the folder is the layer
@@ -222,3 +223,21 @@ def test_a_row_that_deletes_ranks_as_irreversible(kb: Make) -> None:
     found = kb({"product/app/entity/thing.yml": "says: A thing.\n", "product/app/workflow/sys.yml": flow})
     row = found.snapshot.resolve("product/app/workflow/sys/step/sys/case/otherwise")
     assert row is not None and harm(found.snapshot, row) == "irreversible"
+
+
+def test_a_step_is_agreed_with_its_rows_and_a_term_with_the_sentence_it_names(kb: Make) -> None:
+    """A row is never a card of its own: it is read and agreed with its step, so a changed row sends the step back to the
+    owner. A term that names an entry is agreed with that entry's sentence."""
+    step, term = "product/app/workflow/sign-in/step/ask", "product/shared/term/member"
+    words = "product/shared/glossary.yml"
+    plain = kb({words: "- {id: member, word: member, names: product/app/actor/member}\n"}).snapshot
+    at, named = plain.resolve(step), plain.resolve(term)
+    assert at is not None and named is not None and plain.agreed_print(at) != plain.fingerprint(at)
+    flow = SIGN_IN.replace("    choices:", f"    agreed: {stamp(fingerprint=plain.agreed_print(at))}\n    choices:")
+    member = f"- {{id: member, word: member, names: product/app/actor/member, agreed: {stamp(fingerprint=plain.agreed_print(named))}}}\n"
+    agreed = {words: member, "product/app/workflow/sign-in.yml": flow}
+    now = kb(agreed).snapshot
+    assert agreement(now, at) is Agreement.AGREED and agreement(now, named) is Agreement.AGREED
+    relabelled = kb({**agreed, "product/app/workflow/sign-in.yml": flow.replace("label: Sign in", "label: Log in"),
+                     "product/app/actors.yml": "- {id: member, says: A person who lends., nature: human}\n"}).snapshot
+    assert agreement(relabelled, at) is Agreement.CHANGED and agreement(relabelled, named) is Agreement.CHANGED

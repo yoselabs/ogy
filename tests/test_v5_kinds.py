@@ -104,7 +104,7 @@ def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message
 
 def test_inputs_that_name_what_their_targets_hold_load() -> None:
     load(ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
-         "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address, because: address}\n")
+         "  b: {type: link, to: [actor], input: none}\ninput: {because: address}\n")
     load(PARENT + "input: {part: content}\n", PART)
 
 

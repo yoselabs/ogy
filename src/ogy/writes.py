@@ -142,7 +142,7 @@ def said(text: str, where: str, at: str | None, now: Clock = utc_now, who: str =
 
 
 def current(snapshot: Snapshot, addresses: list[Address]) -> dict[str, str]:
-    return {str(address): snapshot.fingerprint(address) for address in addresses}
+    return {str(address): snapshot.agreed_print(address) for address in addresses}
 
 
 def stamp(editor: Editor, words: Said, hashes: Mapping[str, str]) -> None:
@@ -261,7 +261,7 @@ def answer(target: Target, decision_text: str, option: str, words: Said, delegat
         changed, gone = _apply(target, ed, found, option, now)
         if words.who == "human" and changed:
             after = ed.snapshot()
-            stamp(ed, words, {text: after.fingerprint(address) for text in changed if (address := after.resolve(text)) is not None})
+            stamp(ed, words, {text: after.agreed_print(address) for text in changed if (address := after.resolve(text)) is not None})
         outcome.append(Answered(found.address, option, changed, gone))
 
     commit(target, lambda snap: [found.address, *(a for text in found.options[option] if (a := snap.resolve(text)))], act)

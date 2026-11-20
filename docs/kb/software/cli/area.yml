@@ -1,4 +1,4 @@
-says: The commands, their flags, exit codes and settings, and which commands exist.
+says: 'The commands, their flags, exit codes and settings, and which commands exist. Not here: the same commands as MCP tools: mcp; what a write does under the lock: writes.'
 unlike:
-- 'the same commands as MCP tools: mcp'
-- 'what a write does under the lock: writes'
+- software/mcp/area/mcp
+- software/writes/area/writes

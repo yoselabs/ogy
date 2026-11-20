@@ -11,7 +11,6 @@ sentence: says
 layers: [software]
 needs_proof: true
 fingerprint: {proofs: true}
-input: {satisfies: content}                         # a rule it is held to changes: it is stale
 acyclic: [includes]                                  # a card never includes the interface that includes it
 requires:
   - {if_equals: {field: form, value: cli}, needs_field: invoked_as, error: "a command line interface says how it is invoked (`invoked_as`)"}
@@ -27,4 +26,5 @@ fields:
   shows: {type: links, to: [entity, attribute], input: content}     # what it displays changes: stale
   accepts: {type: links, to: [entity, attribute], input: content}   # what it takes in changes: stale
   includes: {type: links, to: [interface], input: content}   # the cards inside it; a card changes: stale
+  satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (a rule it is held to changes: it is stale)
   allows: {type: links, to: [actor], harm: [authorization], input: none}   # who may use it, when it serves no step

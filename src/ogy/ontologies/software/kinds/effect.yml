@@ -15,4 +15,6 @@ requires:
   - {if_equals: {field: do, value: [create, delete]}, path: ["on"], kinds: [entity], error: "a create or delete effect names an entity"}
   - {if_equals: {field: do, value: write}, path: ["on"], kinds: [attribute, entity], without: [derived], error: "a write effect names our own entity or an attribute that is not derived; a dependency is told"}
   - {if_equals: {field: do, value: tell}, path: ["on"], kinds: [actor, dependency], error: "a tell effect names an actor or a dependency"}
+  # the program actor a row tells is reached through what builds the row: a handler performing it uses a dependency realizing it
+  - {if_reaches: ["on?nature=program"], path: ["on", "<-realizes", "<-uses", "performs"], kinds: [case, choice, timeout], same: true, error: "a row that tells a program actor has a handler that uses a dependency realizing it"}
 dropped: [value]

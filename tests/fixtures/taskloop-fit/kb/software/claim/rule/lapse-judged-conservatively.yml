@@ -1,5 +1,5 @@
 says: A claim counts as held only when a renewal succeeded and no whole lease passed between the start of one successful renewal and the end of the next.
 src:
 - code:src/taskloop/claim_lease.py#KeepAlive.word
-because:
+constrains:
 - software/claim/quantity/lease-ttl

@@ -26,7 +26,7 @@ LAYOUT = "product/app/decision/keep-the-layers"
 @pytest.fixture
 def structural(repo: Path) -> Path:
     """A capability nobody agreed to (card 1), a question whose guess rests on what the owner said and a structural one that does too."""
-    assert put(repo, "product/app/capability/borrow", says="A member can borrow.", because=["product/app/quantity/fee"])[0] == cli.OK
+    assert put(repo, "product/app/capability/borrow", says="A member can borrow.", src=["code:app.py#lend"])[0] == cli.OK
     cited = {"chose": "two", "why": "the owner leaned to two", "heard": "Two euros seem plenty"}
     assert put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), proposal=cited)[0] == cli.OK
     kept = {**cited, "chose": "keep"}

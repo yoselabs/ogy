@@ -6,7 +6,7 @@ unlike: "a DDD aggregate with its own rules; a database table"
 shape: file
 sentence: says
 layers: [product, software]
-needs_proof: true
+needs_proof: {if_part: transition}                   # a lifecycle is behaviour a test proves; plain facts are not
 fingerprint: {proofs: true}
 input: {attribute: content, state: content, transition: content}   # its parts are what it is built from
 fields:

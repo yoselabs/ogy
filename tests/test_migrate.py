@@ -9,9 +9,11 @@ import pytest
 from tests.conftest import commit
 
 from ogy import built, ops, writes
+from ogy.edit import Editor
 from ogy.model import Problem, parse_address
 from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.receipts import Status
+from ogy.status import Status as Status_
 from ogy.target import Target
 
 FEE, LEND, GO = "product/app/quantity/fee", "software/app/handler/lend", "product/app/workflow/borrow/step/ask/choice/go"
@@ -23,7 +25,7 @@ options:
 proposal: {chose: two, why: Small.}
 """
 EFFECT = files("ogy").joinpath("ontologies", "software", "kinds", "effect.yml").read_text()
-EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith("requires:") or "if_equals: {field: do" in line]
+EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith(("requires:", "  - {", "  # "))]
 # quantity.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
@@ -72,13 +74,13 @@ def build_hash(target: Target, text: str) -> str:
 
 @pytest.fixture
 def before(repo: Path) -> str:
-    """The fee and the operation agreed, the fee, the choice and the timeout built, and an answer with a note: committed."""
+    """The fee and the operation agreed, the choice and the timeout built, and an answer with a note: committed."""
     target = Target(repo)
     (repo / "docs/kb/product/app/decision/fee.yml").parent.mkdir(parents=True, exist_ok=True)
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(DECISION)
     ops.run_answer(target, ASKED, "two", "Two is fine", "ai:claude/1", note="for now")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
-    for text in (FEE, GO, TIMEOUT):
+    for text in (GO, TIMEOUT):
         built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
                     built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
@@ -130,11 +132,43 @@ def test_a_rename_names_a_field_of_the_kind() -> None:
 
 def test_migrate_strips_the_old_deps_of_a_built_line_and_keeps_it_current(repo: Path, before: str) -> None:
     target = Target(repo)
-    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(FEE, target.kinds())].path
+    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(GO, target.kinds())].path
     path.write_text(path.read_text().replace("covers:", f"deps: {{{LEND}: aaaaaaaaaaaa}}, covers:"))
     assert [(item.problem, item.path) for item in ops.run_check(target).value] == [
         (Problem.NEEDS_MIGRATION, f"built/{path.relative_to(repo / 'docs/kb/built')}")]
-    assert f"kept the built line current: {FEE}" in ops.run_migrate(target).value.lines()
+    assert f"kept the built line current: {GO}" in ops.run_migrate(target).value.lines()
     assert "deps" not in path.read_text()
     assert not ops.run_check(target).value
-    assert FEE not in {item.address for item in ops.run_work(target).value}
+    assert GO not in {item.address for item in ops.run_work(target).value}
+
+
+ASK = "product/app/workflow/borrow/step/ask"
+
+
+def _old_stamp(repo: Path) -> None:
+    """The step agreed as an ogy before rows were part of an agreement wrote it: the hash is its plain fingerprint."""
+    target = Target(repo)
+    snapshot = target.read()[1]
+    at = parse_address(ASK, snapshot.ontology)
+    assert at is not None
+    stamp = {"at": "2026-11-19T18:00:00+01:00", "where": "ai:claude/1", "said": "Yes", "hash": snapshot.fingerprint(at)}
+    Editor(repo, target.kb, target.kinds()).update(at, {"agreed": stamp})
+    commit(repo, "agreed under the plain fingerprint")
+
+
+def test_migrate_keeps_an_agreement_whose_rows_are_as_they_were_when_agreed(repo: Path) -> None:
+    _old_stamp(repo)
+    target = Target(repo)
+    assert ops.run_show(target, ASK).value.status is Status_.CHANGED  # the agreement is computed another way now
+    assert f"kept the agreement current: {ASK}" in ops.run_migrate(target).value.lines()
+    assert ops.run_show(target, ASK).value.status is Status_.BY_YOU
+
+
+def test_migrate_leaves_an_agreement_whose_rows_changed_since(repo: Path) -> None:
+    _old_stamp(repo)
+    flow = repo / "docs/kb/product/app/workflow/borrow.yml"
+    flow.write_text(flow.read_text().replace("label: Borrow", "label: Take"))
+    commit(repo, "a row changed after the yes")
+    target = Target(repo)
+    assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
+    assert ops.run_show(target, ASK).value.status is Status_.CHANGED  # back to the owner

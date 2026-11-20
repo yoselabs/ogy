@@ -194,7 +194,8 @@ def test_example_tool_library_is_settled(ontology: Ontology) -> None:
     fee = snapshot.resolve("product/library/quantity/late-fee")
     assert check_decisions(snapshot, source) == [] and fee is not None
     assert status(snapshot, fee) is Status.BY_YOU
-    assert queue(snapshot) == []  # the owner agreed to the owner actor
+    # the owner agreed to the owner actor; the rule that took the fee's proof (D15) waits for the owner
+    assert [str(card.address) for card in queue(snapshot)] == ["product/library/rule/late-fee-per-day"]
 
 
 def test_example_ogy_kb_newest_answer_is_in_force(ontology: Ontology) -> None:

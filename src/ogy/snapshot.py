@@ -70,8 +70,13 @@ class Snapshot:
 
     def sentence(self, address: Address) -> str | None:
         """What the entry says: the field its kind names as its sentence."""
-        name = self.kind_of(address).sentence
-        return self.entries[address].text(name) if name else None
+        kind = self.kind_of(address)
+        own = self.entries[address].text(kind.sentence) if kind.sentence else None
+        if own is None and kind.glossary is not None and kind.glossary.names is not None:
+            named = sorted(self.links.forward(address, kind.glossary.names))
+            sentence = self.kind_of(named[0]).sentence if named else None
+            return self.entries[named[0]].text(sentence) if named and sentence else None  # one hop: a term naming a term
+        return own
 
     def fingerprint(self, address: Address) -> str:
         """The meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements, review cards and removed
@@ -80,6 +85,29 @@ class Snapshot:
         if key not in self._prints:
             self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), ())
         return self._prints[key]
+
+    def needs_proof(self, address: Address) -> bool:
+        """The entry is work until built: its kind needs proof, or needs it of entries that hold the part it names."""
+        given = self.kind_of(address).needs_proof
+        if isinstance(given, bool):
+            return given
+        part = self.ontology.get(given.if_part)
+        if part is not None and part.holding is Holds.LIST:
+            return bool(self.entries[address].fields.get(part.key or ""))
+        return bool(self.links.parts(address, given.if_part))
+
+    def agreed_print(self, address: Address) -> str:
+        """What a person agrees to and a card shows: the fingerprint, with the fingerprints of the rows read with a step and,
+        for a term that names an entry, that entry's sentence. A row or a named sentence that changes sends the entry back to
+        the owner; an entry without either keeps its plain fingerprint."""
+        kind = self.kind_of(address)
+        also: list[object] = [[str(row), self.fingerprint(row)] for name in sorted(self.ontology.rows())
+                              for row in self.links.parts(address, name)]
+        names = kind.glossary.names if kind.glossary is not None else None
+        if names is not None and self.entries[address].fields.get(names) is not None:
+            also.append([names, self.sentence(address)])
+        meaning = self.fingerprint(address)
+        return digest({"meaning": meaning, "with": also}, length=FINGERPRINT_LENGTH) if also else meaning
 
     def build_hash(self, address: Address, *, proofs: bool = True) -> str:
         """What the built record and work left compare: the meaning, the proofs, what the kind's inputs read (`input` of its

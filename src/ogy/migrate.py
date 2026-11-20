@@ -18,6 +18,7 @@ from ogy.kindchange import Change, Kept, before, changes, moved_table
 from ogy.model import Address, Problem
 from ogy.moves import renamer
 from ogy.relocate import rename_all
+from ogy.restamp import proven
 from ogy.retype import Retype, applied, collisions, retype
 from ogy.snapshot import Snapshot, build, kb_paths
 from ogy.target import Target
@@ -32,9 +33,10 @@ class Migrated:
     files: list[str]
     moved: list[tuple[Address, Address]] = field(default_factory=list)  # out of a fixed folder their kind moved out of
     retyped: list[tuple[str, str]] = field(default_factory=list)  # files under a renamed kind: (old path, new path)
+    unbuilt: list[str] = field(default_factory=list)  # built lines deleted: their entry needs no proof
 
     def lines(self) -> list[str]:
-        if not self.changes and not self.moved and not self.retyped and not self.built:
+        if not self.changes and not self.moved and not self.retyped and not self.built and not self.unbuilt and not self.agreed:
             return ["nothing to migrate"]
         out = [f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}"
                for old, new in self.retyped]
@@ -42,6 +44,7 @@ class Migrated:
                "the owner sees this entry as changed" for c in self.changes]
         out += [f"moved {old} to {new}: `ogy move` it to the area that uses it" for old, new in self.moved]
         out += [f"kept the agreement current: {address}" for address in self.agreed]
+        out += [f"deleted the built line of {text}: it needs no proof" for text in self.unbuilt]
         return out + [f"kept the built line current: {text}" for text in self.built]
 
 
@@ -55,16 +58,22 @@ def _agreements(snapshot: Snapshot, kept: Kept) -> dict[Address, dict[str, objec
     return found
 
 
-def _built(target: Target, snapshot: Snapshot, kept: Kept) -> list[str]:
-    """Re-set the `own` hash of the built lines that only a rename changed, and write without its old keys a line that holds
-    any (an old `deps` goes: a changed input is read from the build hash, never re-stamped)."""
+def _built(target: Target, snapshot: Snapshot, kept: Kept, unbuilt: list[str]) -> list[str]:
+    """Re-set the `own` hash of the built lines that only a rename changed, write without its old keys a line that holds
+    any (an old `deps` goes: a changed input is read from the build hash, never re-stamped), and delete the line of a live entry
+    that needs no proof (listed in `unbuilt`)."""
     root, done = target.repo / target.kb, []
     folder = root / built.BUILT
     for file in sorted(folder.rglob("*.yml")) if folder.is_dir() else ():
         source, changed = file.relative_to(folder).as_posix(), False
         lines = built.read(root, source)
-        for text, line in lines.items():
+        for text, line in list(lines.items()):
             address = snapshot.resolve(text)
+            if address is not None and not snapshot.needs_proof(address):
+                del lines[text]
+                unbuilt.append(text)
+                changed = True
+                continue
             own = (kept.hash(address, line.own, build=True) if address else None) or line.own
             if own != line.own or line.dropped:
                 lines[text], changed = built.Line(own, line.covers, line.sourced), True
@@ -74,9 +83,10 @@ def _built(target: Target, snapshot: Snapshot, kept: Kept) -> list[str]:
     return done
 
 
-def _old_lines(target: Target) -> bool:
-    """A built line still holds a key built lines no longer have."""
-    return any(line.dropped for line in built.read_all(target.repo / target.kb).values())
+def _old_lines(target: Target, snapshot: Snapshot) -> bool:
+    """A built line still holds a key built lines no longer have, or is the line of a live entry that needs no proof."""
+    return any(line.dropped or ((address := snapshot.resolve(text)) is not None and not snapshot.needs_proof(address))
+               for text, line in built.read_all(target.repo / target.kb).items())
 
 
 def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address, Address]) -> list[tuple[Address, Address]]:
@@ -131,12 +141,14 @@ def migrate(target: Target) -> Migrated:
     table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
                                          if (root / old / removed.FILE).is_file()}}
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
-    if not found and not table and not tidied and not retyped and not _old_lines(target):
+    stamped = proven(target.repo, target.kb, snapshot) if not was else {}
+    if not found and not table and not tidied and not retyped and not stamped and not _old_lines(target, snapshot):
         return Migrated([], [], [], [])
     kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str,
                 also)
-    agreed = _agreements(snapshot, kept)
+    agreed = {**stamped, **_agreements(snapshot, kept)}
     lines: list[str] = []
+    unbuilt: list[str] = []
     moved: list[tuple[Address, Address]] = []
 
     def act(ed: Editor) -> None:
@@ -153,11 +165,11 @@ def migrate(target: Target) -> Migrated:
             update = {name: now.get(name) for name in {*entry.fields, *now} if now.get(name) != entry.fields.get(name)}
             if update:
                 ed.update(address, update, snap=snapshot)
-        lines.extend(_built(target, snapshot, kept))
+        lines.extend(_built(target, snapshot, kept, unbuilt))
         moved.extend(_rehome(ed, target, snapshot, table) if table else [])
 
     touched = sorted({change.address for change in found} | set(agreed) | set(tidied))
     names = renamer(table) if table else work.address
     known = findings_after(target, retyped) if retyped else None
     written = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, names, known)
-    return Migrated(found, sorted(agreed), lines, written, moved, pairs)
+    return Migrated(found, sorted(agreed), lines, written, moved, pairs, unbuilt)

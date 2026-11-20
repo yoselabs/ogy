@@ -1,4 +1,4 @@
-question: Where do business actors and technical actors (a scheduler, CI, a system calling us) live?
+question: 'Which layer holds an actor: is it a party the business deals with (a customer, a payment provider), or does it exist only because of how the product is built (a scheduler, CI, an MCP client)?'
 structure: true
 options:
   by-layer:
@@ -14,6 +14,13 @@ options:
       software/ontology/rule/actors-split-by-layer:
         says: Actors live in one layer and a field on the actor marks it business or technical.
       constitution/principle/layers-split-business-from-technical:
+  business-party:
+    label: An actor the business deals with lives in product whatever its nature; an actor that exists only because of how the product is built lives in software; no new field
+    sets:
+      software/ontology/rule/actors-split-by-layer:
+        says: An actor the business deals with, whatever its nature (a customer, a payment provider, a carrier's notifier), lives in the product layer; an actor that exists only because of how the product is built (a scheduler, CI, a git hook, an MCP client) lives in the software layer; no field marks the difference.
+      constitution/principle/layers-split-business-from-technical:
+        says: 'What the business decides is kept apart from how it is built: a business fact lives in the product layer, a build fact in the software layer.'
 proposal:
   chose: by-layer
   why: The layers already separate what the business decides from how it is built; a field would repeat that.
@@ -22,4 +29,8 @@ answers:
 - chose: by-layer
   said: Split business and technical actors by layer.
   at: '2026-11-18T21:04:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: business-party
+  said: 'Yes: an actor the business deals with lives in product whatever its nature; technical actors stay in software'
+  at: '2026-11-20T03:15:34+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

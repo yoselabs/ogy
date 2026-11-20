@@ -7,9 +7,8 @@ unlike: "a UML operation, a signature on a class; an OpenAPI operation"
 shape: file
 sentence: says
 layers: [software]
-needs_proof: true
-fingerprint: {proofs: true}
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
   says: {required: true}
   performs: {type: links, to: [choice, case, timeout], input: content}
   uses: {type: links, to: [dependency], input: {fields: [pin]}}   # a new pin is work; a reworded dependency is not

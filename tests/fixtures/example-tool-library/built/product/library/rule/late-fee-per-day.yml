@@ -1,0 +1,1 @@
+product/library/rule/late-fee-per-day: {own: f56adef51e68, covers: [src/loans/fee.py], sourced: {}}

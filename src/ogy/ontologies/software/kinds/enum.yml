@@ -9,6 +9,8 @@ sentence: says
 file: enums.yml
 layers: [product, software]
 shared: true            # an enum two areas use lives in <layer>/shared/enums.yml
+requires:
+  - {path: ["<-*"], kinds: [any], work: true, status: unused, error: "a enum nothing links to"}
 fields:
   says: {required: true}
   members: {type: texts, required: true}

@@ -41,7 +41,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `find [words] [--kind] [--area] [--state] [--removed] [--parent <address>]` | live and removed entries by words and filters, as a table |
 | `impact`, `diagram <address>` | what a change reaches and what reaches it; the flow as Mermaid |
 | `diff <before> <after>` | what changed between two commits or the worktree, entry by entry |
-| `work [area]` | what the built record says is still to do |
+| `work [area]` | what the built record says is still to do, grouped for a person by cause: the decision that set the entry (or a parent), then what its workflow realizes (`flow.group`); display only, the agents' table stays flat |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
 | `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too), then for the whole glossary each kind's like and unlike line; the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours), what it is like and unlike, and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences, then each kind's like and unlike line. `--readers` lists for each field what reads it (the fingerprint, requires, a build input, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
@@ -74,17 +74,25 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   `dropped` lists answers that have one). Nobody writes a status: it is computed.
 - A person's yes in a review round is kept on the entry it agrees to: `agreed: {at, where, from: human, said, hash}`
   (outside the fingerprint, written only by `reply`; `put` refuses it). Only `from: human` agrees. The entry is "decided by
-  you" while its fingerprint is `hash`, "changed since you agreed" after. A person's yes is evidence of its own.
+  you" while what it was agreed as is `hash`, "changed since you agreed" after: its fingerprint, with the fingerprints of the
+  rows read with a step (a row is never a card of its own) and, for a term that names an entry, that entry's sentence. A
+  person's yes is evidence of its own.
 - Two hashes. The fingerprint is the meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements,
   review cards and removed items hold it. The build hash adds the proofs and the build inputs; only the built record and
   work left compare it. A new proof or a changed dependency is work, never a question for the owner.
+- Which entries need a proof (a test that shows them built): the rows (choice, case, timeout), a rule, an interface, a setting
+  and a workaround; an entity only while it has transitions (`needs_proof: {if_part: transition}`); never a step, a handler
+  or a quantity (a number is proved by the rule that `constrains` it). Each is work until its built line matches its build
+  hash. A built line on a live entry that needs no proof is removal work, and `ogy migrate` deletes it. A dependency's new
+  pin still reaches the rules it is held to (`input_from`); the handler that uses it is no longer built, so its `uses` input
+  reads nothing.
 - Build inputs (as in Bazel and Make). A link field says what of its targets enters the build hash with `input:` `none`
   (the default when unset), `address` (the target's address: a relink is work; only on a note or common field, as a kind's
   other fields have the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is
   work). It may pick less: `input: {fields: [pin]}` (only those fields of each target) or `input: {parts: [choice]}` (the
   addresses of those parts of each target). A link field of a kind that needs proof states its input, `none` included,
-  its own and the common ones (`ontology.yml` states `none` for `because` and `satisfies`). A kind gives the input of a
-  common field or of a part kind in its own `input:` map (`input: {satisfies: content}`, `input: {attribute: content}`;
+  its own and the common ones (`ontology.yml` states `none` for `because`). A kind gives the input of a
+  common field or of a part kind in its own `input:` map (`input: {because: address}`, `input: {attribute: content}`;
   `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
   [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed content input reads
   `changed` in `ogy work`, as a changed meaning does: the build hash is one hash, and a built line keeps only it (`own`), what
@@ -125,13 +133,14 @@ names a shipped ontology, or a folder on disk when it holds a `/` (relative to t
 in which every name differs.
 `docs/kb/constitution/principles.yml` holds the principles (a principle is cited with `because`); every other file is `docs/kb/<layer>/<area>/<kind>/<id>.yml` (a list kind:
 `<layer>/<area>/<file>`; a single kind: one entry in `<layer>/<area>/<file>` whose id is the area), the layer being `product` or `software`.
-Every area holds its `area.yml` (kind `area`: `says`, what the area covers; `unlike`, what belongs in a neighbouring area): the kind
+Every area holds its `area.yml` (kind `area`: `says`, what the area covers, ending `Not here: <what>: <area>`; `unlike`, links to the neighbouring areas, so a renamed area follows): the kind
 declares `every_area`, so an area folder without it is `missing-entry`, and a write into a new area brings it in the same call. It needs
 no proof and is never asked (`asked: false`); which product areas a software area builds is computed from links. The fixed folder
 `constitution/` is no area. An area or kind at the top, or an unknown layer, is `bad-path`. A folder that holds only its `removed.yml`
 is an area no more.
 - The glossary is the kind `term`: each area's words in `<layer>/<area>/glossary.yml`. A term is compressed: `word`, `says` (one
-  line of under 15 words, else `term-too-long`) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
+  line of under 15 words, else `term-too-long`) or `names` (the entry that defines the word: an entity, an actor, a state...; the
+  glossary and its card print that entry's sentence, length-checked the same; exactly one of the two) and `avoid`; it keeps no sources (`evidence: none`): where a word is used is read
   from the sentences. Each layer has the reserved area `shared`, a
   normal area with its `area.yml`: a term, an actor or an enum that two areas use lives there (`product/shared/glossary.yml`,
   `product/shared/actors.yml`), so every address keeps its area. Only the kinds marked `shared: true` (term, actor, enum and area)
@@ -139,7 +148,13 @@ is an area no more.
   not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
 entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. A business actor lives in product, a technical one
-(CI, a scheduler, a program calling us) in software.
+(CI, a scheduler, a git hook, an MCP client) in software.
+- The layers are in order and `ontology.yml` says which way a link may cross them (`link_direction: later-to-earlier`): a link
+  stays in its layer or names an earlier one, so software names product and product never names software (`layer-direction`,
+  any link field, `delegated` of an answer included, and a decision's `sets` keys: a decision lives in the layer it sets or a
+  later one; the constitution is outside the layers). A party the business deals with is a product actor whatever its nature (a
+  payment provider), named by its role; an actor that exists only because of how the product is built (CI, an MCP client) is
+  a software one. In software the handler `uses` the dependency that `realizes` such an actor.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
@@ -175,6 +190,11 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
   removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the
   area that uses it;
+- an agreement written when a step's agreement held only its own fingerprint is re-set to the hash that covers its rows
+  only when the step and every row read with it are as they were in the commit that wrote the agreement (found in Git
+  history); otherwise the step comes back to the owner as changed since agreed;
+- a removed item whose entry the branch changed before removing it has as its snapshot the entry's last version after the
+  base (read from Git history, never from the item's `last_seen`); an entry the base never had is no removal;
 - `check --base` reads the base migrated, so a migration commit is no edit of an append-only part. Removed items keep the
   names they had; nothing is recorded (Git keeps the old names).
 The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type is no declared
@@ -194,7 +214,11 @@ command appears without an edit). Every tool describes itself (its description i
 
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
-- Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
+- Unused (work left `unused`, never a finding, computed from links): a rule nothing `satisfies` and that `constrains`
+  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires. Each kind
+  declares it as a work requirement with `status: unused`.
+- Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A capability `realizes` a
+  goal; one that realizes none is work left (`unrealized` in `ogy work`) until the goal is written, not a finding.
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `interface`
   (ArchiMate's application interface: where an actor reaches the product; its `form` is web, cli, http, mcp, library, file
   or message) that serves steps; `handler` that performs them. An interface `shows` and `accepts` entities and attributes
@@ -210,30 +234,36 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
   entity (owner, 2026-11-20), or an interface `accepts` it or its entity; else `unmet-requirement`
   (never-written).
 - Conditions (`when` of a case or a choice; `derived`) may name actors.
-- What it depends on: `dependency` and its `workaround`s.
+- What it depends on: `dependency` and its `workaround`s. A dependency `realizes` the program actor that rows tell (a payment
+  provider); a row that tells a program actor has a handler that performs it and `uses` a dependency realizing that actor
+  (`actor.nature` is read here).
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
-- Held to: any entry names the rules it is held to with `satisfies`; a
-  rule has no `on`. `satisfies` is an input of the rows and interfaces only (`input: {satisfies: content}`), so adding a rule stales
-  no other holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
+- Held to: behaviour (a step, a row, an interface, a handler, a dependency, a workflow) names the rules it is held to with
+  `satisfies`; a rule names the data it holds to (a quantity, an enum, a setting, an entity, an attribute, a state) with
+  `constrains`, a content input (a changed number makes the rule work). `satisfies` is a content input of the rows and interfaces
+  only, so adding a rule stales no other holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
   proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_unset: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one
-value or a list), then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself), or along any
-of `or_paths`, an entry of `kinds` that sets none of `without`; an unmet one is `unmet-requirement`, or, with `work: true`,
-work left (`unserved`) rather than a finding. A path hop is a link field, `<-field` backward (`<-field?key=a|b`: only links
-whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
+value or a list, `if_reaches: <path>`: the path reaches anything), then needs a field (`needs_field`) or reaches along a link
+`path` (none: the entry itself), or along any of `or_paths`, an entry of `kinds` that sets none of `without`; with `same: true`
+the path must come back to the entry itself (for an item of a list part, the entry holding it). An unmet one is
+`unmet-requirement`, or, with `work: true`, work left under the `status` it names (step: `unserved`) rather than a finding.
+A path hop is a link field (`field?key=a|b`: only targets whose `key` is a or b), `<-field` backward (`<-field?key=a|b`: only
+links whose holder, the entry or the list part item, has `key` a or b; `<-*` by any link field), `^` the parent or `/kind`
+the parts; `kinds: [any]` takes an entry of any kind. So an effect's `do`
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
 `links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
 
-An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
-that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
+An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` to a
+principle or a decision (the reason, never a source); or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.
 Every kind file carries `guidance:`, a short text on how to decide when to use the kind (for an actor, the variation test:
 different permitted actions make an actor, a recorded move the product reacts to a state, a fact that changes the outcome an
 attribute in a case; a threshold name is never an actor), and `like` and `unlike`, one line each: the mainstream notion
 the kind matches and the ones of the same name it does not mean (`ogy kinds`, `--map` and `ogy glossary` print them).
-`satisfies` holds an entry to a rule; `because` cites a principle or a
-decision as the reason. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
+`satisfies` holds behaviour to a rule, `constrains` holds data to it; `because` cites a principle or a
+decision as the reason, nothing else. A kind or a field may declare `harm:` (what a wrong sentence costs), which ranks the review queue.
 
 ## Where the code lives
 

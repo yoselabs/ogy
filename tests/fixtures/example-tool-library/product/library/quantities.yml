@@ -3,5 +3,4 @@
   says: The fee for each day a tool is late, per tool.
   is: 2
   unit: EUR
-  proof: [tests/test_fee.py::test_late_fee_per_day]
   agreed: {at: '2026-11-24T18:42:00+01:00', where: ai:claude/9b01#41, said: Yes to card 1, hash: 4cd580300f29}

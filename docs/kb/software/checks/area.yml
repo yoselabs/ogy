@@ -1,4 +1,4 @@
-says: 'How ogy check is built: the checks it runs on every snapshot, the landing checks and the pre-commit hook.'
+says: 'How ogy check is built: the checks it runs on every snapshot, the landing checks and the pre-commit hook. Not here: the commands that print findings: cli; the write that is put back on a new error: writes.'
 unlike:
-- 'the commands that print findings: cli'
-- 'the write that is put back on a new error: writes'
+- software/cli/area/cli
+- software/writes/area/writes

@@ -119,28 +119,36 @@ class Equals(BaseModel):
 
 
 class Requirement(BaseModel):
-    """When the entry has field `if_set`, lacks field `if_unset`, has a part `if_part` or a field value `if_equals` (every entry,
-    without one), it sets `needs_field`, or it reaches along `path` (none: the entry itself), or along any one of `or_paths`, an
-    entry of `kinds` that sets none of `without`. Unmet, it is `unmet-requirement`; with `work`, it is work left instead (what
-    is still to be built, not a fault)."""
+    """When the entry has field `if_set`, lacks field `if_unset`, has a part `if_part`, a field value `if_equals` or reaches
+    anything along the path `if_reaches` (every entry, without one), it sets `needs_field`, or it reaches along `path` (none:
+    the entry itself), or along any one of `or_paths`, an entry of `kinds` that sets none of `without`; with `same`, the path
+    comes back to the entry itself (for an item of a list part, the entry that holds it). Unmet, it is `unmet-requirement`;
+    with `work`, it is work left instead (what is still to be built, not a fault), under the `status` it names."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     if_set: str | None = None
     if_unset: str | None = None
     if_part: str | None = None
     if_equals: Equals | None = None
+    if_reaches: tuple[str, ...] = ()
     needs_field: str | None = None
     path: tuple[str, ...] = ()
     or_paths: tuple[tuple[str, ...], ...] = ()
     kinds: tuple[str, ...] = ()
     without: tuple[str, ...] = ()
+    same: bool = False
     work: bool = False
+    status: str | None = None  # the work status an unmet `work` requirement is listed under
     error: str
 
     @model_validator(mode="after")
     def _one_condition(self) -> Self:
-        if sum(item is not None for item in (self.if_set, self.if_unset, self.if_part, self.if_equals)) > 1:
-            raise ValueError("a requirement has one of if_set, if_unset, if_part and if_equals, not both")
+        if sum(item is not None for item in (self.if_set, self.if_unset, self.if_part, self.if_equals)) + bool(self.if_reaches) > 1:
+            raise ValueError("a requirement has one of if_set, if_unset, if_part, if_equals and if_reaches, not both")
+        if self.same and not self.path:
+            raise ValueError("a requirement that comes back to the entry (same) has a path")
+        if (self.status is not None) != self.work:
+            raise ValueError("a requirement that is work names its status, and only it")
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
             raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
         if self.or_paths and not (self.path and all(self.or_paths)):
@@ -163,7 +171,16 @@ class Requirement(BaseModel):
             return f"with a {self.if_part}"
         if self.if_equals:
             return f"with {self.if_equals.field} {'|'.join(self.if_equals.values)}"
+        if self.if_reaches:
+            return f"reaching {' '.join(self.if_reaches)}"
         return ""
+
+
+class ProofWhen(BaseModel):
+    """A kind's entries need proof only when they hold a part of this kind (an entity with transitions)."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    if_part: str
 
 
 class OnePart(BaseModel):
@@ -203,6 +220,7 @@ class Glossary(BaseModel):
     word: str  # the field holding the word people say
     avoid: str  # the field listing words never used for it: a sentence that uses one is `avoided-word`
     words: int  # its sentence has fewer words than this (`term-too-long`)
+    names: str | None = None  # the link field naming the entry that defines the word: its sentence is the term's
 
 
 class PrintedFirst(BaseModel):
@@ -240,6 +258,7 @@ class Flow(BaseModel):
     serves: str
     servers: tuple[str, ...]
     offers: str  # a serving entry offering only some choices lists them; without it, it offers all
+    group: str | None = None  # container link field naming what the flow realizes: `ogy work` groups its work by it
 
 
 class Was(BaseModel):
@@ -272,7 +291,7 @@ class Kind(BaseModel):
     moved_from: str | None = None  # `<folder>/<file>`: the fixed-folder file it was kept in; `ogy migrate` moves it to `shared`
     file: str | None = None  # a list or single kind's file name inside every area
     every_area: bool = False  # every area of the kind's layers holds an entry of it; an area without one is `missing-entry`
-    needs_proof: bool = False  # entries count as work until built
+    needs_proof: bool | ProofWhen = False  # entries count as work until built; `{if_part: <kind>}`: only those holding one
     must_be_agreed: bool = False
     asked: bool = True  # false: its sentence is never put to the owner, so it gets no review card and needs no agreement
     harm: tuple[str, ...] = ()  # what a wrong sentence of this kind costs (tags of `harms`); read by the review queue
@@ -324,6 +343,16 @@ class Kind(BaseModel):
         return self.moved_from.split("/", 1)[0] if self.moved_from is not None and self.layers else None
 
     @property
+    def proves(self) -> bool:
+        """Some entries of the kind need proof (all, or those holding the part `needs_proof` names): read by the kind's lints,
+        readers and printers; which entry needs one is `Snapshot.needs_proof`."""
+        return self.needs_proof is not False
+
+    @property
+    def proof_text(self) -> str:
+        return f"needs proof with a {self.needs_proof.if_part}" if isinstance(self.needs_proof, ProofWhen) else "needs proof"
+
+    @property
     def holding(self) -> Holds:
         return self.holds or Holds.MAP
 
@@ -343,6 +372,13 @@ class Kind(BaseModel):
     def has_id(self) -> bool:
         """The address of an entry of this kind ends in an id (a `holds: one` part is named by its kind alone)."""
         return self.addressable and not (self.shape is Shape.INLINE and self.holding is Holds.ONE)
+
+
+def where(hop: str) -> tuple[str, str, frozenset[str] | None]:
+    """A path hop's field, and the key and values its `?key=a|b` keeps (None: it keeps every link)."""
+    name, _, condition = hop.partition("?")
+    key, _, values = condition.partition("=")
+    return name, key, frozenset(values.split("|")) if condition else None
 
 
 NAME = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")  # an area, an id, a local key

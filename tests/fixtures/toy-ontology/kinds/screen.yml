@@ -11,3 +11,4 @@ fields:
   serves_stages: {type: links, to: [stage], required: true, input: {parts: [move]}}
   shows_moves: {type: links, to: [move], input: none}
   nests: {type: links, to: [screen], input: content}
+  wired_to: {type: links, to: [person], input: none}

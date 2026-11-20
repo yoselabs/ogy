@@ -81,8 +81,8 @@ def rewrite_fields(ontology: Ontology, kind: Kind, fields: Mapping[str, object],
 def rehash(before: Snapshot, after: Snapshot, was: Address, now: Address, agreed: object) -> object:
     """An entry's `agreed` that was current in `before` (at `was`) set to the fingerprint the entry has in `after` (at `now`):
     a move changes the fingerprint of what links to the moved entry, not what the person agreed to."""
-    if isinstance(agreed, dict) and was in before.entries and now in after.entries and agreed.get(AGREED_HASH) == before.fingerprint(was):
-        return {**agreed, AGREED_HASH: after.fingerprint(now)}
+    if isinstance(agreed, dict) and was in before.entries and now in after.entries and agreed.get(AGREED_HASH) == before.agreed_print(was):
+        return {**agreed, AGREED_HASH: after.agreed_print(now)}
     return agreed
 
 

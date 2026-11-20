@@ -15,9 +15,9 @@ from ogy.kinds import Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
-from ogy.model import Entry, Finding, Problem
-from ogy.requires import applies, satisfied, unmet
-from ogy.settle import check_decisions
+from ogy.model import Entry, Finding, Problem, parse_address
+from ogy.requires import applies, reaching, satisfied, unmet
+from ogy.settle import check_decisions, decisions
 from ogy.snapshot import Snapshot, load
 from ogy.source import Source
 from ogy.terms import check_proposed_terms, check_term_agreement, check_terms
@@ -81,10 +81,14 @@ class Checker:
                       "then to the area that uses it: run `ogy migrate`, then `ogy move`")
 
     def _links(self, entry: Entry) -> None:
+        declared = self.snapshot.ontology.declared
         for item in link_items(self.snapshot.ontology, entry):
             found = resolve(self.snapshot.ontology, self.snapshot.entries, entry.address, item)
             if found.problem is not None:
                 self._add(found.problem, entry, found.detail)
+            elif (target := found.target) is not None and declared.reversed_link(entry.address.layer, target.layer):
+                self._add(Problem.LAYER_DIRECTION, entry, f"{item.field}: {target} is in a later layer; a link stays in its layer or "
+                          f"names an earlier one ({', '.join(declared.layers)})")
 
     def _form(self, kind: Kind, entry: Entry) -> None:
         for group in kind.exactly_one_of:
@@ -101,15 +105,15 @@ class Checker:
             if len(matching) != 1:
                 self._add(Problem.ONE_PART, entry, f"exactly one {rule.kind} with {rule.field}: {rule.equals}, found {len(matching)}")
 
-
     def _items(self, kind: Kind, entry: Entry) -> None:
         """The requirements of the items of a `holds: list` part (an effect), reported on the entry that holds them."""
         for part in self.snapshot.ontology.parts_of(kind.kind):
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST and part.requires else None
             for item in items if isinstance(items, list) else ():
-                for need in (need for need in part.requires if not need.work) if isinstance(item, dict) else ():
-                    if applies(need, item, lambda _: False) and not satisfied(self.snapshot, need, part.kind, entry.address, item,
-                                                                             item=True):
+                reaches = reaching(self.snapshot, entry.address, item, part.kind) if isinstance(item, dict) else None
+                for need in (need for need in part.requires if not need.work) if reaches is not None else ():
+                    if applies(need, item, lambda _: False, reaches) and not satisfied(self.snapshot, need, part.kind, entry.address,
+                                                                                      item, item=True):
                         self._add(Problem.UNMET, entry, f"{part.key}: {need.error}")
 
 
@@ -117,8 +121,21 @@ def check_entries(snapshot: Snapshot, _source: Source) -> list[Finding]:
     return Checker(snapshot).run()
 
 
-CHECKS: tuple[Check, ...] = (check_entries, check_every_area, check_flows, check_evidence, check_decisions, check_terms, check_ledgers,
-                             check_lints)
+def check_sets_direction(snapshot: Snapshot, _source: Source) -> list[Finding]:
+    """`layer-direction` over a decision's `sets` keys: a decision names what it sets, so it lives in that layer or a later one."""
+    declared, found = snapshot.ontology.declared, []
+    for decision in decisions(snapshot):
+        named = sorted({text for sets in decision.sets_all() for text in (sets if isinstance(sets, dict) else {})})
+        for text in named:
+            if (target := parse_address(text, snapshot.ontology)) is not None and declared.reversed_link(decision.address.layer,
+                                                                                                         target.layer):
+                found.append(Finding(Problem.LAYER_DIRECTION, decision.entry.path, f"sets: {text} is in a later layer; a decision "
+                                     f"sets entries of its layer or an earlier one ({', '.join(declared.layers)})", decision.address))
+    return found
+
+
+CHECKS: tuple[Check, ...] = (check_entries, check_sets_direction, check_every_area, check_flows, check_evidence, check_decisions,
+                             check_terms, check_ledgers, check_lints)
 # Errors only when a land is asked for: nobody has agreed yet is waiting for the owner, not a fault (`ogy check` counts it).
 LANDING: tuple[Check, ...] = (check_term_agreement, check_proposed_terms)
 

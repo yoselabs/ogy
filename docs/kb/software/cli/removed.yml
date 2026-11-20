@@ -1,35 +1,35 @@
 format: 1
 items:
-  - id: software/cli/command/message
-    kind: command
-    parent:
-    title:
-    said: Store a reply of a person or an agent, whole and once.
-    why: product/capture/decision/every-reply-is-a-message
-    replaced_by:
-    at: 2026-11-18 20:45:03+01:00
-    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
-    hash: 478b37e3cfa9
-    ontology: software
-    snapshot:
-      says: Store a reply of a person or an agent, whole and once.
-      invoked_as: ogy message --by <persona> --where <uri> --text <words> [--at <iso>] [--from-owner]
-      serves:
-      - product/capture/workflow/store-owner-words/step/store
-      src:
-      - code:src/ogy/cli.py#_writes
-  - id: software/cli/rule/message-and-answer-are-public
-    kind: rule
-    parent:
-    title:
-    said: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
-    why: software/cli/decision/message-and-answer-are-public
-    replaced_by:
-    at: 2026-11-18 23:30:24+00:00
-    last_seen: 50fd192f730c4a4865fdf0e7a3f1b3020f3db5e2
-    hash: 5d5347d6f596
-    ontology: software
-    snapshot:
-      says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
-      src:
-      - code:src/ogy/cli.py#_writes
+- id: software/cli/command/message
+  kind: command
+  parent:
+  title:
+  said: Store a reply of a person or an agent, whole and once.
+  why: software/writes/decision/every-reply-is-a-message
+  replaced_by:
+  at: 2026-11-18 20:45:03+01:00
+  last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+  hash: 478b37e3cfa9
+  ontology: software
+  snapshot:
+    says: Store a reply of a person or an agent, whole and once.
+    invoked_as: ogy message --by <persona> --where <uri> --text <words> [--at <iso>] [--from-owner]
+    serves:
+    - product/capture/workflow/store-owner-words/step/store
+    src:
+    - code:src/ogy/cli.py#_writes
+- id: software/cli/rule/message-and-answer-are-public
+  kind: rule
+  parent:
+  title:
+  said: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+  why: software/cli/decision/message-and-answer-are-public
+  replaced_by:
+  at: 2026-11-18 23:30:24+00:00
+  last_seen: 50fd192f730c4a4865fdf0e7a3f1b3020f3db5e2
+  hash: 5d5347d6f596
+  ontology: software
+  snapshot:
+    says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
+    src:
+    - code:src/ogy/cli.py#_writes

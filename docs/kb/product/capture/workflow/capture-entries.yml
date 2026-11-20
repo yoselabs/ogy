@@ -15,7 +15,7 @@ steps:
       at: '2026-11-19T17:58:26+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Kept no-views and YAML-only glossary; agreed to the five sentences
-      hash: 5f33d23e59d6
+      hash: 1a672dba20d2
   search:
     says: The agent searches live and removed entries before it proposes anything.
     actor: product/shared/actor/agent
@@ -27,7 +27,7 @@ steps:
       at: '2026-11-19T17:58:26+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Kept no-views and YAML-only glossary; agreed to the five sentences
-      hash: 366025992dc3
+      hash: 5fec10cb08f5
   put:
     says: The agent writes the records with ogy put.
     actor: product/shared/actor/agent
@@ -39,7 +39,7 @@ steps:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Agreed to the seven capture and hand-over sentences
-      hash: ec2c8216e696
+      hash: efeeebd37ba6
   check:
     says: ogy checks the batch together and writes it under the write lock.
     cases:
@@ -55,13 +55,6 @@ steps:
         effects:
         - do: write
           on: product/capture/entity/entry
-      locked:
-        order: 0
-        when:
-          text: another ogy write holds the write lock
-          reads:
-          - software/storage/dependency/git
-        then: refused
     agreed:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

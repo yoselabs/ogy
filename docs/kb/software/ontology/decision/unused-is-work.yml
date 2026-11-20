@@ -1,0 +1,19 @@
+question: How is an entry nothing uses reported?
+context: 'Bead ogy-yy9.75 owner decision (4): unused is computed from links; a kind only declares it must be used. Each kind declares it as a work requirement with status unused: a rule needs an inbound satisfies or an outbound constrains; a quantity, enum, setting or dependency an inbound link of any field (path hop <-*, kinds any); a transition an effect that fires it. It is work left, not a finding (coordinator choice: atomic writes and capture from code need it, and the owner plans a rule-sorting round after stage 3). docs/kb: 82 unused (65 rules, 6 quantities, 6 enums, 3 settings, 1 dependency, 1 transition).'
+options:
+  work:
+    label: Work left with status unused, computed from links
+  error:
+    label: An error in ogy check
+proposal:
+  chose: work
+  why: ogy check would be red on 82 entries until the sorting round.
+answers:
+- chose: work
+  said: 'Yes, all: unused computed from incoming links; a kind only declares it must be used'
+  at: '2026-11-20T03:39:58+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: work
+  said: 'Yes, all four: unused is work left with status unused, not an error'
+  at: '2026-11-20T03:51:47+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

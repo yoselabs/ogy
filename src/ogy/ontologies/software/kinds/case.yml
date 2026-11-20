@@ -8,10 +8,10 @@ part_of: step
 key: cases
 needs_proof: true
 fingerprint: {proofs: true}
-input: {satisfies: content}                         # a rule the row is held to changes: the row and its performer are stale
 requires:
   - {if_part: effect, path: ["<-performs"], kinds: [handler], error: "a row with an effect has a handler performing it"}
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (behaviour: a rule it is held to changes, it is stale)
   order: {type: number}
   when: {type: expr, to: [quantity, enum, entity, attribute, state, dependency, setting, actor], input: none}
   covers_ends: {type: links, to: [end], input: none}   # in a calling step: the callee's ends this case answers

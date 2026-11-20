@@ -98,7 +98,7 @@ def agreement(snapshot: Snapshot, address: Address, hashes: dict[str, str] | Non
     found = (hashes if hashes is not None else agreed_hashes(snapshot)).get(str(address))
     if found is None:
         return Agreement.NOT_AGREED
-    return Agreement.AGREED if found == snapshot.fingerprint(address) else Agreement.CHANGED
+    return Agreement.AGREED if found == snapshot.agreed_print(address) else Agreement.CHANGED
 
 
 def label(snapshot: Snapshot, address: Address) -> Label:
@@ -196,7 +196,7 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
                 snapshot.sentence(decision.address) or "", guess if isinstance(guess, str) else "",
-                snapshot.fingerprint(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
+                snapshot.agreed_print(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
                 context=decision.entry.text(names.context) or "",
                 then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
                 earlier=_earlier(decision) if kind == "delegated" else "", alone=asked_alone(snapshot, tags[0] if tags else None))
@@ -258,7 +258,7 @@ def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Addr
     word = str(fields.get(glossary.word) or "") if glossary else ""
     tag = harm(snapshot, address)
     return Card(kind, address, tag, count.get(address, 0), _says(snapshot, address), alone=asked_alone(snapshot, tag),
-                fingerprint=snapshot.fingerprint(address), evidence=evidence(snapshot, address), word=word,
+                fingerprint=snapshot.agreed_print(address), evidence=evidence(snapshot, address), word=word,
                 avoid=tuple(str(item) for item in avoid) if word and isinstance(avoid, list) else ())
 
 
@@ -308,7 +308,7 @@ def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int])
         members.sort(key=lambda card: (card.address != top, str(card.address)))
         kind = "changed" if any(card.kind == "changed" for card in members) else "yes"
         worst = min((card.harm for card in members), key=snapshot.ontology.declared.rank, default=None)
-        alone.append(Card(kind, top, worst, count.get(top, 0), _says(snapshot, top), fingerprint=snapshot.fingerprint(top),
+        alone.append(Card(kind, top, worst, count.get(top, 0), _says(snapshot, top), fingerprint=snapshot.agreed_print(top),
                           alone=asked_alone(snapshot, worst),
                           evidence=evidence(snapshot, top),
                           members=tuple((card.address, card.text, card.fingerprint) for card in members)))

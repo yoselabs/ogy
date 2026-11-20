@@ -1,3 +1,3 @@
-says: 'How ogy is packaged: one package for now, with its technical code in shelf packages.'
+says: 'How ogy is packaged: one package for now, with its technical code in shelf packages. Not here: what ogy init writes into a repository: setup.'
 unlike:
-- 'what ogy init writes into a repository: setup'
+- software/setup/area/setup

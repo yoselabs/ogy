@@ -1,4 +1,4 @@
-says: "Asking the owner: rounds of at most seven cards, the decisions they answer, and applying the owner's reply to its round."
+says: "Asking the owner: rounds of at most seven cards, the decisions they answer, and applying the owner's reply to its round. Not here: storing the owner's words: capture; what no person has seen: removal."
 unlike:
-- "storing the owner's words: capture"
-- 'what no person has seen: removal'
+- product/capture/area/capture
+- product/removal/area/removal

@@ -1,3 +1,3 @@
-says: 'The eval suite that measures every change to the ontology, a skill or the checker: arms, runs per arm and blind scoring.'
+says: 'The eval suite that measures every change to the ontology, a skill or the checker: arms, runs per arm and blind scoring. Not here: checking a knowledge base: checks.'
 unlike:
-- 'checking a knowledge base: checks'
+- product/checks/area/checks

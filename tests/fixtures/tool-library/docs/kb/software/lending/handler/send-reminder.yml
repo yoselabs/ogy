@@ -5,3 +5,5 @@ uses:
 - software/lending/dependency/mailer
 src:
 - code:src/library/remind.py#notify
+satisfies:
+- software/lending/rule/one-reminder-a-day

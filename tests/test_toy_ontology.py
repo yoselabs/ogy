@@ -115,7 +115,7 @@ def test_requirements_cycles_and_requirements_that_are_work_follow_the_toy_names
     assert any(line.startswith("link-cycle: tech/shop/screen/page.yml") for line in w(toy, "check")[1])
     page.unlink()
     assert w(toy, "check")[0] == cli.OK
-    assert "unserved: business/shop/journey/buy/stage/pick (now -, built -) a stage a person acts at has a screen" in w(toy, "work")[1]
+    assert "unscreened: business/shop/journey/buy/stage/pick (now -, built -) a stage a person acts at has a screen" in w(toy, "work")[1]
 
 
 def test_put_adds_and_refuses_by_the_toy_roles(toy: Path) -> None:
@@ -330,3 +330,60 @@ def test_a_kind_gaining_an_input_field_makes_no_work_and_unsetting_an_input_does
     assert same.build_hash(_at(same, PICK)) == plain.build_hash(_at(plain, PICK))  # a new, unset input adds nothing: no work
     move = f"{PICK}/move/go"
     assert before.build_hash(_at(before, move)) != plain.build_hash(_at(plain, move))  # set -> unset of `held_by` moves the hash
+
+
+def test_a_link_into_a_later_toy_layer_is_a_finding(toy: Path) -> None:
+    """`link_direction: later-to-earlier`: tech names business; a business entry naming tech is `layer-direction`."""
+    norm = toy / "docs/kb/business/shop/norm/limit.yml"
+    norm.write_text(norm.read_text() + "reason: [tech/shop/screen/page]\n")
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["layer-direction"]
+
+
+def test_a_stage_a_machine_acts_at_comes_back_through_a_screen_wired_to_the_machine(toy: Path) -> None:
+    """`if_reaches: [who?sort=machine]` (a forward hop kept by the target's field), then a path that comes back to the stage
+    itself (`same`): a stage a machine acts at is served by a screen wired to that machine."""
+    people, page = toy / "docs/kb/business/shop/people.yml", toy / "docs/kb/tech/shop/screen/page.yml"
+    people.write_text(people.read_text().replace("sort: human", "sort: machine"))
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["unmet-requirement"]
+    page.write_text(page.read_text() + "wired_to: [business/shop/person/shopper]\n")
+    assert w(toy, "check")[0] == cli.OK
+
+
+def test_a_toy_word_points_at_the_entry_that_defines_it(toy: Path) -> None:
+    """`glossary: {names: points_at}`: a word with no sentence of its own prints the sentence of the entry it points at."""
+    words = toy / "docs/kb/business/shop/words.yml"
+    words.write_text(words.read_text() + "- {id: shopper, spelling: shopper, points_at: business/shop/person/shopper}\n")
+    assert w(toy, "check")[0] == cli.OK
+    assert "  shopper: A person who buys. (business/shop/person/shopper)" in w(toy, "glossary")[1]
+    words.write_text(words.read_text().replace("points_at: business/shop/person/shopper", "points_at: business/shop/person/shopper, "
+                                                                                          "tells: Buys."))
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["one-of"]
+
+
+def test_a_toy_stage_needs_proof_only_while_it_holds_a_move() -> None:
+    """`needs_proof: {if_part: move}`: the condition names a part kind of the toy's own."""
+    texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}
+    journey = texts["business/shop/journey/buy.yml"].replace("finishes:", "  think: {tells: The shopper thinks., next: done}\nfinishes:")
+    snapshot = build(named(str(TOY), Path(".")), {**texts, "business/shop/journey/buy.yml": journey})
+    assert snapshot.needs_proof(_at(snapshot, PICK)) and not snapshot.needs_proof(_at(snapshot, "business/shop/journey/buy/stage/think"))
+
+
+def test_a_toy_norm_nothing_links_to_is_idle_work(toy: Path) -> None:
+    """`<-*` follows a link of any field backward and `kinds: [any]` takes what it reaches; unmet, it is work under the
+    status the toy names (`idle`), never a finding."""
+    assert w(toy, "check")[0] == cli.OK
+    assert "idle: business/shop/norm/limit (now -, built -) a norm nothing links to" in w(toy, "work")[1]
+    journey = toy / "docs/kb/business/shop/journey/buy.yml"
+    journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
+    assert not any(line.startswith("idle:") for line in w(toy, "work")[1])
+
+
+def test_toy_work_is_grouped_by_the_ruling_that_set_it_then_what_its_journey_aims_at(toy: Path) -> None:
+    """Display only: `ogy work` for a person puts each piece of work under the decision that set it (or a parent) and what its
+    container's `flow.group` link names."""
+    journey = toy / "docs/kb/business/shop/journey/buy.yml"
+    journey.write_text(journey.read_text() + "aims_at: business/shop/norm/limit\n")
+    lines = w(toy, "work")[1]
+    assert lines[lines.index("by business/shop/ruling/limit, for nothing realized (1):") + 1].startswith(
+        "unbuilt: business/shop/norm/limit ")
+    assert any(line.startswith("by no decision, for business/shop/norm/limit (") for line in lines)

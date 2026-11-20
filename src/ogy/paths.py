@@ -1,7 +1,8 @@
 """Link paths: a kind names a route through typed links, used by staleness and by `requires` checks.
 
-A path is a list of hops. `field` follows that link field forward, `<-field` follows it backward (entries whose
-`field` points here; `<-field?key=a|b` only where the entry, or the list part item that holds the link, has `key` a or b),
+A path is a list of hops. `field` follows that link field forward (`field?key=a|b`: only to targets whose `key` is a or b),
+`<-field` follows it backward (entries whose `field` points here; `<-field?key=a|b` only where the entry, or the list part
+item that holds the link, has `key` a or b; `<-*` by any link field),
 `^` goes to the entry's parent, `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
 the entries reached. A final `=@id`, `=@address` or `=@fingerprint` is answered by the snapshot (keys, full addresses, or
 the reached entries' own fingerprints, so a performer goes stale when the row it performs changes).
@@ -12,13 +13,13 @@ parts, `Kind.input`) and its reverse `input_from` are read as such paths (`input
 
 from collections.abc import Mapping, Sequence
 
-from ogy.kinds import Input, Kind, Picked
+from ogy.kinds import Input, Kind, Picked, where
 from ogy.links import link_items, resolve
 from ogy.model import Address, Entry
 from ogy.ontology import Ontology
 
 BACK = "<-"
-WHERE, OR = "?", "|"
+ANY_FIELD = "*"  # `<-*`: the entries that link here by any field
 PARENT = "^"
 VALUE = "="
 PARTS = "/"
@@ -26,6 +27,10 @@ DERIVED = "=@"
 ID, ADDRESS, CONTENT = DERIVED + "id", DERIVED + "address", DERIVED + "fingerprint"
 
 type Hops = tuple[str, ...]
+
+
+def kept(fields: Mapping[str, object], key: str, wanted: frozenset[str] | None) -> bool:
+    return wanted is None or fields.get(key) in wanted
 
 
 def _input(start: Hops, given: Input | Picked | None) -> list[Hops]:
@@ -54,6 +59,7 @@ class LinkIndex:
         self.entries = entries
         self._forward: dict[tuple[Address, str], set[Address]] = {}
         self._backward: dict[tuple[Address, str], list[tuple[Address, Mapping[str, object]]]] = {}
+        self._into: dict[Address, set[Address]] = {}
         self._parts: dict[tuple[Address, str], set[Address]] = {}
         for address, entry in entries.items():
             parent = address.parent()
@@ -65,6 +71,7 @@ class LinkIndex:
                     self._forward.setdefault((address, item.field), set()).add(target)
                     holder = item.item if item.item is not None else entry.fields
                     self._backward.setdefault((target, item.field), []).append((address, holder))
+                    self._into.setdefault(target, set()).add(address)
 
     def forward(self, address: Address, field: str) -> set[Address]:
         return self._forward.get((address, field), set())
@@ -72,10 +79,15 @@ class LinkIndex:
     def backward(self, address: Address, field: str) -> set[Address]:
         """The entries whose `field` points here; `field?key=a|b`: only those links whose holder (the entry, or the list part
         item that holds the link) has `key` a or b."""
-        name, _, where = field.partition(WHERE)
-        key, _, values = where.partition("=")
-        wanted = set(values.split(OR))
-        return {source for source, holder in self._backward.get((address, name), []) if not where or holder.get(key) in wanted}
+        if field == ANY_FIELD:
+            return set(self._into.get(address, set()))
+        name, key, wanted = where(field)
+        return {source for source, holder in self._backward.get((address, name), []) if kept(holder, key, wanted)}
+
+    def onward(self, address: Address, hop: str) -> set[Address]:
+        """The targets of the link field `hop` names; `field?key=a|b`: only targets whose `key` is a or b."""
+        name, key, wanted = where(hop)
+        return {target for target in self.forward(address, name) if kept(self.entries[target].fields, key, wanted)}
 
     def parts(self, address: Address, kind: str) -> list[Address]:
         """The parts of one kind, sorted."""
@@ -98,5 +110,5 @@ class LinkIndex:
             elif hop.startswith(BACK):
                 current = {source for address in current for source in self.backward(address, hop[len(BACK):])}
             else:
-                current = {target for address in current for target in self.forward(address, hop)}
+                current = {target for address in current for target in self.onward(address, hop)}
         return current, values

@@ -42,7 +42,7 @@ def _facts(kind: Kind) -> list[str]:
     if kind.moved_from:
         where.append(f"moved from {kind.moved_from} (`ogy migrate`)")
     flags = [text for text, on in (("in every area", kind.every_area), ("never asked", not kind.asked),
-                                   ("needs proof", kind.needs_proof), ("must be agreed", kind.must_be_agreed),
+                                   (kind.proof_text, kind.proves), ("must be agreed", kind.must_be_agreed),
                                    ("append only", kind.append_only), ("settles entries", kind.settling is not None),
                                    ("is a flow", kind.flow is not None)) if on]
     lines = [f"  lives: {', '.join(where)}"]

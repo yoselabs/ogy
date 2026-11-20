@@ -16,9 +16,11 @@ from ogy.kinds import (
     Input,
     Kind,
     Picked,
+    ProofWhen,
     Requirement,
     Shape,
     Was,
+    where,
 )
 
 REMOVED_FILE = "removed.yml"
@@ -45,6 +47,9 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
     found += _keys(kinds, declared)
     found += _settling(kinds) + _roles(kinds)
     found += _link_direction(kinds)
+    found += [f"{name}: flow group {kind.flow.group} is no link field of the kind" for name, kind in kinds.items()
+              if kind.flow is not None and kind.flow.group is not None and (kind.flow.group not in kind.fields
+                                                                           or kind.fields[kind.flow.group].type is not FieldType.LINK)]
     return found
 
 
@@ -170,7 +175,10 @@ def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
                   if holders and not any(field in other.fields for other in holders)]
         found += [f"{name}.input_from.{key}: {field}, {_SOME.format(other.kind)}" for other in holders
                   for field in (key, *picked.fields) if field in _partial(other)]
-    if kind.needs_proof:
+    when = kind.needs_proof if isinstance(kind.needs_proof, ProofWhen) else None
+    if when is not None and not (when.if_part in kinds and kinds[when.if_part].is_part(name)):
+        found.append(f"{name}: needs_proof if_part names no part kind {when.if_part}")
+    if kind.proves:
         found += [f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
                   for field, spec in {**declared.common, **kind.fields}.items()
                   if spec.type in LINKING and spec.input is None and field not in kind.input]
@@ -189,7 +197,7 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
                   ("if_unset", need.if_unset)) if field is not None and field not in kind.fields]
         if need.if_part is not None and not (need.if_part in kinds and kinds[need.if_part].is_part(name)):
             found.append(f"{name}: requirement if_part names no part kind {need.if_part}")
-        found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
+        found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds and target != ANY]
         found += _requirement(kinds, name, kind, need)
     if kind.one_part is not None and kind.one_part.kind not in kinds:
         found.append(f"{name}: one_part names unknown kind {kind.one_part.kind}")
@@ -214,8 +222,8 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
     if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
         if need.if_part is not None:
             found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")
-        if any(path and (path[0] not in kind.fields or kind.fields[path[0]].type not in (FieldType.LINK, FieldType.LINKS))
-               for path in need.paths):
+        if any(path and (where(path[0])[0] not in kind.fields or kind.fields[where(path[0])[0]].type not in (
+                FieldType.LINK, FieldType.LINKS)) for path in (*need.paths, need.if_reaches)):
             found.append(f"{name}: the path of an item of a list part starts at one of its link fields")
         if need.work:
             found.append(f"{name}: an item of a list part has no address, so no requirement of it is work")
@@ -348,6 +356,8 @@ def _roles(kinds: Mapping[str, Kind]) -> list[str]:
     found += ["at most one kind is printed first"] if len(printed) > 1 else []
     for name, kind, role in glossary:
         found += [f"{name}: glossary names no field {field}" for field in (role.word, role.avoid) if field not in kind.fields]
+        if role.names is not None and (role.names not in kind.fields or kind.fields[role.names].type is not FieldType.LINK):
+            found.append(f"{name}: glossary names {role.names}, no link field of the kind")
         found += [f"{name}: the glossary kind names its sentence"] if kind.sentence is None else []
     for name, kind, role in printed:
         found += [f"{name}: printed_first names no field {role.also}"] if role.also and role.also not in kind.fields else []

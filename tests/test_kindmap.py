@@ -26,7 +26,7 @@ def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> No
     assert named == set(ontology.kinds)
     assert [line for line in lines if not line.startswith(" ")][1:] == [
         "product and software:", "product:", "software:", "constitution/ (fixed folder):", "rules:", "kinds, like and unlike:"]
-    assert "  workflow: !says schedule->quantity event->transition !start->step" \
+    assert "  workflow: satisfies->>rule !says schedule->quantity event->transition !start->step" \
         " realizes->capability" in lines
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
     assert "  attribute: exactly one of type, of" in lines

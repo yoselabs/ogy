@@ -97,6 +97,7 @@ class Problem(StrEnum):
     MISSING_FIELD = "missing-field"
     WRONG_TYPE = "wrong-type"
     BAD_LAYER = "bad-layer"
+    LAYER_DIRECTION = "layer-direction"
     BAD_LINK = "bad-link"
     LINK_KIND = "link-kind"
     DANGLING_LINK = "dangling-link"

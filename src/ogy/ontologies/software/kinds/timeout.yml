@@ -9,9 +9,9 @@ key: timeout
 holds: one
 needs_proof: true
 fingerprint: {proofs: true}
-input: {satisfies: content}
 requires:
   - {if_part: effect, path: ["<-performs"], kinds: [handler], error: "a row with an effect has a handler performing it"}
 fields:
+  satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (behaviour: a rule it is held to changes, it is stale)
   after: {type: link, to: [quantity], required: true, input: {fields: [is, unit]}}   # the number and unit, not its words
   then: {type: link, to: [step, end, workflow], required: true, input: none}

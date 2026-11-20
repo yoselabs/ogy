@@ -26,12 +26,13 @@ Read the sources:
 - Owner's words: record what they decide first (section 5), as a short paraphrase; ogy keeps no message and no quote.
 - Docs and plans give claims. Code gives guarantees: transactions, locks, idempotency, what survives a restart.
   Whatever the system must survive, read from code, or cite the document (E1-E7: 5 of 6 doc-only alarms were false).
-- A fact read from code is a fact, not a decision by anyone; the owner reads those only when asked (decision
-  `code-facts-are-read-by-area`).
+- What the code does today is an entry with `src` (`code:<path>#<symbol>`), written as it is and agreed in a review
+  round; it is never a decision, because nobody chose it in front of you. The owner reads those only when asked
+  (decision `code-facts-are-read-by-area`).
 
 ## 2. Capture (evaluated: E8-E10)
-- Write each entry with evidence: `src` (`code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`) or `because` (a chain
-  of entries that reaches one) or a decision that settles it, or the owner's yes in a review round. What the owner said
+- Write each entry with evidence: `src` (`code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`) or `because` (a principle
+  or a decision: the reason, never a source) or a decision that settles it, or the owner's yes in a review round. What the owner said
   becomes an entry through a decision they answer: read the sentence aloud first; if it would not make the owner say
   "yes, that is what I meant", ask.
 - Never fill an optional slot without evidence. If you do not know a slot, leave it out and ask.
@@ -39,7 +40,7 @@ Read the sources:
 - Write with `ogy put`: a record or an array of records, one atomic, checked write per
   batch. Each write is checked and refused when it adds an error.
 - Derive before asking (E9-E10: derived 6-8 of 8): what two sources entail, what is technical, what a stated rule
-  already covers goes in with `because`. Never ask the owner what the words already settle.
+  already covers is held to it (`satisfies` on behaviour, `constrains` from the rule to the data). Never ask the owner what the words already settle.
 
 ## 3. Hazard pass (untested as a skill step; P16, P17 single runs)
 Take every row with an effect, every read of an outside fact, every dependency, and ask seven questions, in the
@@ -57,7 +58,9 @@ kinds that hold it: `workaround`, `case`, `timeout`, `effect`) or a decision tha
 "fee on a closed day" and "the reminder email fails" were missed by almost all 32 runs without this pass.
 
 ## 4. Decisions: ask, propose, hear
-Run the `elicit` skill on what is still open. Every question is a `decision` entry before anyone is asked:
+Run the `elicit` skill on what is still open. A decision needs an alternative the owner could pick: at least two
+options a reasonable owner might choose. What the code does and nobody would choose otherwise is an entry with `src`
+(section 1), not a decision with one real option. Every question is a `decision` entry before anyone is asked:
 - **options**, each setting the entries it would create (`sets`); "no", "not now" and "removed" are an option whose
   address is `null`;
 - **`proposal`**: the option you recommend, with `why`. If what the owner said leans to an option without choosing it, write

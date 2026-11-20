@@ -1,4 +1,4 @@
-says: 'How ogy writes the knowledge base: one put path, answers, replies and removals under one lock, put back on a new error, and who may confirm.'
+says: 'How ogy writes the knowledge base: one put path, answers, replies and removals under one lock, put back on a new error, and who may confirm. Not here: where the written files live: storage; the commands that start a write: cli.'
 unlike:
-- 'where the written files live: storage'
-- 'the commands that start a write: cli'
+- software/storage/area/storage
+- software/cli/area/cli

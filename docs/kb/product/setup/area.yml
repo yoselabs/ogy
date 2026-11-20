@@ -1,3 +1,4 @@
-says: Making a repository ready for ogy with ogy init, and saying what is not set up.
+says: 'Making a repository ready for ogy with ogy init, and saying what is not set up. Not here: reading and checking the knowledge base once it is set up: inspection and checks.'
 unlike:
-- 'reading and checking the knowledge base once it is set up: inspection and checks'
+- product/inspection/area/inspection
+- product/checks/area/checks
