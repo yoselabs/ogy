@@ -36,6 +36,8 @@ def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> No
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
     assert "  attribute: exactly one of type, of" in lines
     assert "  case, choice, timeout: a row with an effect has a handler performing it" in lines
+    assert "  case, choice, interface, rule, setting, timeout, workaround: needs proof" in lines  # the map says which kinds
+    assert "  entity: needs proof with a transition" in lines
     assert (
         "  handler: like a command or event handler: the code unit that performs a row's effects; unlike a UML operation, "
         "a signature on a class; an OpenAPI operation" in lines

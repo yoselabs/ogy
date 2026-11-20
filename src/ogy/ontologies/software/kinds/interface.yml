@@ -3,7 +3,7 @@ was:                                                 # view and command merged (
   - {kind: view, defaults: {form: web}}
   - {kind: command, defaults: {form: cli}}
 about: "a point where an actor reaches the product: what it shows, accepts and offers"
-guidance: "Where an actor reaches the product: a screen, a command line, an API call, a file, a message (`form`). `serves` names its steps, `offers` some of their choices. One that only shows facts may serve no step; one that accepts input serves one. `includes` names its cards; `allows` who may use one serving none. A handler does the work."
+guidance: "Where an actor reaches the product: a screen, command line, API call, file or message (`form`). `serves` names its steps, `offers` their choices; one that only shows may serve none, and `allows` names its users. `includes` names its cards. What it shows and accepts is its contract, tested by its proof; a rule only for more."
 like: "ArchiMate application interface: the point where an actor reaches the product (a screen, a command line, an API call, an MCP tool)"
 unlike: "a UML, Java or TypeScript interface: a type contract with no user"
 shape: file

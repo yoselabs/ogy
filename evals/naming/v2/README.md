@@ -230,6 +230,14 @@ attributes of the bike, or both. The why lines reason from the map and the const
 rigid-where-checked): `structural`. It sits outside the 51. It reads as a question about the key or the map, not
 about a name.
 
+Owner, 2026-11-20 (ogy-yy9.77, after Fable): the key's home stands; the map misled. B's strong-model runs did write
+`shows ->` the three attributes on [10] and then added a rule naming the same attributes, which only [10] satisfies:
+one fact with two owners, since the interface needs a proof and `shows` already makes it stale. The map now says
+which kinds need a proof, the interface's guidance says what it shows and accepts is its contract, and the rule's
+`unlike` names it. key.md stays as scored; a v3 key would read for row 24: "on the entry of [10]: `shows ->` the
+facts kept about the bike, the promise in its `says`, the contract test as its `proof`; no entry of its own. A
+`rule` that constrains the same attributes and that only [10] satisfies repeats it: note it, no false friend."
+
 Nearest miss for rule 6: on `small`, `workaround` [19] was written without its parent [3] in 3 of 6 runs of C0 and
 of C (A's `deviation` 0 of 6, B 0 of 6). Each of the six why lines was read one by one; all are silent on the parent
 (`unclear`), so no name is refused. A fourth such run would have needed a `misled-by` reading to refuse it.

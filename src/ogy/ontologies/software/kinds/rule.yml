@@ -2,7 +2,7 @@ kind: rule
 about: a statement that must stay true; the behaviour held to it names it with `satisfies`, the data it holds to it names with `constrains`
 guidance: "A statement that must stay true, proved by a test. It `constrains` the data it holds to (quantity, enum, setting, entity, attribute, state): a change there is work. Behaviour (step, row, interface, handler, dependency, workflow) names it with `satisfies`. `because` cites a principle or a decision. No kind fits: a rule with links and a proof, never a new kind."
 like: "a business rule, a SysML requirement satisfied by entries and verified by a proof"
-unlike: "a principle: a value that no test can check"
+unlike: "a principle: a value that no test can check; what one interface shows: its `shows` and its proof"
 shape: file
 sentence: says
 layers: [product, software]

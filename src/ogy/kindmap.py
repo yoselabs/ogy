@@ -54,6 +54,8 @@ def _rules(ontology: Ontology) -> list[str]:
     for name, kind in sorted(ontology.kinds.items()):
         sentences = [f"exactly one of {', '.join(group)}" for group in kind.exactly_one_of]
         sentences += [need.error for need in kind.requires]
+        if kind.proves:  # which kinds a test must prove: the map's `proof` alone does not say
+            sentences.append(kind.proof_text)
         if kind.one_part is not None:
             sentences.append(f"exactly one {kind.one_part.kind} with {kind.one_part.field}: {kind.one_part.equals}")
         for sentence in sentences:
