@@ -50,8 +50,10 @@ def _verb(commands: Adder, name: str, about: str, detail: str = "") -> argparse.
 
 
 def _reads(commands: Adder) -> None:
-    checking = _verb(commands, "check", "the problems of the knowledge base", "Exit 1 when there are any. Takes an area to check only it.")
-    checking.add_argument("area", nargs="?", help="check only this area")
+    checking = _verb(
+        commands, "check", "the problems of the knowledge base", "Exit 1 when there are any. Takes a layer or an area to check only it."
+    )
+    checking.add_argument("area", nargs="?", help="only this layer (product, software), <layer>/<area>, or an area in every layer")
     checking.add_argument("--base", help="the commit the entries are checked against (default: merge base with main)")
     checking.add_argument("--landing", action="store_true", help="also report what blocks a land only (proposed terms)")
     standing = _verb(
@@ -60,7 +62,7 @@ def _reads(commands: Adder) -> None:
         "the standing of an area or of everything in one screen",
         "Counts per area, findings, work left and dropped. Saves nothing.",
     )
-    standing.add_argument("area", nargs="?", help="only this area")
+    standing.add_argument("area", nargs="?", help="only this layer (product, software), <layer>/<area>, or an area in every layer")
     standing.add_argument("--coverage", action="store_true", help="also, per layer, the kinds that have no entry")
     _verb(
         commands,
@@ -136,7 +138,7 @@ def _asks(commands: Adder) -> None:
         "what you are asked: at most 7 cards, with a count per area",
         "SAVES the round (its id is printed) that `reply --round` resolves against.",
     )
-    asking.add_argument("area", nargs="?", help="only this area")
+    asking.add_argument("area", nargs="?", help="only this layer (product, software), <layer>/<area>, or an area in every layer")
     asking.add_argument("--all", action="store_true", help="every card, not the first 7")
     asking.add_argument(
         "--from",

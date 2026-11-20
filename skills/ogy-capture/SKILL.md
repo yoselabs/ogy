@@ -57,6 +57,10 @@ Also ask of every outside fact: who keeps it true? Each cell gets an entry (`ogy
 kinds that hold it: `workaround`, `case`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
 "fee on a closed day" and "the reminder email fails" were missed by almost all 32 runs without this pass.
 
+Work goes in stages, one layer at a time (decision `a-layer-commits-alone`). Stop at your own layer: the product says what the
+business needs, and the handler, interface or dependency a row will need is the next layer's, listed as work, never a
+question this pass must settle first. Hand over with `ogy work <your layer>` (untested).
+
 ## 4. Decisions: ask, propose, hear
 Run the `elicit` skill on what is still open. A decision needs an alternative the owner could pick: at least two
 options a reasonable owner might choose. What the code does and nobody would choose otherwise is an entry with `src`

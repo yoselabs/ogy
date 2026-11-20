@@ -86,6 +86,16 @@ def home_address(home: str) -> Address:
     return Address(layer, area, ())
 
 
+def scopes(home: str) -> set[str]:
+    """What a home answers to as a scope: itself (`<layer>/<area>`), its layer and its area."""
+    return {home, *home.split("/")}
+
+
+def in_scope(home: str, scope: str | None) -> bool:
+    """The home is in the scope a command was given (a layer, `<layer>/<area>` or an area in every layer); None: everything."""
+    return scope is None or scope in scopes(home)
+
+
 def area_of(text: str, ontology: Ontology) -> str:
     return home_of(text, ontology).rsplit("/", 1)[-1]
 

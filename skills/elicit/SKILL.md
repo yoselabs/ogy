@@ -27,6 +27,10 @@ iorlas-brainstorm).
 - Facts from the environment (code, docs, data) are your job: send a subagent and do not block on it. Only the
   questions that wait on that fact wait (from grilling).
 
+Work goes in stages: settle what the layer you work in must say (the business first, then the build), and leave what a
+later layer owes it (which service, which screen) to that layer as work, not as a question asked now. With ogy, stop at
+your layer and hand over with `ogy work <your layer>` (untested).
+
 ## 3. Group into decisions
 - One decision per sentence the owner could say to settle several gaps (same subject or same policy).
 - A choice: 2-4 options, each setting the same gaps.

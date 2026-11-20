@@ -7,7 +7,7 @@ from dataclasses import dataclass
 
 from ogy.declared import Reader
 from ogy.evidence import Link, parse_link
-from ogy.model import link_values
+from ogy.model import in_scope, link_values
 from ogy.status import Card, Label, Status, agreed_hashes, dependants, entry_card, label, status
 lazy from ogy.snapshot import Snapshot
 
@@ -46,7 +46,7 @@ def pages(snapshot: Snapshot, source: str, area: str | None = None) -> list[Page
     for address in snapshot.entries:
         if not snapshot.ontology.carded(snapshot.kind_of(address)):
             continue
-        if area not in (None, address.area) or status(snapshot, address, hashes) is not Status.NOBODY:
+        if not in_scope(address.home, area) or status(snapshot, address, hashes) is not Status.NOBODY:
             continue
         if label(snapshot, address) is not wanted:
             continue

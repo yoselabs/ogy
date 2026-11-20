@@ -132,6 +132,7 @@ def _card(label: str, card: Card) -> list[str]:
     lines.append(f"   {card.word}: {card.text}" if card.word else f"   {card.text}")
     if card.avoid:
         lines.append(f"   not: {'; '.join(card.avoid)}")
+    lines += [f"   since you agreed: {line}" for line in card.changes]
     if card.members:
         lines.append(f"   one yes agrees to {len(card.members)}:")
         lines += [

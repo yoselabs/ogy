@@ -6,7 +6,7 @@ lazy from pathlib import Path
 
 import pytest
 from git_porcelain import run_git
-from tests.conftest import GOOD, ogy
+from tests.conftest import GOOD, commit, ogy
 
 from ogy import cli, config, init
 
@@ -178,6 +178,7 @@ def test_init_installs_a_pre_commit_hook_that_checks_the_staged_tree(tmp_path: P
     assert code == cli.OK and ".githooks/pre-commit" in "".join(lines) and hook.stat().st_mode & 0o111
     text = hook.read_text()
     assert "git write-tree" in text and "git commit-tree" in text and '--rev "$commit" check' in text
+    assert "diff --cached" not in text  # every commit: a code rename can break a `code:` source
     assert run_git(tmp_path, "config", "core.hooksPath").strip() == ".githooks"
     assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # idempotent
     hook.unlink()
@@ -188,6 +189,7 @@ def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(
     assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK
     actors = read(repo, "docs/kb/product/shared/actors.yml")
     assert "id: owner" in actors and "nature: human" in actors and "id: agent" in actors and "agreed" not in actors
+    commit(repo, "init")  # a removal is recorded against what was committed
     code, lines = cli.run(["--repo", str(repo), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
     assert code == cli.OK, lines
     assert cli.run(["--repo", str(repo), "init"])[0] == cli.OK

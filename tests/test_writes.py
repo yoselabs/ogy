@@ -9,7 +9,7 @@ import pytest
 from fastmcp.exceptions import ToolError
 from git_porcelain import git_dir
 from process_lock import ProcessLock
-from tests.conftest import dig, ogy
+from tests.conftest import commit, dig, ogy
 
 from ogy import cli, ops
 from ogy.mcp_server import build
@@ -290,6 +290,7 @@ def test_answer_that_says_no_removes_the_entry(repo: Path) -> None:
         },
     ]
     assert w(repo, "put", json.dumps(records))[0] == cli.OK
+    commit(repo, "late fee")  # a removal is recorded against what was committed
     code, lines = w(repo, "answer", "product/app/decision/late-fee-q", "drop", "--said", "No late fee", *SAID)
     assert code == cli.OK and "removed product/app/capability/late-fee" in lines, lines
     assert "late-fee" not in (repo / "docs/kb/product/app/capabilities.yml").read_text().replace("late-fee-q", "")
@@ -360,6 +361,7 @@ def test_an_answer_removes_a_state_after_the_transition_that_links_to_it(repo: P
 def test_a_put_that_drops_parts_needs_a_why_and_records_each(repo: Path) -> None:
     step = "product/app/workflow/borrow/step/ask"
     assert w(repo, "put", json.dumps({"address": f"{step}/choice/skip", "label": "Skip", "then": "done"}))[0] == cli.OK
+    commit(repo, "skip")  # a drop is recorded against what was committed
     record = json.dumps({"address": step, "choices": {"go": {"label": "Borrow", "then": "done"}}})
     code, lines = w(repo, "put", record)
     assert code == cli.REFUSED and f"drops {step}/choice/skip" in lines[0] and "--why" in lines[0], lines

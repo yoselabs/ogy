@@ -6,21 +6,17 @@ setup() {
   mkdir -p "$repo/docs/kb"
   echo one >"$repo/docs/kb/a.txt"
   commit_all "$repo"
-  cd "$repo"
+  cd "$repo" || return
 }
 
-@test "nothing staged in the knowledge base: succeeds and does not run ogy" {
-  run sh "$ROOT/tools/kb-staged-check.sh"
-  [ "$status" -eq 0 ]
-  [ ! -s "$STUB_LOG" ]
-}
-
-@test "a staged change elsewhere is not the knowledge base" {
+@test "a staged change outside the knowledge base is checked too: a code rename can break a code: source" {
   echo x >other.txt
   git add other.txt
   run sh "$ROOT/tools/kb-staged-check.sh"
   [ "$status" -eq 0 ]
-  [ ! -s "$STUB_LOG" ]
+  read -r _ _ _ rev verb <"$STUB_LOG"
+  [ "$verb" = "check" ]
+  [ "$(git show "$rev:other.txt")" = "x" ]
 }
 
 @test "a staged knowledge-base change is checked at a commit that holds the staged tree" {

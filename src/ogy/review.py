@@ -3,6 +3,7 @@
 from collections import Counter
 from dataclasses import dataclass
 
+from ogy.model import in_scope
 from ogy.pages import pages
 from ogy.removed import Item, is_address
 from ogy.settle import decisions
@@ -73,7 +74,7 @@ class Review:
 
 
 def _headers(snapshot: Snapshot, area: str | None) -> list[Header]:
-    return [item for item in headers(snapshot) if area in (None, item.area.rsplit("/", 1)[-1])]
+    return [item for item in headers(snapshot) if in_scope(item.area, area)]
 
 
 def review(snapshot: Snapshot, *, everything: bool = False, area: str | None = None, source: str | None = None, page: int = 1) -> Review:
@@ -93,7 +94,7 @@ def review(snapshot: Snapshot, *, everything: bool = False, area: str | None = N
             pages=len(found),
             title=shown.title if shown else "",
         )
-    cards = [card for card in queue(snapshot, None) if area in (None, card.address.area)]
+    cards = [card for card in queue(snapshot, None) if in_scope(card.address.home, area)]
     shown = cards if everything else cards[:MAX_CARDS]
     return Review(_headers(snapshot, area), shown, len(cards) - len(shown), area=area or "")
 

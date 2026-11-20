@@ -15,6 +15,7 @@ from ogy.edit import Editor
 from ogy.fieldtypes import fields_problems
 from ogy.kinds import NAME, Holds, Kind, Shape
 from ogy.model import Address, parse_address
+from ogy.target import removal_base
 from ogy.writes import Data, WriteRefusedError, commit, utc_now
 lazy from ogy.snapshot import Snapshot
 lazy from ogy.target import Target
@@ -166,7 +167,7 @@ def put(target: Target, records: list[Mapping[object, object]], why: str | None 
 
 
 def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: list[Address], why: str | None) -> None:
-    """The parts under the records' addresses that the batch dropped, each recorded in its area's removed.yml."""
+    """The parts under the records' addresses that the batch dropped, each recorded in its area's removed.yml when the base had it."""
     dropped = [
         address
         for address in before.entries
@@ -180,6 +181,8 @@ def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: li
         if address.parent() not in dropped  # a dropped part takes its own parts
         and before.kind_of(address).holding is Holds.MAP
     ]  # a single part is a field of its parent: its change shows there
+    base = removal_base(target)
+    dropped = [address for address in dropped if removal.recorded(base, address)]  # one born since the base: Git keeps it
     if not dropped:
         return
     if not why or not why.strip():

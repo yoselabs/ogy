@@ -27,8 +27,7 @@ START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
 HOOKS_DIR = ".githooks"
 HOOK = """\
 #!/bin/sh
-# Written by `ogy init`: check the knowledge base as staged for this commit.
-git diff --cached --quiet -- docs/kb && exit 0
+# Written by `ogy init`: check the knowledge base as staged for this commit. Every commit: a code rename can break a `code:` source.
 tree=$(git write-tree) || exit 1
 parent=$(git rev-parse -q --verify HEAD)
 commit=$(git commit-tree "$tree" ${{parent:+-p $parent}} -m staged) || exit 1

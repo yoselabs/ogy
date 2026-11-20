@@ -83,3 +83,32 @@ def test_an_entry_the_base_never_had_is_refused(repo: Path) -> None:
     _remove(repo)
     found = {(item.problem, item.detail) for item in ops.run_check(ops.Target(repo), base=base).value}
     assert any(problem is Problem.BAD_SNAPSHOT and "no entry" in detail for problem, detail in found)
+
+
+def test_an_entry_born_on_the_branch_leaves_no_item_and_the_base_still_guards_its_own(repo: Path) -> None:
+    """Fable's blocker 3: what the base never had is removed without a ledger item (Git keeps it), by `remove` and by a
+    `put` that drops it; what the base had still needs one."""
+    run_git(repo, "checkout", "-q", "-b", "later")
+    _says(repo, "A member can borrow.")
+    commit(repo, "a capability born on the branch")
+    code, lines = ogy(repo, "--rev", ".", "remove", BORROW, "--why", "written by mistake")
+    assert code == cli.OK and "not recorded" in lines[0], lines
+    assert not (repo / LEDGER).exists() and not ops.run_check(ops.Target(repo)).value
+    run_git(repo, "checkout", "-q", "--", ".")
+    step = "product/app/workflow/borrow/step/ask"
+    assert ogy(repo, "put", f'{{"address": "{step}/choice/skip", "label": "Skip", "then": "done"}}')[0] == cli.OK
+    commit(repo, "a choice born on the branch")
+    assert ogy(repo, "put", f'{{"address": "{step}", "choices": {{"go": {{"label": "Borrow", "then": "done"}}}}}}')[0] == cli.OK
+    assert not (repo / LEDGER).exists() and not ops.run_check(ops.Target(repo)).value
+    (repo / "docs/kb/software/app/handler/lend.yml").unlink()  # the base had it: deleted by hand, it is caught
+    assert ("removed-unrecorded", "software/app/handler/lend") in {
+        (item.problem.value, str(item.address)) for item in ops.run_check(ops.Target(repo)).value
+    }
+
+
+def test_a_typo_never_committed_on_main_does_not_burn_its_id(repo: Path) -> None:
+    _says(repo, "A member can borrow.")
+    _remove(repo)
+    assert not (repo / LEDGER).exists()
+    _says(repo, "A member can borrow a tool.")
+    assert not ops.run_check(ops.Target(repo), base="HEAD").value

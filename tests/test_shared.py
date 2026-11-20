@@ -43,6 +43,7 @@ def old_glossary(repo: Path) -> str:
     (repo / KB / "product/app/decision").mkdir(parents=True)
     (repo / KB / "product/app/decision/names.yml").write_text(NAMES)
     target = Moved(repo)
+    commit(repo, "the old glossary")  # a removal is recorded against what was committed
     ops.run_remove(target, "glossary/term/old", "product/app/decision/names")
     ops.run_answer(target, "product/app/decision/names", "drop", "Drop it", "ai:claude/1")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), ["glossary/term/fee"])

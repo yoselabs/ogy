@@ -1,4 +1,4 @@
-says: A commit that changes the knowledge base is made only when ogy check passes on the staged tree.
+says: 'Every commit is made only when ogy check passes on the staged tree: a code rename can break a code: source without a knowledge-base change.'
 src:
 - code:src/ogy/init.py#HOOK
 start: commit
@@ -9,7 +9,7 @@ steps:
     choices:
       commit:
         label: Commit
-        then: skip
+        then: check
     agreed:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -32,23 +32,6 @@ steps:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
       hash: 534146a6aa04
-  skip:
-    says: A commit that changes nothing under docs/kb is not checked.
-    cases:
-      untouched:
-        order: 1
-        when:
-          text: the commit changes nothing under docs/kb
-          reads:
-          - software/storage/dependency/git
-        then: committed
-      otherwise:
-        then: check
-    agreed:
-      at: '2026-11-19T20:32:47+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-      hash: d84d454b0e82
 ends:
   committed:
     result: success

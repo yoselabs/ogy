@@ -59,6 +59,7 @@ class Card:
     earlier: str = ""  # a delegated card: the owner's own earlier answer, which the agent's answer replaced
     members: tuple[tuple[Address, str, str], ...] = ()  # a parent's card: each waiting entry, sentence, fingerprint
     alone: bool = False  # its harm is asked alone (`asked_alone`): its own letter, never inside a bulk accept
+    changes: tuple[str, ...] = ()  # a `changed` card: what changed since the person's yes, `field: old -> new` (`ogy.since`)
 
 
 @dataclass(frozen=True)

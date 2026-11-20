@@ -5,7 +5,7 @@ lazy from pathlib import Path
 
 import pytest
 from fastmcp.exceptions import ToolError
-from tests.conftest import ogy
+from tests.conftest import commit, ogy
 from verb_cli.testing import assert_help_tree
 
 from ogy import cli
@@ -71,7 +71,7 @@ def test_status_counts_an_area_and_saves_nothing(repo: Path) -> None:
     assert code == cli.OK and lines[0].startswith("product/app   ")
     assert "findings: 0 (ogy check)" in lines and "work left: 3 (ogy work)" in lines  # D15: the row, the timeout and the page
     assert ogy(repo, "status", "app") == (code, lines)
-    assert ogy(repo, "status", "ap")[1] == ["no area ap (did you mean app?)"]
+    assert ogy(repo, "status", "ap")[1] == ["no layer or area ap (did you mean app?)"]
     assert not (repo / ".git/ogy-rounds").exists()
 
 
@@ -109,3 +109,18 @@ def test_an_agent_gets_records_and_no_python_reprs(repo: Path) -> None:
 def test_a_refusal_is_a_tool_error_over_mcp(repo: Path) -> None:
     with pytest.raises(ToolError, match="did you mean product/app/quantity/fee"):
         asyncio.run(build().call_tool("show", {"repo": str(repo), "address": "product/app/quantity/fe"}))
+
+
+def test_review_and_check_take_a_layer_and_a_changed_card_shows_what_changed(repo: Path) -> None:
+    """Fable's blocker 4: `review product` and `check product` were `no area product` (exit 4)."""
+    assert ogy(repo, "--rev", ".", "check", "product")[0] == cli.OK
+    assert ogy(repo, "--rev", ".", "check", "software/app")[0] == cli.OK
+    round_id = ogy(repo, "--rev", ".", "review", "product")[1][0].split()[-1]
+    code, lines = ogy(repo, "--rev", ".", "reply", "yes all", "--said", "All of it", "--where", "ai:claude/1", "--round", round_id)
+    assert code == cli.OK, lines
+    commit(repo, "agreed")
+    flow = repo / "docs/kb/product/app/workflow/borrow.yml"
+    flow.write_text(flow.read_text().replace("The member asks.", "The member begs."))
+    commit(repo, "edited")
+    code, lines = ogy(repo, "--rev", ".", "review", "product")
+    assert code == cli.OK and "   since you agreed: step/ask: says: The member asks. -> The member begs." in lines, lines

@@ -6,10 +6,12 @@ lazy from pathlib import Path
 from git_porcelain import GitError, RealRepo
 
 from ogy.check import check
+from ogy.kindchange import migrated
 from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
 from ogy.snapshot import Snapshot, load
 from ogy.source import KB_DIR, Source, open_source
-lazy from ogy.model import Finding
+from ogy.verdict import MissingTargetError
+lazy from ogy.model import Address, Finding
 
 
 @dataclass(frozen=True)
@@ -56,3 +58,18 @@ def worktree_findings(target: Target) -> list[Finding]:
         older if older is not None and older.listing() else None,  # none at the base: nothing to compare
         product=here.repo.resolve().name,
     )
+
+
+def removal_base(target: Target) -> frozenset[Address]:
+    """What a removal is recorded against: the addresses of the knowledge base at the merge base with `main`, else at HEAD (on
+    `main` itself), as written and as `ogy migrate` would write them; none before the first commit. An entry it lacks was born
+    since: Git keeps it, and no ledger item is written (`check --base` asks for one only for what the base had)."""
+    here = target.at(".")
+    try:
+        older = open_source(here.repo, merge_base(here) or "HEAD", here.kb, required=False)
+    except MissingTargetError:  # no commit yet: nothing was ever recorded
+        return frozenset()
+    if not older.listing():
+        return frozenset()
+    written = load(older, here.kinds(), retyped=True)
+    return frozenset(written.entries) | frozenset(migrated(written).entries)

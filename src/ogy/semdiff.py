@@ -43,7 +43,7 @@ class SemanticDiff:
         return {change.address: change for change in self.changes}
 
 
-def _fields(old: Entry | None, new: Entry | None) -> tuple[FieldChange, ...]:
+def fields_changed(old: Entry | None, new: Entry | None) -> tuple[FieldChange, ...]:
     before: Mapping[str, object] = old.fields if old else {}
     after: Mapping[str, object] = new.fields if new else {}
     return tuple(
@@ -66,9 +66,9 @@ def diff(before: Source, after: Source, ontology: Ontology) -> SemanticDiff:
     for address in sorted(set(old_entries) | set(new_entries)):
         old, new = old_entries.get(address), new_entries.get(address)
         if old is None:
-            result.changes.append(EntryChange(address, Change.ADDED, _fields(None, new)))
+            result.changes.append(EntryChange(address, Change.ADDED, fields_changed(None, new)))
         elif new is None:
             result.changes.append(EntryChange(address, Change.REMOVED))
-        elif fields := _fields(old, new):
+        elif fields := fields_changed(old, new):
             result.changes.append(EntryChange(address, Change.CHANGED, fields))
     return result

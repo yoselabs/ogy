@@ -20,7 +20,7 @@ from ogy.fieldtypes import AGREED_HASH
 from ogy.model import Address, Finding, Problem, parse_address
 from ogy.removal import RemoveRefusedError
 from ogy.settle import Decision, answers_key, decision_of, decisions
-from ogy.target import Target, worktree_findings
+from ogy.target import Target, removal_base, worktree_findings
 from ogy.verdict import RefusalError
 lazy from ogy.kinds import Settling
 lazy from ogy.snapshot import Snapshot
@@ -217,6 +217,7 @@ def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Cloc
     """Remove every entry of `doomed`, in passes: one still linked to by another of them waits for the next pass; a pass
     that removes nothing refuses with the reasons."""
     gone: list[str] = []
+    base = removal_base(target)
     while doomed:
         refused: list[str] = []
         before = len(doomed)
@@ -232,6 +233,7 @@ def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Cloc
                     to=None,
                     now=now(),
                     last_seen=head(target.repo),
+                    base=base,
                 )
             except (RemoveRefusedError, LookupError) as error:
                 refused += error.reasons if isinstance(error, RemoveRefusedError) else [str(error)]

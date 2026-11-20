@@ -222,14 +222,14 @@
       "openWorldHint": false,
       "readOnlyHint": true
     },
-    "description": "the problems of the knowledge base. Exit 1 when there are any. Takes an area to check only it.",
+    "description": "the problems of the knowledge base. Exit 1 when there are any. Takes a layer or an area to check only it.",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
         "area": {
           "anyOf": [
             {
-              "description": "check only this area",
+              "description": "only this layer (product, software), <layer>/<area>, or an area in every layer",
               "type": "string"
             },
             {
@@ -1615,7 +1615,7 @@
         "area": {
           "anyOf": [
             {
-              "description": "only this area",
+              "description": "only this layer (product, software), <layer>/<area>, or an area in every layer",
               "type": "string"
             },
             {
@@ -1820,7 +1820,7 @@
         "area": {
           "anyOf": [
             {
-              "description": "only this area",
+              "description": "only this layer (product, software), <layer>/<area>, or an area in every layer",
               "type": "string"
             },
             {

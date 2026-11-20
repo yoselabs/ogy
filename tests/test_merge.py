@@ -73,6 +73,7 @@ def before(repo: Path) -> str:
         f"question: Is the page plain?\noptions:\n  plain: {{label: Plain, sets: {{{PAGE}: {{says: The page.}}}}}}\n"
         "proposal: {chose: plain, why: Simple.}\n"
     )
+    commit(repo, "the old page")  # a removal is recorded against what was committed
     ops.run_remove(target, OLD, why="not needed")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [PAGE, CLI])
     for text in (PAGE, CLI):

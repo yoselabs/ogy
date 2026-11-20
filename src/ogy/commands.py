@@ -97,8 +97,10 @@ def _kinds(target: Target, args: argparse.Namespace, **_: object) -> Result:
 
 def _remove(target: Target, args: argparse.Namespace, **_: object) -> Result:
     done = ops.run_remove(target, args.address, args.why, args.to)
-    home = home_of(done.value.id, target.kinds())
-    return done.verdict, [f"removed {done.value.id} (fingerprint {done.value.hash}); recorded in {home}/removed.yml"]
+    item = done.value.item
+    if not done.value.recorded:
+        return done.verdict, [f"removed {item.id} (fingerprint {item.hash}); not recorded: the base never had it (Git keeps it)"]
+    return done.verdict, [f"removed {item.id} (fingerprint {item.hash}); recorded in {home_of(item.id, target.kinds())}/removed.yml"]
 
 
 def _move(target: Target, args: argparse.Namespace, **_: object) -> Result:

@@ -1,0 +1,15 @@
+question: Does the pre-commit hook check every commit, or only a commit that changes docs/kb?
+context: "Fable's review of staged work (2026-11-20), blocker 2: the hook skipped a commit that touched nothing under docs/kb, so a code rename broke a code: source (missing-code) unseen until the next knowledge-base commit. missing-code stays a fault. ogy init writes the same hook for other repositories."
+options:
+  every-commit:
+    label: Every commit is checked, so a code change that breaks a code source is refused at once
+  kb-only:
+    label: Only a commit that changes docs/kb is checked; a broken code source waits for the next one
+proposal:
+  chose: every-commit
+  why: A code source that breaks without a knowledge-base change is the case the skip hid.
+answers:
+- chose: every-commit
+  said: Build all of Fable's fixes, so every commit is checked
+  at: '2026-11-20T14:54:57+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

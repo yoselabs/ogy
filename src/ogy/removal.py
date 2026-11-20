@@ -1,7 +1,9 @@
-"""`ogy remove`: delete an entry or a part, and append its item (envelope and snapshot) to its area's removed ledger."""
+"""`ogy remove`: delete an entry or a part, and append its item (envelope and snapshot) to its area's removed ledger when the
+base had it. One born since the base leaves no item: Git keeps it, and its id is free again."""
 
 import datetime as dt
-from collections.abc import Callable, Mapping
+from collections.abc import Callable, Collection, Mapping
+from dataclasses import dataclass
 lazy from pathlib import Path
 
 from ogy import removed
@@ -22,6 +24,19 @@ class RemoveRefusedError(RefusalError):
     """The address cannot be removed now; `reasons` say why."""
 
     prefix = "not removed: "
+
+
+@dataclass(frozen=True)
+class Removed:
+    """What `ogy remove` did: the item it built, and whether it went into a ledger (the base had the entry)."""
+
+    item: Item
+    recorded: bool
+
+
+def recorded(base: Collection[Address], address: Address) -> bool:
+    """Whether a removal of `address` is written to a ledger: only when the base (`target.removal_base`) holds it."""
+    return address in base
 
 
 def entry_snapshot(snapshot: Snapshot, address: Address) -> dict[str, object]:
@@ -116,9 +131,19 @@ def build_item(
 
 
 def remove(
-    root: Path, kb: str, ontology: Ontology, name: str, text: str, *, why: str | None, to: str | None, now: dt.datetime, last_seen: str
-) -> Item:
-    """Delete the entry at `text` from the worktree and append its ledger item; refuses before writing anything."""
+    root: Path,
+    kb: str,
+    ontology: Ontology,
+    name: str,
+    text: str,
+    *,
+    why: str | None,
+    to: str | None,
+    now: dt.datetime,
+    last_seen: str,
+    base: Collection[Address],
+) -> Removed:
+    """Delete the entry at `text` from the worktree and append its ledger item when `base` had it; refuses before writing anything."""
     if not why or not why.strip():
         raise RemoveRefusedError(["why is required: the address of the decision that said so, or the reason in plain words"])
     editor = Editor(root, kb, ontology)
@@ -128,7 +153,7 @@ def remove(
         raise LookupError(text)
     if (earlier := interrupted(root, kb, snapshot, address)) is not None:
         editor.remove(address)  # finish the removal that crashed after its ledger write
-        return earlier
+        return Removed(earlier, recorded=True)
     reasons = refusals(snapshot, address)
     if snapshot.kind_of(address).holding is Holds.ONE and address.parent() is not None:
         reasons.append(f"{address} is the single {address.kind} of its parent: change it, or remove the parent")
@@ -138,9 +163,11 @@ def remove(
     reasons += [f"{p.code}: {p.detail}" for p in problems]
     if reasons:
         raise RemoveRefusedError(reasons)
-    removed.append(root / kb, address.home, item, lambda new: snapshot_problems(snapshot, new))
+    kept = recorded(base, address)
+    if kept:
+        removed.append(root / kb, address.home, item, lambda new: snapshot_problems(snapshot, new))
     editor.remove(address)
-    return item
+    return Removed(item, kept)
 
 
 def interrupted(root: Path, kb: str, snapshot: Snapshot, address: Address) -> Item | None:

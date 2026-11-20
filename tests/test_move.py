@@ -170,6 +170,7 @@ def test_a_move_is_refused_when_the_target_exists_or_was_removed(repo: Path) -> 
     assert tree(repo) == before
     fee = "- {id: fee, says: Another fee., is: 1, unit: EUR, src: ['code:app.py#lend']}\n"
     (repo / KB / "product/other/quantities.yml").write_text(fee)
+    commit(repo, "another fee")  # a removal is recorded against what was committed
     assert w(repo, "remove", "product/other/quantity/fee", "--why", "not wanted")[0] == cli.OK
     code, lines = w(repo, "move", "product/app/quantity/fee", "product/other")
     assert code == cli.REFUSED and "never reused" in lines[0]

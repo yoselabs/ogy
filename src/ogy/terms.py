@@ -8,7 +8,7 @@ data checks, T4 and T5 take what another module computed, T6 reads the decisions
 import re
 from collections.abc import Callable, Collection, Iterator, Mapping
 
-from ogy.model import Address, Entry, Finding, Problem, link_values
+from ogy.model import Address, Entry, Finding, Problem, in_scope, link_values
 from ogy.settle import decisions
 from ogy.status import Agreement, Status, agreed_hashes, agreement, status
 lazy from ogy.kinds import Glossary
@@ -192,7 +192,7 @@ def _agreement(snapshot: Snapshot) -> tuple[list[Address], list[Address]]:
 def waiting(snapshot: Snapshot, area: str | None = None) -> int:
     """How many terms wait for the owner: no person agreed to them and no question proposes them (those are counted as questions)."""
     unagreed, proposed = _agreement(snapshot)
-    return len([a for a in unagreed if a not in proposed and area in (None, a.area)])
+    return len([a for a in unagreed if a not in proposed and in_scope(a.home, area)])
 
 
 def check_term_agreement(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:

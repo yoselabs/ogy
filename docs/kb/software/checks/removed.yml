@@ -69,3 +69,34 @@ items:
   ontology: software
   snapshot:
     then: committed
+- id: software/checks/workflow/pre-commit-check/step/skip
+  kind: step
+  parent:
+    address: software/checks/workflow/pre-commit-check
+    key: steps
+    position: 2
+  title:
+  said: A commit that changes nothing under docs/kb is not checked.
+  why: software/checks/decision/check-every-commit
+  replaced_by:
+  at: 2026-11-20 14:55:21+01:00
+  last_seen: 68e7a387eccf333a6f2689deec7ccfcbab2aab83
+  hash: d84d454b0e82
+  ontology: software
+  snapshot:
+    says: A commit that changes nothing under docs/kb is not checked.
+    agreed:
+      at: '2026-11-19T20:32:47+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
+      hash: d84d454b0e82
+    cases:
+      untouched:
+        order: 1
+        when:
+          text: the commit changes nothing under docs/kb
+          reads:
+          - software/storage/dependency/git
+        then: committed
+      otherwise:
+        then: check
