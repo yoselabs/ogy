@@ -59,7 +59,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 
 ### Init
 
-`ogy init` is idempotent and merges, never clobbers. It writes `ogy.yml` (with `land`: the remote's default branch, else the branch checked out); creates `docs/kb` with `constitution/principles.yml` and the area `product/shared` (its `area.yml`);
+`ogy init` is idempotent and merges, never clobbers. It writes `ogy.yml` (with `land`: `--land <branch>`, else the remote's default branch; with no remote it refuses to guess); creates `docs/kb` with `constitution/principles.yml` and the area `product/shared` (its `area.yml`);
 adds a marked block (managed-region) to `AGENTS.md`, and to `CLAUDE.md` when it exists, that tells agents to change the
 knowledge base only through ogy and to run `ogy glossary` first (the constitution, then the glossary); adds the `ogy` server (`ogy mcp`) to `.mcp.json`; adds
 `Edit` and `Write` deny rules for `docs/kb/**/*.yml` to `.claude/settings.json`.

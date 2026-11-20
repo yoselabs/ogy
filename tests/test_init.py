@@ -109,7 +109,7 @@ def test_config_path_can_be_moved_by_the_environment(tmp_path: Path, monkeypatch
 def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("ogy.init.shutil.which", lambda _: "/usr/bin/ogy")
     run_git(tmp_path, "init", "-q", "-b", "main")
-    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
     block = read(tmp_path, "AGENTS.md")
     assert "ogy check --rev ." not in block  # a global flag after the command is `unrecognized arguments`
     flags = [snippet for snippet in block.split("`") if snippet.startswith(("ogy --rev ", "ogy check"))]
@@ -171,24 +171,43 @@ def test_init_check_is_the_doctor_and_writes_nothing(tmp_path: Path) -> None:
     assert any("not this checkout" in line for line in cli.run(["--repo", str(tmp_path), "init", "--check"])[1])
 
 
-def test_init_records_the_land_branch_and_the_doctor_says_when_it_is_missing(tmp_path: Path) -> None:
-    """Fable's second review, problem 4: the land branch is what `ogy init` wrote in `ogy.yml`, never a guess at `main`."""
-    run_git(tmp_path, "init", "-q", "-b", "trunk")
-    (tmp_path / "ogy.yml").write_text("ontology: software\n")
-    code, lines = cli.run(["--repo", str(tmp_path), "init"])
-    assert code == cli.OK and "wrote ogy.yml" in lines and config.read(tmp_path).land == "trunk", lines
-    assert read(tmp_path, "ogy.yml") == "ontology: software\nland: trunk\n"
-    assert cli.run(["--repo", str(tmp_path), "init", "--check"]) == (cli.OK, ["ogy is set up here"])
-    run_git(tmp_path, "switch", "-q", "-c", "later")
-    assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # kept, not re-guessed
-    (tmp_path / "ogy.yml").write_text("ontology: software\n")
-    lines = cli.run(["--repo", str(tmp_path), "init", "--check"])[1]
+def test_init_records_the_remotes_default_branch_as_land_on_a_feature_branch(tmp_path: Path) -> None:
+    """Fable's second review, problem 4: the land branch is what `ogy init` wrote in `ogy.yml`, never a guess at `main`; on a
+    feature branch it is the remote's default branch, not the branch checked out."""
+    origin, here = tmp_path / "origin", tmp_path / "here"
+    origin.mkdir()
+    run_git(origin, "init", "-q", "-b", "trunk")
+    (origin / "README.md").write_text("A project.\n")
+    commit(origin, "first")
+    run_git(tmp_path, "clone", "-q", str(origin), str(here))
+    run_git(here, "switch", "-q", "-c", "feature")
+    (here / "ogy.yml").write_text("ontology: software\n")
+    code, lines = cli.run(["--repo", str(here), "init"])
+    assert code == cli.OK and "wrote ogy.yml" in lines, lines
+    assert read(here, "ogy.yml") == "ontology: software\nland: trunk\n"
+    assert cli.run(["--repo", str(here), "init", "--check"]) == (cli.OK, ["ogy is set up here"])
+    run_git(here, "switch", "-q", "-c", "later")
+    assert not [line for line in cli.run(["--repo", str(here), "init"])[1] if line.startswith("wrote")]  # kept, not re-guessed
+    (here / "ogy.yml").write_text("ontology: software\n")
+    lines = cli.run(["--repo", str(here), "init", "--check"])[1]
     assert lines == ["ogy.yml names no land branch (`land:`): run `ogy init`"], lines
+
+
+def test_init_with_no_remote_refuses_to_guess_the_land_branch_until_it_is_given(tmp_path: Path) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "feature")
+    code, lines = cli.run(["--repo", str(tmp_path), "init"])
+    assert code == cli.REFUSED and any("--land <branch>" in line for line in lines), lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == [".git"]  # refused before writing anything
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "trunk"])
+    assert code == cli.OK and read(tmp_path, "ogy.yml") == "ontology: software\nland: trunk\n", lines
+    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK  # held in ogy.yml now
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and lines == ["not set up: ogy.yml already says land: trunk, not main"], lines
 
 
 def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
     run_git(tmp_path, "init", "-q", "-b", "main")
-    code, lines = cli.run(["--repo", str(tmp_path), "init"])
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
     hook = tmp_path / ".githooks/pre-commit"
     assert code == cli.OK and ".githooks/pre-commit" in "".join(lines) and ".githooks/pre-push" in "".join(lines)
     assert hook.stat().st_mode & 0o111 and 'hook pre-commit "$@"' in hook.read_text()
@@ -217,7 +236,7 @@ def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(
 
 def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -> None:
     run_git(tmp_path, "init", "-q", "-b", "main")
-    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
     code, lines = cli.run(["--repo", str(tmp_path), "--rev", ".", "remove", "product/shared/actor/agent", "--why", "No agents here"])
     assert code == cli.OK and "recorded in product/shared/removed.yml" in lines[0], lines
     assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK

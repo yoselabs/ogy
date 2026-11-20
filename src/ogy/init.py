@@ -1,6 +1,6 @@
 """`ogy init`: make a repository ready for ogy. Every step is idempotent and merges; nothing is clobbered.
 
-Writes `ogy.yml` (the ontology, and the land branch: the remote's default branch, else the branch checked out), the
+Writes `ogy.yml` (the ontology, and the land branch: `--land`, else the remote's default branch; with neither it refuses), the
 knowledge-base folder with the (empty) lists of its fixed folders and the entry of the shared area of the first layer, the
 ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in
 `.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with (its
@@ -58,24 +58,33 @@ def _settings(repo: Path, ontology: str | None) -> str:
     return ontology or held or DEFAULT_ONTOLOGY
 
 
-def _land(repo: Path) -> str | None:
-    """The land branch init records when `ogy.yml` names none: the remote's default branch (`origin/HEAD`), else the branch
-    checked out; None outside a Git repository or on a detached HEAD."""
-    if git_dir(repo) is None:
-        return None
+NO_REMOTE_LAND = (
+    "no remote names its default branch, so the land branch is not guessed: run `ogy init --land <branch>` "
+    "(or `git remote set-head origin --auto`, then `ogy init`)"
+)
+
+
+def _land(repo: Path, given: str | None) -> str | None:
+    """The land branch `ogy.yml` keeps: the one it names, else `--land`, else the remote's default branch (`origin/HEAD`); None
+    outside a Git repository. Refuses (InitRefusedError) a `--land` that contradicts `ogy.yml` and a repository whose remote names
+    no default branch: the branch checked out may be a feature branch, so it is never taken."""
+    held = config.read(repo).land
+    if given is not None and held is not None and given != held:
+        msg = f"{config.CONFIG_FILE} already says land: {held}, not {given}"
+        raise InitRefusedError(msg)
+    if held is not None or given is not None or git_dir(repo) is None:
+        return held or given
     remote = symbolic_ref(repo, "refs/remotes/origin/HEAD")
-    if remote is not None:
-        return remote.removeprefix("refs/remotes/origin/")
-    branch = symbolic_ref(repo, "HEAD")
-    return branch.removeprefix("refs/heads/") if branch is not None else None
+    if remote is None:
+        raise InitRefusedError(NO_REMOTE_LAND)
+    return remote.removeprefix("refs/remotes/origin/")
 
 
-def _config(repo: Path, name: str, written: list[str]) -> None:
+def _config(repo: Path, name: str, land: str | None, written: list[str]) -> None:
     """`ogy.yml` with the ontology when there is no file, and the land branch when it names none; every other key is kept."""
     held = config.read(repo)
     kept = {key: value for key in config.KEYS if (value := getattr(held, key)) is not None}
     data = dict(kept) if (repo / config.CONFIG_FILE).exists() else {"ontology": name}
-    land = held.land or _land(repo)
     if land is not None:
         data["land"] = land
     if data != kept or not (repo / config.CONFIG_FILE).exists():
@@ -187,14 +196,15 @@ def _deny(repo: Path, written: list[str]) -> None:
     _put(repo, rel, _dump(data), written)
 
 
-def init(repo: Path, ontology: str | None = None) -> Initialised:
+def init(repo: Path, ontology: str | None = None, land: str | None = None) -> Initialised:
     """Set `repo` up; run again to repair it. Refuses (InitRefusedError, OntologyError) before writing when it cannot go on."""
     name = _settings(repo, ontology)
+    landing = _land(repo, land)
     kinds = named(name, repo)
     written: list[str] = []
     for rel in (".mcp.json", ".claude/settings.json"):
         _json(repo, rel)  # an unreadable file refuses before anything is written
-    _config(repo, name, written)
+    _config(repo, name, landing, written)
     for rel, text in starts(kinds).items():
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)

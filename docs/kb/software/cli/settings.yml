@@ -15,6 +15,6 @@
   - code:src/ogy/config.py#CONFIG_ENV
 - id: land
   name: land
-  says: The branch a land updates and every branch is checked against; ogy init records it, and with none the hooks refuse.
+  says: The branch a land updates and every branch is checked against; ogy init records it (--land, else the remote default branch; with neither it refuses to guess), and with none the hooks refuse.
   src:
   - code:src/ogy/config.py#KEYS

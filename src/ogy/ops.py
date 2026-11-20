@@ -334,8 +334,8 @@ def run_kinds(target: Target, kind: str | None = None, *, with_readers: bool = F
     return Run(readers_lines(target.kinds(), kind) if with_readers else lines, 0)
 
 
-def run_init(repo: Path, ontology: str | None = None) -> Run[Initialised]:
-    return Run(init(repo, ontology), 0)
+def run_init(repo: Path, ontology: str | None = None, land: str | None = None) -> Run[Initialised]:
+    return Run(init(repo, ontology, land), 0)
 
 
 def run_put(target: Target, records: list[Mapping[object, object]], why: str | None = None) -> Run[list[put.Put]]:

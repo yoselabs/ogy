@@ -1,5 +1,5 @@
 """`ogy.yml` at the repository root: the defaults of the flags (a flag on the command line overrides it), and the land
-branch `ogy init` records (`land`), which no flag sets and nothing guesses."""
+branch `ogy init` records (`land`: its `--land`, else the remote's default branch), which no other command sets and nothing guesses."""
 
 from dataclasses import dataclass
 lazy from pathlib import Path

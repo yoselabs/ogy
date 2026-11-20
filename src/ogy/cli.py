@@ -169,12 +169,16 @@ def _asks(commands: Adder) -> None:
 
 
 def _writes(commands: Adder) -> None:
-    _verb(
+    initing = _verb(
         commands,
         "init",
         "set the repository up: ogy.yml, docs/kb, AGENTS.md, .mcp.json, deny rules",
         "Run again to repair. Not an MCP tool: a person runs it once.",
-    ).add_argument("--check", action="store_true", help="the doctor: say what is not set up, write nothing (exit 1 when something is)")
+    )
+    initing.add_argument(
+        "--check", action="store_true", help="the doctor: say what is not set up, write nothing (exit 1 when something is)"
+    )
+    initing.add_argument("--land", help="the land branch to record when ogy.yml names none (default: the remote's default branch)")
     putting = _verb(
         commands,
         "put",
@@ -302,7 +306,7 @@ def dispatch(args: argparse.Namespace, *, agent: bool, serve: Callable[[], None]
         problems = doctor(args.repo)
         return (FINDINGS if problems else OK), problems or ["ogy is set up here"]
     if args.command == "init":
-        done = ops.run_init(args.repo, args.ontology)
+        done = ops.run_init(args.repo, args.ontology, args.land)
         return done.verdict, [
             f"ogy is set up for the {done.value.ontology} ontology in {done.value.kb}/",
             *(f"wrote {path}" for path in done.value.written),

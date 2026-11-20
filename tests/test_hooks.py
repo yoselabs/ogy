@@ -17,7 +17,7 @@ ZERO = "0" * 40
 def fresh(tmp_path: Path) -> Path:
     """A repository `ogy init` just set up: its starting principle waits for the owner's yes, so it is not ready to land."""
     run_git(tmp_path, "init", "-q", "-b", "main")
-    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
     run_git(tmp_path, "add", "-A")
     return tmp_path
 
@@ -143,7 +143,7 @@ def test_ogys_own_push_runs_the_landing_hook_outside_the_gate_record() -> None:
 def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """Fable's second review, problem 4: `ogy init` records the land branch, and the hooks read it; no `main` is assumed."""
     run_git(tmp_path, "init", "-q", "-b", "trunk")
-    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert cli.run(["--repo", str(tmp_path), "init", "--land", "trunk"])[0] == cli.OK
     assert "land: trunk" in (tmp_path / "ogy.yml").read_text()
     run_git(tmp_path, "add", "-A")
     sha = first_commit(tmp_path)
