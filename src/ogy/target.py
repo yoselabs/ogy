@@ -1,10 +1,12 @@
-"""A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare against."""
+"""A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare
+against, with the land branch `ogy.yml` names (`land`)."""
 
 from dataclasses import dataclass, replace
 lazy from pathlib import Path
 
 from git_porcelain import GitError, MissingRevision, RealRepo, head
 
+from ogy import config
 from ogy.check import check
 from ogy.kindchange import migrated
 from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
@@ -13,7 +15,6 @@ from ogy.source import KB_DIR, Source, open_source
 from ogy.verdict import MissingTargetError
 lazy from ogy.model import Address, Finding
 
-MAIN = "main"  # the branch a land updates; the base a branch is checked against
 NO_COMMIT = "0" * 40  # what a removal made before the first commit last saw
 
 
@@ -47,18 +48,22 @@ class Target:
 
 
 def merge_base(target: Target) -> str | None:
-    """The commit the knowledge base is checked against: its merge base with `main`, None when there is no `main` or no history."""
+    """The commit the knowledge base is checked against: its merge base with the land branch, None when `ogy.yml` names none
+    (`ogy init --check` says so), the branch does not exist or there is no history."""
     rev = "HEAD" if target.rev == "." else target.rev
+    land = config.read(target.repo).land
+    if land is None:
+        return None
     try:
         repo = RealRepo(target.repo)
-        found = repo.merge_base(rev, MAIN)
+        found = repo.merge_base(rev, land)
         return None if found is None or found == repo.commit(rev) else str(found)
     except GitError, ValueError:
         return None
 
 
 def worktree_findings(target: Target) -> list[Finding]:
-    """Every check on the worktree, against the merge base with `main` when there is one."""
+    """Every check on the worktree, against the merge base with the land branch when there is one."""
     here = target.at(".")
     source, snapshot = here.read()
     found = merge_base(here)
@@ -72,8 +77,8 @@ def worktree_findings(target: Target) -> list[Finding]:
 
 
 def removal_base(target: Target) -> frozenset[Address]:
-    """What a removal is recorded against: the addresses of the knowledge base at the merge base with `main`, else at HEAD (on
-    `main` itself), as written and as `ogy migrate` would write them; none before the first commit. An entry it lacks was born
+    """What a removal is recorded against: the addresses of the knowledge base at the merge base with the land branch, else at HEAD
+    (on the land branch itself), as written and as `ogy migrate` would write them; none before the first commit. An entry it lacks was born
     since: Git keeps it, and no ledger item is written (`check --base` asks for one only for what the base had)."""
     here = target.at(".")
     try:

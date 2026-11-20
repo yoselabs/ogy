@@ -107,6 +107,7 @@ def kb(tmp_path: Path, ontology: Ontology) -> Callable[[Mapping[str, str | None]
 
 IDENTITY = ("-c", "user.name=ogy-test", "-c", "user.email=test@ogy.invalid", "-c", "commit.gpgsign=false")
 FILES = {
+    "ogy.yml": "land: main\n",  # what `ogy init` records in a repository on main
     **{f"docs/kb/{rel}": text for rel, text in AREAS.items()},
     "app.py": CODE,
     "docs/kb/product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human, src: ['code:app.py#lend']}\n",

@@ -171,6 +171,21 @@ def test_init_check_is_the_doctor_and_writes_nothing(tmp_path: Path) -> None:
     assert any("not this checkout" in line for line in cli.run(["--repo", str(tmp_path), "init", "--check"])[1])
 
 
+def test_init_records_the_land_branch_and_the_doctor_says_when_it_is_missing(tmp_path: Path) -> None:
+    """Fable's second review, problem 4: the land branch is what `ogy init` wrote in `ogy.yml`, never a guess at `main`."""
+    run_git(tmp_path, "init", "-q", "-b", "trunk")
+    (tmp_path / "ogy.yml").write_text("ontology: software\n")
+    code, lines = cli.run(["--repo", str(tmp_path), "init"])
+    assert code == cli.OK and "wrote ogy.yml" in lines and config.read(tmp_path).land == "trunk", lines
+    assert read(tmp_path, "ogy.yml") == "ontology: software\nland: trunk\n"
+    assert cli.run(["--repo", str(tmp_path), "init", "--check"]) == (cli.OK, ["ogy is set up here"])
+    run_git(tmp_path, "switch", "-q", "-c", "later")
+    assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # kept, not re-guessed
+    (tmp_path / "ogy.yml").write_text("ontology: software\n")
+    lines = cli.run(["--repo", str(tmp_path), "init", "--check"])[1]
+    assert lines == ["ogy.yml names no land branch (`land:`): run `ogy init`"], lines
+
+
 def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
     run_git(tmp_path, "init", "-q", "-b", "main")
     code, lines = cli.run(["--repo", str(tmp_path), "init"])

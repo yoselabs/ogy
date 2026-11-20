@@ -138,3 +138,19 @@ def test_ogys_own_push_runs_the_landing_hook_outside_the_gate_record() -> None:
     text = (Path(__file__).parent.parent / ".pre-commit-config.yaml").read_text()
     gate = [line for line in text.splitlines() if line.lstrip().startswith("entry:") and "any_gate pre-push" in line]
     assert len(gate) == 1 and "just kb && " in gate[0] and gate[0].index("just kb") < gate[0].index("any_gate"), gate
+
+
+def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Fable's second review, problem 4: `ogy init` records the land branch, and the hooks read it; no `main` is assumed."""
+    run_git(tmp_path, "init", "-q", "-b", "trunk")
+    assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
+    assert "land: trunk" in (tmp_path / "ogy.yml").read_text()
+    run_git(tmp_path, "add", "-A")
+    sha = first_commit(tmp_path)
+    code, lines = hook(tmp_path, monkeypatch, "pre-push", f"refs/heads/trunk {sha} refs/heads/trunk {ZERO}\n")
+    assert code == cli.FINDINGS and lines[0].startswith("land refs/heads/trunk"), lines
+    assert hook(tmp_path, monkeypatch, "pre-push", f"refs/heads/trunk {sha} refs/heads/main {ZERO}\n")[0] == cli.OK
+    (tmp_path / "ogy.yml").write_text("ontology: software\n")
+    for name in ("pre-push", "gate"):
+        code, lines = hook(tmp_path, monkeypatch, name, f"refs/heads/trunk {sha} refs/heads/trunk {ZERO}\n")
+        assert code == cli.USAGE and lines == ["ogy.yml names no land branch (`land:`): run `ogy init`"], lines

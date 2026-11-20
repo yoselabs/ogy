@@ -1,4 +1,5 @@
-"""`ogy.yml` at the repository root: the defaults of the flags. A flag on the command line overrides it."""
+"""`ogy.yml` at the repository root: the defaults of the flags (a flag on the command line overrides it), and the land
+branch `ogy init` records (`land`), which no flag sets and nothing guesses."""
 
 from dataclasses import dataclass
 lazy from pathlib import Path
@@ -10,7 +11,8 @@ from ogy.verdict import UnusableError
 
 CONFIG_FILE = "ogy.yml"
 CONFIG_ENV = "OGY_CONFIG"  # points at another file; the repository's own is the default
-KEYS = ("ontology", "rev")
+KEYS = ("ontology", "rev", "land")
+NO_LAND = f"{CONFIG_FILE} names no land branch (`land:`): run `ogy init`"
 
 
 class ConfigError(UnusableError):
@@ -19,12 +21,17 @@ class ConfigError(UnusableError):
     prefix = "bad settings: "
 
 
+class NoLandError(UnusableError):
+    """`ogy.yml` names no land branch, so no update can be told to be a land."""
+
+
 @dataclass(frozen=True)
 class Config:
     """What the file sets; None for a key it does not hold."""
 
     ontology: str | None = None
     rev: str | None = None
+    land: str | None = None  # the branch a land updates and a branch is checked against
 
 
 def path_of(repo: Path) -> Path | None:
@@ -55,3 +62,11 @@ def read(repo: Path) -> Config:
         msg = f"{path}: {', '.join(bad)} must be text"
         raise ConfigError(msg)
     return Config(**data)
+
+
+def land(repo: Path) -> str:
+    """The land branch `ogy.yml` names; refuses (NoLandError) when it names none."""
+    found = read(repo).land
+    if found is None:
+        raise NoLandError(NO_LAND)
+    return found

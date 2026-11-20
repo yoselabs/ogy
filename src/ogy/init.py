@@ -1,9 +1,10 @@
 """`ogy init`: make a repository ready for ogy. Every step is idempotent and merges; nothing is clobbered.
 
-Writes `ogy.yml`, the knowledge-base folder with the (empty) lists of its fixed folders and the entry of the shared area of the
-first layer, the ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CLAUDE.md when it exists), the
-ogy server in `.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with
-(its `starts.yml`), unless removed. Every name in them comes from the ontology folder."""
+Writes `ogy.yml` (the ontology, and the land branch: the remote's default branch, else the branch checked out), the
+knowledge-base folder with the (empty) lists of its fixed folders and the entry of the shared area of the first layer, the
+ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in
+`.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with (its
+`starts.yml`), unless removed. Every name in them comes from the ontology folder."""
 
 import json
 import shutil
@@ -12,7 +13,7 @@ lazy from pathlib import Path
 
 import any_yaml
 from atomic_io import atomic_write_text
-from git_porcelain import RealRepo, config_get, git_dir
+from git_porcelain import RealRepo, config_get, git_dir, symbolic_ref
 from managed_region import replace_region
 
 from ogy import config, removed
@@ -27,7 +28,7 @@ START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
 HOOKS_DIR = ".githooks"
 HOOK = """\
 #!/bin/sh
-# Written by `ogy init`: `ogy hook` checks the commit this hook guards, with the landing checks on a push to main.
+# Written by `ogy init`: `ogy hook` checks the commit this hook guards, with the landing checks on a land.
 exec {ogy} hook {name} "$@"
 """
 HOOKS = ("pre-commit", "pre-push")
@@ -55,6 +56,30 @@ def _settings(repo: Path, ontology: str | None) -> str:
         msg = f"{config.CONFIG_FILE} already says ontology: {held}, not {ontology}"
         raise InitRefusedError(msg)
     return ontology or held or DEFAULT_ONTOLOGY
+
+
+def _land(repo: Path) -> str | None:
+    """The land branch init records when `ogy.yml` names none: the remote's default branch (`origin/HEAD`), else the branch
+    checked out; None outside a Git repository or on a detached HEAD."""
+    if git_dir(repo) is None:
+        return None
+    remote = symbolic_ref(repo, "refs/remotes/origin/HEAD")
+    if remote is not None:
+        return remote.removeprefix("refs/remotes/origin/")
+    branch = symbolic_ref(repo, "HEAD")
+    return branch.removeprefix("refs/heads/") if branch is not None else None
+
+
+def _config(repo: Path, name: str, written: list[str]) -> None:
+    """`ogy.yml` with the ontology when there is no file, and the land branch when it names none; every other key is kept."""
+    held = config.read(repo)
+    kept = {key: value for key in config.KEYS if (value := getattr(held, key)) is not None}
+    data = dict(kept) if (repo / config.CONFIG_FILE).exists() else {"ontology": name}
+    land = held.land or _land(repo)
+    if land is not None:
+        data["land"] = land
+    if data != kept or not (repo / config.CONFIG_FILE).exists():
+        _put(repo, config.CONFIG_FILE, any_yaml.dump(data), written)
 
 
 def starts(ontology: Ontology) -> dict[str, str]:
@@ -169,8 +194,7 @@ def init(repo: Path, ontology: str | None = None) -> Initialised:
     written: list[str] = []
     for rel in (".mcp.json", ".claude/settings.json"):
         _json(repo, rel)  # an unreadable file refuses before anything is written
-    if not (repo / config.CONFIG_FILE).exists():
-        _put(repo, config.CONFIG_FILE, any_yaml.dump({"ontology": name}), written)
+    _config(repo, name, written)
     for rel, text in starts(kinds).items():
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)
@@ -207,6 +231,8 @@ def doctor(repo: Path) -> list[str]:
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
+    elif git_dir(repo) is not None and config.read(repo).land is None:
+        lines.append(config.NO_LAND)
     ontology = named(config.read(repo).ontology or DEFAULT_ONTOLOGY, repo)
     lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(ontology) if not (repo / KB_DIR / rel).is_file())
     lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, ontology))

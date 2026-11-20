@@ -241,7 +241,7 @@
         "base": {
           "anyOf": [
             {
-              "description": "the commit the entries are checked against (default: merge base with main)",
+              "description": "the commit the entries are checked against (default: merge base with the land branch)",
               "type": "string"
             },
             {

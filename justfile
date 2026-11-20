@@ -47,8 +47,8 @@ shell-test:
     bats tests/shell
 
 # The knowledge base, through `ogy hook` (src/ogy/hooks.py), which runs the landing checks (an unfinished layer, a word nobody
-# agreed) only on a land: in a push (prek's variables name its first ref), when the remote ref is main; else when the branch
-# checked out is main. An ordinary branch gets the plain `ogy check`. The hooks `ogy init` writes call the same entry point.
+# agreed) only on a land: in a push (prek's variables name its first ref), when the remote ref is the land branch (`land` in
+# ogy.yml); else when the branch checked out is. An ordinary branch gets the plain `ogy check`. The hooks `ogy init` writes call the same entry point.
 [group('gate')]
 kb:
     #!/usr/bin/env bash

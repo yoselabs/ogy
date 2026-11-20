@@ -54,7 +54,7 @@ def _reads(commands: Adder) -> None:
         commands, "check", "the problems of the knowledge base", "Exit 1 when there are any. Takes a layer or an area to check only it."
     )
     checking.add_argument("area", nargs="?", help="only this layer (product, software), <layer>/<area>, or an area in every layer")
-    checking.add_argument("--base", help="the commit the entries are checked against (default: merge base with main)")
+    checking.add_argument("--base", help="the commit the entries are checked against (default: merge base with the land branch)")
     checking.add_argument("--landing", action="store_true", help="also report what blocks a land only (proposed terms)")
     standing = _verb(
         commands,
@@ -161,7 +161,7 @@ def _asks(commands: Adder) -> None:
         "hook",
         "what a Git hook or the gate runs: the check of what it guards, with the landing checks on a land",
         "pre-commit checks the staged tree, never a land; pre-push reads the pushed refs from standard input and runs check "
-        "--landing on a push to the remote main branch; gate checks the worktree, with --landing when main is checked out. "
+        "--landing on a push to the land branch (`land` in ogy.yml); gate checks the worktree, with --landing when it is checked out. "
         "Any other branch gets the plain check. Not an MCP tool: Git runs it.",
     )
     hooking.add_argument("name", choices=["pre-commit", "pre-push", "gate"], help="the hook that runs, or the gate")
