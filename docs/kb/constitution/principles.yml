@@ -15,9 +15,9 @@
 - id: layers-split-business-from-technical
   says: 'What the business decides is kept apart from how it is built: a business fact lives in the product layer, a build fact in the software layer.'
   agreed:
-    at: '2026-11-19T19:11:42+01:00'
+    at: '2026-11-20T03:15:34+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
+    said: 'Yes: an actor the business deals with lives in product whatever its nature; technical actors stay in software'
     hash: d9c979d95e10
 - id: rigid-where-checked
   says: A fact that a check, work left or impact reads is a field or a link; a fact only a reader needs is text on its entry.

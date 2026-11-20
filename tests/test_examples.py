@@ -46,10 +46,7 @@ def test_example_tool_library_has_no_findings() -> None:
 
 def test_taskloop_fit_has_only_expected_findings() -> None:
     terms = {"claim", "land", "squash", "target-tip", "gate", "checked-commit"}
-    expected = {
-        (Problem.NEVER_STARTED, "software/land/workflow/round-land"),
-        *((Problem.TERM_NOT_AGREED, f"product/shared/term/{word}") for word in terms),
-    }
+    expected = {(Problem.TERM_NOT_AGREED, f"product/shared/term/{word}") for word in terms}
     assert findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb")) == expected
     assert not {
         item
@@ -59,7 +56,10 @@ def test_taskloop_fit_has_only_expected_findings() -> None:
 
 
 def test_taskloop_fit_reads_every_part_with_a_slash_address() -> None:
+    """The owner cut the land workflow (35 links from product into software) to re-capture it after stage 3 (bead
+    ogy-yy9.75), and with it what only it used: the handlers close, deliver, squash, validate and hold-after-land, the
+    interface step-land, the workflow round-land that called it, the entity land-candidate and the three decisions that set
+    their fields."""
     snapshot = load(WorktreeSource(V5, "taskloop-fit/kb"), packaged())
-    assert len(snapshot.entries) == 175  # the README's 185, less 16 effects and the shared area, plus one otherwise case
-    squash = snapshot.resolve("product/land/workflow/land/step/squash/case/otherwise")
-    assert squash is not None and snapshot.resolve("product/land/workflow/land/step/squash/effect/x") is None
+    assert len(snapshot.entries) == 47
+    assert snapshot.resolve("product/land/workflow/land") is None and snapshot.resolve("software/land/dependency/origin") is not None

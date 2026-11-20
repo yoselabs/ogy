@@ -1,0 +1,23 @@
+title: Who decides the four structural questions of the review
+structure: true
+question: Items 4, 5, 6 and 9 of the ontology review (actor nature, shared homes, rule `by`, guess `sets`) change the structure; does the owner decide each on its own card, or does Fable decide them?
+options:
+  fable-decides:
+    label: Fable decides the four structural questions; the owner may veto each at session end
+    sets:
+      product/review/rule/structural-delegation:
+        says: Fable answers the four structural questions of the ontology review (actor nature, shared homes, rule `by`, guess `sets`) under this delegation; each answer is listed by `ogy dropped` for the owner's veto.
+  owner-decides:
+    label: The owner decides each on its own card
+    sets:
+      product/review/rule/structural-delegation:
+        says: The owner answers each of the four structural questions of the ontology review on its own card.
+proposal:
+  chose: fable-decides
+  why: The owner said Fable may decide them.
+  heard: Let Fable decide the four structural questions
+answers:
+- chose: fable-decides
+  said: Let Fable decide the four structural questions
+  at: '2026-11-18T23:21:43+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

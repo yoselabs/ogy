@@ -1,4 +1,4 @@
-says: Deleting an entry with a reason, the removed ledger that keeps its id, and the list of what no person has seen.
+says: 'Deleting an entry with a reason, the removed ledger that keeps its id, and the list of what no person has seen. Not here: adding and changing entries: capture; asking the owner: review.'
 unlike:
-- 'adding and changing entries: capture'
-- 'asking the owner: review'
+- product/capture/area/capture
+- product/review/area/review

@@ -1,0 +1,15 @@
+question: How does ogy work print the work for a person?
+context: 'Bead ogy-yy9.75 safe fix: grouped by cause, first the decision that set the entry or one of its parents (decision_of), then what its workflow realizes (the flow names the container field, group: realizes). Display only: nothing routes on it, and the agents table over MCP stays flat. docs/kb: 70 groups; 67 pieces of work have no decision and realize nothing; each mirror rule sits under its decision.'
+options:
+  by-cause:
+    label: Grouped by the deciding decision, then by the capability realized
+  flat:
+    label: One flat list
+proposal:
+  chose: by-cause
+  why: The owner reads why each piece of work is there.
+answers:
+- chose: by-cause
+  said: 'Yes, all: ogy work grouped by cause, the deciding decision then the capability'
+  at: '2026-11-20T03:43:50+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

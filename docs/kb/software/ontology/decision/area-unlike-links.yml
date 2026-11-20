@@ -1,0 +1,20 @@
+structure: true
+question: How does an area say what belongs next door?
+context: 'Bead ogy-yy9.75: area.unlike was text naming areas (29 texts in 17 areas, shaped what: area). It is now a link field to areas; each text is kept word for word at the end of says (Not here: what: area), so a renamed area follows and no words are lost. Areas are never asked, so no agreement changes. A product area may not name a software one (tool-library product/lending keeps it as text only).'
+options:
+  links-and-says:
+    label: unlike links the areas; their clauses move into says
+  items:
+    label: unlike holds items, each an area link with its text
+proposal:
+  chose: links-and-says
+  why: No new part kind; the harmony review proposed folding the text into says.
+answers:
+- chose: links-and-says
+  said: 'Yes, all: area.unlike becomes a link to areas'
+  at: '2026-11-20T03:09:38+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: links-and-says
+  said: 'Yes, all four: unlike links the areas; each old sentence stays word for word in says as Not here'
+  at: '2026-11-20T03:52:00+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

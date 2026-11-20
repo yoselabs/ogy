@@ -4,10 +4,11 @@ shape: inline
 sentence: tells
 part_of: journey
 key: stages
-needs_proof: true
+needs_proof: {if_part: move}                       # a stage with moves is built; one without is not
 fingerprint: {proofs: true}
 requires:
-  - {if_set: who, path: ["<-serves_stages"], kinds: [screen], work: true, error: "a stage a person acts at has a screen"}
+  - {if_set: who, path: ["<-serves_stages"], kinds: [screen], work: true, status: unscreened, error: "a stage a person acts at has a screen"}
+  - {if_reaches: ["who?sort=machine"], path: ["who", "<-wired_to", "serves_stages"], kinds: [stage], same: true, error: "a stage a machine acts at is served by a screen wired to it"}
 input: {move: content}                              # its moves are what it is built from
 fields:
   tells: {}

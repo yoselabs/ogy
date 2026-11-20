@@ -25,7 +25,7 @@ CODE = "def lend():\n    return True\n"
 AGREED = "{at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1', said: Members sign in, hash: 000000000000}"
 SIGN_IN = """\
 says: A member is signed in.
-because: [product/app/actor/member]
+because: [product/app/decision/sign-in]
 start: ask
 steps:
   ask:
@@ -47,7 +47,12 @@ GOOD: dict[str, str] = {
     "product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n",
     "product/app/workflow/sign-in.yml": SIGN_IN,
     "software/app/interface/sign-in-page.yml": (
-        "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/workflow/sign-in]\n"
+        "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/decision/sign-in]\n"
+    ),
+    "product/app/decision/sign-in.yml": (
+        "question: Do members sign in?\noptions:\n  members: {label: Members sign in}\n  anyone: {label: Anyone borrows}\n"
+        "proposal: {chose: members, why: Loans need a member.}\n"
+        "answers: [{chose: members, said: Members sign in, at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1'}]\n"
     ),
 }
 

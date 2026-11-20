@@ -1,0 +1,2 @@
+smoke-small/A-1 harness error: success | smoke-small/A-1.md main=? aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+smoke-fail/A-1 harness error: success | smoke-fail/A-1.md main=? aux=- asked=claude-nonexistent-0-0 effort=medium 2026-11-20 2.1.326 (Claude Code)

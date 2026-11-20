@@ -47,11 +47,11 @@ class Card:
     harm: str | None  # the worst harm tag
     dependants: int
     text: str = ""  # the question, or the sentence asked about
-    guess: str = ""  # the option the AI guessed, for a question; the option in force, for a delegated decision
+    proposal: str = ""  # the option the AI proposed, for a question; the option in force, for a delegated decision
     fingerprint: str = ""  # of the entry or decision as shown: a reply that finds another one is refused
-    options: tuple[tuple[str, str], ...] = ()  # (key, label) of a question's options, the AI's guess first
-    heard: str = ""  # what the owner said that the guess rests on, paraphrased: one yes answers the question with the guess
-    evidence: str = ""  # what stands behind it: "From docs: ...", the guess's reason
+    options: tuple[tuple[str, str], ...] = ()  # (key, label) of a question's options, the AI's proposal first
+    heard: str = ""  # what the owner said that the proposal rests on, paraphrased: one yes answers the question with the proposal
+    evidence: str = ""  # what stands behind it: "From docs: ...", the proposal's reason
     word: str = ""  # a term card: the word (the sentence is its meaning)
     avoid: tuple[str, ...] = ()  # a term card: the words it is not
     context: str = ""  # a decision card: why the question comes up, so the card reads on its own
@@ -98,7 +98,7 @@ def agreement(snapshot: Snapshot, address: Address, hashes: dict[str, str] | Non
     found = (hashes if hashes is not None else agreed_hashes(snapshot)).get(str(address))
     if found is None:
         return Agreement.NOT_AGREED
-    return Agreement.AGREED if found == snapshot.fingerprint(address) else Agreement.CHANGED
+    return Agreement.AGREED if found == snapshot.agreed_print(address) else Agreement.CHANGED
 
 
 def label(snapshot: Snapshot, address: Address) -> Label:
@@ -173,26 +173,26 @@ def dependants(snapshot: Snapshot) -> dict[Address, int]:
 
 
 def delegated(decision: Decision) -> bool:
-    """The answer in force is an agent's, under the owner's delegation: once a decision has an answer its guess is inert."""
+    """The answer in force is an agent's, under the owner's delegation: once a decision has an answer its proposal is inert."""
     force = decision.in_force
     return bool(force and force.by_answer and force.delegated)
 
 
 def _reason(decision: Decision) -> str:
-    """The line under a question: why the AI guessed it, unless the guess rests on the owner's words (the card's `heard` line)."""
+    """The line under a question: why the AI proposed it, unless the proposal rests on the owner's words (the card's `heard` line)."""
     if decision.answers:
         return ""
-    fields: Mapping[str, object] = decision.guess.fields if decision.guess and not decision.heard else {}
+    fields: Mapping[str, object] = decision.proposal.fields if decision.proposal and not decision.heard else {}
     value = fields.get(decision.names.why)
-    return f"AI guess because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
+    return f"AI proposal because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
 
 def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], kind: str) -> Card:
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
     tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=snapshot.ontology.declared.rank)
     force, names = decision.in_force, decision.names
-    guess = force.option if decision.answers and force else decision.guess.fields.get(names.chose) if decision.guess else None
-    keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
+    proposal = force.option if decision.answers and force else decision.proposal.fields.get(names.chose) if decision.proposal else None
+    keys = sorted(decision.options, key=lambda key: (key != proposal, key))  # the proposal (or the option in force) first: letter A
     said = decision.heard if not decision.answers else None
     addresses = [decision.address.part(names.option, key) for key in keys]
     options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
@@ -202,8 +202,8 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
         tags[0] if tags else None,
         sum(count.get(found, 0) for found in settled),
         snapshot.sentence(decision.address) or "",
-        guess if isinstance(guess, str) else "",
-        snapshot.fingerprint(decision.address),
+        proposal if isinstance(proposal, str) else "",
+        snapshot.agreed_print(decision.address),
         options,
         said if isinstance(said, str) else "",
         _reason(decision),
@@ -277,7 +277,7 @@ def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Addr
         count.get(address, 0),
         _says(snapshot, address),
         alone=asked_alone(snapshot, tag),
-        fingerprint=snapshot.fingerprint(address),
+        fingerprint=snapshot.agreed_print(address),
         evidence=evidence(snapshot, address),
         word=word,
         avoid=tuple(str(item) for item in avoid) if word and isinstance(avoid, list) else (),
@@ -342,7 +342,7 @@ def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int])
                 worst,
                 count.get(top, 0),
                 _says(snapshot, top),
-                fingerprint=snapshot.fingerprint(top),
+                fingerprint=snapshot.agreed_print(top),
                 alone=asked_alone(snapshot, worst),
                 evidence=evidence(snapshot, top),
                 members=tuple((card.address, card.text, card.fingerprint) for card in members),

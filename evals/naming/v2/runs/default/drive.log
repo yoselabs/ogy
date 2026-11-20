@@ -1,0 +1,54 @@
+2026-11-20T03:50:35Z sitting starts: tag=default model=claude-opus-5-5 effort=medium runs=6 arms=A C0 C B
+2026-11-20T03:50:35Z run A-1
+ok default/A-1.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:51:27Z run C0-1
+ok default/C0-1.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:52:23Z run C-1
+ok default/C-1.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:53:17Z run B-1
+ok default/B-1.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:54:09Z run A-2
+ok default/A-2.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:55:27Z run C0-2
+ok default/C0-2.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:56:23Z run C-2
+ok default/C-2.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:57:29Z run B-2
+ok default/B-2.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:58:16Z run A-3
+ok default/A-3.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:59:15Z run C0-3
+ok default/C0-3.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:00:22Z run C-3
+ok default/C-3.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:01:17Z run B-3
+ok default/B-3.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:02:19Z run A-4
+ok default/A-4.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:03:46Z run C0-4
+ok default/C0-4.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:04:45Z run C-4
+ok default/C-4.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:05:46Z run B-4
+ok default/B-4.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:06:40Z run A-5
+ok default/A-5.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:07:35Z run C0-5
+ok default/C0-5.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:08:34Z run C-5
+ok default/C-5.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:09:28Z run B-5
+ok default/B-5.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:10:25Z run A-6
+ok default/A-6.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:11:24Z run C0-6
+ok default/C0-6.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:12:19Z run C-6
+ok default/C-6.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:13:12Z run B-6
+ok default/B-6.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:14:02Z sitting ends
+2026-11-20T04:14:02Z arm A: replacements used 0
+2026-11-20T04:14:02Z arm C0: replacements used 0
+2026-11-20T04:14:02Z arm C: replacements used 0
+2026-11-20T04:14:02Z arm B: replacements used 0

@@ -1,11 +1,13 @@
-# One vocabulary for every run before a scorer sees it: each word on the left is rewritten to the word on the right,
-# in every run of every arm alike. Three tab-separated columns: old, new, where.
+# One vocabulary for every run before a scorer sees it: each word on the left is rewritten to the word on the right.
+# Tab-separated columns: old, new, where, and optionally the arms the line applies to (none given: every arm).
 #   kind   rewritten wherever the word stands, also in the "why" text, also with a final s, also capitalised
 #   field  rewritten only where it stands as a field: in a code span, after a dot, or before "->", "->>" or ":".
 #          The plain English word ("by default", "this satisfies") is left alone.
-# Only true 1:1 renames are here. Not mapped, so still visible to a scorer: `many`, `heard`, `realizes` on a
-# capability, and everything arm B adds or re-scopes (`interface` and its fields, `constrains`). Add B's 1:1 renames
-# when its map is printed, and only those.
+# Only true 1:1 renames are here. `satisfies` is A's `by` in C0 and C only: in B it is another field (offered on
+# behaviour kinds only, next to `rule.constrains`), so B's `satisfies` is never rewritten.
+# Not mapped, so still visible to a scorer: `many`, `heard`, `realizes` on a capability, the types `one` and `list`
+# (A), and everything B adds (`interface` and its fields, `constrains`); B is scored in batches of its own.
+# Checked against B's map (43f15fc): stages 2 and 3 bring no 1:1 rename, so nothing was added for B.
 quantity	value	kind
 quantities	values	kind
 enum	set	kind
@@ -16,5 +18,5 @@ setting	config_key	kind
 attribute	attr	kind
 workaround	deviation	kind
 proposal	guess	kind
-satisfies	by	field
+satisfies	by	field	A,C0,C
 default	binds	field

@@ -38,7 +38,7 @@ answers:
   said: 'Fable: the rule names no stale glossary home'
   at: '2026-11-19T00:27:45+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-  delegated: software/ontology/decision/review-delegation
+  delegated: product/review/decision/review-delegation
 - chose: yaml
   said: Kept no-views and YAML-only glossary; agreed to the five sentences
   at: '2026-11-19T17:58:26+01:00'

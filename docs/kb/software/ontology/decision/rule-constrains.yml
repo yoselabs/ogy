@@ -1,0 +1,16 @@
+structure: true
+question: How does a rule name what it is about?
+context: 'Bead ogy-yy9.75 owner decision (1): satisfies leaves the common fields and is declared on the behaviour kinds (step, choice, case, timeout, interface, handler, dependency, workflow); rule.constrains links to quantity, enum, setting, entity, attribute and state as a content input, so a changed number makes the rule work. tool-library: the attribute renewals and the entity loan held to rules became the rules constraining them.'
+options:
+  split:
+    label: constrains for data kinds, satisfies only for behaviour kinds
+  common:
+    label: satisfies on every kind, no constrains
+proposal:
+  chose: split
+  why: A rule then reads the number it is about.
+answers:
+- chose: split
+  said: 'Yes, all: constrains for data kinds, satisfies only for behaviour kinds'
+  at: '2026-11-20T03:09:26+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

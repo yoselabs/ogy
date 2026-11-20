@@ -3,8 +3,6 @@
   says: The fee for each day a tool is late
   is: 2
   unit: EUR
-  proof:
-  - tests/test_fee.py::test_late_fee_per_day
 - id: max-loans
   says: How many tools one member may hold at once.
   is: 3

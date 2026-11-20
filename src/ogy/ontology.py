@@ -129,12 +129,15 @@ class Ontology:
         settler = self.settling_kind()
         names = settler.settling if settler else None
         asked = {settler.kind, names.option} if settler and names else set()
-        rows = {row for flow in (k.flow for k in self.kinds.values()) if flow for row in (flow.choice, flow.case, flow.timeout)}
-        return kind.sentence is not None and kind.kind not in asked | rows
+        return kind.sentence is not None and kind.kind not in asked | self.rows()
+
+    def rows(self) -> frozenset[str]:
+        """The row kinds of the flows (choice, case, timeout): never a card of their own, read and agreed with their step."""
+        return frozenset(row for flow in (k.flow for k in self.kinds.values()) if flow for row in (flow.choice, flow.case, flow.timeout))
 
     def texts(self) -> frozenset[str]:
         """The fields an agent writes words in, read for avoided words: every sentence, the title, a question's context, a
-        guess's reason and what is printed under a printed-first sentence."""
+        proposal's reason and what is printed under a printed-first sentence."""
         settler, printed = self.settling_kind(), self.printed_kind()
         names = settler.settling if settler else None
         found = {kind.sentence for kind in self.kinds.values() if kind.sentence} | {self.roles.title}

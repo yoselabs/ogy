@@ -1,3 +1,5 @@
 says: Every tool is checked when it comes back.
+constrains:
+- product/lending/entity/loan
 src:
 - code:src/library/loans.py#take_back

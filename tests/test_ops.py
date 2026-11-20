@@ -54,7 +54,7 @@ def test_decisions_terms_and_ledgers_are_registered(kb: MakeKb) -> None:
         ),
         landing=True,
     )
-    assert {Problem.NO_GUESS, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
+    assert {Problem.NO_PROPOSAL, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
 
 
 def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
@@ -63,7 +63,7 @@ def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
     short, everything = review(snapshot), review(snapshot, everything=True)
     assert len(short.cards) == 7 and short.waiting == len(everything.cards) - 7 and len(everything.cards) >= 9
     assert short.headers[0].ai >= 9 and str(short.headers[0]).startswith("product/app   0 questions open · ")
-    assert dropped(snapshot, []).guessed_no == ()
+    assert dropped(snapshot, []).proposed_no == ()
 
 
 def test_harm_is_read_from_the_kind_files(kb: MakeKb, ontology: Ontology) -> None:
@@ -113,8 +113,10 @@ def test_show_joins_status_decision_sources_and_built_record(tmp_path: Path) -> 
     assert any(line.startswith("status (computed): decided by you, 2026-11-24") for line in lines)
     assert any(line.startswith("Decided in (computed): product/library/decision/late-fee (in force: two, by you)") for line in lines)
     assert "You said (paraphrased): Yes to card 1" in lines
-    built = next(line for line in lines if line.startswith("built ("))
-    assert built.startswith("built (built/product/library/quantities.yml): own 0345c374e8a0 = now") and built.endswith("work left: none")
+    rule = cli.run([*example_flags, "show", "product/library/rule/late-fee-per-day"])[1]  # D15: the rule is proved, not the number
+    built = next(line for line in rule if line.startswith("built ("))
+    assert built.startswith("built (built/product/library/rule/late-fee-per-day.yml): own f56adef51e68 = now")
+    assert built.endswith("work left: none")
     shown = cli.run([*example_flags, "show", "product/library/decision/late-fee"])[1]
     assert "Settles (computed): product/library/quantity/late-fee" in shown
 
@@ -128,15 +130,21 @@ def test_show_of_an_address_decided_no(kb: MakeKb) -> None:
 
 
 def test_work_reads_built_record_and_lists_removal_work(repo: Path) -> None:
-    lend = ops.run_show(ops.Target(repo), "software/app/handler/lend").value.build_hash
+    page = ops.run_show(ops.Target(repo), "software/app/interface/page").value.build_hash
     line = "{own: %s, covers: [], sourced: {}}\n"
+    (repo / "docs/kb/built/software/app/interface").mkdir(parents=True)
+    (repo / "docs/kb/built/software/app/interface/page.yml").write_text(f"software/app/interface/page: {line % page}")
+    (repo / "docs/kb/built/software/app/interface/gone.yml").write_text(f"software/app/interface/gone: {line % 'aaaaaaaaaaaa'}")
     (repo / "docs/kb/built/software/app/handler").mkdir(parents=True)
-    (repo / "docs/kb/built/software/app/handler/lend.yml").write_text(f"software/app/handler/lend: {line % lend}")
-    (repo / "docs/kb/built/software/app/handler/gone.yml").write_text(f"software/app/handler/gone: {line % 'aaaaaaaaaaaa'}")
+    (repo / "docs/kb/built/software/app/handler/lend.yml").write_text(f"software/app/handler/lend: {line % 'bbbbbbbbbbbb'}")
     commit(repo, "built")
     _, lines = ogy(repo, "work")
-    assert not any("software/app/handler/lend" in text for text in lines)
-    assert "removed: software/app/handler/gone (now -, built aaaaaaaaaaaa) no ledger item" in lines
+    assert not any("software/app/interface/page" in text for text in lines)
+    assert "removed: software/app/interface/gone (now -, built aaaaaaaaaaaa) no ledger item" in lines
+    # D15: a handler needs no proof; its line is removal work until `ogy migrate` deletes it
+    assert "removed: software/app/handler/lend (now -, built bbbbbbbbbbbb) needs no proof: `ogy migrate` deletes the line" in lines
+    assert "deleted the built line of software/app/handler/lend: it needs no proof" in ogy(repo, "migrate")[1]
+    assert not any("software/app/handler/lend" in text for text in ogy(repo, "work")[1])
     (repo / "docs/kb/built/software/app/handler/bad.yml").write_text("software/app/handler/bad: {own: x, extra: 1}\n")
     assert ogy(repo, "--rev", ".", "check")[1][0].startswith("stored-state: built/software/app/handler/bad.yml")
 

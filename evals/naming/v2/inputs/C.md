@@ -100,7 +100,7 @@ constitution (every decision is judged against these):
   storage-is-a-projection: The ontology is a graph of linked entries. How an entry is stored (its own file, an item in a list, inline in its parent) is a projection: no meaning and no address depends on it.
 
 product/shared:
-  actor: Who uses or operates the product: human, ai or program; never an external.
+  actor: Who uses or operates the product: human, ai or program; never a dependency.
     avoid: persona; role; user
   address: An entry's name, <layer>/<area>/<kind>/<id>, not its file path; links hold one.
   agreement: A person's yes to an entry's sentence, kept with its fingerprint; only people agree.
@@ -112,7 +112,7 @@ product/shared:
   because: Links to the entries a sentence was concluded from; the chain must reach evidence.
   card: One numbered item of a review round: a question or a sentence to agree.
   constitution: The fixed folder constitution/: every principle, printed whole to every agent first.
-  decision: One question with its options, guess and answers; a tracker only mirrors it.
+  decision: One question with its options, proposal and answers; a tracker only mirrors it.
     avoid: settles; ?open
   entry: One item of a kind with a permanent id; one file may hold many.
   evidence: What grounds an entry: src, a decision, a person's yes or because; not proof.
@@ -133,7 +133,7 @@ product/shared:
     avoid: assumed; ?assumed
   question: A decision with no answer yet; not an entry's state, not a card.
     avoid: ?open; open question
-  read-back: Entries played back as said, concluded, guessed; neither a summary nor a review round.
+  read-back: Entries played back as said, concluded, proposed; neither a summary nor a review round.
   removed ledger: An area's append-only removed.yml: each removed entry's snapshot; its id is never reused.
     avoid: tombstone; retired
   review round: The cards one ogy review showed, kept so ogy reply answers exactly them.
@@ -144,7 +144,7 @@ product/shared:
 software/shared:
   built record: Tool-written files under built/: each entry's built hash; never in entries, never hand-edited.
     avoid: meta; receipts inside entries
-  proof: A test, path.py::function, showing a rule or value holds in code; not evidence.
+  proof: A test, path.py::function, showing a rule or quantity holds in code; not evidence.
   software ontology: ogy's shipped ontology for software, named in ogy.yml; never copied, no plugin, not requirements-only.
     avoid: v5; requirements ontology
 software/ontology:
@@ -194,41 +194,40 @@ the facts imply but do not list.
 
 - [1] Two sorts of people act in the product: a rider hires bikes, a mechanic repairs them.
 - [2] We keep every hire. A hire is first booked, then out, then returned, then paid. It never goes backwards.
-- [3] We take card payments through PayRight, another firm, which handles the payments. We stay on its version
-  2024-06 on purpose.
+- [3] We take card payments through PayRight, another firm. We stay on its version 2024-06 on purpose.
 - [4] The owner fixed one figure: 12 hours, the longest a hire lasts without a late fee.
 - [5] For every hire we keep how long it lasted, in minutes.
-- [6] A bike is exactly one of three sorts: city, cargo or electric. There are no others.
+- [6] Every bike is a city bike, a cargo bike or an electric bike. There are no other sorts.
 - [7] One piece of our own code takes the payment: it talks to PayRight at the moment the rider hands the bike back.
 - [8] The owner puts this above all: a charge never comes as a surprise to a rider. All later work on the product
   is weighed against it.
 - [9] PayRight's address differs between trial and production. The live product reads it from `PAYRIGHT_URL`.
-- [10] Other companies' apps can ask us over HTTP, `GET /stations/{id}/bikes`, and get back the free bikes of a
-  station. Asking alters nothing.
-- [11] Not settled yet: may a rider hold two bikes at once? Two possibilities are on the table: one bike only, or up
-  to two. No one has picked.
+- [10] Other companies' apps can send us `GET /stations/{id}/bikes` and get back the free bikes of a station.
+  Asking alters nothing.
+- [11] Not settled yet: may a rider hold two bikes at once? Two possibilities: one bike only, or up to two. No one
+  has picked.
 - [12] Mechanics stick remarks on a bike, for example "squeaky" or "new saddle". Anyone can write a new one whenever
   they like, and a bike can carry several.
-- [13] PayRight's notifier is a server of theirs that contacts us once a payment went through. That message is what
-  makes us mark the hire paid.
+- [13] PayRight's notifier is a server of theirs that contacts us once a payment went through. That is what makes us
+  mark the hire paid.
 - [14] For every hire we keep what it cost: an amount together with its currency. It is worked out from how long the
   hire lasted ([5]) and the late fee ([17]).
 - [15] It must always hold: a bike is never out on two hires at once. We have an automatic check for it.
-- [16] We measure the distance between two stations with a function from geolib, an open-source library written
+- [16] We measure the distance between two stations with a function from geolib, an open-source toolkit written
   elsewhere. We stay on its version 3 on purpose.
 - [17] Every hour beyond the 12 of [4] costs the rider 5 euros. The owner picked that figure.
-- [18] A compact bike tile (photo, sort, price per hour) appears twice: beside the map and in the rider's list of
-  past hires. It is one tile, not two.
+- [18] A compact bike tile (photo, sort, price per hour) appears twice: beside the map and among the rider's past
+  hires. It is one tile, not two.
 - [19] PayRight rounds an amount down to whole cents, against its own documentation. So we add half a cent before
   sending.
-- [20] The city's transport app belongs to the city. It asks us for free bikes through [10]. We never ask it
+- [20] The transport app is the city's own. It asks us for free bikes through [10]. We never ask it
   anything.
 - [21] Also not settled with the owner: what does a hire cost when the bike breaks down mid-ride? Two possibilities:
   it costs nothing, or it costs the minutes ridden. Until the owner speaks, the AI working on the product goes with
   "it costs nothing" and flags that as its own pick.
 - [22] A booking is held for 15 minutes; the owner picked that figure. Whoever hosts the product can override it
   through `HOLD_MINUTES`; with no override, the 15 applies.
-- [23] The whole point of the product: a rider finds a free bike within five minutes' walk.
+- [23] What the product is there for: a rider finds a free bike within five minutes' walk.
 - [24] What [10] sends back is always laid out the same: for each bike its code, its sort and its battery level. The
   other companies rely on it.
 - [25] It must always hold: no payment is taken from a card that runs out within a month. We have an automatic check

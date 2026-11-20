@@ -6,6 +6,8 @@ layers: [business, tech]
 needs_proof: true
 fingerprint: {proofs: true}
 input_from: {held_by: {fields: [rank]}}              # a branch held to it changes its rank
+requires:
+  - {path: ["<-*"], kinds: [any], work: true, status: idle, error: "a norm nothing links to"}
 fields:
   tells: {required: true}
   money: {type: flag, harm: [cash]}

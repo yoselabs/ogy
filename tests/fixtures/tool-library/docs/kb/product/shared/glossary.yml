@@ -1,6 +1,6 @@
 - id: loan
   word: loan
-  says: One tool lent to a member until it comes back; not a reservation.
+  names: product/lending/entity/loan
   avoid:
   - rental
   agreed:

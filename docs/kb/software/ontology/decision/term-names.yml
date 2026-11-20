@@ -1,0 +1,18 @@
+structure: true
+question: How do a term and the entry of the same name live together?
+context: 'Bead ogy-yy9.75, D6 (harmony finding 6): term.names links the entry that defines the word (kinds with a sentence, not a term); exactly one of says and names; the glossary and the card print the named sentence, length-checked. No docs/kb term converted yet (each would need the owner yes again); the tool-library term loan names its entity.'
+options:
+  names:
+    label: The term names the entry and has no sentence of its own
+  none:
+    label: No term for a word an entry defines
+  both:
+    label: Keep both sentences
+proposal:
+  chose: names
+  why: One sentence per concept.
+answers:
+- chose: names
+  said: 'Yes, all: D6 a, a term names its entry, exactly one of says and names'
+  at: '2026-11-20T03:09:31+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -21,7 +21,6 @@ class Status(StrEnum):
 
     UNBUILT = "unbuilt"  # never built
     CHANGED = "changed"  # built, then its build hash changed: its meaning, its proofs or a declared input
-    UNSERVED = "unserved"  # a requirement its kind declares as work is unmet (an actor step nothing serves): to build, no fault
     REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"
@@ -32,14 +31,14 @@ class Work:
     """One thing still to do. `address` is text: a removed entry has none to resolve."""
 
     address: str
-    status: Status
+    status: Status | str  # a requirement that is work names its own status in YAML (`requires: [{work: true, status: ...}]`)
     build_hash: str  # what the built line is compared with: the meaning, proofs and what the kind reaches
     built: str | None
     note: str = ""
 
 
 def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
-    proving = [a for a in sorted(snapshot.entries) if snapshot.kind_of(a).needs_proof]
+    proving = [a for a in sorted(snapshot.entries) if snapshot.needs_proof(a)]
     current = {str(a): snapshot.build_hash(a) for a in proving}
     return [
         Work(text, Status(why), current[text], record[text].own if text in record else None)
@@ -48,17 +47,23 @@ def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
 
 
 def _unmet(snapshot: Snapshot) -> list[Work]:
-    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): its error is the note."""
+    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): under the status it names
+    its error the note."""
     return [
-        Work(str(address), Status.UNSERVED, "", None, need.error)
+        Work(str(address), need.status or "", "", None, need.error)
         for address in sorted(snapshot.entries)
         for need in unmet(snapshot, address, work=True)
     ]
 
 
 def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, removed.Item]) -> list[Work]:
-    """B2: the `why` of the ledger item is printed beside the work."""
-    found: list[Work] = []
+    """B2: the `why` of the ledger item is printed beside the work. A line on a live entry that needs no proof (its kind no
+    longer does, or an entity lost its transitions) is removal work too: `ogy migrate` deletes it."""
+    found = [
+        Work(str(address), Status.REMOVED, "", record[str(address)].own, "needs no proof: `ogy migrate` deletes the line")
+        for address in sorted(snapshot.entries)
+        if str(address) in record and not snapshot.needs_proof(address)
+    ]
     for text in built.removal_work(record, (str(a) for a in snapshot.entries)):
         item = next((ledger[i] for i in sorted(ledger, key=len, reverse=True) if text == i or text.startswith(i + "/")), None)
         found.append(Work(text, Status.REMOVED, "", record[text].own, f"why: {item.why}" if item else "no ledger item"))

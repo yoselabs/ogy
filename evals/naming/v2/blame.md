@@ -17,3 +17,14 @@ Never infer a name the line does not mention. The reader knows the arm, so this 
 
 Output: `blame-<model tag>.md`, one line per error: `run fact item-or-K-or-F | verdict | the words of the why line`.
 Then a table: name, arm, fact, runs blamed of runs in the arm.
+
+## Arm B, in the same pass
+
+- The absolute report: per link item, hits of 6; K per fact; for each misplacement the kind chosen and the verdict
+  above. Written whatever the gates say.
+- The addendum of [design.md](design.md): B1 to B6, 0 or 1 per B run, six counts per model, never summed with any
+  other number.
+- Links the lint would refuse: when a B run writes a link the printed map seems to offer but the real map does
+  not take (a `satisfies` on a data kind, a product entry naming a software one), list it as `map finding`, with
+  the map line that made it look allowed. It is a finding about the map, not a run's error.
+

@@ -24,10 +24,10 @@ options:
       software/ontology/rule/rule-is-linked-by-its-follower:
         says: "An entry names the rules it is held to with `by` (links to rules): a case, a choice, an external, a workflow, an entity, an attribute or a guard, as `because` names principles. A rule has no `on`. Each kind sets whether `by` counts in its fingerprint, so adding a rule never stales a holder's agreement (a row keeps it in); `show` prints `by` both ways; a change to an external's pin makes the proofs of the rules it is held to suspect."
   declared:
-    label: '`by` on the follower; `on` dropped; the kind files say which kinds take `by`; a rule nothing names is allowed'
+    label: Behaviour entries name their rules with `satisfies`, a rule names the data it constrains; the kind files say which kinds take each
     sets:
       software/ontology/rule/rule-is-linked-by-its-follower:
-        says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`.
+        says: A behaviour entry (a step, a row, an interface, a handler, a dependency or a workflow) names the rules it is held to with `satisfies`; a rule names the data it constrains with `constrains`; a rule has no `on`; the kind files say which kinds take each.
   declared-and-used:
     label: As the one before, and a rule that nothing names with `by` is an error
     sets:
@@ -51,7 +51,7 @@ answers:
   said: Drop rule on; by everywhere; per-kind fingerprint choice.
   at: '2026-11-18T23:22:40+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-  delegated: software/ontology/decision/structural-delegation
+  delegated: product/review/decision/structural-delegation
 - chose: declared
   said: Took every recommendation of Fable's revised round
   at: '2026-11-19T17:47:11+01:00'

@@ -39,12 +39,12 @@ def test_an_actor_needs_no_evidence(kb: MakeKb) -> None:
     assert evidence(kb({"product/app/actors.yml": actors})) == set()
 
 
-def test_because_chain_must_reach_a_source(kb: MakeKb) -> None:
-    bare = CAPABILITY.format("other", "Someone else can.", "")
+def test_because_cites_a_principle_or_a_decision_never_a_source(kb: MakeKb) -> None:
+    other = CAPABILITY.format("other", "Someone else can.", ", src: [" + SOURCE + "]")
     chain = CAPABILITY.format("borrow", "A member can borrow.", ", because: [product/app/capability/other]")
-    assert evidence(kb({"product/app/capabilities.yml": bare + chain})) == {"product/app/capability/other", "product/app/capability/borrow"}
-    sourced = CAPABILITY.format("other", "Someone else can.", ", src: [" + SOURCE + "]")
-    assert evidence(kb({"product/app/capabilities.yml": sourced + chain})) == set()
+    assert (Problem.LINK_KIND, "product/app/capability/borrow") in kb({"product/app/capabilities.yml": other + chain}).findings()
+    cited = CAPABILITY.format("borrow", "A member can borrow.", ", because: [product/app/decision/sign-in]")
+    assert evidence(kb({"product/app/capabilities.yml": cited})) == set()
 
 
 def test_a_decision_settling_the_entry_stands_for_its_src(kb: MakeKb) -> None:
@@ -79,13 +79,12 @@ def test_harm_may_be_declared_on_a_field(kb: MakeKb) -> None:
 
 
 def test_a_link_to_a_removed_address_is_one_finding(repo: Path) -> None:
-    ogy(repo, "--rev", ".", "remove", "software/app/handler/lend", "--why", "not needed")
-    (repo / "docs/kb/software/app/interface/page.yml").write_text(
-        "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
-        "because: [software/app/handler/lend]\n"
+    ogy(repo, "--rev", ".", "remove", "software/app/interface/page", "--why", "not needed")
+    (repo / "docs/kb/software/app/interface/card.yml").write_text(
+        "says: A card.\nform: web\nsrc: ['code:app.py#lend']\nincludes: [software/app/interface/page]\n"
     )
     _, lines = ogy(repo, "--rev", ".", "check")
-    assert [line.split(":")[0] for line in lines if "software/app/handler/lend" in line] == ["dangling-link"]
+    assert [line.split(":")[0] for line in lines if "software/app/interface/page" in line] == ["dangling-link"]
 
 
 def test_history_has_the_built_rows_and_the_delivery_commit(repo: Path) -> None:

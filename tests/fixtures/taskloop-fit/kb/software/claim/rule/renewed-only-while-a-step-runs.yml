@@ -1,5 +1,5 @@
 says: The claim is renewed at a fixed interval while a step runs, and by nothing between steps.
 src:
 - code:src/taskloop/claim_lease.py#keeping
-because:
+constrains:
 - software/claim/quantity/renew-every

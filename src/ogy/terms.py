@@ -73,9 +73,9 @@ def _avoided(snapshot: Snapshot, glossary: Glossary, entries: list[Entry]) -> li
     return found
 
 
-def _compressed(glossary: Glossary, sentence: str, entry: Entry) -> list[Finding]:
-    """T1: a term says what it means in one line of fewer words than the glossary's limit."""
-    says, limit = entry.text(sentence) or "", glossary.words
+def _compressed(snapshot: Snapshot, glossary: Glossary, entry: Entry) -> list[Finding]:
+    """T1: a term says what it means (or the entry it names says it) in one line of fewer words than the glossary's limit."""
+    says, limit = snapshot.sentence(entry.address) or "", glossary.words
     if "\n" in says.strip() or len(says.split()) >= limit:
         kind = entry.address.kind
         return [
@@ -107,14 +107,14 @@ def check_terms(snapshot: Snapshot, _source: Source | None = None) -> list[Findi
     """T1, T2 and T3."""
     if (found := role(snapshot)) is None:
         return check_term_sets(snapshot)
-    glossary, sentence = found
+    glossary, _ = found
     entries = terms(snapshot)
-    problems = [problem for entry in entries for problem in _compressed(glossary, sentence, entry)]
+    problems = [problem for entry in entries for problem in _compressed(snapshot, glossary, entry)]
     return [*problems, *_clashes(glossary, entries), *_avoided(snapshot, glossary, entries), *check_term_sets(snapshot)]
 
 
 def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
-    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or guess
+    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or proposal
     gives it fields: its words have one home, the term and its agreement."""
     agreed, kind = agreed_hashes(snapshot), snapshot.ontology.glossary_kind()
     found: list[Finding] = []
@@ -170,12 +170,14 @@ def glossary_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
     lines: list[str] = []
     if (named := role(snapshot)) is None:
         return lines
-    glossary, sentence = named
+    glossary, _ = named
     for where in glossary_homes(snapshot, home):
         found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=lambda entry: _word(glossary, entry))
         lines += [f"{where}:"] if found else []
         for entry in found:
-            lines.append(f"  {entry.text(glossary.word)}: {entry.text(sentence)}")
+            pointed = link_values(entry.fields.get(glossary.names)) if glossary.names else ()
+            shown = snapshot.sentence(entry.address) or ""
+            lines.append(f"  {entry.text(glossary.word)}: {shown}" + (f" ({pointed[0]})" if pointed else ""))
             if items := link_values(entry.fields.get(glossary.avoid)):
                 lines.append(f"    {glossary.avoid}: {'; '.join(items)}")
     return lines

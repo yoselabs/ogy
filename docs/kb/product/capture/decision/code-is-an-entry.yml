@@ -1,0 +1,15 @@
+question: How is what the code does today captured, and when is a question a decision?
+context: 'Bead ogy-yy9.75 safe fix (capture guidance in skills/ogy-capture/SKILL.md and docs/guidance.md): what the code does today is an entry with src, agreed in a review round; a decision needs an alternative the owner could pick. Untested as a skill change; the stage 4 eval covers it.'
+options:
+  entry-with-src:
+    label: Code behaviour is an entry with src agreed in review; a decision needs an alternative the owner could pick
+  decision:
+    label: Code behaviour is recorded as a decision with the code as its option
+proposal:
+  chose: entry-with-src
+  why: A decision with one real option repeats the entry and asks the owner nothing.
+answers:
+- chose: entry-with-src
+  said: 'Yes, all: observed code behaviour is an entry with src; a decision needs an alternative'
+  at: '2026-11-20T03:44:40+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

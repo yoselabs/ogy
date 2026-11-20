@@ -1,0 +1,8 @@
+2026-11-20T03:42:35Z sitting starts: tag=smoke-drive model=claude-haiku-5-5 effort=medium runs=1 arms=A C0
+2026-11-20T03:42:35Z run A-1
+ok smoke-drive/A-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:43:47Z run C0-1
+ok smoke-drive/C0-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:45:16Z sitting ends
+2026-11-20T03:45:16Z arm A: replacements used 0
+2026-11-20T03:45:16Z arm C0: replacements used 0

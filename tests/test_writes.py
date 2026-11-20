@@ -251,7 +251,7 @@ def test_an_agent_answers_only_under_a_persons_answer_and_it_is_listed(decided: 
     assert w(decided, "dropped")[1] == ["answer an agent gave under a delegation (the owner may veto): product/app/decision/fee-amount"]
 
 
-def test_an_answered_guess_is_inert_and_a_delegated_answer_is_shown_in_force(decided: Path) -> None:
+def test_an_answered_proposal_is_inert_and_a_delegated_answer_is_shown_in_force(decided: Path) -> None:
     options = {"agent": {"label": "The agent decides fees", "sets": {"product/app/quantity/fee": {"unit": "EUR"}}}}
     assert (
         put(
@@ -266,10 +266,10 @@ def test_an_answered_guess_is_inert_and_a_delegated_answer_is_shown_in_force(dec
     assert w(decided, "answer", "product/app/decision/fees-delegated", "agent", "--said", "Decide fees for me", *SAID)[0] == cli.OK
     agent = ("--delegated", "product/app/decision/fees-delegated")
     assert w(decided, "answer", "product/app/decision/fee-amount", "one", "--said", "One is small", *SAID, *agent)[0] == cli.OK
-    assert not any("differs" in line for line in w(decided, "dropped")[1])  # the guess (two) is inert after an answer
+    assert not any("differs" in line for line in w(decided, "dropped")[1])  # the proposal (two) is inert after an answer
     text = "\n".join(w(decided, "review")[1])
     assert "Q1. delegated  product/app/decision/fee-amount" in text and "(recommended)" not in text
-    assert "A. One  (in force, an agent's answer under your delegation)" in text and "AI guess because" not in text
+    assert "A. One  (in force, an agent's answer under your delegation)" in text and "AI proposal because" not in text
     code, lines = w(decided, "reply", "yes all", "--said", "Fine", "--where", "ai:claude/1", "--at", "2026-11-12T11:00:00+01:00")
     assert code == cli.OK and "product/app/decision/fee-amount answered: one" in lines[0], lines
     assert "delegated" not in "\n".join(w(decided, "review")[1])  # the owner's answer now: no card

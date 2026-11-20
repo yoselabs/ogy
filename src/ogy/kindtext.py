@@ -46,7 +46,7 @@ def _facts(kind: Kind) -> list[str]:
         for text, on in (
             ("in every area", kind.every_area),
             ("never asked", not kind.asked),
-            ("needs proof", kind.needs_proof),
+            (kind.proof_text, kind.proves),
             ("must be agreed", kind.must_be_agreed),
             ("append only", kind.append_only),
             ("settles entries", kind.settling is not None),

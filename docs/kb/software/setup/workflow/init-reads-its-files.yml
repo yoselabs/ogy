@@ -1,0 +1,31 @@
+says: ogy init reads every file it merges into before it writes any.
+src:
+- code:src/ogy/init.py#init
+start: run
+steps:
+  run:
+    says: A person runs ogy init.
+    actor: product/shared/actor/owner
+    choices:
+      init:
+        label: Set up
+        then: read
+  read:
+    says: ogy init reads .mcp.json, .claude/settings.json and the flags.
+    cases:
+      unreadable:
+        order: 1
+        when:
+          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+          reads:
+          - software/setup/dependency/claude-code
+        then: refused
+      otherwise:
+        then: all-read
+ends:
+  refused:
+    result: failure
+    says: Nothing is written; the refusal names the file or flag at fault.
+  all-read:
+    result: success
+    says: Every file it merges into was read.

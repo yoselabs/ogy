@@ -496,7 +496,7 @@
       "openWorldHint": false,
       "readOnlyHint": true
     },
-    "description": "what no person has seen. Guesses that say no, removals with no why, guesses that differ from the answer.",
+    "description": "what no person has seen. Proposals that say no, removals with no why, proposals that differ from the answer.",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {

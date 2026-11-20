@@ -38,7 +38,10 @@ def _texts(was: str | None = None) -> dict[str, str]:
 def unmerged() -> Ontology:
     """The software kinds as they were before view and command merged into interface."""
     texts = {
-        rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ")
+        rel: text.replace("[interface]", "[view, command]")
+        .replace("[interface, ", "[view, command, ")
+        .replace(", interface]", ", view, command]")
+        .replace(", interface,", ", view, command,")
         for rel, text in _texts().items()
         if rel != "kinds/interface.yml"
     }
@@ -55,7 +58,7 @@ class Unmerged(Target):
 
 @pytest.fixture
 def before(repo: Path) -> str:
-    """A view and a command agreed and built, a handler that cites the view, a removed view in the ledger: committed."""
+    """A view and a command agreed and built, a decision that sets the view, a removed view in the ledger: committed."""
     target, kb = Unmerged(repo), repo / "docs/kb"
     (kb / "software/app/interface/page.yml").rename(kb / "software/app/interface/view.tmp")
     (kb / "software/app/view").mkdir(parents=True)
@@ -65,8 +68,11 @@ def before(repo: Path) -> str:
     (kb / "software/app/command").mkdir(parents=True)
     (kb / f"{CLI}.yml").write_text(f"says: Lend from the command line.\ninvoked_as: ogy lend\n{SERVES}")
     (kb / f"{OLD}.yml").write_text(f"says: The old page.\n{SERVES}")
-    handler = kb / "software/app/handler/lend.yml"
-    handler.write_text(handler.read_text() + f"because: [{PAGE}]\n")
+    (kb / "software/app/decision").mkdir(parents=True)
+    (kb / "software/app/decision/page.yml").write_text(
+        f"question: Is the page plain?\noptions:\n  plain: {{label: Plain, sets: {{{PAGE}: {{says: The page.}}}}}}\n"
+        "proposal: {chose: plain, why: Simple.}\n"
+    )
     ops.run_remove(target, OLD, why="not needed")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [PAGE, CLI])
     for text in (PAGE, CLI):
@@ -83,7 +89,7 @@ def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path
     lines = ops.run_migrate(target).value.lines()
     assert f"moved {CLI}.yml to {NEW_CLI}.yml (a kind was renamed)" in lines
     assert not (kb / "software/app/view").exists() and not (kb / "software/app/command").exists()
-    assert NEW_PAGE in (kb / "software/app/handler/lend.yml").read_text()  # the link follows the entry
+    assert NEW_PAGE in (kb / "software/app/decision/page.yml").read_text()  # the address follows the entry
     assert (kb / "software/app/removed.yml").read_text() == ledger and OLD in ledger  # a ledger keeps the names its items had
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
@@ -130,21 +136,20 @@ def test_a_removed_command_is_read_under_the_merged_kind(repo: Path, before: str
     the id. A decision's `sets` gives the command's fields under the interface's names."""
     kb, gone = repo / "docs/kb", "software/app/command/gone"
     (kb / f"{gone}.yml").write_text(f"says: Gone.\ninvoked_as: ogy gone\n{SERVES}")
-    (kb / "product/app/decision").mkdir(parents=True)
-    (kb / "product/app/decision/how.yml").write_text(HOW)
+    (kb / "software/app/decision/how.yml").write_text(HOW)
     early = commit(repo, "a command that goes")
     ops.run_remove(Unmerged(repo), gone, why="not needed")
     commit(repo, "removed")
     ops.run_migrate(Target(repo))
     commit(repo, "merged")
-    how = any_yaml.load((kb / "product/app/decision/how.yml").read_text())
+    how = any_yaml.load((kb / "software/app/decision/how.yml").read_text())
     assert isinstance(how, dict) and how["options"]["lend"]["sets"] == {NEW_CLI: {"invoked_as": "ogy lend"}}
     assert gone in (kb / "software/app/removed.yml").read_text()
     assert not ops.run_check(Target(repo, rev="HEAD"), base=early).value
-    handler = kb / "software/app/handler/lend.yml"
-    handler.write_text(handler.read_text().replace(NEW_PAGE, "software/app/interface/gone"))
+    decided = kb / "software/app/decision/page.yml"
+    decided.write_text(decided.read_text().replace(NEW_PAGE, "software/app/interface/gone"))
     found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
-    assert found == {(Problem.DANGLING_LINK, "software/app/handler/lend")}  # as a link to any removed entry, one finding
+    assert found == {(Problem.NOT_IN_FORCE, "software/app/decision/page")}  # as a sets key to any removed entry, one finding
     (kb / "software/app/interface/gone.yml").write_text(f"says: Back.\nform: cli\ninvoked_as: ogy gone\n{SERVES}")
     found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
     assert (Problem.ID_REUSED, "software/app/interface/gone") in found

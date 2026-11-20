@@ -39,7 +39,7 @@ answers:
   said: 'Fable: a move is found by kind and id; a changed text is an ordinary change'
   at: '2026-11-19T00:30:58+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-  delegated: software/ontology/decision/review-delegation
+  delegated: product/review/decision/review-delegation
 - chose: move-by-kind-and-id
   said: Took every recommendation of Fable's revised round
   at: '2026-11-19T17:47:11+01:00'

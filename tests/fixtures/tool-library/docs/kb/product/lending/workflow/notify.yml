@@ -9,11 +9,13 @@ steps:
       ok:
         order: 1
         when:
-          text: the mailer accepted the message
+          text: the mail relay accepted the message
           reads:
-          - software/lending/dependency/mailer
+          - product/lending/actor/mail-relay
         then: sent
         effects:
+        - do: tell
+          on: product/lending/actor/mail-relay
         - do: tell
           on: product/lending/actor/member
       otherwise:

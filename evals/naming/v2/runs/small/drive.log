@@ -1,0 +1,54 @@
+2026-11-20T03:50:34Z sitting starts: tag=small model=claude-haiku-5-5 effort=medium runs=6 arms=A C0 C B
+2026-11-20T03:50:34Z run A-1
+ok small/A-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:52:13Z run C0-1
+ok small/C0-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:53:44Z run C-1
+ok small/C-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:54:59Z run B-1
+ok small/B-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:56:13Z run A-2
+ok small/A-2.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:57:28Z run C0-2
+ok small/C0-2.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T03:58:51Z run C-2
+ok small/C-2.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:00:25Z run B-2
+ok small/B-2.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:02:19Z run A-3
+ok small/A-3.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:03:39Z run C0-3
+ok small/C0-3.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:04:57Z run C-3
+ok small/C-3.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:06:16Z run B-3
+ok small/B-3.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:08:29Z run A-4
+ok small/A-4.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:09:48Z run C0-4
+ok small/C0-4.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:11:13Z run C-4
+ok small/C-4.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:12:44Z run B-4
+ok small/B-4.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:14:11Z run A-5
+ok small/A-5.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:15:22Z run C0-5
+ok small/C0-5.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:16:42Z run C-5
+ok small/C-5.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:17:57Z run B-5
+ok small/B-5.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:19:23Z run A-6
+ok small/A-6.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:20:39Z run C0-6
+ok small/C0-6.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:22:05Z run C-6
+ok small/C-6.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:23:37Z run B-6
+ok small/B-6.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+2026-11-20T04:24:52Z sitting ends
+2026-11-20T04:24:52Z arm A: replacements used 0
+2026-11-20T04:24:52Z arm C0: replacements used 0
+2026-11-20T04:24:52Z arm C: replacements used 0
+2026-11-20T04:24:52Z arm B: replacements used 0

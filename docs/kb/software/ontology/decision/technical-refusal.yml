@@ -1,0 +1,40 @@
+structure: true
+question: 'Where does a technical refusal of a product step live: init refusing unreadable settings files, a write refused while another holds the lock?'
+context: 'Guards became cases (D3a) and product never names software (D5a), so a product case cannot read the software dependencies git and claude-code. Fable first made both conditions read the agent and the entry entity only to pass the check; that was turned down as invented. Owner answer software-home: the product cases init-repository write/unreadable and capture-entries check/locked and the agreed end init-repository/end/refused (reached by nothing after) are removed with this decision as their why; the refusals are cases of software workflows: software/setup/workflow/init-reads-its-files (reads the claude-code dependency) and software/writes/workflow/write-under-the-lock (reads the git dependency). Each starts at an actor step of the product actor that runs the command (owner, agent), served by the cli interfaces init and put, because a workflow must be started.'
+options:
+  build-facts:
+    label: 'They are build facts: the refusal cases leave the product layer; the code keeps them'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+      product/setup/workflow/init-repository/end/refused:
+      product/capture/workflow/capture-entries/step/check/case/locked:
+  business-parties:
+    label: 'Git and Claude Code are parties the business deals with: product program actors the conditions read; the dependencies realize them'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+        when:
+          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+          reads:
+          - product/setup/actor/claude-code
+      product/setup/workflow/init-repository/end/refused:
+        says: Nothing is written; the refusal names the file or flag at fault.
+        result: failure
+      product/capture/workflow/capture-entries/step/check/case/locked:
+        when:
+          text: another ogy write holds the write lock
+          reads:
+          - product/shared/actor/git
+  software-home:
+    label: 'A software step of the handler refuses: revisit a software refusal of a product step (harmony 3b)'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+      product/setup/workflow/init-repository/end/refused:
+      product/capture/workflow/capture-entries/step/check/case/locked:
+proposal:
+  chose: build-facts
+  why: Nothing in the product layer reads them, and inventing a read to pass the check is worse.
+answers:
+- chose: software-home
+  said: 'Yes, all four: purely technical refusals live in software, as cases of a software step of the handler, reading what they really depend on; product keeps business refusals'
+  at: '2026-11-20T03:53:15+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -7,11 +7,10 @@ layers: [business, tech]
 settling:
   option: pick
   answer: verdict
-  guess: hunch
+  proposal: hunch
   heard: overheard
   sets: gives
   chose: picked
-  value: gives
   said: gist
   at: moment
   where: place

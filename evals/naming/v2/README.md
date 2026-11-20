@@ -1,16 +1,19 @@
 # Naming eval v2: old names against mainstream names, made sensitive
 
-Status: **designed, not run; no-go until [GO.md](GO.md) is all ticked** (2026-11-20, bead ogy-yy9.75). Replaces
+Status: **go: GO.md all ticked, frozen at 019b4a3; counted runs started 2026-11-20** (bead ogy-yy9.75). Replaces
 [v1](../README.md), whose arm A sat at a ceiling: kind 16.3 of 17, links 13 of 17, 0.67 misplacements, no error
 blamed on a name. v1's files and scores stay as they are; v2 results are not comparable with them.
 
-Fill before the freeze:
+Pinned; the freeze commit is the one field still open:
 
-- frozen at: `<commit of v2/>`
-- `small` model id: `<full id, as the modelUsage key of its smoke run>`, effort `<level>`
-- `default` model id: `<full id, as the modelUsage key of its smoke run>`, effort `<level>`
-- scorer model id: `<full id>`, effort `<level>`
-- arm B commit: `<pinned after stage 3 lands>`
+- frozen at: `019b4a3` (2026-11-20; this line and the GO.md ticks were written after it)
+- `small` model id: `claude-haiku-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
+- `default` model id: `claude-opus-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
+- scorer model id: `claude-opus-5-5`, effort `medium`
+- arm B commit: `43f15fc` (main after stage 3 and the clean-up of old words; full hash in `inputs/arms.txt`),
+  pinned 2026-11-20
+- arms C0 and C commit: `dd9293d` (branch `eval-stage1-clean`, on origin), pinned 2026-11-20
+- exercise sha256: `270848a8f93aec8b1442c0f8193082215c0577f67b40149c149d36190e3f687e` (in `inputs/arms.txt`, four times)
 
 ## Files
 
@@ -32,9 +35,9 @@ Fill before the freeze:
 | primary metric | misplacements of 17 | link items hit, of 51: each required link or filled field scored 0 or 1 |
 | arms | before, after | before, names only (C0), names with like/unlike lines (C), after (B) |
 | runner | the Agent tool, model not recorded | `claude -p` through `run.sh` for runs and scorers, full model ids, the main id recorded per run |
-| blinding | kind names show the arm | every run rewritten into one vocabulary; scorer key without arms; name blame in a later open pass |
+| blinding | kind names show the arm | A, C0 and C rewritten into one vocabulary and scored pooled; B, which cannot be rewritten, scored in batches of its own; scorer key without arms; name blame in a later open pass; scorers' old-against-new guesses on A and C0 reported |
 | scoring | one scorer, one re-scored run per arm | every run scored twice, in a folder holding only the batch, the key, the rubric and the exercise; scorers guess the arm afterwards |
-| neutrality | by eye | `check-neutral.py`: no kind or field name of any arm, no content word only some arms print |
+| neutrality | by eye | `check-neutral.py`: no kind or field name of any arm, no enum member and no content word that only some arms print |
 | reading rule | ranges barely overlap | numbers fixed below, with a ceiling gate |
 
 The look-alike groups: a decided number ([4], [17], [22]) against a fact kept per thing ([5], [27]) against an
@@ -60,20 +63,21 @@ item 15b, the four absence items (9b, 11b, 21c, 25b), the anchor 1a.
 | arm | commit | built with | what it is |
 |---|---|---|---|
 | A | tag `eval-before` = `46f0564` | `prepare.sh A eval-before` | main before the renames |
-| C0 | `1fb0e39` | `prepare.sh C0 1fb0e39 --no-like` | stage 1 names; the two "kinds, like and unlike" blocks removed |
-| C | `1fb0e39` | `prepare.sh C 1fb0e39` | stage 1 names with the like/unlike lines |
-| B | main once all stages have landed: write the commit here | `prepare.sh B <commit>` | all renames, `interface`, `rule.constrains`, later links |
+| C0 | `dd9293d` | `prepare.sh C0 dd9293d --no-like` | stage 1 names; the two "kinds, like and unlike" blocks removed |
+| C | `dd9293d` | `prepare.sh C dd9293d` | stage 1 names with the like/unlike lines |
+| B | `43f15fc` (main) | `prepare.sh B 43f15fc` | the final map: stage 1, the merge of `view` and `command` into `interface` (stage 2), and the structure of stage 3 (`rule.constrains`, `satisfies` on behaviour kinds only, `dependency.realizes -> actor`, `interface.allows`, `term.names`, the "nothing links to" rules) |
+
+`dd9293d` is `1fb0e39` (the stage 1 merge) plus two eval-only commits that copy from main the cleaned glossary
+texts of actor, decision, read-back and proof and the term id `proposal`; nothing of stage 2 or 3. Measured on
+one and the same exercise text, the C0 and C inputs differ from their `1fb0e39` builds in those four glossary
+lines and nothing else, and B at `43f15fc` differs from B at `511a27e` in the same four lines. The glossary of
+every arm now speaks that arm's own words ("never an external" in A, "never a dependency" in C0, C and B).
 
 | comparison | what it isolates | weight |
 |---|---|---|
 | **A against C0** | the names alone | decides |
 | C0 against C | the like/unlike lines | describes |
-| C against B, A against B | the `interface` merge and the later model changes; the whole change | describes; given on the 51 and on the 45 common-homes items of [design.md](design.md) |
-
-Known limit of C0 and C: the glossary at `1fb0e39` still carries old words ("never an external", "options, guess
-and answers", "a rule or value"), which works against the new names. Plan: re-pin C0 and C on a commit with a
-clean glossary if one exists at the freeze (same commit for both; B's commit must be clean in any case); if none
-exists, run on `1fb0e39` and report the limit with the result. B's commit is pinned after stage 3 lands.
+| C against B, A against B | the `interface` merge together with the stage 3 structure (they cannot be told apart here); the whole change | describes; given on the 51 and on the 45 common-homes items of [design.md](design.md) |
 
 ## Models
 
@@ -81,8 +85,8 @@ Every arm runs on two models, because a strong model reads past a poor name (v1)
 
 | tag | model | why |
 |---|---|---|
-| `small` | the smallest current Claude model the harness offers (the Haiku tier) | most likely to follow a name and not the field list: the sensitive reading |
-| `default` | the model v1's arm A ran on, the harness default | the model that does the real work: the reading that decides adoption |
+| `small` | `claude-haiku-5-5`, the smallest current Claude model the harness offers | most likely to follow a name and not the field list: the sensitive reading |
+| `default` | `claude-opus-5-5`, the model that does the real work here | the model that does the real work: the reading that decides adoption |
 
 Runs: **6 per arm per model** (48 with B). One model per sitting: `drive.sh TAG MODEL EFFORT` runs all arms of
 that model on one day, interleaved (A, C0, C, B, A, ...), and replaces excluded runs. The `default` model is
@@ -94,7 +98,7 @@ arm. `run.sh` starts in an empty temporary folder with `--safe-mode --restricted
 --strict-mcp-config --no-session-persistence --tools Write`, so that no CLAUDE.md, memory, skill, plugin, hook,
 settings file or MCP server of this machine reaches the run, and the one tool is the one the prompt needs.
 (`--bare` isolates as well but accepts only an API key.) The flags were read from the help of Claude Code
-2.1.326; no script here has been executed against a model: the smoke runs of GO.md confirm them.
+2.1.326 and confirmed by the smoke runs of GO.md (2026-11-20).
 
 Models are passed as full ids; `run.sh` refuses an alias. Recording: `run.sh` checks `is_error` in the harness
 result, keeps the result in `runs/<tag>/meta/` and adds one line to `runs/models.txt`:
@@ -117,11 +121,11 @@ like/unlike blocks are in; the hashes must be equal.
 1. Freeze. Smoke and pilot runs go to tags of their own (`runs/smoke-...`, `pilot/`), never enter a result, and
    the exercise and the key may change after them. Then fill the list at the top, commit `v2/` and write the
    commit there. After the freeze the exercise, the rubric, the neutral columns of the key, the item sets (51, 45,
-   the names subset) and the reading rule do not change.
+   the names subset, the B-only addendum B1 to B6, the contents of B's absolute report) and the reading rule do not change.
 2. Build the inputs with the four commands of the arms table. Each call rebuilds `inputs/<arm>.md`, updates
    `inputs/arms.txt` and runs `check-neutral.py`; a fact that uses a name of any arm, or a content word that only
-   some arms print, fails the build. If a fact fails once B is built, the exercise changes: that is a new freeze
-   and every arm is rerun.
+   some arms print, fails the build (it did when B was first built; the facts were reworded before the freeze).
+   A failure after the freeze changes the exercise: that is a new freeze and every arm is rerun.
 3. Run: `drive.sh small <id> <effort>`, and on its own day `drive.sh default <id> <effort>`.
 4. Exclude, before anyone scores; `run.sh` does it. A run is excluded when the harness reports an error
    (`is_error`), when no answer file was written, when `check-run.py` calls the answer malformed (no table, a fact
@@ -130,44 +134,131 @@ like/unlike blocks are in; the hashes must be equal.
    (`runs/<tag>/excluded/`, `meta/`), gets a line in `runs/excluded.txt` and is replaced by `drive.sh` with a fresh
    run of the next number, at most 2 replacements per arm per model. Exclusions are reported per arm.
 5. Blind, per model: `python3 -I evals/naming/v2/blind.py evals/naming/v2/runs/small evals/naming/v2/scoring/small
-   <seed>`, the same for `default`. It rewrites every run with `vocab.tsv`, the same table for all arms, so that
-   the renamed kinds and fields read alike (to arm A's words), and writes `batches.txt`: 6 batches of one run per
-   arm. Not blinded away: `many`, `heard`, `realizes` on a capability, and B's `interface`, `constrains` and
-   their fields.
-6. Score: `score.sh TAG <scorer id> <effort> BATCH 1` and `... BATCH 2` for every batch: two sessions per batch
-   that never see each other. A scorer's folder holds only its batch, key.md, rubric.md and exercise.md
-   (`scoring/<tag>/meta/*.files` lists what it held); never `map.txt`, `inputs/`, `runs/`, design.md, blame.md
-   or this file. A run's marks are the mean of its two scorers. Scorer disagreement is reported two ways: the
-   mean absolute difference in link items hit, of 51, and the mean count of link items on which the two differ,
-   per run. An item on which they differ in more than a third of the runs is named, and the result is given with
-   and without it.
-7. Test the blinding: after scoring, each scorer session is asked to guess every run's arm (`guess-prompt.md`).
-   `python3 -I guess-rate.py scoring/<tag>` gives the hit rate next to blind guessing. Report it. If scorers tell
-   old from not old in more than three quarters of their guesses, say that scoring was not blind in effect.
-8. Unblind with each `map.txt`, apply the B correction of 15b ([design.md](design.md)), do the
-   [blame pass](blame.md), fill the tables below, add a ledger row and the metric rows.
+   <seed>`, the same for `default`. It rewrites every run with `vocab.tsv` so that the renamed kinds and fields
+   read alike (to arm A's words), and writes two lists. `batches.txt`: A, C0 and C pooled, 6 batches of one run
+   per arm. `batches-own.txt`: B alone, 2 batches of 3. B is never pooled with the others: its `interface` cannot
+   be rewritten away and would mark its runs, and its `satisfies` is a different field and is left as written.
+   Not blinded away inside the pooled batches: `many`, `heard`, `realizes` on a capability, the types `one` and
+   `list` (arm A only). The guess rate of step 7 is read against this list.
+6. Score: `score.sh TAG <scorer id> <effort> BATCH 1` and `... BATCH 2` for every batch (`1` to `6`, then `B1`,
+   `B2`): two sessions per batch that never see each other. A scorer's folder holds only its batch, key.md,
+   rubric.md and exercise.md; the prompt names the batch's files, since the scorer may not list its folder (`scoring/<tag>/meta/*.files` lists what it held); never `map.txt`, `inputs/`,
+   `runs/`, design.md, blame.md or this file. A run's marks are the mean of its two scorers. Scorer disagreement
+   is reported two ways: the mean absolute difference in link items hit, of 51, and the mean count of link items
+   on which the two differ, per run. An item on which they differ in more than a third of the runs is named, and
+   the result is given with and without it.
+7. Test the blinding: after scoring a pooled batch, the scorer session is asked to guess each run's version
+   (`guess-prompt.md`: old, new, new with lines). `python3 -I guess-rate.py scoring/<tag>` counts **only the runs
+   of A and C0**, old against new, next to the 50% of blind guessing; C is given beside it, B is not asked. Report
+   it. If scorers are on the right side in more than three quarters of their guesses on A and C0, say that the
+   scoring of the deciding comparison was not blind in effect.
+8. Unblind with each `map.txt`, do the [blame pass](blame.md) with its B part (the absolute report and the
+   addendum), fill the tables below, add a ledger row and the metric rows.
 
-## Result (to fill)
+## Result (2026-11-20)
 
-One table per model. Means with per-run ranges.
+**Verdict: hold, no effect larger than 4 items.** `default` is gated out at the ceiling (arm A 47.5 of 51); `small`
+passes the gates and carries the verdict alone: C0 minus A is +0.25 link items, 90% Welch interval -1.41 to +1.91.
+No name is refused (rule 6). By rule 7 the merged names stay. Full tallies: [tally-default.md](tally-default.md),
+[tally-small.md](tally-small.md) (`python3 -I tally.py scoring/<tag>`); blame: [blame-default.md](blame-default.md),
+[blame-small.md](blame-small.md).
+
+Means with per-run ranges, 6 runs per arm, each run the mean of its two scorers. Model ids, every run as asked:
+`claude-opus-5-5` (default) and `claude-haiku-5-5` (small), effort medium; scorers `claude-opus-5-5`, effort medium.
+
+`default`:
 
 | arm | link items (of 51) | common homes (of 45) | names subset (of 19) | misplacements (of 27) | false friends | wrong links | excluded runs |
 |---|---|---|---|---|---|---|---|
-| A before | | | | | | | |
-| C0 names | | | | | | | |
-| C names and lines | | | | | | | |
-| B after | | | | | | | |
+| A before | 47.50 (46–49) | 41.83 (40.5–43) | 15.83 (15–17) | 2.50 (2–3) | 0.58 (0–1.5) | 0.50 (0–1) | 0 |
+| C0 names | 49.25 (48–51) | 43.50 (42–45) | 16.83 (16–18) | 1.50 (1–2) | 0.42 (0–1) | 0.17 (0–0.5) | 0 |
+| C names and lines | 49.00 (47–51) | 44.33 (43–45) | 17.83 (17–19) | 1.67 (1–2) | 0.17 (0–1) | 0.50 (0–1.5) | 0 |
+| B after | 50.83 (50–51) | 45.00 (45–45) | 19.00 (19–19) | 1.00 (1–1) | 0.08 (0–0.5) | 0.00 (0–0) | 0 |
 
-Apart, per arm: [12] (K, 12a, 12b), 15b (for B: after the correction, with the count changed), absence items (of
-4), 1a. Scorer disagreement, both ways: . Arm guesses: hit rate, against blind guessing: . Model ids: . Per item:
-in how many runs of each arm it was hit. Per fact: K. Blame: names, with counts. For A against C0 on each model:
-the difference of the means with its 90% interval.
+`small`:
 
-Pilot (arm A, small model, 2 runs): made with the Agent tool on the first wording of the exercise and scored on
-the first key (43.5 of 53 link items then; the count is 51 now); [10] written as `operation` in both runs, blamed
-on the name. **Not comparable and not used for any gate**: a subagent inherits the session's context, this
-repository's CLAUDE.md included, and [4] was reworded since. It shows only that the exercise is not trivially
-easy. A pilot that may inform the gates is made with `run.sh`.
+| arm | link items (of 51) | common homes (of 45) | names subset (of 19) | misplacements (of 27) | false friends | wrong links | excluded runs |
+|---|---|---|---|---|---|---|---|
+| A before | 44.25 (43.5–45) | 40.42 (39.5–41) | 15.00 (15–15) | 2.17 (2–3) | 1.50 (0–2.5) | 2.58 (1–4) | 0 |
+| C0 names | 44.50 (42.5–47) | 40.33 (38.5–43) | 15.67 (15–17) | 2.42 (2–3) | 0.58 (0–1) | 1.50 (0–2.5) | 0 |
+| C names and lines | 45.00 (43–46) | 40.83 (39–42) | 16.33 (15.5–17.5) | 1.75 (1–2.5) | 0.58 (0–1.5) | 1.50 (0–3) | 0 |
+| B after | 47.00 (44–49) | 42.67 (41–44) | 17.50 (16.5–18.5) | 0.83 (0–2) | 0.42 (0–1) | 0.75 (0–1.5) | 0 |
+
+Reading by the rules:
+
+1. Gates. `default`: ceiling (A 47.5 ≥ 46); its comparisons say nothing. For the record only: C0 minus A +1.75,
+   90% interval +0.47 to +3.03. `small`: A 44.25, no exclusions, passes.
+2. Counting rule on `small`: the means differ by 0.25 (needs 4); 4 runs of C0 are at or below A's best (needs at
+   most 1). It does not count either way.
+5. Hold, worded by the interval on `small`: -1.41 to +1.91 lies within -4 to +4, so **no effect larger than 4
+   items**. The names subset points the same way (C0 minus A: +0.67 on `small`, +1.00 on `default`).
+6. No name is `misled-by` for one fact in half an arm's runs. The only `misled-by` verdicts are on A's old name
+   `external` for the notifier [13]: 2 of 6 runs on `default`, 1 of 6 on `small`.
+
+Apart, per arm (`default` / `small`): [12] K A 0.00/1.00, C0 0.83/1.00, C 1.00/0.92, B 1.00/0.67; 15b A 0/0, C0 0/0,
+C 0.17/0, B 1.00/0.25; absence items of 4: all 4.00 except A on `small` 3.00 (9b); 1a 1.00 everywhere.
+
+Scorer disagreement: mean absolute difference in link items 0.12 of 51 (`default`) and 0.46 (`small`); the mean count
+of items on which the two differ, per run, is the same. No item differs in more than a third of the runs.
+
+Old against new guesses on A and C0 (`guess-rate.py`): 0 of 24 on the right side on both models, against 50% of
+blind guessing; 18 of 24 (`default`) and 24 of 24 (`small`) "could not tell". By the pre-registered test the
+scoring was blind. It was not blind to grouping: article slips left by the rewrite ("an set", "a external") let
+scorers tell the rewritten runs (C0, C) from A's runs in a batch; they read the slips as signs of the old map, so all
+6 named guesses on `default` were inverted. The marks do not depend on the arm, and the scorers agree within 0.5
+item, so this does not change the verdict.
+
+Per item and per fact: the tables in the tally files. What moved between A and C0, described only:
+
+- `default`: [12] K 0 → 5 of 6 (A made the remark its own kept thing in every run; the reason given was the map's
+  rule that a create effect names an entity, `structural`); 12b 2 → 6.
+- `small`: 9b 0 → 6 (A bound the URL knob to a new value through `binds` in all 6; C0's `setting` with `default`
+  left it unbound); 19a 6 → 3 and K [19] 6 → 3.5 (C0 and C wrote `workaround` without its parent [3]; the why lines
+  are silent on the parent, `unclear`); 15a 6 → 3.5 and 25a 6 → 3 (C0 left `proof` empty when the test path was
+  not given); [13] stays low in A and C0 (0 and 1 of 6), while C and B have it in all 6.
+
+Arm C, the like/unlike lines, described only: on `default` it dropped [18] to 2 of 6 (four runs wrote `none`,
+reasoning that a view is a screen that serves steps and a tile serves none); on both models it placed the notifier
+[13] as a program actor in 6 of 6 runs, where A had 3 and 0 and C0 had 4 and 1.
+
+Found against [design.md](design.md)'s expectations of C0 over A: 9b gained on `small` (0 → 6); 22c, 15b and [10]
+did not move (at or near 6 of 6 in both, 15b 0 in both). [13] gained a little on `default` (3 → 4), not on `small`.
+
+Found on every arm and model: fact [24] (the fixed reply layout of [10]) is not homed on [10] in 45 of 48 runs, where
+the key homes it. On `default` all 24 runs wrote it as its own `rule`; on `small` the runs wrote a `rule`, new
+attributes of the bike, or both. The why lines reason from the map and the constitution ("a check reads it",
+rigid-where-checked): `structural`. It sits outside the 51. It reads as a question about the key or the map, not
+about a name.
+
+Nearest miss for rule 6: on `small`, `workaround` [19] was written without its parent [3] in 3 of 6 runs of C0 and
+of C (A's `deviation` 0 of 6, B 0 of 6). Each of the six why lines was read one by one; all are silent on the parent
+(`unclear`), so no name is refused. A fourth such run would have needed a `misled-by` reading to refuse it.
+
+Cross-check: every scorer's own per-run table was compared with the tally of their per-fact lines (link items,
+misplacements, false friends). One differs: R387 (`small`, A-3), scorer 1, table 46, lines 45 (six items at 0
+besides 15b). The lines are used.
+
+Arm B, absolute (every link item and K per fact: the B column of the tally files):
+
+- `default`: every item 6 of 6 except 13b 5; K 6 of 6 on every fact but [24] (0 of 6, a `rule`, `structural`).
+- `small`: items under 6 of 6: 4b 2, 12b 3, 13b 3, 15b 1.5 (apart), 18a 3, 18b 3, 20b 5, 22d 2, 15a 5.5, 25a 5.5,
+  28a 5; K under 6: [12] 4 (a remark entity, `structural`), [24] 3 (a `rule`, `structural`).
+- Addendum, counts of 6 (`default` / `small`): B1 5/3, B2 6/6, B3 6/1, B4 6/6, B5 6/1, B6 6/5. Never summed.
+- Links the lint would refuse: on `small`, B-3, B-4 and B-5 wrote `shows -> [24]` (a rule) on the interface; the
+  printed map gives `shows->>entity|attribute`, so it is a run's error, not a finding about the map. No link was
+  found that the printed map seems to offer and the real map refuses (read by eye, not run through `ogy check`).
+
+**Not counted, ever:** the pilots and the smoke runs. Smoke runs stay in `runs/smoke-*/` and `scoring/smoke-*/`
+(see `runs/README.md`); they tested the scripts, were made before the freeze, and are never pooled with, compared
+with or blinded together with the runs of the tags `small` and `default`. The two tags that count start empty.
+
+Pilots (under `pilot/`, their answers in `pilot/old-runs-small/`, and in `scores-pilot-small-A.md`): **no number
+from them is used anywhere, for no gate and no comparison.** They were made with the Agent tool (`pilot/RESULT.md` says so), where a subagent inherits the
+session's context, this repository's CLAUDE.md included, and every one of them answered an earlier wording of the
+exercise: [3], [6], [10], [11], [13], [16], [18], [20] and [23] were reworded after the last of them, [4] and
+more after the first. They
+served to shake out the key and the scripts. A pilot that may inform the gates is made with `run.sh` on the frozen
+text.
 
 ## How to read it
 
@@ -176,8 +267,8 @@ the question is **A against C0**; the others are read by the same arithmetic and
 
 1. **Gates, first, per model.** A model's comparisons say nothing, and are not written down as "no effect", when:
    - ceiling: arm A's mean is 46 link items or more of 51 (90%);
-   - floor: arm A's mean is under 26 of 51 (the model does not do the task), or more than 2 runs of an arm were
-     excluded on that model.
+   - floor: arm A's mean is under 26 of 51 (the model does not do the task), or more than 2 runs of A or of C0
+     were excluded on that model. (Exclusions in C or B void only the comparisons with that arm.)
    If both models are gated out, v2 failed as an instrument; say so and stop. The `default` model is expected at
    the ceiling; the `small` model may then carry the verdict alone.
 2. **A difference counts** on a model when all three hold:
@@ -203,6 +294,7 @@ the question is **A against C0**; the others are read by the same arithmetic and
    and hold.
 9. Misplacements are secondary: at 27 facts a difference of less than 2 in the mean is not read.
 10. Per group, per name and per item only describe. So does every comparison with B, on the 51 and on the 45.
+    B's absolute report and the B-only addendum are given whatever the gates say; they carry no threshold.
 11. Absence items are also reported apart, since doing less scores them; [12] and 15b too, since the arms differ
     there by more than a name.
 

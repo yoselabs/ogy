@@ -1,40 +1,40 @@
 format: 1
 items:
-  - id: software/writes/operation/store-message
-    kind: operation
-    parent:
-    title:
-    said: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
-    why: product/capture/decision/every-reply-is-a-message
-    replaced_by:
-    at: 2026-11-18 20:45:04+01:00
-    last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
-    hash: 2b52fbea0be7
-    ontology: software
-    snapshot:
-      says: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
-      performs:
-      - product/capture/workflow/store-owner-words/step/keep/case/otherwise
-      uses:
-      - software/storage/external/git
-      src:
-      - code:src/ogy/writes.py#message
-  - id: software/writes/guard/write-lock-free
-    kind: guard
-    parent:
-    title:
-    said: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
-    why: software/ontology/decision/guard-is-a-case
-    replaced_by:
-    at: 2026-11-19 22:18:32+00:00
-    last_seen: e97f2c888c4f9b0519ab9daf521426f0dcd7a887
-    hash: 12c7e201773d
-    ontology: software
-    snapshot:
-      says: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
-      on: product/capture/workflow/capture-entries/step/check
-      when:
-        text: no other ogy write holds the write lock
-      else: product/capture/workflow/capture-entries/end/refused
-      src:
-      - code:src/ogy/writes.py#locked
+- id: software/writes/operation/store-message
+  kind: operation
+  parent:
+  title:
+  said: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
+  why: software/writes/decision/every-reply-is-a-message
+  replaced_by:
+  at: 2026-11-18 20:45:04+01:00
+  last_seen: 6dc636686f0eae8e81f1959d2c9cd2b34e8ed411
+  hash: 2b52fbea0be7
+  ontology: software
+  snapshot:
+    says: Stores a message under its actor's area with an id made of the date and a digest of who, when, where and the words.
+    performs:
+    - product/capture/workflow/store-owner-words/step/keep/case/otherwise
+    uses:
+    - software/storage/external/git
+    src:
+    - code:src/ogy/writes.py#message
+- id: software/writes/guard/write-lock-free
+  kind: guard
+  parent:
+  title:
+  said: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
+  why: software/ontology/decision/guard-is-a-case
+  replaced_by:
+  at: 2026-11-19 22:18:32+00:00
+  last_seen: e97f2c888c4f9b0519ab9daf521426f0dcd7a887
+  hash: 12c7e201773d
+  ontology: software
+  snapshot:
+    says: A write goes on only while no other ogy write holds the lock; a second write is refused, not queued.
+    on: product/capture/workflow/capture-entries/step/check
+    when:
+      text: no other ogy write holds the write lock
+    else: product/capture/workflow/capture-entries/end/refused
+    src:
+    - code:src/ogy/writes.py#locked

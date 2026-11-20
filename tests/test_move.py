@@ -141,12 +141,15 @@ def test_the_layer_may_change_when_the_kind_allows_it_and_is_refused_when_it_doe
     before = tree(repo)
     goals = repo / KB / "product/app/goals.yml"
     goals.write_text("- {id: lend, says: Members borrow tools., src: ['code:app.py#lend']}\n")
+    quantities = repo / KB / "product/app/quantities.yml"
+    quantities.write_text(quantities.read_text() + "- {id: spare, says: Spare tools., is: 1, unit: tool, src: ['code:app.py#lend']}\n")
     commit(repo, "a goal")
     before = tree(repo)
     code, lines = w(repo, "move", "product/app/goal/lend", "software/app")
     assert code == cli.REFUSED and "goal may live in the layers" in lines[0] and tree(repo) == before
     assert w(repo, "move", "software/app/interface/page", "product/app")[0] == cli.REFUSED  # a view is software only
-    assert w(repo, "move", "product/app/quantity/fee", "software/app")[0] == cli.OK
+    assert w(repo, "move", "product/app/quantity/fee", "software/app")[0] == cli.REFUSED  # a product timeout waits on it
+    assert w(repo, "move", "product/app/quantity/spare", "software/app")[0] == cli.OK
     assert (repo / KB / "software/app/quantities.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
 
 

@@ -13,6 +13,7 @@ lazy from ogy.overview import Overview
 lazy from ogy.receipts import Work
 lazy from ogy.semdiff import SemanticDiff
 lazy from ogy.show import Shown
+lazy from ogy.workcause import Group
 
 if TYPE_CHECKING:
     from ogy.graph import Context, Impact
@@ -47,11 +48,21 @@ def render_impact(found: Impact) -> list[str]:
     return lines
 
 
-def render_work(found: list[Work]) -> list[str]:
-    return [
-        f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})" + (f" {item.note}" if item.note else "")
-        for item in found
-    ] or ["no work left"]
+def render_work(found: list[Work], groups: list[Group] | None = None) -> list[str]:
+    """One line per piece of work; with `groups`, each group under a line naming its cause (`workcause`)."""
+    if groups is None:
+        return [_work_line(item) for item in found] or ["no work left"]
+    lines = [
+        line
+        for decision, realized, items in groups
+        for line in (f"by {decision or 'no decision'}, for {realized or 'nothing realized'} ({len(items)}):", *map(_work_line, items))
+    ]
+    return lines or ["no work left"]
+
+
+def _work_line(item: Work) -> str:
+    line = f"{item.status}: {item.address} (now {item.build_hash or '-'}, built {item.built or '-'})"
+    return line + (f" {item.note}" if item.note else "")
 
 
 def render_diff(found: SemanticDiff) -> list[str]:
@@ -103,7 +114,8 @@ def render_show(found: Shown) -> list[str]:
     if found.decided_in is not None:
         decided = found.decided_in
         note = f"; note: {decided.note}" if decided.note else ""
-        lines.append(f"Decided in (computed): {decided.decision} (in force: {decided.option or 'its guess value'}, by {decided.by}){note}")
+        option = decided.option or "its proposal value"
+        lines.append(f"Decided in (computed): {decided.decision} (in force: {option}, by {decided.by}){note}")
     if found.came_from:
         lines.append(f"Came from (computed): {', '.join(found.came_from)}" + (", through the decision" if found.through_decision else ""))
     if found.settles:
@@ -128,7 +140,7 @@ def _card(label: str, card: Card) -> list[str]:
         ]
     for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
         mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
-        lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))
+        lines.append(f"   {letter}. {text}" + (mark if key == card.proposal else ""))
         lines += [f"      then {line}" for line in (card.then[index] if index < len(card.then) else ())]
     if card.earlier:
         lines.append(f"   {card.earlier}")
@@ -137,8 +149,8 @@ def _card(label: str, card: Card) -> list[str]:
     if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")
     keys = [key for key, _ in card.options]
-    if card.heard and card.guess in keys:
-        lines.append(f"   You said (paraphrased): {card.heard}. Read as {string.ascii_uppercase[keys.index(card.guess)]}.")
+    if card.heard and card.proposal in keys:
+        lines.append(f"   You said (paraphrased): {card.heard}. Read as {string.ascii_uppercase[keys.index(card.proposal)]}.")
     return lines + ([f"   {card.evidence}"] if card.evidence else [])
 
 
@@ -157,9 +169,9 @@ def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
     """What a bare `yes` will change, and what it leaves for a letter of its own: the same rule as `reply`."""
     keys = {label: [key for key, _ in card.options] for label, card in cards}
     confirms = [
-        f"{label} as {string.ascii_uppercase[keys[label].index(card.guess)]}"
+        f"{label} as {string.ascii_uppercase[keys[label].index(card.proposal)]}"
         for label, card in cards
-        if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.guess in keys[label]
+        if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.proposal in keys[label]
     ]
     agrees = [label for label, card in cards if card.kind in rounds.ENTRY_CARDS]
     will = [
@@ -206,7 +218,7 @@ def render_review_md(found: Review) -> list[str]:
 
 
 def render_dropped(found: Dropped) -> list[str]:
-    lines = [f"guess says no, nobody has seen it: {address}" for address in found.guessed_no]
+    lines = [f"proposal says no, nobody has seen it: {address}" for address in found.proposed_no]
     lines += [f"removed with no why: {item}" for item in found.unexplained]
     lines += [f"removed with plain words, not a decision: {item}" for item in found.plain_why]
     lines += [f"answer with a note (the owner's hedge or condition): {address}" for address in found.noted]

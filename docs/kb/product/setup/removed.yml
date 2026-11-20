@@ -1,0 +1,45 @@
+format: 1
+items:
+  - id: product/setup/workflow/init-repository/step/write/case/unreadable
+    kind: case
+    parent:
+      address: product/setup/workflow/init-repository/step/write
+      key: cases
+      position: 0
+    title:
+    said:
+    why: software/ontology/decision/technical-refusal
+    replaced_by:
+    at: 2026-11-20 02:19:48+00:00
+    last_seen: 67f81f1cb822012c6fceadc4be164ebdba1d4fbf
+    hash: bd202179118e
+    ontology: software
+    snapshot:
+      order: 1
+      when:
+        text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+        reads:
+        - product/shared/actor/agent
+      then: refused
+  - id: product/setup/workflow/init-repository/end/refused
+    kind: end
+    parent:
+      address: product/setup/workflow/init-repository
+      key: ends
+      position: 2
+    title:
+    said: Nothing is written; the refusal names the file or flag at fault.
+    why: software/ontology/decision/technical-refusal
+    replaced_by:
+    at: 2026-11-20 02:20:02+00:00
+    last_seen: 67f81f1cb822012c6fceadc4be164ebdba1d4fbf
+    hash: f744cdb88480
+    ontology: software
+    snapshot:
+      result: failure
+      says: Nothing is written; the refusal names the file or flag at fault.
+      agreed:
+        at: '2026-11-19T19:50:03+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
+        hash: f744cdb88480

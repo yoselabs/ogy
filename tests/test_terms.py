@@ -27,7 +27,7 @@ def test_a_term_says_one_line_of_under_15_words(kb: Make) -> None:
     assert problems(snap(LAND)) == set()
     old = "- {id: fee, word: fee, of: product/app/quantity/fee, distinct: [a price], group: Money, example: x, borrowed: 'https://x.org'}\n"
     found = kb({"product/app/glossary.yml": old}).findings()
-    assert {problem for problem, _ in found} == {Problem.NEEDS_MIGRATION, Problem.MISSING_FIELD}  # `ogy migrate`, then a `says`
+    assert {problem for problem, _ in found} == {Problem.NEEDS_MIGRATION, Problem.ONE_OF}  # `ogy migrate`, then a `says` or `names`
     assert not kb({"product/app/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n"}).findings(evidence=True)
 
 

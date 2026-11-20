@@ -4,10 +4,12 @@ from collections.abc import Callable, Mapping
 from typing import TYPE_CHECKING
 
 import pytest
-from tests.conftest import declared
+from tests.conftest import SIGN_IN, declared
 
-from ogy.model import Problem
+from ogy.model import Address, Problem
 from ogy.ontology import OntologyError, parse_kinds
+from ogy.receipts import work_left
+lazy from ogy.snapshot import Snapshot
 
 if TYPE_CHECKING:
     from conftest import Kb
@@ -98,6 +100,62 @@ def test_an_attribute_nothing_writes_or_accepts_is_never_written(kb: Make) -> No
     assert unmet(kb, {**flow, "product/app/workflow/ask.yml": told}) == {"product/app/entity/loan/attribute/member"}
 
 
+PAY = """\
+says: A fee is paid.
+start: charge
+steps:
+  charge:
+    says: The product asks the payment provider to charge the member.
+    cases:
+      otherwise: {then: done, effects: [{do: tell, "on": product/app/actor/provider}]}
+ends:
+  done: {result: success, says: Paid.}
+"""
+PAYING = {
+    "product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n"
+    "- {id: provider, says: The payment provider., nature: program}\n",
+    "product/app/workflow/pay.yml": PAY,
+    "software/app/handler/charge.yml": "says: Charges.\nperforms: [product/app/workflow/pay/step/charge/case/otherwise]\n",
+}
+CARDS = "says: The card network.\nrealizes: product/app/actor/provider\n"
+
+
+def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_dependency_realizing_it(kb: Make) -> None:
+    """A party the business deals with lives in product whatever its nature (decision actor-layers): a product row tells it,
+    a software handler performing the row uses the dependency that realizes it."""
+    case = "product/app/workflow/pay/step/charge/case/otherwise"
+    assert unmet(kb, PAYING) == {case}
+    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS}) == {case}  # nobody uses it for this row
+    used = PAYING["software/app/handler/charge.yml"] + "uses: [software/app/dependency/cards]\n"
+    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS, "software/app/handler/charge.yml": used}) == set()
+    person = PAYING["product/app/actors.yml"].replace("program", "human")  # only a program actor is realized by a dependency
+    assert unmet(kb, {**PAYING, "product/app/actors.yml": person}) == set()
+
+
+def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
+    flow = SIGN_IN.replace("actor: product/app/actor/member", "actor: software/app/actor/bot")
+    bot = {"software/app/actors.yml": "- {id: bot, says: A scheduler., nature: program}\n", "product/app/workflow/sign-in.yml": flow}
+    assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in/step/ask") in kb(bot).findings()
+    told = PAY.replace("product/app/actor/provider", "software/app/dependency/cards")  # a product row never tells a dependency
+    found = kb({**PAYING, "product/app/workflow/pay.yml": told, "software/app/dependency/cards.yml": CARDS}).findings()
+    assert (Problem.LAYER_DIRECTION, "product/app/workflow/pay/step/charge/case/otherwise") in found
+
+
+def test_an_entity_needs_proof_only_with_transitions(kb: Make) -> None:
+    """D15: `needs_proof: {if_part: transition}`; a step, a handler and a quantity need none."""
+    lifecycle = LOAN + "states:\n  out: {says: Out.}\ntransitions:\n  lend: {to: out}\n"
+    plain, held = kb(SERVED).snapshot, kb({**SERVED, "product/app/entity/loan.yml": lifecycle}).snapshot
+    loan = "product/app/entity/loan"
+    assert not plain.needs_proof(at(plain, loan)) and held.needs_proof(at(held, loan))
+    assert not any(plain.needs_proof(at(plain, text)) for text in ("software/app/handler/write", "product/app/workflow/sign-in/step/ask"))
+
+
+def at(snapshot: Snapshot, text: str) -> Address:
+    found = snapshot.resolve(text)
+    assert found is not None, text
+    return found
+
+
 HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
 
 
@@ -113,6 +171,9 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {ty
         ("{if_set: a, if_equals: {field: a, value: x}, needs_field: b, error: e}", "not both"),
         ("{if_unset: c, needs_field: b, error: e}", "if_unset names no field c"),
         ("{kinds: [thing], or_paths: [[b]], error: e}", "further paths beside a path"),
+        ("{kinds: [thing], same: true, error: e}", "comes back to the entry"),
+        ("{if_set: a, if_reaches: [b], kinds: [thing], path: [b], error: e}", "not both"),
+        ("{kinds: [thing], path: [b], status: x, error: e}", "names its status, and only it"),
     ],
 )
 def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, message: str) -> None:
@@ -142,3 +203,21 @@ def test_an_interface_is_checked_by_its_form_and_what_it_serves(kb: Make, page: 
     assert (problem, "software/app/interface/extra") in kb(flow).findings()
     shows = "says: The loans.\nform: file\nshows: [product/app/entity/loan]\nallows: [product/app/actor/member]\n"
     assert kb({**flow, "software/app/interface/extra.yml": shows}).findings() == set()  # only shows: it may serve no step
+
+
+def _no_file(path: str, rev: str | None = None) -> str | None:
+    return None
+
+
+def test_a_capability_that_realizes_no_goal_is_work_named_in_yaml(kb: Make) -> None:
+    """Owner: a capability realizes a goal. Until the goal is written it is work (`status: unrealized`), not a finding."""
+    lone = kb({"product/app/capabilities.yml": "- {id: lend, says: Members borrow.}\n"})
+    assert lone.findings() == set()
+    assert [(item.address, item.status) for item in work_left(lone.snapshot, {}, _no_file) if item.status == "unrealized"] == [
+        ("product/app/capability/lend", "unrealized")
+    ]
+    goal = {
+        "product/app/goals.yml": "- {id: tools, says: Members get tools.}\n",
+        "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n",
+    }
+    assert not [item for item in work_left(kb(goal).snapshot, {}, _no_file) if item.status == "unrealized"]

@@ -212,6 +212,8 @@ runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 "evals/naming/v2/check-neutral.py" = ["INP001"]
 "evals/naming/v2/check-run.py" = ["INP001"]
 "evals/naming/v2/guess-rate.py" = ["INP001"]
+"evals/naming/v2/tally.py" = ["INP001"]
+"evals/naming/v2/blame-list.py" = ["INP001"]
 
 [tool.deptry]
 known_first_party = ["ogy"]
@@ -229,7 +231,7 @@ known_first_party = ["ogy"]
 # docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
 skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
 # doctrine/glossary coinages the dictionary flags but we mean on purpose.
-ignore-words-list = "wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
+ignore-words-list = "mis,createable,wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
 # A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
 ignore-regex = "\\[[A-Za-z]{2}\\][a-z]+"
 check-filenames = ""

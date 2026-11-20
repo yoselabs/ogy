@@ -9,8 +9,10 @@ import pytest
 SCRIPTS = [
     "evals/blind.py",
     "evals/naming/v2/blind.py",
+    "evals/naming/v2/blame-list.py",
     "evals/naming/v2/check-run.py",
     "evals/naming/v2/guess-rate.py",
+    "evals/naming/v2/tally.py",
 ]
 ROOT = Path(__file__).resolve().parent.parent
 

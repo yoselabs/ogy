@@ -28,8 +28,6 @@ attributes:
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
       hash: e4b88b93cb08
-    satisfies:
-    - product/lending/rule/at-most-max-loans
 states:
   open:
     says: The member has the tool.
@@ -52,5 +50,3 @@ transitions:
     from:
     - open
     to: returned
-satisfies:
-- product/lending/rule/tools-are-checked-on-return

@@ -4,7 +4,9 @@
 #                                      (`area.yml`; `every_area` makes an area without it `missing-entry`)
 #   <folder>/<file>                    a kind that names a fixed folder with `area` (the glossary, the constitution)
 # A kind lists the layers it may appear in (`layers:`); the folder is the layer's only home.
-layers: [product, software]
+layers: [product, software]                          # in order
+link_direction: later-to-earlier                     # a link stays in its layer or names an earlier one: software names product,
+                                                     # product never names software (`layer-direction`)
 shared:                                              # the reserved area of every layer: what two of its areas use
   area: shared
   says: "What two or more areas of this layer use: their shared terms, actors and enums."
@@ -13,11 +15,9 @@ shared:                                              # the reserved area of ever
 common:
   title: {note: true}
   src: {type: texts, note: true}
-  because: {type: links, to: [any], input: none}
-  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to; a note
+  because: {type: links, to: [principle, decision], input: none}   # the reason: a principle or a decision, never a source
   proof: {type: texts}
   agreed: {type: agreed, note: true}
-renamed: {by: satisfies}                             # common fields renamed: `ogy migrate` rewrites the old name
 roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what
 # What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in.
 harms: [structure, tells-outside, irreversible, authorization]

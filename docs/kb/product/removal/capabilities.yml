@@ -5,7 +5,7 @@
   realizes:
   - product/removal/goal/nothing-silently-dropped
 - id: list-dropped
-  says: 'ogy lists what no person has seen: guesses that say no, removals whose reason is plain words, guesses that differ from the answer, answers with a hedge and answers given under a delegation.'
+  says: 'ogy lists what no person has seen: proposals that say no, removals whose reason is plain words, proposals that differ from the answer, answers with a hedge and answers given under a delegation.'
   src:
   - code:src/ogy/review.py#Dropped
   realizes:

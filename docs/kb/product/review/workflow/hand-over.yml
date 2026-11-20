@@ -14,7 +14,7 @@ steps:
       at: '2026-11-19T18:43:39+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Agreed to the seven, with CI's check sentence and the answered state corrected
-      hash: 36a11eddd2b6
+      hash: 306f1b4dc11a
   list:
     says: The agent runs ogy dropped and ogy status and reads back the answers recorded today, those given under a delegation among them.
     actor: product/shared/actor/agent
@@ -26,7 +26,7 @@ steps:
       at: '2026-11-19T18:04:45+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Agreed to the seven capture and hand-over sentences
-      hash: c91a713c1777
+      hash: af36c31bc0f2
 ends:
   handed-over:
     result: success

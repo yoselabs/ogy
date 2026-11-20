@@ -36,7 +36,7 @@ def test_impact_lists_the_closure(repo: Path) -> None:
 
 def test_work_and_check_exit_codes(repo: Path) -> None:
     code, lines = ogy(repo, "work")
-    assert code == cli.FINDINGS and any(line.startswith("unbuilt: software/app/handler/lend") for line in lines)
+    assert code == cli.FINDINGS and any(line.startswith("unbuilt: product/app/workflow/borrow/step/ask/choice/go") for line in lines)
     assert not any("product/app/actor" in line for line in lines)
     assert ogy(repo, "check") == (cli.OK, ["ok"])
     assert ogy(repo, "show", "product/app/quantity/none")[0] == cli.NOT_FOUND

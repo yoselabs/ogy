@@ -147,7 +147,12 @@ def _asks(commands: Adder) -> None:
     )
     asking.add_argument("--page", type=int, default=1, help="with --from: the page (default 1; agreed pages drop out)")
     asking.add_argument("--md", action="store_true", help="Markdown, to paste into a ticket")
-    _verb(commands, "dropped", "what no person has seen", "Guesses that say no, removals with no why, guesses that differ from the answer.")
+    _verb(
+        commands,
+        "dropped",
+        "what no person has seen",
+        "Proposals that say no, removals with no why, proposals that differ from the answer.",
+    )
     _verb(commands, "mcp", "serve the commands as MCP tools over stdio")
 
 

@@ -14,7 +14,7 @@ steps:
       at: '2026-11-19T19:00:55+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
-      hash: cec61e71fea7
+      hash: 953e39e5fc46
   run:
     says: ogy runs the CLI command inside the MCP server's process and returns tables and records for an agent.
     cases:

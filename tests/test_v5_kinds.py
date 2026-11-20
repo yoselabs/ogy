@@ -17,7 +17,7 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: file\n"
 PARENT = "kind: parent\nabout: x\nshape: file\nlayers: [product]\n"
 SETTLING = (
-    "settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
+    "settling: {option: option, answer: answer, proposal: proposal, heard: heard, sets: sets, chose: chose, "
     "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n"
 )
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
@@ -113,7 +113,7 @@ def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message
 def test_inputs_that_name_what_their_targets_hold_load() -> None:
     load(
         ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
-        "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address, because: address}\n"
+        "  b: {type: link, to: [actor], input: none}\ninput: {because: address}\n"
     )
     load(PARENT + "input: {part: content}\n", PART)
 

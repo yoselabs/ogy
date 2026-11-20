@@ -1,0 +1,31 @@
+says: An ogy write takes the write lock in the Git directory before it changes a file.
+src:
+- code:src/ogy/writes.py#locked
+start: put
+steps:
+  put:
+    says: The agent writes the records with ogy put.
+    actor: product/shared/actor/agent
+    choices:
+      put:
+        label: Put the records
+        then: lock
+  lock:
+    says: ogy takes the write lock.
+    cases:
+      locked:
+        order: 1
+        when:
+          text: another ogy write holds the write lock
+          reads:
+          - software/storage/dependency/git
+        then: refused
+      otherwise:
+        then: held
+ends:
+  refused:
+    result: failure
+    says: Nothing is written; a second write is refused, not queued.
+  held:
+    result: success
+    says: The write holds the lock until it ends.

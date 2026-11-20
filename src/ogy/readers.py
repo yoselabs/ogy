@@ -9,7 +9,7 @@ printed-first kind, the settling names. `ogy show` prints every field and is no 
 
 lazy from collections.abc import Iterable
 
-from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement
+from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement, where
 from ogy.paths import inputs, inputs_from
 lazy from ogy.ontology import Ontology
 
@@ -29,7 +29,7 @@ def named(ontology: Ontology) -> dict[str, set[str]]:
         if kind.flow is not None and (row := ontology.get(kind.flow.choice)) is not None and row.sentence:
             add(f"{row.kind}.{row.sentence}", "printer diagram")
         if (names := kind.settling) is not None:
-            add(f"{names.guess}.{names.why}", AVOIDED, REVIEW)
+            add(f"{names.proposal}.{names.why}", AVOIDED, REVIEW)
         if (printed := kind.printed_first) is not None and printed.also:
             add(f"{kind.kind}.{printed.also}", AVOIDED, GLOSSARY)
         if (glossary := kind.glossary) is not None:
@@ -61,16 +61,21 @@ def _walk(found: Reads, kinds: dict[str, Kind], start: str, hops: Iterable[str],
             break
         elif hop == "^":
             current = {parent for kind in current if kind in kinds for parent in kinds[kind].part_of}
+        elif hop == "<-*":
+            current = {k for k, kind in kinds.items() if any({*current, ANY} & set(spec.to) for spec in kind.fields.values())}
         elif hop.startswith("<-"):
-            name, _, where = hop[2:].partition("?")
+            name, key, _ = where(hop[2:])
             current = {k for k, kind in kinds.items() if name in kind.fields and {*current, ANY} & set(kind.fields[name].to)}
             for kind in current:
                 _mark(found, kind, name, reader, kinds)
-                _mark(found, kind, where.partition("=")[0], reader, kinds)
+                _mark(found, kind, key, reader, kinds)
         else:
+            name, key, _ = where(hop)
             for kind in current:
-                _mark(found, kind, hop, reader, kinds)
-            current = {t for k in current if hop in kinds[k].fields for t in kinds[k].fields[hop].to}
+                _mark(found, kind, name, reader, kinds)
+            current = {t for k in current if name in kinds[k].fields for t in kinds[k].fields[name].to}
+            for kind in current:
+                _mark(found, kind, key, reader, kinds)
             current = set(kinds) if ANY in current else current
     return set()
 
@@ -80,7 +85,7 @@ def _requirement(found: Reads, kinds: dict[str, Kind], name: str, need: Requirem
     for field in (need.if_set, need.if_unset, need.if_equals.field if need.if_equals else None, need.needs_field):
         if field:
             _mark(found, name, field, "requires", kinds)
-    for path in need.paths:
+    for path in (*need.paths, *([need.if_reaches] if need.if_reaches else [])):
         _walk(found, kinds, name, path, "requires")
     for target in need.kinds:
         for field in need.without:
@@ -109,9 +114,7 @@ def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
         if (names := kind.settling) is not None:
             wanted = [
                 (names.option, names.sets),
-                (names.guess, names.chose),
-                (names.guess, names.value),
-                (names.guess, names.heard),
+                *((names.proposal, f) for f in (names.chose, names.sets, names.heard)),
                 *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note, names.delegated)),
             ]
             for part, field in wanted:
@@ -123,7 +126,7 @@ def _compared(ontology: Ontology, reached: set[str]) -> set[str]:
     reached by a path; a list or one part is inside its parent's. Telling a move from a loss compares every fingerprint, for
     identity, not meaning: it is no reader."""
     kinds = ontology.kinds
-    own = {n for n, k in kinds.items() if k.needs_proof or (k.asked and ontology.carded(k)) or k.must_be_agreed or n in reached}
+    own = {n for n, k in kinds.items() if k.proves or (k.asked and ontology.carded(k)) or k.must_be_agreed or n in reached}
     inside = {n for n, k in kinds.items() if k.holding in (Holds.LIST, Holds.ONE) and k.part_of and set(k.part_of) & own}
     return own | inside | ({n for n, k in kinds.items() if k.holding is Holds.ONE and set(k.part_of) & inside})
 

@@ -84,9 +84,7 @@ def test_review_from_docs_yes_with_numbers(repo: Path) -> None:
 
 
 def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
-    (repo / "docs/kb/product/app/capabilities.yml").write_text(
-        "- {id: borrow, says: A member borrows., because: product/app/quantity/fee, src: [code:src/x.py#f]}\n"
-    )
+    (repo / "docs/kb/product/app/capabilities.yml").write_text("- {id: borrow, says: A member borrows., src: [code:src/x.py#f]}\n")
     (repo / "src").mkdir()
     (repo / "src/x.py").write_text("def f():\n    pass\n")
     lines = w(repo, "review", "--from", "code")[1]
@@ -95,7 +93,7 @@ def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
     assert "nothing from docs is waiting for you" in "\n".join(w(repo, "review", "app", "--from", "docs")[1])
 
 
-def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Path) -> None:
+def test_review_screen_puts_the_proposal_first_and_counts_decisions_apart(repo: Path) -> None:
     decision = "question: How much?\noptions:\n  low: {label: Low, sets: {product/app/quantity/fee: {is: 1}}}\n"
     (repo / "docs/kb/product/app/decision").mkdir()
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(
@@ -104,7 +102,7 @@ def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Pat
     lines = w(repo, "review")[1]
     text = "\n".join(lines)
     assert lines[0].startswith("round r") and "1 questions open · 0 answered by you | entries:" in lines[1]
-    assert text.index("A. High  (recommended)") < text.index("B. Low") and "AI guess because: fees are small" in text
+    assert text.index("A. High  (recommended)") < text.index("B. Low") and "AI proposal because: fees are small" in text
     assert "Q1: <your words>" in text
     md = "\n".join(w(repo, "review", "--md")[1])
     assert md.startswith("## ogy review, round `r") and "### Q1. question" in md and "Round: `r" in md

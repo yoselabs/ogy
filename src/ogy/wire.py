@@ -60,7 +60,7 @@ def impact(found: Impact) -> list[str]:
 
 def dropped(found: Dropped) -> list[str]:
     groups = (
-        ("guess says no, nobody has seen it", found.guessed_no),
+        ("proposal says no, nobody has seen it", found.proposed_no),
         ("removed with no why", found.unexplained),
         ("removed with plain words", found.plain_why),
         ("answer with a note", found.noted),
