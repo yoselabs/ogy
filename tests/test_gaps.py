@@ -86,7 +86,7 @@ def test_a_link_to_a_removed_address_is_one_finding(repo: Path) -> None:
 
 
 def test_history_has_the_built_rows_and_the_delivery_commit(repo: Path) -> None:
-    line = "software/app/handler/lend: {own: aaaaaaaaaaaa, deps: {}, covers: [], sourced: {}}\n"
+    line = "software/app/handler/lend: {own: aaaaaaaaaaaa, covers: [], sourced: {}}\n"
     (repo / "docs/kb/built/software/app/handler").mkdir(parents=True)
     (repo / "docs/kb/built/software/app/handler/lend.yml").write_text(line)
     commit(repo, "deliver lend")

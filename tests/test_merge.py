@@ -57,7 +57,7 @@ def before(repo: Path) -> str:
     ops.run_remove(target, OLD, why="not needed")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [PAGE, CLI])
     for text in (PAGE, CLI):
-        built.stamp(kb, target.read()[1].entries[parse_address(text, target.kinds())].path, text, built.Line(build_hash(target, text), {}))
+        built.stamp(kb, target.read()[1].entries[parse_address(text, target.kinds())].path, text, built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
     return commit(repo, "before the merge")
 

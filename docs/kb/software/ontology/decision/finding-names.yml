@@ -1,8 +1,8 @@
 question: Do findings and work statuses say what happened in plain words?
-context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `orphan` becomes `never-started` (a workflow nothing starts); `broken-link` becomes `link-to-removed` where the target was removed (`dangling-link` stays for an address that resolves nowhere); the work status `dependency changed` becomes `input changed`, as a dependency is now a kind."
+context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `orphan` becomes `never-started` (a workflow nothing starts); `broken-link` becomes `link-to-removed` where the target was removed (`dangling-link` stays for an address that resolves nowhere); the work status `dependency changed` goes: a changed input reads `changed`, as the build hash is one hash (owner 2026-11-20: built lines keep no deps)."
 options:
   rename:
-    label: never-started, link-to-removed, input changed
+    label: never-started, link-to-removed; a changed dependency reads changed
   keep:
     label: Keep orphan, broken-link and dependency changed
 proposal:

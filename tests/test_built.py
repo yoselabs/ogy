@@ -11,18 +11,17 @@ SRC = "product/library/quantities.yml"
 FEE = "product/library/quantity/late-fee"
 
 
-def line(own: str = "1d8551a51abd", deps: dict[str, str] | None = None, covers: tuple[str, ...] = (),
-         sourced: dict[str, str] | None = None) -> Line:
-    return Line(own, deps or {}, covers, sourced or {})
+def line(own: str = "1d8551a51abd", covers: tuple[str, ...] = (), sourced: dict[str, str] | None = None) -> Line:
+    return Line(own, covers, sourced or {})
 
 
 def test_stamp_writes_one_flow_line_per_address_sorted(tmp_path: Path) -> None:
     built.stamp(tmp_path, SRC, "product/library/quantity/b", line("1234", covers=("src/a.py",), sourced={"code:x": "ff"}))
-    built.stamp(tmp_path, SRC, FEE, line(deps={"product/library/quantity/b": "1234"}))
+    built.stamp(tmp_path, SRC, FEE, line())
     text = (tmp_path / "built" / SRC).read_text()
     b_line, fee_line = text.splitlines()
-    assert fee_line.startswith(f"{FEE}: {{own: 1d8551a51abd, deps: {{product/library/quantity/b: '1234'}}")
-    assert b_line == "product/library/quantity/b: {own: '1234', deps: {}, covers: [src/a.py], sourced: {code:x: ff}}"
+    assert fee_line == f"{FEE}: {{own: 1d8551a51abd, covers: [], sourced: {{}}}}"
+    assert b_line == "product/library/quantity/b: {own: '1234', covers: [src/a.py], sourced: {code:x: ff}}"
     assert built.read(tmp_path, SRC)["product/library/quantity/b"].covers == ("src/a.py",)
 
 
@@ -36,9 +35,17 @@ def test_unstamp_deletes_line_and_empty_file(tmp_path: Path) -> None:
 
 
 def test_work_left_reads_the_built_record() -> None:
-    record = {"a": line("1", deps={"d": "x"}), "b": line("2"), "c": line("3", deps={"d": "x"}), "ok": line("4")}
-    current = {"a": ("1", {"d": "y"}), "b": ("9", {}), "c": ("3", {"d": "x"}), "new": ("5", {}), "ok": ("4", {})}
-    assert built.work_left(record, current) == {"a": "input changed", "b": "changed", "new": "unbuilt"}
+    record = {"b": line("2"), "ok": line("4")}
+    assert built.work_left(record, {"b": "9", "new": "5", "ok": "4"}) == {"b": "changed", "new": "unbuilt"}
+
+
+def test_an_old_deps_key_reads_and_is_found_until_migrated(tmp_path: Path) -> None:
+    path = tmp_path / "built" / SRC
+    path.parent.mkdir(parents=True)
+    path.write_text(f"{FEE}: {{own: '1', deps: {{d: x}}, covers: [], sourced: {{}}}}\n")
+    assert built.read(tmp_path, SRC)[FEE] == line("1")
+    built.write(tmp_path, SRC, {FEE: built.Line("1")})
+    assert "deps" not in path.read_text()
 
 
 def test_removed_entry_is_work_until_line_deleted(tmp_path: Path) -> None:
@@ -63,8 +70,9 @@ def test_changed_doc_section_is_reported() -> None:
 
 @pytest.mark.parametrize("text", [
     "a: {own: x}\n",
-    "a: {own: 1, deps: {}, covers: [], sourced: {}}\n",
-    "a: {own: x, deps: {}, covers: [], sourced: {}}\na: {own: y, deps: {}, covers: [], sourced: {}}\n",
+    "a: {own: 1, covers: [], sourced: {}}\n",
+    "a: {own: x, deps: {}, sourced: {}}\n",
+    "a: {own: x, covers: [], sourced: {}}\na: {own: y, covers: [], sourced: {}}\n",
     "- a\n",
 ])
 def test_bad_built_line(tmp_path: Path, text: str) -> None:

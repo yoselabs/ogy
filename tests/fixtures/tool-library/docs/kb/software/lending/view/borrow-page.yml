@@ -3,3 +3,5 @@ serves:
 - product/lending/workflow/borrow/step/ask
 src:
 - code:src/library/pages.py#borrow_page
+satisfies:
+- product/lending/rule/late-fee-is-per-day

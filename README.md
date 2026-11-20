@@ -86,8 +86,10 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   its own and the common ones (`ontology.yml` states `none` for `because` and `satisfies`). A kind gives the input of a
   common field or of a part kind in its own `input:` map (`input: {satisfies: content}`, `input: {attribute: content}`;
   `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
-  [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed input shows in
-  `ogy work` as `changed` (the build hash is one hash); `input changed` is a dependency the built line recorded.
+  [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed content input reads
+  `changed` in `ogy work`, as a changed meaning does: the build hash is one hash, and a built line keeps only it (`own`), what
+  the proof covers and the sources it was captured from. Input staleness is never re-stamped automatically: an agent re-proves
+  the entry and stamps its line. A built line that still holds the old `deps` key is `needs-migration`; `ogy migrate` drops it.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
 - A proposal that rests on what the owner said carries a paraphrase: `proposal.heard`, one line, never a quote. The review card reads
@@ -158,7 +160,7 @@ value or null}}}`, and a part folded into a field `folded: {field: inner field}`
 holds an old name is the finding `needs-migration`. `ogy migrate` writes the migration in one checked write:
 - every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
   or a proposal's `sets` gives an entry of that kind; a revalued or folded value takes its new form;
-- a pure rename changes no meaning: an agreement or a built line (`own` and `deps`) that was current stays current, its
+- a pure rename changes no meaning: an agreement or a built line (`own`) that was current stays current, its
   hash re-set to the fingerprint (a built line's to the build hash) after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
   the entry (and the built lines whose build hash reads it) are left, so the owner sees it as changed since agreed and it is work;

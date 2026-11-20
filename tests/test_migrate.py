@@ -126,3 +126,15 @@ def test_the_base_is_read_migrated(repo: Path, before: str) -> None:
 def test_a_rename_names_a_field_of_the_kind() -> None:
     with pytest.raises(OntologyError, match="renamed unit to units, which is no field"):
         changed({"quantity.yml": [("  unit: {required: true}", "  per: {required: true}"), ("", "renamed: {unit: units}\n")]})
+
+
+def test_migrate_strips_the_old_deps_of_a_built_line_and_keeps_it_current(repo: Path, before: str) -> None:
+    target = Target(repo)
+    path = repo / "docs/kb/built" / target.read()[1].entries[parse_address(FEE, target.kinds())].path
+    path.write_text(path.read_text().replace("covers:", f"deps: {{{LEND}: aaaaaaaaaaaa}}, covers:"))
+    assert [(item.problem, item.path) for item in ops.run_check(target).value] == [
+        (Problem.NEEDS_MIGRATION, f"built/{path.relative_to(repo / 'docs/kb/built')}")]
+    assert f"kept the built line current: {FEE}" in ops.run_migrate(target).value.lines()
+    assert "deps" not in path.read_text()
+    assert not ops.run_check(target).value
+    assert FEE not in {item.address for item in ops.run_work(target).value}

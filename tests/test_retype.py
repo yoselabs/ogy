@@ -56,7 +56,7 @@ def before(repo: Path) -> str:
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
     for text in (FEE, GO):
         built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
-                    built.Line(build_hash(target, text), {LEND: build_hash(target, LEND)} if text == GO else {}))
+                    built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
     return commit(repo, "before the kind rename")
 
