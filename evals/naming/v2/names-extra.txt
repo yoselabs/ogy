@@ -1,0 +1,9 @@
+# Kind and field names of stages that are not merged yet, one per line. check-neutral.py bans them in the facts
+# together with every name it reads from the maps in inputs/. Remove a line once a built input carries the name.
+interface
+shows
+accepts
+includes
+allows
+form
+constrains

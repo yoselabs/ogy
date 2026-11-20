@@ -1,0 +1,2 @@
+# Words of arm-only lines that the facts may still use, one per line, the reason after it.
+# check-neutral.py reads the first word of each line.

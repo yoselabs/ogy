@@ -1,0 +1,16 @@
+# One vocabulary for every run before a scorer sees it: each word on the left is rewritten to the word on the right,
+# in every run of every arm alike (also inside the "why" text, also with a final s, also capitalised).
+# Only 1:1 renames are here. Not mapped, so still visible to a scorer: `many`, `heard`, `realizes` on a capability,
+# and everything arm B adds (`interface` and its fields). Add B's 1:1 renames here when its map is printed.
+quantity	value
+quantities	values
+enum	set
+handler	operation
+dependency	external
+dependencies	externals
+setting	config_key
+attribute	attr
+workaround	deviation
+proposal	guess
+satisfies	by
+default	binds
