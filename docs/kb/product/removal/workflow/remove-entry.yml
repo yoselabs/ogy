@@ -48,7 +48,7 @@ steps:
 ends:
   removed:
     result: success
-    says: The entry is gone from its file, and its item is in removed.yml when the base commit had it; one born since leaves none (Git keeps it).
+    says: The entry is gone from its file, and its item is in removed.yml when the base commit had it, or ogy init starts with it; one born since leaves none (Git keeps it).
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
