@@ -8,3 +8,8 @@ options:
 proposal:
   chose: nothing
   why: Adding a field should make no work, as the README says, and a merge keeps what was built current.
+answers:
+- chose: nothing
+  said: "Owner: follow Fable's guidance; Fable chose that an input reading nothing adds nothing"
+  at: '2026-11-20T02:01:10+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

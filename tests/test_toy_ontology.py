@@ -318,3 +318,15 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     run_git(toy, *IDENTITY, "add", "-A")
     run_git(toy, *IDENTITY, "commit", "-qm", "merged")
     assert not ops.run_check(Target(toy, rev="HEAD", ontology=str(one)), base=base).value
+
+
+def test_a_kind_gaining_an_input_field_makes_no_work_and_unsetting_an_input_does(tmp_path: Path) -> None:
+    extra = "fields:\n  extra: {type: links, to: [norm], input: content}\n"
+    stage = (TOY / "kinds" / "stage.yml").read_text().replace("fields:\n", extra, 1)
+    grown = named(str(_folder(tmp_path / "grown", {"stage": stage}, "[screen]")), Path("."))
+    before = _held()
+    texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}
+    same, plain = build(grown, texts), build(named(str(TOY), Path(".")), texts)
+    assert same.build_hash(_at(same, PICK)) == plain.build_hash(_at(plain, PICK))  # a new, unset input adds nothing: no work
+    move = f"{PICK}/move/go"
+    assert before.build_hash(_at(before, move)) != plain.build_hash(_at(plain, move))  # set -> unset of `held_by` moves the hash

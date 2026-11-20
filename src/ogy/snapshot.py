@@ -97,8 +97,11 @@ class Snapshot:
             if kind.kind not in self._inputs:
                 self._inputs[kind.kind] = inputs(self.ontology, kind)
             # an input that reads nothing adds nothing: a kind that gains a link field (or a merge that brings one) stales nothing
-            also: list[object] = [[" ".join(path), found] for path in self._inputs[kind.kind] if (found := self._along(address, path))]
-            reached = [[n, found] for n, path in enumerate(inputs_from(kind)) if (found := self._along(address, path, True))]
+            also: list[object] = sorted(  # keyed and sorted by path: reordering a kind file's fields or inputs moves no hash
+                ([" ".join(path), found] for path in self._inputs[kind.kind] if (found := self._along(address, path))),
+                key=lambda item: str(item[0]))
+            reached = sorted(([" ".join(path), found] for path in inputs_from(kind) if (found := self._along(address, path, True))),
+                             key=lambda item: str(item[0]))
             also += [["reached", reached]] if reached else []
             entry = self.entries[address]
             self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, self.ontology.roles.proof if proofs else None)
