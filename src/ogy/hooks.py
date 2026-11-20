@@ -3,9 +3,10 @@ updated.
 
 Every hook calls this entry point (ogy's own through prek and its gate, and the ones `ogy init` writes), so no hook copy decides
 it alone. A land is an update of the main branch: a push whose remote ref is `refs/heads/main` (checked against the commit main
-held there), or the gate run with main checked out. A land gets `check --landing`; any other update the plain check. A commit is
-never a land: a merge into main runs no pre-commit hook, so the push is where a land is caught, and a fresh repository's starting
-entries wait for the owner's yes in review, which comes before its first push to main, not before its first commit."""
+held there; any other pushed branch against its merge base with main, as a removal is recorded), or the gate run with main
+checked out. A land gets `check --landing`; any other update the plain check. A commit is never a land: a merge into main runs
+no pre-commit hook, so the push is where a land is caught, and a fresh repository's starting entries wait for the owner's yes
+in review, which comes before its first push to main, not before its first commit."""
 
 import os
 from dataclasses import dataclass
@@ -61,7 +62,9 @@ def checked_out(repo: Path) -> Update:
 
 def pushed(repo: Path, text: str) -> list[Update]:
     """pre-push: one update per line of `<local ref> <local sha> <remote ref> <remote sha>` that pushes a branch; a deletion
-    and a tag check nothing. Only the remote ref decides a land."""
+    and a tag check nothing. Only the remote ref decides a land. A land is checked against the commit main held there; any
+    other branch against its merge base with main, the base a removal is recorded against (`removal_base`), so a branch that
+    removed an entry it was born with is not refused for the copy the remote branch still holds."""
     found: list[Update] = []
     for line in text.splitlines():
         parts = line.split()
@@ -70,6 +73,7 @@ def pushed(repo: Path, text: str) -> list[Update]:
         _, sha, remote, old = parts
         if _zero(sha) or not remote.startswith(BRANCHES):
             continue
+        land = remote == LAND
         known = not _zero(old) and bool(_git(repo, "rev-parse", "-q", "--verify", f"{old}^{{commit}}"))
-        found.append(Update(remote, sha, old if known else None, land=remote == LAND))
+        found.append(Update(remote, sha, old if known and land else None, land=land))
     return found

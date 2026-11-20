@@ -97,3 +97,35 @@ def test_the_gate_lands_with_main_checked_out_and_not_on_a_branch(fresh: Path, m
     assert code == cli.FINDINGS and lines[0] == "land refs/heads/main at ." and any("term-not-agreed" in line for line in lines)
     run_git(fresh, "switch", "-q", "-c", "later")
     assert hook(fresh, monkeypatch, "gate") == (cli.OK, ["check refs/heads/later at .", "ok"])
+
+
+def test_a_branch_push_checks_against_the_merge_base_like_a_removal(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """An entry born on a branch and pushed, then removed there: the removal records nothing (the merge base never had it), so
+    the next push of the branch is checked against the merge base too, not the commit the remote branch held."""
+    sha = first_commit(fresh)
+    run_git(fresh, "switch", "-q", "-c", "later")
+    actors = fresh / "docs/kb/product/shared/actors.yml"
+    actors.write_text(actors.read_text() + "- {id: clerk, nature: human, says: A clerk at the desk.}\n")
+    run_git(fresh, "add", "-A")
+    pushed = first_commit(fresh)
+    code, lines = cli.run(["--repo", str(fresh), "--rev", ".", "remove", "product/shared/actor/clerk", "--why", "No clerks"])
+    assert code == cli.OK, lines
+    run_git(fresh, "add", "-A")
+    now = first_commit(fresh)
+    code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/later {now} refs/heads/later {pushed}\n")
+    assert code == cli.OK, lines
+    code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/later {now} refs/heads/main {sha}\n")
+    assert code == cli.FINDINGS and any("term-not-agreed" in line for line in lines), lines  # a half-finished land is refused
+
+
+def test_a_land_is_checked_against_the_commit_main_held(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    actors = fresh / "docs/kb/product/shared/actors.yml"
+    before = actors.read_text()
+    actors.write_text(before + "- {id: clerk, nature: human, says: A clerk at the desk.}\n")
+    run_git(fresh, "add", "-A")
+    old = first_commit(fresh)
+    actors.write_text(before)  # gone by hand, no removed.yml item
+    run_git(fresh, "add", "-A")
+    new = first_commit(fresh)
+    code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/main {new} refs/heads/main {old}\n")
+    assert code == cli.FINDINGS and any("removed-unrecorded" in line and "clerk" in line for line in lines), lines
