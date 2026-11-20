@@ -1,43 +1,78 @@
 """What changed in an entry since a person agreed to it, read from Git: a `changed` card shows it, so the owner reads the
-change instead of the whole sentence again. An agreement keeps only the hash, so the agreed version is the newest commit
-whose file holds the entry with that hash."""
+change instead of the whole sentence again. An agreement keeps only the hash, taken under the kinds of its day, so the agreed
+version is never found by hashing old text again: it is the entry in the oldest commit whose file holds that same stored
+`agreed.hash` (the commit that wrote the yes), found by following the file back through its renames."""
 
 lazy from pathlib import Path
 
 from git_porcelain import GitError, RealRepo
 
+from ogy.kindchange import migrated
+from ogy.retype import applied
 from ogy.semdiff import fields_changed
 from ogy.snapshot import build
 from ogy.status import Card, Status, agreed_of, status
 lazy from ogy.model import Address
 lazy from ogy.snapshot import Snapshot
 
-HISTORY = 200  # commits read back for the agreed version
-SHOWN = 60  # characters of a value shown
+SHOWN = 60  # characters of a value shown whole
+AROUND = 24  # characters kept before and after the part of a long value that differs
 
 
-def _short(value: object) -> str:
-    text = "-" if value is None else str(value)
-    return text if len(text) <= SHOWN else text[: SHOWN - 3] + "..."
+def _text(value: object) -> str:
+    return "-" if value is None else str(value)
 
 
-def _agreed_version(repo: Path, kb: str, snapshot: Snapshot, address: Address, agreed: str) -> Snapshot | None:
-    """The entry's file, at the newest commit where the entry's agreed hash is `agreed`, read alone."""
-    rel = snapshot.entries[address].path
-    path, last = f"{kb}/{rel}".lstrip("/"), None
-    try:
-        git = RealRepo(repo)
-        for commit in git.history(["HEAD"], limit=HISTORY):
-            tree = git.tree(commit.sha)
-            data = None if tree is None else tree.read(path)
-            if data is None or data == last:
-                continue
-            last, older = data, build(snapshot.ontology, {rel: data.decode()})
-            if address in older.entries and older.agreed_print(address) == agreed:
-                return older
-    except GitError:
-        return None
-    return None
+def _differ(old: object, new: object) -> tuple[str, str]:
+    """The two values, or for a long one the part that differs with a little around it, the rest cut to `...`."""
+    before, after = _text(old), _text(new)
+    if max(len(before), len(after)) <= SHOWN:
+        return before, after
+    same = next((at for at, (a, b) in enumerate(zip(before, after, strict=False)) if a != b), min(len(before), len(after)))
+    tail = 0
+    while tail < min(len(before), len(after)) - same and before[-1 - tail] == after[-1 - tail]:
+        tail += 1
+    start = before.rfind(" ", 0, same - AROUND) + 1 if same > AROUND else 0  # from the start of a word
+
+    def cut(text: str) -> str:
+        end = min(len(text), len(text) - tail + AROUND)
+        piece = text[start:end]
+        if len(piece) > SHOWN + 2 * AROUND:
+            piece, end = piece[: SHOWN + 2 * AROUND], start  # a long rewrite: its start is enough
+        return ("..." if start else "") + piece + ("..." if end < len(text) else "")
+
+    return cut(before), cut(after)
+
+
+def _commits(repo: Path, path: str) -> list[tuple[str, str]]:
+    """(commit, the file's path in it) for every commit that changed the file, oldest first, following renames."""
+    done = RealRepo(repo).run(repo, "log", "--follow", "--format=%x00%H", "--name-only", "--", path, check=False)
+    found: list[tuple[str, str]] = []
+    for block in done.out.split("\0")[1:]:
+        lines = [line for line in block.splitlines() if line]
+        if len(lines) >= 2:
+            found.append((lines[0], lines[-1]))
+    return found[::-1]
+
+
+def _agreed_version(repo: Path, kb: str, snapshot: Snapshot, address: Address, agreed: str) -> tuple[Snapshot, Address] | int:
+    """The file of the oldest commit holding the entry (same kind and depth) with `agreed` as its stored hash, read alone as
+    `ogy migrate` would read it, and the entry's address there; else how many commits changed the file."""
+    prefix = f"{kb}/".lstrip("/")
+    commits = _commits(repo, prefix + snapshot.entries[address].path)
+    git, last = RealRepo(repo), None
+    for sha, path in commits:
+        tree = git.tree(sha)
+        data = None if tree is None else tree.read(path)
+        if data is None or data == last or not path.startswith(prefix):
+            continue
+        last = data
+        older = migrated(build(snapshot.ontology, applied(snapshot.ontology, {path.removeprefix(prefix): data.decode()})))
+        for found in older.entries:
+            yes = agreed_of(older, found)
+            if yes is not None and yes.hash == agreed and found.kind == address.kind and len(found.path) == len(address.path):
+                return older, found
+    return len(commits)
 
 
 def changes(repo: Path, kb: str, snapshot: Snapshot, address: Address) -> tuple[str, ...]:
@@ -45,19 +80,27 @@ def changes(repo: Path, kb: str, snapshot: Snapshot, address: Address) -> tuple[
     agreed = agreed_of(snapshot, address)
     if agreed is None:
         return ()
-    older = _agreed_version(repo, kb, snapshot, address, agreed.hash)
-    if older is None:
-        return (f"the agreed version is not in the last {HISTORY} commits: read it whole",)
-    inside = [a for a in sorted({*older.entries, *snapshot.entries}) if a == address or str(a).startswith(f"{address}/")]
+    try:
+        found = _agreed_version(repo, kb, snapshot, address, agreed.hash)
+    except GitError:
+        found = 0
+    if isinstance(found, int):
+        return (f"no commit that changed this file ({found} read) wrote this yes: read it whole",)
+    older, then = found
+    old = {str(a).removeprefix(str(then)): older.entries[a] for a in older.entries if a == then or str(a).startswith(f"{then}/")}
+    new = {
+        str(a).removeprefix(str(address)): snapshot.entries[a] for a in snapshot.entries if a == address or str(a).startswith(f"{address}/")
+    }
     lines: list[str] = []
-    for part in inside:
-        name = "" if part == address else str(part).removeprefix(f"{address}/") + " "
-        old, new = older.entries.get(part), snapshot.entries.get(part)
-        if old is None or new is None:
-            lines.append(f"{name.strip()}: {'added' if old is None else 'removed'}")
+    for part in sorted({*old, *new}):
+        name = part.removeprefix("/") + " " if part else ""
+        if part not in old or part not in new:
+            lines.append(f"{name.strip()}: {'added' if part not in old else 'removed'}")
             continue
-        lines += [f"{name}{item.name}: {_short(item.old)} -> {_short(item.new)}" for item in fields_changed(old, new)]
-    return tuple(lines)
+        for item in fields_changed(old[part], new[part]):
+            before, after = _differ(item.old, item.new)
+            lines.append(f"{name}{item.name}: {before} -> {after}")
+    return tuple(lines) or ("its own fields are as agreed: what changed is something its yes reaches (a link, a step it leads to)",)
 
 
 def card_changes(repo: Path, kb: str, snapshot: Snapshot, card: Card) -> tuple[str, ...]:

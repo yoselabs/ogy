@@ -7,7 +7,7 @@ lazy from pathlib import Path
 import pytest
 from fastmcp.exceptions import ToolError
 from git_porcelain import run_git
-from tests.conftest import commit, ogy
+from tests.conftest import AGREED, commit, ogy
 from verb_cli.testing import assert_help_tree
 
 from ogy import cli
@@ -126,6 +126,25 @@ def test_review_and_check_take_a_layer_and_a_changed_card_shows_what_changed(rep
     commit(repo, "edited")
     code, lines = ogy(repo, "--rev", ".", "review", "product")
     assert code == cli.OK and "   since you agreed: step/ask: says: The member asks. -> The member begs." in lines, lines
+
+
+OLD_YES = AGREED.replace("000000000000", "'a1b2c3d4e5f6'")  # a hash the kinds of its day took: no rehash today matches it
+LONG = "A tool is lent to a member who asks for it, names the day it is wanted and waits for the lender to say yes."
+
+
+def test_since_you_agreed_reads_the_commit_that_wrote_the_yes_and_shows_where_a_long_value_differs(repo: Path) -> None:
+    """Fable's review, problem 3: the agreed hash was taken under older kinds, so no rehash of old text matches it; the commit
+    that wrote it holds the version agreed to. A difference past the first 60 characters is shown, not cut off."""
+    flow = repo / "docs/kb/product/app/workflow/borrow.yml"
+    flow.write_text(flow.read_text().replace("says: A tool is lent.\n", f"says: {LONG}\nagreed: {OLD_YES}\n", 1))
+    code, lines = ogy(repo, "--rev", ".", "review", "product")
+    assert code == cli.OK and "   since you agreed: no commit that changed this file (1 read) wrote this yes: read it whole" in lines, lines
+    commit(repo, "agreed under older kinds")
+    flow.write_text(flow.read_text().replace("to say yes.", "to say no."))
+    commit(repo, "edited")
+    lines = ogy(repo, "--rev", ".", "review", "product")[1]
+    said = [line for line in lines if line.startswith("   since you agreed: says:")]
+    assert said == ["   since you agreed: says: ...waits for the lender to say yes. -> ...waits for the lender to say no."], lines
 
 
 def test_a_half_workflow_commits_on_a_branch_and_landing_refuses_it(repo: Path) -> None:
