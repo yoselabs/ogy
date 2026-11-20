@@ -155,29 +155,80 @@ like/unlike blocks are in; the hashes must be equal.
 8. Unblind with each `map.txt`, do the [blame pass](blame.md) with its B part (the absolute report and the
    addendum), fill the tables below, add a ledger row and the metric rows.
 
-## Result (to fill)
+## Result (2026-11-20)
 
-One table per model. Means with per-run ranges.
+**Verdict: hold, no effect larger than 4 items.** `default` is gated out at the ceiling (arm A 47.5 of 51); `small`
+passes the gates and carries the verdict alone: C0 minus A is +0.25 link items, 90% Welch interval -1.41 to +1.91.
+No name is refused (rule 6). By rule 7 the merged names stay. Full tallies: [tally-default.md](tally-default.md),
+[tally-small.md](tally-small.md) (`python3 -I tally.py scoring/<tag>`); blame: [blame-default.md](blame-default.md),
+[blame-small.md](blame-small.md).
+
+Means with per-run ranges, 6 runs per arm, each run the mean of its two scorers. Model ids, every run as asked:
+`claude-opus-5-5` (default) and `claude-haiku-5-5` (small), effort medium; scorers `claude-opus-5-5`, effort medium.
+
+`default`:
 
 | arm | link items (of 51) | common homes (of 45) | names subset (of 19) | misplacements (of 27) | false friends | wrong links | excluded runs |
 |---|---|---|---|---|---|---|---|
-| A before | | | | | | | |
-| C0 names | | | | | | | |
-| C names and lines | | | | | | | |
-| B after | | | | | | | |
+| A before | 47.50 (46–49) | 41.83 (40.5–43) | 15.83 (15–17) | 2.50 (2–3) | 0.58 (0–1.5) | 0.50 (0–1) | 0 |
+| C0 names | 49.25 (48–51) | 43.50 (42–45) | 16.83 (16–18) | 1.50 (1–2) | 0.42 (0–1) | 0.17 (0–0.5) | 0 |
+| C names and lines | 49.00 (47–51) | 44.33 (43–45) | 17.83 (17–19) | 1.67 (1–2) | 0.17 (0–1) | 0.50 (0–1.5) | 0 |
+| B after | 50.83 (50–51) | 45.00 (45–45) | 19.00 (19–19) | 1.00 (1–1) | 0.08 (0–0.5) | 0.00 (0–0) | 0 |
 
-Apart, per arm: [12] (K, 12a, 12b), 15b, absence items (of 4), 1a. Scorer disagreement, both ways: . Old against
-new guesses on A and C0, against 50%: . Model ids: . Per item:
-in how many runs of each arm it was hit. Per fact: K. Blame: names, with counts. For A against C0 on each model:
-the difference of the means with its 90% interval.
+`small`:
 
-Arm B, absolute, per model, whatever the gates say (also when arm A's ceiling voids the model's comparisons):
+| arm | link items (of 51) | common homes (of 45) | names subset (of 19) | misplacements (of 27) | false friends | wrong links | excluded runs |
+|---|---|---|---|---|---|---|---|
+| A before | 44.25 (43.5–45) | 40.42 (39.5–41) | 15.00 (15–15) | 2.17 (2–3) | 1.50 (0–2.5) | 2.58 (1–4) | 0 |
+| C0 names | 44.50 (42.5–47) | 40.33 (38.5–43) | 15.67 (15–17) | 2.42 (2–3) | 0.58 (0–1) | 1.50 (0–2.5) | 0 |
+| C names and lines | 45.00 (43–46) | 40.83 (39–42) | 16.33 (15.5–17.5) | 1.75 (1–2.5) | 0.58 (0–1.5) | 1.50 (0–3) | 0 |
+| B after | 47.00 (44–49) | 42.67 (41–44) | 17.50 (16.5–18.5) | 0.83 (0–2) | 0.42 (0–1) | 0.75 (0–1.5) | 0 |
 
-- per link item of the 51: hits of 6 runs;
-- K per fact, of 6;
-- each misplacement: the kind the run chose, and the blame verdict;
-- the B-only addendum B1 to B6 of [design.md](design.md): six counts of 6, never summed with anything;
-- links a run wrote that the real lint would refuse: listed as findings about the map.
+Reading by the rules:
+
+1. Gates. `default`: ceiling (A 47.5 ≥ 46); its comparisons say nothing. For the record only: C0 minus A +1.75,
+   90% interval +0.47 to +3.03. `small`: A 44.25, no exclusions, passes.
+2. Counting rule on `small`: the means differ by 0.25 (needs 4); 4 runs of C0 are at or below A's best (needs at
+   most 1). It does not count either way.
+5. Hold, worded by the interval on `small`: -1.41 to +1.91 lies within -4 to +4, so **no effect larger than 4
+   items**. The names subset points the same way (C0 minus A: +0.67 on `small`, +1.00 on `default`).
+6. No name is `misled-by` for one fact in half an arm's runs. The only `misled-by` verdicts are on A's old name
+   `external` for the notifier [13]: 2 of 6 runs on `default`, 1 of 6 on `small`.
+
+Apart, per arm (`default` / `small`): [12] K A 0.00/1.00, C0 0.83/1.00, C 1.00/0.92, B 1.00/0.67; 15b A 0/0, C0 0/0,
+C 0.17/0, B 1.00/0.25; absence items of 4: all 4.00 except A on `small` 3.00 (9b); 1a 1.00 everywhere.
+
+Scorer disagreement: mean absolute difference in link items 0.12 of 51 (`default`) and 0.46 (`small`); the mean count
+of items on which the two differ, per run, is the same. No item differs in more than a third of the runs.
+
+Old against new guesses on A and C0 (`guess-rate.py`): 0 of 24 on the right side on both models, against 50% of
+blind guessing; 18 of 24 (`default`) and 24 of 24 (`small`) "could not tell". The 6 named guesses on `default` were
+all wrong: scorers read article slips from the rewrite ("an set", "a external") as signs of the old map, and those
+slips mark the rewritten arms. The scoring was blind in effect.
+
+Per item and per fact: the tables in the tally files. What moved between A and C0, described only:
+
+- `default`: [12] K 0 → 5 of 6 (A made the remark its own kept thing in every run; the reason given was the map's
+  rule that a create effect names an entity, `structural`); 12b 2 → 6.
+- `small`: 9b 0 → 6 (A bound the URL knob to a new value through `binds` in all 6; C0's `setting` with `default`
+  left it unbound); 19a 6 → 3 and K [19] 6 → 3.5 (C0 and C wrote `workaround` without its parent [3]; the why lines
+  are silent on the parent, `unclear`); 15a 6 → 3.5 and 25a 6 → 3 (C0 left `proof` empty when the test path was
+  not given); [13] stays low in A and C0 (0 and 1 of 6), while C and B have it in all 6.
+
+Found on every arm and model: fact [24] (the fixed reply layout of [10]) is written as its own `rule` by 45 of 48
+runs, where the key homes it on [10]. The why lines reason from the map and the constitution ("a check reads it",
+rigid-where-checked): `structural`. It sits outside the 51. It reads as a question about the key or the map, not
+about a name.
+
+Arm B, absolute (every link item and K per fact: the B column of the tally files):
+
+- `default`: every item 6 of 6 except 13b 5; K 6 of 6 on every fact but [24] (0 of 6, a `rule`, `structural`).
+- `small`: items under 6 of 6: 4b 2, 12b 3, 13b 3, 15b 1.5 (apart), 18a 3, 18b 3, 20b 5, 22d 2, 15a 5.5, 25a 5.5,
+  28a 5; K under 6: [12] 4 (a remark entity, `structural`), [24] 3 (a `rule`, `structural`).
+- Addendum, counts of 6 (`default` / `small`): B1 5/3, B2 6/6, B3 6/1, B4 6/6, B5 6/1, B6 6/5. Never summed.
+- Links the lint would refuse: on `small`, B-3, B-4 and B-5 wrote `shows -> [24]` (a rule) on the interface; the
+  printed map gives `shows->>entity|attribute`, so it is a run's error, not a finding about the map. No link was
+  found that the printed map seems to offer and the real map refuses (read by eye, not run through `ogy check`).
 
 **Not counted, ever:** the pilots and the smoke runs. Smoke runs stay in `runs/smoke-*/` and `scoring/smoke-*/`
 (see `runs/README.md`); they tested the scripts, were made before the freeze, and are never pooled with, compared

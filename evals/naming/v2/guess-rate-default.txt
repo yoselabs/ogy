@@ -1,0 +1,5 @@
+old against new, arms A and C0: 0 of 24 guesses, 0% (blind guessing: 50%)
+could not tell: 18 of 24
+  arm A: 0 of 12 on the right side
+  arm C0: 0 of 12 on the right side
+  arm C: 0 of 12 on the right side

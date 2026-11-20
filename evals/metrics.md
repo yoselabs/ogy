@@ -39,3 +39,6 @@ Status: **record**, kept current by every eval. One row per metric. "Moved" = th
 | Row form vs prose for reading | P1 | no reading advantage for rows (one run, weak reader) | rows must be justified by diff, currency and checks, not by reading |
 | False suspects on hash change | P6 | 16% of changed rows (4% without one column-adding commit) | content hashes are usable as change signals |
 | Reader confusion between workflow forms | P11 | one run per form | single-run probe; treat as a hypothesis |
+| Link items hit, of 51 (placing facts from the map and glossary alone) | naming v2 | `default` model: 47.5 to 50.8 across arms, at the ceiling; `small`: A 44.25, C0 44.5, C 45.0, B 47.0, ranges overlap; scorer disagreement 0.12 and 0.46 | a strong model sits at the ceiling even with 28 harder facts; only a small model separates arms, and 6 runs per arm resolve about 4 items, not less |
+| Misplacements, of 27 | naming v2 | 0.8 to 2.5 per arm on both models; fact [24] wrong in 45 of 48 runs on every arm | secondary; a fact every arm misses points at the key or the map, not at the names |
+| Old against new guesses (blinding) | naming v2 | 0 of 24 on the right side on both models; 18 and 24 "could not tell" | rewriting into one vocabulary blinds in effect; article slips from the rewrite are what scorers notice |
