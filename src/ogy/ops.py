@@ -159,9 +159,13 @@ def _ledger(source: Source) -> dict[str, removed.Item]:
 
 
 def _owes(item: Work, scope: str | None, ontology: Ontology) -> bool:
-    """The work is in the scope: by the entry's own home, or, for a requirement a later layer owes, by that layer alone (the
-    entry's area need not exist there)."""
-    return scope in (None, item.owed_by) if item.owed_by else in_scope(home_of(item.address, ontology), scope)
+    """The work is in the scope: by the entry's own home; for a requirement a later layer owes, by that layer, by the entry's
+    own bare area (an area in every layer), or by that area in the owing layer once it has one (`_scope` refuses it before)."""
+    home = home_of(item.address, ontology)
+    if not item.owed_by:
+        return in_scope(home, scope)
+    area = home.rsplit("/", 1)[-1]
+    return scope in (None, item.owed_by, area, f"{item.owed_by}/{area}")
 
 
 def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:

@@ -75,3 +75,16 @@ def test_a_declared_layer_with_no_entries_is_a_scope_and_owes_its_work(product_o
     product = ogy(product_only, "work", "product")[1]
     assert not any(line.startswith("unserved") for line in product), product
     assert ogy(product_only, "work", "software/app")[0] == cli.NOT_FOUND  # owed work is matched by layer, never by an area
+
+
+def test_owed_work_is_listed_under_the_entrys_own_bare_area(product_only: Path) -> None:
+    """Fable's second review, problem 5: bare `work app` is the area in every layer, so it lists what a later layer owes an
+    entry of `product/app`; `software/app` lists it only once software has that area."""
+    code, lines = ogy(product_only, "work", "app")
+    assert code == cli.FINDINGS and any(line.startswith(f"unserved: {STEP}") for line in lines), lines
+    actors = product_only / "docs/kb/software/app/actors.yml"
+    actors.parent.mkdir(parents=True)
+    actors.write_text("- {id: clock, says: The scheduler that ends a borrow., nature: program}\n")
+    code, lines = ogy(product_only, "work", "software/app")
+    assert code == cli.FINDINGS and any(line.startswith(f"unserved: {STEP}") for line in lines), lines
+    assert not any(line.startswith("unserved") for line in ogy(product_only, "work", "product/app")[1])
