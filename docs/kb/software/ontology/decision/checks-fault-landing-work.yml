@@ -1,0 +1,18 @@
+structure: true
+question: Which problems does ogy check refuse on every commit, which only when a change lands, and which never?
+context: "Fable's review of staged work (2026-11-20) ran a requirement in stages on a scratch copy; several checks refused a product commit for something only a later stage or the landing can finish. It extends software/ontology/decision/a-layer-commits-alone and supersedes nothing. A fault is wrong now and its author can fix it in their own layer (dangling-link, step-shape, no-path-to-end, uncovered-end, required fields). A landing problem is a layer not finished yet (end-unreached, never-started, beside the two term checks), refused only by ogy check --landing. Work is what a later layer owes, true by construction: a requirement whose path goes back to kinds only a later layer holds (from layers and link_direction, never tagged by hand; a fault-weight one is refused when the kinds load), and a choice its interface does not offer yet. ogy work <layer> lists what that layer owes."
+because:
+- software/ontology/decision/a-layer-commits-alone
+options:
+  three-classes:
+    label: 'Three classes: a fault refuses any commit, a landing problem refuses only ogy check --landing, work never refuses and is listed for the layer that owes it'
+  two-classes:
+    label: 'Two classes, as before: every finding refuses any commit, and only requirements marked work by hand are work'
+proposal:
+  chose: three-classes
+  why: A layer commits alone only if what a later layer or the landing finishes never refuses its commit.
+answers:
+- chose: three-classes
+  said: "Build all of Fable's fixes: faults, landing checks and work owed by the later layer"
+  at: '2026-11-20T15:20:55+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

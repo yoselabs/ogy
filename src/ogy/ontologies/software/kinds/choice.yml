@@ -10,8 +10,8 @@ key: choices
 needs_proof: true
 fingerprint: {proofs: true}
 requires:
-  - {if_part: effect, path: ["<-performs"], kinds: [handler], work: true, status: unhandled, error: "a row with an effect has a handler performing it"}
-  - {if_reaches: ["on?nature=program"], path: ["on", "<-realizes", "<-uses", "performs"], kinds: [case, choice, timeout], same: true, work: true, status: unhandled, error: "a row that tells a program actor has a handler that uses a dependency realizing it"}
+  - {if_part: effect, path: ["<-performs"], kinds: [handler], status: unhandled, error: "a row with an effect has a handler performing it"}
+  - {if_reaches: ["on?nature=program"], path: ["on", "<-realizes", "<-uses", "performs"], kinds: [case, choice, timeout], same: true, status: unhandled, error: "a row that tells a program actor has a handler that uses a dependency realizing it"}
 fields:
   satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (behaviour: a rule it is held to changes, it is stale)
   label: {required: true}

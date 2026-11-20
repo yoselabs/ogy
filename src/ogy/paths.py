@@ -13,6 +13,7 @@ parts, `Kind.input`) and its reverse `input_from` are read as such paths (`input
 
 from typing import TYPE_CHECKING
 
+from ogy.hops import ANY_FIELD, BACK, PARENT, PARTS, VALUE
 from ogy.kinds import Input, Kind, Picked, where
 from ogy.links import link_items, resolve
 lazy from ogy.ontology import Ontology
@@ -22,11 +23,6 @@ if TYPE_CHECKING:
 
     from ogy.model import Address, Entry
 
-BACK = "<-"
-ANY_FIELD = "*"  # `<-*`: the entries that link here by any field
-PARENT = "^"
-VALUE = "="
-PARTS = "/"
 DERIVED = "=@"
 ID, ADDRESS, CONTENT = DERIVED + "id", DERIVED + "address", DERIVED + "fingerprint"
 

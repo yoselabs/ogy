@@ -12,9 +12,10 @@ import any_yaml
 from pydantic import ValidationError
 
 from ogy import declared as declaring
+from ogy import owing
 from ogy.declared import Declared, Roles
 from ogy.kindlint import problems
-from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind, Shape
+from ogy.kinds import FILED, KINDS_DIR, ONTOLOGY_FILE, FieldSpec, Kind, Requirement, Shape
 from ogy.verdict import UnusableError
 
 DEFAULT_ONTOLOGY = "software"  # the shipped ontology a repository uses when neither a flag nor `ogy.yml` names one
@@ -33,8 +34,9 @@ class Ontology:
     """All kinds of one ontology and what its `ontology.yml` declares, checked against each other."""
 
     def __init__(self, kinds: Mapping[str, Kind], declared: Declared, starts: tuple[Record, ...] = (), agents: str | None = None) -> None:
-        self.kinds = dict(kinds)
+        self.kinds = owing.derived(kinds, declared)  # a requirement a later layer owes is work
         self.declared, self.starts, self.agents = declared, starts, agents
+        self._owed: dict[tuple[str, Requirement, str], str | None] = {}
         found = declaring.problems(declared) + problems(self.kinds, declared)
         if found:
             raise OntologyError("; ".join(found))
@@ -46,6 +48,15 @@ class Ontology:
         made = cls.__new__(cls)
         made.kinds, made.declared, made.starts, made.agents = dict(kinds), declared, (), None
         return made
+
+    def owed_by(self, kind: str, need: Requirement, layer: str) -> str | None:
+        """The later layer that owes the requirement of an entry of `kind` in `layer` (`ogy.owing`); None: its own layer."""
+        key = (kind, need, layer)
+        if not hasattr(self, "_owed"):  # an unchecked ontology is built without __init__
+            self._owed = {}
+        if key not in self._owed:
+            self._owed[key] = owing.owed_by(self.kinds, self.declared, kind, need, layer)
+        return self._owed[key]
 
     @property
     def layers(self) -> tuple[str, ...]:

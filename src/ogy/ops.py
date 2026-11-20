@@ -148,6 +148,12 @@ def _ledger(source: Source) -> dict[str, removed.Item]:
     return {item.id: item for ledger in read_ledgers(source)[0].values() for item in ledger.items}
 
 
+def _owing_home(item: Work, ontology: Ontology) -> str:
+    """The home that owes the work: the entry's own, or, for a requirement a later layer owes, that layer and the entry's area."""
+    home = home_of(item.address, ontology)
+    return f"{item.owed_by}/{home.rsplit('/', 1)[-1]}" if item.owed_by else home
+
+
 def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
     """What the built record says is still to do; given a scope, only in one layer (`product`: what the business still
     has to say, without the build behind it), one `<layer>/<area>`, or one area in every layer."""
@@ -156,7 +162,7 @@ def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
     work = [
         item
         for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source))
-        if in_scope(home_of(item.address, snapshot.ontology), scope)
+        if in_scope(_owing_home(item, snapshot.ontology), scope)
     ]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
 

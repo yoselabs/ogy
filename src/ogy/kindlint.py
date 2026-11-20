@@ -268,6 +268,9 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
         for field in need.without
         if not any(field in kinds[target].fields for target in need.kinds if target in kinds)
     ]
+    # the kinds come here with `ogy.owing.derived` applied: a requirement a later layer owes is already work
+    if need.work and need.status is None:
+        found.append(f"{name}: requirement {need.error!r} goes back to kinds only a later layer holds, so it is work: name its status")
     if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
         if need.if_part is not None:
             found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")

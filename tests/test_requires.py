@@ -180,7 +180,7 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {ty
         ("{kinds: [thing], or_paths: [[b]], error: e}", "further paths beside a path"),
         ("{kinds: [thing], same: true, error: e}", "comes back to the entry"),
         ("{if_set: a, if_reaches: [b], kinds: [thing], path: [b], error: e}", "not both"),
-        ("{kinds: [thing], path: [b], status: x, error: e}", "names its status, and only it"),
+        ("{kinds: [thing], path: [b], work: true, error: e}", "names its status"),
     ],
 )
 def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, message: str) -> None:

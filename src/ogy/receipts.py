@@ -11,6 +11,7 @@ lazy from collections.abc import Mapping
 
 from ogy import built, evidence, removed
 from ogy.declared import Reader
+from ogy.flowcheck import unoffered
 from ogy.requires import unmet
 lazy from ogy.built import Line
 lazy from ogy.snapshot import Snapshot
@@ -24,6 +25,7 @@ class Status(StrEnum):
     REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"
+    UNOFFERED = "unoffered"  # a serving interface lists `offers` and leaves out a choice of the step
 
 
 @dataclass(frozen=True)
@@ -35,6 +37,7 @@ class Work:
     build_hash: str  # what the built line is compared with: the meaning, proofs and what the kind reaches
     built: str | None
     note: str = ""
+    owed_by: str = ""  # the later layer that owes it (`ogy.owing`); empty: the entry's own layer
 
 
 def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
@@ -47,10 +50,10 @@ def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
 
 
 def _unmet(snapshot: Snapshot) -> list[Work]:
-    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): under the status it names
-    its error the note."""
+    """A requirement that is work and that an entry does not meet yet (an actor step nothing serves): under the status it names,
+    its error the note, owed by the later layer its path goes back to (`ogy.owing`) or by the entry's own."""
     return [
-        Work(str(address), need.status or "", "", None, need.error)
+        Work(str(address), need.status or "", "", None, need.error, snapshot.ontology.owed_by(address.kind, need, address.layer) or "")
         for address in sorted(snapshot.entries)
         for need in unmet(snapshot, address, work=True)
     ]
@@ -89,8 +92,21 @@ def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Read
     ]
 
 
+def _unoffered(snapshot: Snapshot) -> list[Work]:
+    """A choice of a served step that no serving interface offers: work on the interfaces that list `offers`."""
+    return [
+        Work(str(server), Status.UNOFFERED, "", None, f"{step} offers none of {missing}") for server, step, missing in unoffered(snapshot)
+    ]
+
+
 def work_left(
     snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read, ledger: Mapping[str, removed.Item] | None = None
 ) -> list[Work]:
     """Unbuilt and changed entries, unmet requirements that are work, removal work, and sources that changed since capture."""
-    return [*_unbuilt(snapshot, record), *_unmet(snapshot), *_gone(record, snapshot, ledger or {}), *_sourced(record, snapshot, read)]
+    return [
+        *_unbuilt(snapshot, record),
+        *_unmet(snapshot),
+        *_unoffered(snapshot),
+        *_gone(record, snapshot, ledger or {}),
+        *_sourced(record, snapshot, read),
+    ]

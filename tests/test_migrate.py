@@ -27,6 +27,8 @@ proposal: {chose: two, why: Small.}
 """
 EFFECT = files("ogy").joinpath("ontologies", "software", "kinds", "effect.yml").read_text()
 EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith(("requires:", "  - {", "  # "))]
+CASE = files("ogy").joinpath("ontologies", "software", "kinds", "case.yml").read_text()
+TELLS = next(line + "\n" for line in CASE.splitlines() if "program actor" in line)  # its path starts at effect.on
 # quantity.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
@@ -38,7 +40,9 @@ CHANGES = {
     ],
     "answer.yml": [("  note: {note: true}", "  hedge: {note: true}"), ("", "renamed: {note: hedge}\n")],
     "decision.yml": [("  note: note\n", "  note: hedge\n")],
-    "timeout.yml": [("[is, unit]", "[is, per]")],
+    "timeout.yml": [("[is, unit]", "[is, per]"), (TELLS, "")],
+    "case.yml": [(TELLS, "")],
+    "choice.yml": [(TELLS, "")],
 }
 
 

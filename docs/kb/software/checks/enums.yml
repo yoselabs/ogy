@@ -15,5 +15,6 @@
   members:
   - term agreement
   - proposed terms
+  - unfinished flows
   src:
   - code:src/ogy/check.py#LANDING

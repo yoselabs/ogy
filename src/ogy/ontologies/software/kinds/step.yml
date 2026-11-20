@@ -8,7 +8,7 @@ sentence: says
 part_of: workflow
 key: steps
 requires:
-  - {if_set: actor, path: ["<-serves"], kinds: [interface], work: true, status: unserved, error: "an actor step has an interface that serves it"}
+  - {if_set: actor, path: ["<-serves"], kinds: [interface], status: unserved, error: "an actor step has an interface that serves it"}
   - {if_set: actor, path: [/choice], kinds: [choice], without: [when], error: "an actor step offers at least one choice without `when`"}
 fields:
   satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to

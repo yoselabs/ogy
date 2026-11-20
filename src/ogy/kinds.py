@@ -124,7 +124,8 @@ class Requirement(BaseModel):
     anything along the path `if_reaches` (every entry, without one), it sets `needs_field`, or it reaches along `path` (none:
     the entry itself), or along any one of `or_paths`, an entry of `kinds` that sets none of `without`; with `same`, the path
     comes back to the entry itself (for an item of a list part, the entry that holds it). Unmet, it is `unmet-requirement`;
-    with `work`, it is work left instead (what is still to be built, not a fault), under the `status` it names."""
+    with `work`, it is work left instead (what is still to be built, not a fault), under the `status` it names. A requirement
+    whose path goes back to kinds only a later layer holds is work without `work` (`ogy.owing`), and names its status too."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     if_set: str | None = None
@@ -138,7 +139,7 @@ class Requirement(BaseModel):
     kinds: tuple[str, ...] = ()
     without: tuple[str, ...] = ()
     same: bool = False
-    work: bool = False
+    work: bool = False  # set by hand for work in the same layer; a requirement a later layer owes is made work on load
     status: str | None = None  # the work status an unmet `work` requirement is listed under
     error: str
 
@@ -150,8 +151,8 @@ class Requirement(BaseModel):
         if self.same and not self.path:
             msg = "a requirement that comes back to the entry (same) has a path"
             raise ValueError(msg)
-        if (self.status is not None) != self.work:
-            msg = "a requirement that is work names its status, and only it"
+        if self.work and self.status is None:
+            msg = "a requirement that is work names its status"
             raise ValueError(msg)
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
             msg = "a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both"

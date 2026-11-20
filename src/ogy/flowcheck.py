@@ -49,7 +49,6 @@ class FlowChecker:
         for step in self.graph.steps:
             self.shape(step)
             self.coverage(step)
-            self.offered(step)
         self.reach()
         return self.findings
 
@@ -96,19 +95,6 @@ class FlowChecker:
             if missing:
                 self.add(Problem.UNCOVERED_END, step, f"no case for the callee's ends {missing}")
 
-    def offered(self, step: Address) -> None:
-        choices = set(self.graph.rows[step][self.flow.choice])
-        servers = [address for address in self.snapshot.links.backward(step, self.flow.serves) if address.kind in self.flow.servers]
-        if not choices or not servers:
-            return
-        offered: set[Address] = set()
-        for server in servers:
-            listed = link(self.snapshot, server, self.flow.offers)
-            offered |= set(listed) if self.has(server, self.flow.offers) else choices
-        missing = sorted(str(choice) for choice in choices - offered)
-        if missing:
-            self.add(Problem.NOT_OFFERED, step, f"no serving {' or '.join(self.flow.servers)} offers {missing}")
-
     def reach(self) -> None:
         g = self.graph
         start = link(self.snapshot, g.container, self.flow.start)
@@ -135,6 +121,27 @@ class FlowChecker:
         for end in g.ends:
             if end not in reached:
                 self.add(Problem.END_UNREACHED, end, "no reachable step ends here")
+
+
+def unoffered(snapshot: Snapshot) -> list[tuple[Address, Address, list[str]]]:
+    """(interface, step, choices) for each serving interface that lists `offers` and leaves out a choice of the step it serves
+    that no other serving interface offers: work for the interface's layer, as an interface without `offers` offers every
+    choice and goes stale when the choices change."""
+    found: list[tuple[Address, Address, list[str]]] = []
+    for kind in snapshot.ontology.kinds.values():
+        flow = kind.flow
+        if flow is None:
+            continue
+        for step in (address for address in sorted(snapshot.entries) if address.kind == flow.step):
+            choices = set(snapshot.links.parts(step, flow.choice))
+            servers = sorted(a for a in snapshot.links.backward(step, flow.serves) if a.kind in flow.servers)
+            listing = [s for s in servers if snapshot.entries[s].fields.get(flow.offers) is not None]
+            if not choices or not servers or len(listing) < len(servers):
+                continue  # one serving interface without `offers` offers every choice
+            offered = {choice for server in listing for choice in link(snapshot, server, flow.offers)}
+            if missing := sorted(str(choice) for choice in choices - offered):
+                found += [(server, step, missing) for server in listing]
+    return found
 
 
 def _top(address: Address) -> Address:

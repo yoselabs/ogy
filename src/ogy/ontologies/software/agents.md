@@ -27,9 +27,9 @@ there; everything else lives in the area that owns it. Change it only through og
   entry to the area that uses it.
 - Reads see the worktree by default (`--rev .`); CI reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `{ogy} show <address> --rev HEAD`.
-- Work goes in stages, one layer at a time: an agent writes its own layer, stops there and hands over with `{ogy} work <its layer>`.
-  A row with no handler or interface yet is work for the next layer, not a fault; the hazard pass never demands every dependency
-  up front.
+- Work goes in stages, one layer at a time: an agent writes its own layer, stops there and hands over with `{ogy} work <its layer>`
+  (what its layer still owes) and `{ogy} work <next layer>` (what it leaves to the next). A row with no handler or interface yet is
+  work the next layer owes, not a fault; the hazard pass never demands every dependency up front.
 - Every write is checked; fix what it refuses. Run `{ogy} check` before you hand over: every finding is an error, there are no
   warnings. Exit codes: 0 ok, 1 findings, 2 usage, 3 refused, 4 not found.
 - Every area folder holds its `area.yml` (`says`: what the area covers; `unlike`: what belongs in a neighbouring area); a put

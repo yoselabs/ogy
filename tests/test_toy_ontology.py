@@ -356,12 +356,15 @@ def test_a_link_into_a_later_toy_layer_is_a_finding(toy: Path) -> None:
 
 def test_a_stage_a_machine_acts_at_comes_back_through_a_screen_wired_to_the_machine(toy: Path) -> None:
     """`if_reaches: [who?sort=machine]` (a forward hop kept by the target's field), then a path that comes back to the stage
-    itself (`same`): a stage a machine acts at is served by a screen wired to that machine."""
+    itself (`same`): a stage a machine acts at is served by a screen wired to that machine. The path goes back to a screen,
+    which only the later layer tech holds, so tech owes it: work there, never a finding in business (`ogy.owing`)."""
     people, page = toy / "docs/kb/business/shop/people.yml", toy / "docs/kb/tech/shop/screen/page.yml"
     people.write_text(people.read_text().replace("sort: human", "sort: machine"))
-    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["unmet-requirement"]
-    page.write_text(page.read_text() + "wired_to: [business/shop/person/shopper]\n")
     assert w(toy, "check")[0] == cli.OK
+    assert any(line.startswith("unwired: business/shop/journey/buy/stage/") for line in w(toy, "work", "tech")[1])
+    assert not any(line.startswith("unwired:") for line in w(toy, "work", "business")[1])
+    page.write_text(page.read_text() + "wired_to: [business/shop/person/shopper]\n")
+    assert not any(line.startswith("unwired:") for line in w(toy, "work")[1])
 
 
 def test_a_toy_word_points_at_the_entry_that_defines_it(toy: Path) -> None:

@@ -5,7 +5,7 @@
   realizes:
   - product/checks/goal/kb-checked-in-git
 - id: check-a-land
-  says: With --landing, ogy also reports what blocks a land only, the terms the owner has not agreed to; with a base commit, also what that commit forbids changing.
+  says: 'With --landing, ogy also reports what blocks a land only: the terms the owner has not agreed to, an end no step reaches and a workflow nothing starts; with a base commit, also what that commit forbids changing.'
   src:
   - code:src/ogy/check.py#LANDING
   realizes:
