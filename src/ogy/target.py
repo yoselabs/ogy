@@ -1,5 +1,5 @@
 """A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare
-against, with the land branch `ogy.yml` names (`land`)."""
+against: what has landed on the land branch `ogy.yml` names (`land`), as its remote holds it."""
 
 from dataclasses import dataclass, replace
 lazy from pathlib import Path
@@ -47,17 +47,34 @@ class Target:
         return source, load(source, self.kinds())
 
 
+def landed(repo: Path) -> str:
+    """What has landed: the land branch as its remote holds it, the one base every reader compares against (a check, the gate,
+    a push of another branch, the removal base), so a removal and the land check never disagree. The land branch's upstream
+    when it tracks a remote branch, else `origin/<land>`, else the local land branch (no remote: nothing else has landed). A
+    push of the land branch itself is checked against the commit the remote held (`hooks.pushed`), the same commit when
+    fetched. Refuses (NoLandError) when `ogy.yml` names no land branch."""
+    land = config.land(repo)
+    git = RealRepo(repo)
+    upstream = git.run(repo, "rev-parse", "-q", "--verify", "--symbolic-full-name", f"{land}@{{upstream}}", check=False)
+    found = upstream.out.strip() if upstream.rc == 0 else ""
+    if found.startswith("refs/remotes/"):
+        return found
+    origin = f"refs/remotes/origin/{land}"
+    return origin if git.run(repo, "rev-parse", "-q", "--verify", f"{origin}^{{commit}}", check=False).rc == 0 else land
+
+
 def merge_base(target: Target) -> str | None:
-    """The commit the knowledge base is checked against: its merge base with the land branch, None outside a Git repository
-    (no history to compare with), when the branch does not exist or there is no history. Refuses (NoLandError) in a repository
-    whose `ogy.yml` names no land branch: nothing is checked or recorded against a guessed base."""
+    """The commit the knowledge base is checked against: its merge base with what has landed (`landed`), None outside a Git
+    repository (no history to compare with), when the branch does not exist, there is no history, or the commit is the base
+    itself. Refuses (NoLandError) in a repository whose `ogy.yml` names no land branch: nothing is checked or recorded against
+    a guessed base."""
     if git_dir(target.repo) is None:
         return None
-    land = config.land(target.repo)
+    base = landed(target.repo)
     rev = "HEAD" if target.rev == "." else target.rev
     try:
         repo = RealRepo(target.repo)
-        found = repo.merge_base(rev, land)
+        found = repo.merge_base(rev, base)
         return None if found is None or found == repo.commit(rev) else str(found)
     except GitError, ValueError:
         return None
@@ -77,16 +94,23 @@ def worktree_findings(target: Target) -> list[Finding]:
     )
 
 
-def removal_base(target: Target) -> frozenset[Address]:
-    """What a removal is recorded against: the addresses of the knowledge base at the merge base with the land branch, else at HEAD
-    (on the land branch itself), as written and as `ogy migrate` would write them; none before the first commit. An entry it lacks was born
-    since: Git keeps it, and no ledger item is written (`check --base` asks for one only for what the base had)."""
+def removal_source(target: Target) -> Source | None:
+    """The knowledge base a removal is recorded against: at the merge base with what has landed (`landed`), else at HEAD (HEAD
+    has landed); None before the first commit or when it holds no knowledge base."""
     here = target.at(".")
     try:
         older = open_source(here.repo, merge_base(here) or "HEAD", here.kb, required=False)
     except MissingTargetError:  # no commit yet: nothing was ever recorded
+        return None
+    return older if older.listing() else None
+
+
+def removal_base(target: Target) -> frozenset[Address]:
+    """What a removal is recorded against: the addresses of the knowledge base at `removal_source`, as written and as `ogy
+    migrate` would write them. An entry it lacks was born since: Git keeps it, and no ledger item is written (`check --base`
+    asks for one only for what the base had)."""
+    older = removal_source(target)
+    if older is None:
         return frozenset()
-    if not older.listing():
-        return frozenset()
-    written = load(older, here.kinds(), retyped=True)
+    written = load(older, target.kinds(), retyped=True)
     return frozenset(written.entries) | frozenset(migrated(written).entries)

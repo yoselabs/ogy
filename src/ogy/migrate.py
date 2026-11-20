@@ -5,22 +5,27 @@ Every old name is rewritten (`kindchange.changes`); an agreement and a built lin
 names changed (`kindchange.Kept`); a dropped field that held a value is printed and its entry's agreement is left, so the
 owner sees the entry as changed since agreed. The entries of a fixed folder their kind moved out of (`moved_from`) go to the
 `shared` area of its first layer, with the area's own entry when it has none and the folder's removed items, every address
-renamed as `ogy move` renames it. Nothing is recorded: Git keeps the old names and places."""
+renamed as `ogy move` renames it. Nothing is recorded: Git keeps the old names and places. A removed item no removal writes now
+(`removal.unrecorded`: the base never had its entry, as when the base was read from an unpushed land branch) is taken out of its
+ledger and printed; Git keeps it."""
 
 from dataclasses import dataclass, field
 
 from atomic_io import atomic_write_text
 
-from ogy import built, removed, removed_moves
+from ogy import built, removal, removed, removed_moves
+from ogy.base import read_ledgers
 from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
 from ogy.kindchange import Change, Kept, before, changes, moved_table
+from ogy.ledgers import migrated_ledgers, named_now
 from ogy.model import Address, Problem, home_address
 from ogy.moves import renamer
 from ogy.relocate import rename_all
 from ogy.restamp import proven
 from ogy.retype import Retype, applied, collisions, retype
 from ogy.snapshot import Snapshot, build, kb_paths
+from ogy.target import removal_base, removal_source
 from ogy.writes import WriteRefusedError, commit, files, findings_after
 lazy from ogy.target import Target
 
@@ -34,11 +39,13 @@ class Migrated:
     moved: list[tuple[Address, Address]] = field(default_factory=list)  # out of a fixed folder their kind moved out of
     retyped: list[tuple[str, str]] = field(default_factory=list)  # files under a renamed kind: (old path, new path)
     unbuilt: list[str] = field(default_factory=list)  # built lines deleted: their entry needs no proof
+    unrecorded: list[str] = field(default_factory=list)  # removed items taken out: the base never had their entry
 
     def lines(self) -> list[str]:
-        if not self.changes and not self.moved and not self.retyped and not self.built and not self.unbuilt and not self.agreed:
+        if not any((self.changes, self.moved, self.retyped, self.built, self.unbuilt, self.agreed, self.unrecorded)):
             return ["nothing to migrate"]
-        out = [
+        out = [f"dropped the removed item {text}: the base never had it (Git keeps it)" for text in self.unrecorded]
+        out += [
             f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}" for old, new in self.retyped
         ]
         out += [
@@ -151,7 +158,8 @@ def migrate(target: Target) -> Migrated:
     }
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
     stamped: dict[Address, dict[str, object]] = {} if was else proven(target.repo, target.kb, snapshot)
-    if not found and not table and not tidied and not retyped and not stamped and not _old_lines(target, snapshot):
+    stale = _unrecorded(target, snapshot)
+    if not found and not table and not tidied and not retyped and not stamped and not stale and not _old_lines(target, snapshot):
         return Migrated([], [], [], [])
     kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str, also)
     agreed = {**stamped, **_agreements(snapshot, kept)}
@@ -160,6 +168,8 @@ def migrate(target: Target) -> Migrated:
     moved: list[tuple[Address, Address]] = []
 
     def act(ed: Editor) -> None:
+        for home, ids in stale.items():
+            removed.drop(root, home, ids)
         for rel, text in retyped.items():
             if text is None:
                 (root / rel).unlink()
@@ -180,4 +190,19 @@ def migrate(target: Target) -> Migrated:
     names = renamer(table) if table else work.address
     known = findings_after(target, retyped) if retyped else None
     written = commit(target, lambda _: [*touched, *(new for _, new in moved)], act, names, known)
-    return Migrated(found, sorted(agreed), lines, written, moved, pairs, unbuilt)
+    gone = sorted(text for ids in stale.values() for text in ids)
+    return Migrated(found, sorted(agreed), lines, written, moved, pairs, unbuilt, gone)
+
+
+def _unrecorded(target: Target, snapshot: Snapshot) -> dict[str, list[str]]:
+    """The items of each home's ledger that no removal writes now (`removal.unrecorded`), against the removal base."""
+    older = removal_source(target)
+    written = read_ledgers(older)[0] if older else {}
+    landed = named_now(migrated_ledgers(written, snapshot), snapshot)  # as written, and as `ogy migrate` writes it
+    base_ids = [item.id for ledgers in (written, landed) for ledger in ledgers.values() for item in ledger.items]
+    base = removal_base(target)
+    found = {
+        home: removal.unrecorded(ledger.items, base, base_ids, snapshot.ontology)
+        for home, ledger in removed.read_all(target.repo / target.kb)[0].items()
+    }
+    return {home: ids for home, ids in found.items() if ids}

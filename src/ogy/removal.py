@@ -3,7 +3,7 @@ base had it. One born since the base leaves no item: Git keeps it, and its id is
 with, always recorded so init does not add it again."""
 
 import datetime as dt
-from collections.abc import Callable, Collection, Mapping
+from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass
 lazy from pathlib import Path
 
@@ -13,6 +13,7 @@ from ogy.kinds import Holds
 from ogy.links import link_items, resolve
 from ogy.model import Address, parse_address
 from ogy.removed import Item, Parent
+from ogy.retype import Retype
 from ogy.settle import decisions
 from ogy.verdict import RefusalError
 lazy from ogy.ontology import Ontology
@@ -45,6 +46,20 @@ def recorded(base: Collection[Address], address: Address, ontology: Ontology) ->
     """Whether a removal of `address` is written to a ledger: when the base (`target.removal_base`) holds it, and always for an
     entry `ogy init` starts with, which init would add again without its item."""
     return address in base or address in starters(ontology)
+
+
+def unrecorded(items: Iterable[Item], base: Collection[Address], base_ids: Collection[str], ontology: Ontology) -> list[str]:
+    """The ids of the ledger items no removal writes now (`recorded`): not in the base's ledgers (`base_ids`), for an entry the
+    base (`base`, as `removal_base` reads it) never had. Git keeps them; `ogy migrate` takes them out."""
+    rename = Retype(ontology).address
+    landed = {rename(text) for text in base_ids}
+    return [
+        item.id
+        for item in items
+        if rename(item.id) not in landed
+        and (address := parse_address(rename(item.id), ontology)) is not None
+        and not recorded(base, address, ontology)
+    ]
 
 
 def entry_snapshot(snapshot: Snapshot, address: Address) -> dict[str, object]:

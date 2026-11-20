@@ -3,8 +3,9 @@ updated.
 
 Every hook calls this entry point (ogy's own through prek and its gate, and the ones `ogy init` writes), so no hook copy decides
 it alone. A land is an update of the land branch `ogy.yml` names (`land`, which `ogy init` records): a push whose remote ref is
-that branch (checked against the commit it held there; any other pushed branch against its merge base with the land branch, as
-a removal is recorded), or the gate run with it checked out. A land gets `check --landing`; any other update the plain check.
+that branch (checked against the commit it held there; any other pushed branch against its merge base with what has landed,
+`target.landed`, as a removal is recorded), or the gate run with it checked out. A land gets `check --landing`; any other
+update the plain check.
 With no land branch named, every hook refuses (`config.land`, which every reader of it goes through): nothing can be told
 to be a land, and no base can be found. A commit is never a land: a merge into the land branch runs no pre-commit hook, so the
 push is where a land is caught, and a fresh repository's starting entries wait for the owner's yes in review, which comes
@@ -69,7 +70,7 @@ def checked_out(repo: Path) -> Update:
 def pushed(repo: Path, text: str) -> list[Update]:
     """pre-push: one update per line of `<local ref> <local sha> <remote ref> <remote sha>` that pushes a branch; a deletion
     and a tag check nothing. Only the remote ref decides a land. A land is checked against the commit the land branch held
-    there; any other branch against its merge base with the land branch, the base a removal is recorded against
+    there; any other branch against its merge base with what has landed (`target.landed`), the base a removal is recorded against
     (`removal_base`), so a branch that removed an entry it was born with is not refused for the copy the remote branch still
     holds."""
     found: list[Update] = []

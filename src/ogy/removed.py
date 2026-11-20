@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 lazy from pathlib import Path
 
 import any_yaml
+from atomic_io import atomic_write_text
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Iterable, Mapping
@@ -248,6 +249,35 @@ def append(root: Path, home: str, item: Item, snapshot_check: Callable[[Item], l
         raise RemovedError(problems)
     path = root / home / FILE
     any_yaml.append_item_file(path, "items", raw_item(item), initial=f"format: {FORMAT}\n")
+
+
+def drop(root: Path, home: str, ids: Collection[str]) -> None:
+    """Take the items `ids` out of a home's ledger as text, every other line as written; the file goes when none is left. Only
+    for an item no removal writes now (`removal.unrecorded`): an item is otherwise never taken out."""
+    path = root / home / FILE
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines(keepends=True)
+    start = next((found.group(1) + "- " for line in lines if (found := re.match(r"( *)- ", line))), "- ")
+    blocks: list[list[str]] = [[]]
+    for line in lines:
+        if line.startswith(start):
+            blocks.append([])
+        blocks[-1].append(line)
+    kept = [block for block in blocks[1:] if _block_id(block) not in ids]
+    result = "".join(blocks[0] + [line for block in kept for line in block])
+    before = parse({f"{home}/{FILE}": text})[0].get(home)
+    after = parse({f"{home}/{FILE}": result})[0].get(home) if kept else Ledger(home, FORMAT, ())
+    if before is None or after is None or [item for item in before.items if item.id not in ids] != list(after.items):
+        raise RemovedError([_bad(home, "the ledger is not a block list its items can be taken out of")])
+    if kept:
+        atomic_write_text(path, result, keep_mode=True)
+    else:
+        path.unlink()
+
+
+def _block_id(block: list[str]) -> object:
+    raw = any_yaml.load("".join(block))
+    return raw[0].get("id") if isinstance(raw, list) and raw and isinstance(raw[0], dict) else None
 
 
 def check_new_snapshots(items: Iterable[Item], base_ids: Collection[str], validator: Callable[[Item], list[str]]) -> list[Problem]:
