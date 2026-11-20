@@ -2,7 +2,7 @@
 
 - Python 3.15+, `uv`, `just`. `just install`, `just check` and `just test` are the gates.
 - No `subprocess` in `src/` or `tests/`; Git goes through shelf's `git-porcelain`. YAML goes through shelf's `any-yaml`;
-  hashes, Python symbols, Markdown anchors, test reach and MCP tools through shelf too. `ruff.toml` bans the raw libraries.
+  hashes, Python symbols, Markdown anchors, test reach and MCP tools through shelf too. the banned-api table in `pyproject.toml` bans the raw libraries.
 - Caps: 400 lines per source file, 80 per function, 800 per test file. Tests are pytest functions or classes.
 - Ontology, skill and checker changes: read [README](README.md) "What goes where". Every change names its eval in
   [evals/ledger.md](evals/ledger.md) or says it is untested. Every eval follows [evals/README.md](evals/README.md) and

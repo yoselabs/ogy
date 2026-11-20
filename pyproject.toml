@@ -92,7 +92,8 @@ override-dependencies = [
 ]
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py315"
+src = ["src"]
 line-length = 140
 output-format = "concise"
 
@@ -168,9 +169,22 @@ ignore = [
     "S607",
 ]
 
-# The shelf sits below its consumers: a package (its tests included) never imports an app.
-# import-linter's `forbidden` contract covers src; this covers packages/*/tests, which the
-# import graph does not see. A submodule import (`import a2kay.x`) is matched by the same entry.
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# OGY's own rules (AGENTS.md): processes, YAML, hashes, Python symbols, test reach and MCP tools go through shelf packages.
+"subprocess".msg = "Git and processes go through shelf packages (git-porcelain)."
+"ruamel".msg = "YAML goes through shelf's any-yaml."
+"ruamel.yaml".msg = "YAML goes through shelf's any-yaml."
+"ast".msg = "Python symbols go through shelf's py-symbols."
+"hashlib".msg = "Hashes go through shelf's content-digest (git-porcelain.blob_sha for Git blobs)."
+"coverage".msg = "Which code a test reaches is shelf's test-reach."
+"pytest".msg = "pytest is for tests only; running tests for reach is shelf's test-reach."
+"argparse._SubParsersAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._StoreTrueAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._StoreFalseAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._AppendAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._HelpAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"git_porcelain.run_git".msg = "Use the typed git-porcelain API (RealRepo, head, git_dir ...), not raw git."
+
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
@@ -185,43 +199,11 @@ builtins-allowed-modules = ["types"]
 runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 
 [tool.ruff.lint.per-file-ignores]
-# The isolated gate must exec-replace itself to retain the durably registered PID.
-# Its validated private payload is explicit caller argv, never shell text (shelf-4426).
-# S606 flags the required exec primitive itself; keep it enabled everywhere else.
-"packages/stream-proc/src/stream_proc/_exec_gate.py" = ["S606"]
-# One relaxation list, shared with every consumer (a2kay carries the same one under its
-# own `tests/**`). A test asserts, uses magic numbers and fake tokens, binds a boolean
-# positionally, reaches into the private of the thing it tests, and prints its report —
-# all of that is what a test is for.
-"tests/**" = ["ANN", "ARG", "S101", "S104", "S105", "S106", "PLR2004", "PLR0915", "PYI034", "TRY300", "TRY301", "FBT001", "SLF", "INP", "T201"]
-"packages/*/tests/**" = ["ANN", "ARG", "S101", "S104", "S105", "S106", "PLR2004", "PLR0915", "PYI034", "TRY300", "TRY301", "FBT001", "SLF", "INP", "T201", "FBT"]
-# tools are CLI scripts: printing is their job, `git`/`opa` on PATH is deliberate,
-# and a module docstring is enough (no per-function D).
-"tools/**" = ["T201"]
-# the pytest plugin the root conftest loads as `tools.blueprint_fitness` (implicit namespace package, like the tests).
-"tools/blueprint_fitness.py" = ["INP001"]
-# package benches (convert-md's engine-comparison harnesses, D4): throwaway CLI
-# probe scripts + fixture generators, not shipped library code — same shape as
-# tools/**, plus INP001 (deliberately not a package), PLC0415 (isolated engines
-# import lazily by design), full D (docstrings not policed in throwaway code, as
-# in tests), and SLF (the docx fixture generator does low-level oxml surgery).
-"packages/*/bench/**" = ["T201", "INP001", "PLC0415", "SLF"]
-# any-speech: verb-cli reads the verbs' and Settings' annotations at runtime (typing.get_type_hints), so Path stays a
-# real import in the CLI module; the engine lane imports each optional engine inside its test, skipping when it is not installed.
-"packages/any-speech/src/any_speech/cli.py" = ["TC003"]
-"packages/any-speech/tests/engines/**" = ["PLC0415"]
-# any-speech tests are async and touch their own tmp files; a blocking Path call there stalls nothing but the test.
-"packages/any-speech/tests/**" = ["ASYNC240"]
-# any-browser's two engine adapters are DEFINED by "render never raises for a
-# routine failure" (the base.py BrowserBackend contract): every driver / CDP /
-# telemetry quirk is caught and turned into a RenderOutcome or a best-effort
-# no-op, so a broad `except Exception` is the design, not a swallowed bug. Scoped
-# to exactly the two driver modules — the seam (base.py) and launchers raise no
-# such thing.
-"packages/any-browser/src/any_browser/playwright.py" = ["BLE001"]
-"packages/any-browser/src/any_browser/zendriver.py" = ["BLE001"]
-# CAS interpolates only quoted identifiers; all data values remain bound parameters.
-"packages/sqlite-store/src/sqlite_store/cas.py" = ["S608"]
+# One relaxation list, shared with every consumer. A test asserts, uses magic numbers and fake tokens, binds a boolean
+# positionally, reaches into the private of the thing it tests, and prints its report: all of that is what a test is for.
+# TID251: tests are pytest, set repositories up with raw git (conftest) and read the CLI parser's subcommands (test_mcp);
+# keep subprocess out of tests by review.
+"tests/**" = ["ANN", "ARG", "S101", "S104", "S105", "S106", "PLR2004", "PLR0915", "PYI034", "TRY300", "TRY301", "FBT001", "SLF", "INP", "T201", "TID251"]
 
 [tool.deptry]
 known_first_party = ["ogy"]
@@ -237,21 +219,17 @@ known_first_party = ["ogy"]
 # fixture is authoritative and the linter yields to it, never the reverse.
 #
 # docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
-skip = "evals/*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*,packages/*/bench/corpus/*,packages/*/bench/outputs/*,packages/*/tests/fixtures/*.html"
+skip = "evals/*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
 # doctrine/glossary coinages the dictionary flags but we mean on purpose.
 ignore-words-list = "wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
 # A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
 ignore-regex = "\\[[A-Za-z]{2}\\][a-z]+"
 check-filenames = ""
 
-# deptry is configured PER PACKAGE (it reads each package's own pyproject when run
-# from that dir) and invoked via `just deps` with `--known-first-party`. No root
-# [tool.deptry] block: it would never be read from the package working directory.
-
 # ── coverage — measured on every `just test`; floor enforced (no silent rot) ───
 [tool.coverage.run]
 branch = true
-source = ["packages", "tools"]
+source = ["src"]
 omit = ["*/tests/*"]
 
 [tool.coverage.report]
