@@ -27,3 +27,9 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner delegated this round to Fable: keep inspect-kb, trim the decision entity, agree to committer and both principles'
     hash: 8ea41892be00
+- id: one-owner-per-fact
+  says: 'Each fact has one owner: a rule is a check or prose on its entry, never both; a copy elsewhere points to its owner.'
+  why: Copies drift, and a rule kept in prose that a check could read hides the gaps the check would find.
+- id: fix-the-class
+  says: 'A gap found is fixed for its whole class: every fix asks where else the same cause applies, and the answer becomes a check, work, or a listed item.'
+  why: A fix that closes one case leaves its siblings hidden.
