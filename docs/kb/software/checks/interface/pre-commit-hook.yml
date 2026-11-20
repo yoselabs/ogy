@@ -4,4 +4,5 @@ serves:
 - software/checks/workflow/pre-commit-check/step/commit
 src:
 - code:src/ogy/init.py#HOOK
+- code:src/ogy/prek.py#merged
 form: cli

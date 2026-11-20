@@ -1,0 +1,16 @@
+title: Who decides what the 2026-11-20 reviews left to the owner
+question: Does the coordinator decide the unanswered decisions and listed items of the 2026-11-20 reviews (prose rules L1-L11, the init hook owner, the MVP cut), or does the owner decide each?
+context: Four models reviewed the prose-rules items, three review cards, init-hook-owner and the MVP decisions; the owner said he relies on the coordinator's judgment.
+options:
+  coordinator-decides:
+    label: The coordinator decides them; each answer is listed by ogy dropped for the owner's veto, and only the owner agrees sentences
+  owner-decides:
+    label: The owner decides each on its own card
+proposal:
+  chose: coordinator-decides
+  why: The owner said he relies on the coordinator's judgment.
+answers:
+- chose: coordinator-decides
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T00:04:23+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

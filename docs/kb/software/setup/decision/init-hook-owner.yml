@@ -2,7 +2,7 @@ question: Who owns the Git hooks `ogy init` installs, now that a repo on the gat
 context: "`ogy init` writes `.githooks` and sets `core.hooksPath`, which disables prek's hooks (bd, secret scan, any-gate) and fails the kit's gate.hooks-installed. Fable's reading, asked by the owner who does not know: follow the repo."
 options:
   follow-the-repo:
-    label: 'A prek config in the repo: init merges one `ogy hook` entry per stage and leaves core.hooksPath alone; no prek config: init writes `.githooks` as today and refuses when core.hooksPath already points elsewhere'
+    label: "A prek config in the repo: init merges one pre-commit `ogy hook` entry and leaves core.hooksPath alone (pre-push stays in the gate's own entry, since a gate kit allows no other pre-push hook); no prek config: init writes `.githooks` as today and refuses when core.hooksPath already points elsewhere"
     sets:
       software/checks/interface/pre-commit-hook:
         invoked_as: git commit (runs the prek entry `ogy hook pre-commit` when the repo has a prek config, else .githooks/pre-commit)
@@ -23,3 +23,10 @@ options:
 proposal:
   chose: follow-the-repo
   why: Init promises to merge and never clobber, yet it overwrites core.hooksPath; a repo with no hook manager still needs a dependency-free hook because the check runs on every commit.
+answers:
+- chose: follow-the-repo
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T00:04:30+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  note: only the pre-commit entry is merged; pre-push stays in the gate's own entry
+  delegated: product/review/decision/judgement-delegation

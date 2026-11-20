@@ -25,7 +25,7 @@ there; everything else lives in the area that owns it. Change it only through og
   edit: it renames and moves in one write and keeps the owner's agreements and the built lines current; a dropped field that held a
   value is printed, and that entry comes back to the owner as changed. What it moved lands in `product/shared`: `{ogy} move` each
   entry to the area that uses it.
-- Reads see the worktree by default (`--rev .`); CI reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
+- Reads see the worktree by default (`--rev .`); a gate script reads a commit with `{ogy} --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `{ogy} show <address> --rev HEAD`.
 - Work goes in stages, one layer at a time: an agent writes its own layer, stops there and hands over with `{ogy} work <its layer>`
   (what its layer still owes) and `{ogy} work <next layer>` (what it leaves to the next). A row with no handler or interface yet is

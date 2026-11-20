@@ -284,3 +284,64 @@ def test_a_file_where_init_needs_a_folder_is_refused_before_any_write(tmp_path: 
     assert code == cli.REFUSED and lines == [f"not set up: {rel} is a file, not a folder; move it and run again"], lines
     assert sorted(p.name for p in tmp_path.iterdir()) == sorted([".git", rel]) and read(tmp_path, rel) == "mine\n"
     assert run_git(tmp_path, "config", "--default", "", "core.hooksPath", ambient=os.environ).strip() == ""
+
+
+PREK = (
+    "# the gate kit's hooks\nrepos:\n- repo: local\n  hooks:\n  - id: gate  # the whole gate\n    entry: just check\n"
+    "    language: system\n    stages: [pre-push]\n"
+)
+
+
+def test_in_a_prek_repo_init_merges_one_pre_commit_entry_and_leaves_core_hooks_path(tmp_path: Path) -> None:
+    """Decision init-hook-owner, follow-the-repo: prek owns the hooks, so init adds its entry and claims no core.hooksPath; the
+    pre-push check stays in the repository's gate entry, and the doctor asks for none beside it."""
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    (tmp_path / ".pre-commit-config.yaml").write_text(PREK)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.OK and "wrote .pre-commit-config.yaml" in lines, lines
+    text = read(tmp_path, ".pre-commit-config.yaml")
+    assert text.startswith(PREK) and "entry: ogy hook pre-commit" in text.replace(init.PUBLISHED, "ogy")
+    assert "stages:\n    - pre-commit" in text and text.count("hook pre-commit") == 1
+    assert not (tmp_path / ".githooks").exists()
+    assert run_git(tmp_path, "config", "--default", "", "core.hooksPath", ambient=os.environ).strip() == ""
+    assert cli.run(["--repo", str(tmp_path), "init", "--check"]) == (cli.OK, ["ogy is set up here"])
+    assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # idempotent
+
+
+def test_a_prek_entry_that_already_runs_ogy_hook_is_kept_and_a_missing_one_is_reported(tmp_path: Path) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    own = PREK + "- repo: local\n  hooks:\n  - id: kb\n    entry: just ogy hook pre-commit\n    language: system\n"
+    (tmp_path / ".pre-commit-config.yaml").write_text(own)
+    assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
+    assert read(tmp_path, ".pre-commit-config.yaml") == own  # ogy's own form, not added twice
+    (tmp_path / ".pre-commit-config.yaml").write_text(PREK)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--check"])
+    assert code == cli.FINDINGS and lines == [".pre-commit-config.yaml has no hook that runs `ogy hook pre-commit`: run `ogy init`"]
+    run_git(tmp_path, "config", "core.hooksPath", ".githooks", ambient=os.environ)
+    lines = cli.run(["--repo", str(tmp_path), "init", "--check"])[1]
+    assert "git uses .githooks, not prek's hooks: run `git config --unset core.hooksPath`, then `prek install`" in lines, lines
+
+
+@pytest.mark.parametrize(
+    ("text", "fault"),
+    [
+        ("repos: [\n", "is not YAML"),
+        ("repos: {}\n", "repos is not a list"),
+        ("repos: [{repo: local, hooks: []}]\n", "repos is not a block list"),
+    ],
+)
+def test_a_prek_config_init_cannot_merge_into_is_refused_before_any_write(tmp_path: Path, text: str, fault: str) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    (tmp_path / ".pre-commit-config.yaml").write_text(text)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and len(lines) == 1 and fault in lines[0], lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == [".git", ".pre-commit-config.yaml"]
+
+
+def test_with_no_prek_config_init_refuses_when_another_tool_owns_core_hooks_path(tmp_path: Path) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    run_git(tmp_path, "config", "core.hooksPath", ".husky", ambient=os.environ)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and len(lines) == 1 and "core.hooksPath is .husky" in lines[0], lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == [".git"]
+    assert run_git(tmp_path, "config", "core.hooksPath", ambient=os.environ).strip() == ".husky"

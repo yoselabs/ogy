@@ -1,4 +1,4 @@
-says: Writes ogy.yml, the constitution file, the shared area, the ontology's starting entries (unless removed), the managed blocks, the MCP server entry, the deny rules and the hook, each only when missing or different, after every file it would change was read.
+says: Writes ogy.yml, the constitution file, the shared area, the ontology's starting entries (unless removed), the managed blocks, the MCP server entry, the deny rules and the hook (a pre-commit entry in the prek config when the repo has one, else .githooks and core.hooksPath), each only when missing or different, after every file it would change was read.
 performs:
 - product/setup/workflow/init-repository/step/write/case/otherwise
 uses:
@@ -8,3 +8,4 @@ uses:
 src:
 - code:src/ogy/init.py#init
 - code:src/ogy/init.py#missing_starts
+- code:src/ogy/prek.py#merged

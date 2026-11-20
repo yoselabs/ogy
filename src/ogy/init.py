@@ -4,7 +4,9 @@ Writes `ogy.yml` (the ontology, and the land branch: `--land`, else the remote's
 knowledge-base folder with the (empty) lists of its fixed folders and the entry of the shared area of the first layer, the
 ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CLAUDE.md when it exists), the ogy server in
 `.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with (its
-`starts.yml`), unless removed. Every name in them comes from the ontology folder."""
+`starts.yml`), unless removed. Every name in them comes from the ontology folder. The Git hooks follow the repository
+(`ogy.prek`): with a prek config, one pre-commit entry merged into it and `core.hooksPath` left alone; without one, `.githooks`
+and `core.hooksPath` pointing at it, refused when another tool already owns `core.hooksPath`."""
 
 import json
 import os
@@ -17,7 +19,7 @@ from atomic_io import atomic_write_text
 from git_porcelain import RealRepo, config_get, git_dir, symbolic_ref
 from managed_region import replace_region
 
-from ogy import config, removed
+from ogy import config, prek, removed
 from ogy.edit import Editor
 from ogy.kinds import Shape
 from ogy.model import Address, parse_address
@@ -135,13 +137,36 @@ def block(repo: Path, ontology: Ontology, body: str) -> str:
     return replace_region(body, ontology.agents.format(ogy=invocation(repo)), start_marker=START, end_marker=END)
 
 
-def _hook(repo: Path, written: list[str]) -> None:
-    """The tracked hooks that run `ogy hook` (`ogy.hooks`), and `core.hooksPath` pointing at them."""
-    for name in HOOKS:
-        rel = f"{HOOKS_DIR}/{name}"
-        _put(repo, rel, HOOK.format(ogy=invocation(repo), name=name), written)
-        (repo / rel).chmod(0o755)
-    if git_dir(repo) is not None and config_get(repo, "core.hooksPath", ambient=os.environ) != HOOKS_DIR:
+def _hooks_path(repo: Path) -> str:
+    return (config_get(repo, "core.hooksPath", ambient=os.environ) or "") if git_dir(repo) is not None else ""
+
+
+def _hooks(repo: Path) -> dict[str, str]:
+    """The hook files init writes, as it will write them (read phase; refuses, InitRefusedError, before any write): the prek config
+    with its `ogy hook pre-commit` entry when the repository has one, else `.githooks`, which needs `core.hooksPath` free."""
+    rel = prek.config_file(repo)
+    if rel is not None:
+        try:
+            return {rel: prek.merged(rel, _text(repo, rel), invocation(repo))}
+        except prek.PrekConfigError as error:
+            raise InitRefusedError(str(error)) from error
+    held = _hooks_path(repo)
+    if held not in ("", HOOKS_DIR):
+        msg = (
+            f"core.hooksPath is {held}, not {HOOKS_DIR}: another tool owns the Git hooks; have it run `ogy hook pre-commit` and "
+            "`ogy hook pre-push`, or unset core.hooksPath, and run again"
+        )
+        raise InitRefusedError(msg)
+    return {f"{HOOKS_DIR}/{name}": HOOK.format(ogy=invocation(repo), name=name) for name in HOOKS}
+
+
+def _hook(repo: Path, hooks: dict[str, str], written: list[str]) -> None:
+    """Writes the hook files; `.githooks` also gets `core.hooksPath` pointing at it. A prek config leaves it alone."""
+    for rel, text in hooks.items():
+        _put(repo, rel, text, written)
+        if rel.startswith(f"{HOOKS_DIR}/"):
+            (repo / rel).chmod(0o755)
+    if any(rel.startswith(f"{HOOKS_DIR}/") for rel in hooks) and git_dir(repo) is not None and _hooks_path(repo) != HOOKS_DIR:
         RealRepo(repo, ambient=os.environ).run(repo, "config", "core.hooksPath", HOOKS_DIR)
         written.append("git config core.hooksPath")
 
@@ -239,7 +264,8 @@ def init(repo: Path, ontology: str | None = None, land: str | None = None) -> In
     kinds = named(name, repo)
     merged = _merged(repo, kinds)  # every read and every check refuses before anything is written
     adding = missing_starts(repo, kinds)
-    _room(repo, [config.CONFIG_FILE, *(f"{KB_DIR}/{rel}" for rel in starts(kinds)), *merged, *(f"{HOOKS_DIR}/{n}" for n in HOOKS)])
+    hooks = _hooks(repo)
+    _room(repo, [config.CONFIG_FILE, *(f"{KB_DIR}/{rel}" for rel in starts(kinds)), *merged, *hooks])
     written: list[str] = []
     _config(repo, name, landing, written)
     for rel, text in starts(kinds).items():
@@ -251,7 +277,7 @@ def init(repo: Path, ontology: str | None = None, land: str | None = None) -> In
         written.append(str(address))
     for rel, text in merged.items():
         _put(repo, rel, text, written)
-    _hook(repo, written)
+    _hook(repo, hooks, written)
     return Initialised(name, KB_DIR, written)
 
 
@@ -284,6 +310,28 @@ def _stale_blocks(repo: Path, ontology: Ontology) -> list[str]:
     return lines
 
 
+def _hook_lines(repo: Path) -> list[str]:
+    """The doctor's lines for the hooks. With a prek config: an entry that runs `ogy hook pre-commit`, and no core.hooksPath that
+    hides prek's hooks; the pre-push check is the repository's own gate entry, so none is asked for. Else `.githooks` in use."""
+    rel = prek.config_file(repo)
+    if rel is not None:
+        lines: list[str] = []
+        try:
+            if not prek.runs_ogy(rel, _text(repo, rel)):
+                lines.append(f"{rel} has no hook that runs `{prek.RUNS}`: run `ogy init`")
+        except (InitRefusedError, prek.PrekConfigError) as error:
+            lines = [str(error)]
+        if held := _hooks_path(repo):
+            lines.append(f"git uses {held}, not prek's hooks: run `git config --unset core.hooksPath`, then `prek install`")
+        return lines
+    lines = [
+        f"missing {HOOKS_DIR}/{name} (runs `ogy hook {name}`): run `ogy init`" for name in HOOKS if not (repo / HOOKS_DIR / name).is_file()
+    ]
+    if not lines and git_dir(repo) is not None and _hooks_path(repo) != HOOKS_DIR:
+        lines.append(f"git does not use {HOOKS_DIR}: run `ogy init`")
+    return lines
+
+
 def doctor(repo: Path) -> list[str]:
     """`init --check`: what is not set up in this repository, one line each, and how to mend it; empty when it is all in place.
     Writes nothing and refuses nothing: a file it cannot read is a line too."""
@@ -299,15 +347,7 @@ def doctor(repo: Path) -> list[str]:
     lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(ontology) if not (repo / KB_DIR / rel).is_file())
     lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, ontology))
     lines.extend(_stale_blocks(repo, ontology))
-    lines.extend(
-        f"missing {HOOKS_DIR}/{name} (runs `ogy hook {name}`): run `ogy init`" for name in HOOKS if not (repo / HOOKS_DIR / name).is_file()
-    )
-    if (
-        all((repo / HOOKS_DIR / name).is_file() for name in HOOKS)
-        and git_dir(repo) is not None
-        and config_get(repo, "core.hooksPath", ambient=os.environ) != HOOKS_DIR
-    ):
-        lines.append(f"git does not use {HOOKS_DIR}: run `ogy init`")
+    lines.extend(_hook_lines(repo))
     try:
         server = _mapping(_json(repo, ".mcp.json"), "mcpServers", ".mcp.json").get("ogy")
         deny = _mapping(_json(repo, ".claude/settings.json"), "permissions", ".claude/settings.json").get("deny")
