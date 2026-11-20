@@ -228,3 +228,57 @@ def test_a_capability_that_realizes_no_goal_is_work_named_in_yaml(kb: Make) -> N
         "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n",
     }
     assert not [item for item in work_left(kb(goal).snapshot, {}, _no_file) if item.status == "unrealized"]
+
+
+CONFIRM = """\
+says: An order is confirmed.
+start: confirm
+steps:
+  confirm:
+    says: The shop asks PayRight to take the payment.
+    cases:
+      otherwise: {then: paid, effects: [{do: tell, "on": software/app/dependency/payright}]}
+ends:
+  paid: {result: success, says: Paid.}
+"""
+SHOP = {
+    "software/app/workflow/confirm-order.yml": CONFIRM,
+    "software/app/dependency/payright.yml": "says: PayRight, the card service the shop asks to take a payment.\n",
+}
+ROW = "software/app/workflow/confirm-order/step/confirm/case/otherwise"
+WAIT = """\
+  wait:
+    says: The shop waits for PayRight's answer.
+    cases:
+      answered: {order: 1, then: paid, when: {text: PayRight answered paid, reads: [software/app/dependency/payright]}}
+      otherwise: {then: unpaid}
+"""
+UNPAID = "  unpaid: {result: failure, says: Not paid; confirming again is safe.}\n"
+ONCE = "says: A repeat charge is safe; PayRight is asked by order id first.\n"
+
+
+def owed(kb: Make, changes: Mapping[str, str | None]) -> list[str]:
+    """What the row still owes for its no-answer path: the messages of its `no-answer-path` work."""
+    made = kb(changes)
+    assert not {where for problem, where in made.findings() if problem is Problem.UNMET}
+    return sorted(item.note for item in work_left(made.snapshot, {}, _no_file) if item.address == ROW and item.status == "no-answer-path")
+
+
+def test_a_row_that_tells_an_outside_system_owes_a_no_answer_path_until_it_has_one(kb: Make) -> None:
+    """Misfit M4 is no third result: the outside system may not answer. The row owes a path for that (a timeout, or a case
+    ending in failure, on its step or the step it leads to) and a rule it satisfies on whether a repeat is safe."""
+    assert len(owed(kb, SHOP)) == 2
+    waits = CONFIRM.replace("then: paid, effects", "then: wait, effects").replace("ends:\n", WAIT + "ends:\n") + UNPAID
+    pathed = owed(kb, {**SHOP, "software/app/workflow/confirm-order.yml": waits})
+    assert len(pathed) == 1 and "repeat" in pathed[0]  # the no-answer path is there; the repeat rule is not
+    held = waits.replace("effects: [", "satisfies: [software/app/rule/charge-once], effects: [")
+    assert owed(kb, {**SHOP, "software/app/workflow/confirm-order.yml": held, "software/app/rule/charge-once.yml": ONCE}) == []
+    succeeds = held.replace("otherwise: {then: unpaid}", "otherwise: {then: paid}")  # no failure end: no path for no answer
+    assert len(owed(kb, {**SHOP, "software/app/workflow/confirm-order.yml": succeeds, "software/app/rule/charge-once.yml": ONCE})) == 1
+
+
+def test_a_row_that_tells_a_program_actor_owes_a_no_answer_path_and_one_that_tells_a_person_does_not(kb: Make) -> None:
+    case = "product/app/workflow/pay/step/charge/case/otherwise"
+    assert left(kb, PAYING, "no-answer-path") == {case}
+    person = PAYING["product/app/actors.yml"].replace("program", "human")
+    assert left(kb, {**PAYING, "product/app/actors.yml": person}, "no-answer-path") == set()

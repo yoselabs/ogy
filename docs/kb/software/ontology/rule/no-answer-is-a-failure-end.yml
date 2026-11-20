@@ -1,0 +1,6 @@
+says: 'A row that tells a program actor or a dependency owes a no-answer path: a timeout, or a case ending in failure, on its step or the next, and a rule it satisfies on whether a repeat is safe; end.result stays success or failure.'
+agreed:
+  at: '2026-11-20T20:29:28+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  said: 'Owner: yes to all five (no-answer rule, term, prose removal, beads, sweep)'
+  hash: '154728865810'

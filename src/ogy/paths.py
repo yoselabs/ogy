@@ -2,7 +2,8 @@
 
 A path is a list of hops. `field` follows that link field forward (`field?key=a|b`: only to targets whose `key` is a or b),
 `<-field` follows it backward (entries whose `field` points here; `<-field?key=a|b` only where the entry, or the list part
-item that holds the link, has `key` a or b; `<-*` by any link field),
+item that holds the link, has `key` a or b; `<-*` by any link field). The key `@kind` is answered by the address: `on?@kind=dependency`
+keeps the targets that are dependencies, which no field of theirs says.
 `^` goes to the entry's parent, `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
 the entries reached. A final `=@id`, `=@address` or `=@fingerprint` is answered by the snapshot (keys, full addresses, or
 the reached entries' own fingerprints, so a performer goes stale when the row it performs changes).
@@ -24,13 +25,15 @@ if TYPE_CHECKING:
     from ogy.model import Address, Entry
 
 DERIVED = "=@"
+KIND = "@kind"  # the filter key a hop's `?@kind=a|b` names: the kind of the entry, from its address
 ID, ADDRESS, CONTENT = DERIVED + "id", DERIVED + "address", DERIVED + "fingerprint"
 
 type Hops = tuple[str, ...]
 
 
-def kept(fields: Mapping[str, object], key: str, wanted: frozenset[str] | None) -> bool:
-    return wanted is None or fields.get(key) in wanted
+def kept(address: Address, fields: Mapping[str, object], key: str, wanted: frozenset[str] | None) -> bool:
+    """Whether a hop's `?key=a|b` keeps the entry at `address` (or the list part item it holds, `fields`)."""
+    return wanted is None or (address.kind if key == KIND else fields.get(key)) in wanted
 
 
 def _input(start: Hops, given: Input | Picked | None) -> list[Hops]:
@@ -82,12 +85,12 @@ class LinkIndex:
         if field == ANY_FIELD:
             return set(self._into.get(address, set()))
         name, key, wanted = where(field)
-        return {source for source, holder in self._backward.get((address, name), []) if kept(holder, key, wanted)}
+        return {source for source, holder in self._backward.get((address, name), []) if kept(source, holder, key, wanted)}
 
     def onward(self, address: Address, hop: str) -> set[Address]:
         """The targets of the link field `hop` names; `field?key=a|b`: only targets whose `key` is a or b."""
         name, key, wanted = where(hop)
-        return {target for target in self.forward(address, name) if kept(self.entries[target].fields, key, wanted)}
+        return {target for target in self.forward(address, name) if kept(target, self.entries[target].fields, key, wanted)}
 
     def parts(self, address: Address, kind: str) -> list[Address]:
         """The parts of one kind, sorted."""

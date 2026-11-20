@@ -52,7 +52,7 @@ def _reached(snapshot: Snapshot, path: tuple[str, ...], origin: Address, fields:
     return {
         reached
         for target in targets
-        if target is not None and kept(snapshot.entries[target].fields, key, wanted)
+        if target is not None and kept(target, snapshot.entries[target].fields, key, wanted)
         for reached in snapshot.links.walk(target, rest)[0]
     }
 

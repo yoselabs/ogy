@@ -238,7 +238,10 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - Conditions (`when` of a case or a choice; `derived`) may name actors.
 - What it depends on: `dependency` and its `workaround`s. A dependency `realizes` the program actor that rows tell (a payment
   provider); a row that tells a program actor has a handler that performs it and `uses` a dependency realizing that actor
-  (`actor.nature` is read here).
+  (`actor.nature` is read here). A row that tells a program actor or a dependency owes a no-answer path (status
+  `no-answer-path`, work): a timeout, or a case ending in failure, on its step or the step it leads to, and a rule it
+  `satisfies` that says whether a repeat is safe. No answer is never a third `end.result`: the workflow ends in failure,
+  and the rule makes the rerun safe.
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
 - Held to: behaviour (a step, a row, an interface, a handler, a dependency, a workflow) names the rules it is held to with
   `satisfies`; a rule names the data it holds to (a quantity, an enum, a setting, an entity, an attribute, a state) with
@@ -253,7 +256,8 @@ value or a list, `if_reaches: <path>`: the path reaches anything), then needs a 
 the path must come back to the entry itself (for an item of a list part, the entry holding it). An unmet one is
 `unmet-requirement`, or, with `work: true`, work left under the `status` it names (step: `unserved`) rather than a finding.
 A path hop is a link field (`field?key=a|b`: only targets whose `key` is a or b), `<-field` backward (`<-field?key=a|b`: only
-links whose holder, the entry or the list part item, has `key` a or b; `<-*` by any link field), `^` the parent or `/kind`
+links whose holder, the entry or the list part item, has `key` a or b; `<-*` by any link field; the key `@kind` is the
+entry's kind, so `on?@kind=dependency` keeps only dependencies), `^` the parent or `/kind`
 the parts; `kinds: [any]` takes an entry of any kind. So an effect's `do`
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
 `links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
