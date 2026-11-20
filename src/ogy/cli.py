@@ -130,7 +130,8 @@ def _writes(commands: Adder) -> None:
     _verb(commands, "migrate", "rewrite the entries to the field renames, drops and folder moves their kinds declare",
           "A kind file keeps a renamed field's old name (`renamed: {old: new}`) and a dropped one (`dropped: [...]`); an entry that "
           "holds one is `needs-migration`. Renames every old name (in entries, list parts and `sets`) and keeps current the "
-          "agreements and built lines it only renamed; removes dropped fields and prints each value removed, leaving that "
+          "agreements and built lines it only renamed; a kind that absorbed several (`was: [...]`) takes their entries, refusing two "
+          "of one area and id; removes dropped fields and prints each value removed, leaving that "
           "entry's agreement so the owner sees the change. A kind that moved out of a fixed folder (`moved_from`) has its entries "
           "and removed items there moved to the area shared of its first layer, every address renamed; `move` each to the area "
           "that uses it. Records nothing. One atomic write.")

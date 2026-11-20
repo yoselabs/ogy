@@ -75,8 +75,8 @@ class Ontology:
         return {**self.declared.renamed, **kind.old_names}
 
     def renamed_kinds(self) -> dict[str, Kind]:
-        """Each old kind name -> the kind it is now (`was`)."""
-        return {kind.was.kind: kind for kind in self.kinds.values() if kind.was is not None}
+        """Each old kind name -> the kind it is now (`was`): several old names for a kind that absorbed several kinds."""
+        return {old.kind: kind for kind in self.kinds.values() for old in kind.was}
 
     def get(self, name: str) -> Kind | None:
         return self.kinds.get(name)

@@ -38,7 +38,7 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         found += _shape(kinds, name, kind) + _per_area(name, kind)
         found += _fields(kinds, declared, name, kind)
         found += _rules(kinds, name, kind) + _inputs(kinds, declared, name, kind)
-        found += _migration(declared, name, kind) + _moved(name, kind) + _was(kinds, name, kind)
+        found += _migration(declared, name, kind) + _moved(name, kind) + _was(kinds, declared, name, kind)
     found += [problem for field, spec in declared.common.items() for problem in _picked(kinds, f"common {field}", spec, spec.input, True)]
     found += _files(kinds)
     found += _keys(kinds, declared)
@@ -212,20 +212,23 @@ def _migration(declared: Declared, name: str, kind: Kind) -> list[str]:
     return found
 
 
-def _was(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
+def _was(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -> list[str]:
     """A renamed kind's old name is no kind any more and no other kind's old name; an old file belongs to a list or single kind
-    and an old key to a part."""
-    if kind.was is None:
-        return []
-    old = kind.was
-    found = [f"{name}: was {old.kind}, which is still a kind or no snake_case name"] if old.kind in kinds or not KIND_NAME.match(
-        old.kind) else []
-    found += [f"{name}: was {old.kind}, as another kind was"] if any(
-        other.was and other.was.kind == old.kind for other_name, other in kinds.items() if other_name != name) else []
-    if old.file is not None and (kind.shape not in FILED or not old.file.endswith(".yml") or old.file == kind.file):
-        found.append(f"{name}: was.file is the other .yml file a list or single kind kept its entries in")
-    if old.key is not None and (kind.shape is not Shape.INLINE or old.key == kind.key):
-        found.append(f"{name}: was.key is the other key a part was kept under")
+    and an old key to a part; a kind that absorbed several kinds keeps one file per entry; an old kind's renamed field is now a
+    field."""
+    found = [f"{name}: a kind that absorbed several kinds has shape file"] if len(kind.was) > 1 and kind.shape is not Shape.FILE \
+        else []
+    for old in kind.was:
+        found += [f"{name}: was {old.kind}, which is still a kind or no snake_case name"] if old.kind in kinds or not KIND_NAME.match(
+            old.kind) else []
+        found += [f"{name}: was {old.kind}, as another kind was"] if sum(
+            other.kind == old.kind for each in kinds.values() for other in each.was) > 1 else []
+        if old.file is not None and (kind.shape not in FILED or not old.file.endswith(".yml") or old.file == kind.file):
+            found.append(f"{name}: was.file is the other .yml file a list or single kind kept its entries in")
+        if old.key is not None and (kind.shape is not Shape.INLINE or old.key == kind.key):
+            found.append(f"{name}: was.key is the other key a part was kept under")
+        found += [f"{name}: was {old.kind} renamed {field} to {new}, which is no field" for field, new in old.renamed.items()
+                  if new not in kind.fields and new not in declared.common]
     return found
 
 

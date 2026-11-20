@@ -1,6 +1,7 @@
 """The kind language: what one `kinds/<kind>.yml` file may say. Loading and cross-checking are in `ontology`."""
 
 import re
+from collections.abc import Mapping
 from enum import StrEnum
 from typing import Self
 
@@ -228,12 +229,15 @@ class Flow(BaseModel):
 
 
 class Was(BaseModel):
-    """A kind's name before a rename, and where its entries were kept under it: `ogy migrate` moves them to the new name."""
+    """A kind's name before a rename or a merge, and where its entries were kept under it: `ogy migrate` moves them to the new
+    name. A kind that absorbed several kinds lists one for each; `renamed` names the fields an entry of that old kind kept under
+    another name."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     kind: str
     file: str | None = None  # a list or single kind's file before the rename
     key: str | None = None  # a part's key inside its parent before the rename
+    renamed: dict[str, str] = {}  # old field name -> new, for the entries of this old kind only
 
 
 class Kind(BaseModel):
@@ -277,7 +281,7 @@ class Kind(BaseModel):
     requires: tuple[Requirement, ...] = ()
     one_part: OnePart | None = None
     flow: Flow | None = None
-    was: Was | None = None  # the kind's old name: its entries keep it until `ogy migrate`
+    was: tuple[Was, ...] = ()  # the kind's old name, or the old kinds it absorbed: their entries keep them until `ogy migrate`
     renamed: dict[str, str] = {}  # old field name -> new: an entry written before holds the old one until `ogy migrate`
     revalued: dict[str, dict[str, dict[str, str | bool | None]]] = {}  # field -> old value -> the fields it now is (None removes)
     folded: dict[str, str] = {}  # field that held a part's mapping -> the part's one field whose value it now holds
@@ -287,6 +291,11 @@ class Kind(BaseModel):
     @classmethod
     def _parents(cls, value: object) -> object:
         return (value,) if isinstance(value, str) else value
+
+    @field_validator("was", mode="before")
+    @classmethod
+    def _olds(cls, value: object) -> object:
+        return (value,) if isinstance(value, Mapping) else value
 
     @property
     def old_names(self) -> dict[str, str | None]:

@@ -1,4 +1,5 @@
-"""`ogy migrate`: the entries follow the renames and drops their kinds declare (see `ogy.kindchange`), in one checked write.
+"""`ogy migrate`: the entries follow the renames, merges and drops their kinds declare (see `ogy.kindchange`, `ogy.retype`), in
+one checked write.
 
 Every old name is rewritten (`kindchange.changes`); an agreement and a built line that were current stay current when only
 names changed (`kindchange.Kept`); a dropped field that held a value is printed and its entry's agreement is left, so the
@@ -14,13 +15,13 @@ from ogy import built, removed
 from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
 from ogy.kindchange import Change, Kept, before, changes, moved_table
-from ogy.model import Address
+from ogy.model import Address, Problem
 from ogy.moves import renamer
 from ogy.relocate import rename_all
-from ogy.retype import Retype, applied, retype
+from ogy.retype import Retype, applied, collisions, retype
 from ogy.snapshot import Snapshot, build, kb_paths
 from ogy.target import Target
-from ogy.writes import commit, files, findings_after
+from ogy.writes import WriteRefused, commit, files, findings_after
 
 
 @dataclass(frozen=True)
@@ -105,9 +106,12 @@ def _retyped(target: Target) -> tuple[dict[str, str | None], Snapshot | None, li
 
 
 def migrate(target: Target) -> Migrated:
-    """Write the migration of the worktree (the lock is held); refuses, writing nothing, when it leaves a new error."""
-    retyped, was, pairs = _retyped(target)
+    """Write the migration of the worktree (the lock is held); refuses, writing nothing, when two files would become one or
+    when it leaves a new error."""
     ontology, work = target.kinds(), Retype(target.kinds())
+    if stuck := collisions(ontology, files(target)):
+        raise WriteRefused(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
+    retyped, was, pairs = _retyped(target)
     now = applied(ontology, files(target))
     snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
@@ -117,7 +121,7 @@ def migrate(target: Target) -> Migrated:
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
     if not found and not table and not tidied and not retyped:
         return Migrated([], [], [], [])
-    kept = Kept(snapshot, was, (lambda text: work.address(text, back=True)) if was else str)
+    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str)
     agreed = _agreements(snapshot, kept)
     lines: list[str] = []
     moved: list[tuple[Address, Address]] = []
