@@ -9,9 +9,11 @@ import pytest
 from tests.conftest import commit
 
 from ogy import built, ops, writes
+from ogy.edit import Editor
 from ogy.model import Problem, parse_address
 from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.receipts import Status
+from ogy.status import Status as Status_
 from ogy.target import Target
 
 FEE, LEND, GO = "product/app/quantity/fee", "software/app/handler/lend", "product/app/workflow/borrow/step/ask/choice/go"
@@ -138,3 +140,35 @@ def test_migrate_strips_the_old_deps_of_a_built_line_and_keeps_it_current(repo: 
     assert "deps" not in path.read_text()
     assert not ops.run_check(target).value
     assert GO not in {item.address for item in ops.run_work(target).value}
+
+
+ASK = "product/app/workflow/borrow/step/ask"
+
+
+def _old_stamp(repo: Path) -> None:
+    """The step agreed as an ogy before rows were part of an agreement wrote it: the hash is its plain fingerprint."""
+    target = Target(repo)
+    snapshot = target.read()[1]
+    at = parse_address(ASK, snapshot.ontology)
+    assert at is not None
+    stamp = {"at": "2026-11-19T18:00:00+01:00", "where": "ai:claude/1", "said": "Yes", "hash": snapshot.fingerprint(at)}
+    Editor(repo, target.kb, target.kinds()).update(at, {"agreed": stamp})
+    commit(repo, "agreed under the plain fingerprint")
+
+
+def test_migrate_keeps_an_agreement_whose_rows_are_as_they_were_when_agreed(repo: Path) -> None:
+    _old_stamp(repo)
+    target = Target(repo)
+    assert ops.run_show(target, ASK).value.status is Status_.CHANGED  # the agreement is computed another way now
+    assert f"kept the agreement current: {ASK}" in ops.run_migrate(target).value.lines()
+    assert ops.run_show(target, ASK).value.status is Status_.BY_YOU
+
+
+def test_migrate_leaves_an_agreement_whose_rows_changed_since(repo: Path) -> None:
+    _old_stamp(repo)
+    flow = repo / "docs/kb/product/app/workflow/borrow.yml"
+    flow.write_text(flow.read_text().replace("label: Borrow", "label: Take"))
+    commit(repo, "a row changed after the yes")
+    target = Target(repo)
+    assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
+    assert ops.run_show(target, ASK).value.status is Status_.CHANGED  # back to the owner

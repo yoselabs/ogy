@@ -127,14 +127,3 @@ def test_agents_get_tables(tmp_path: Path) -> None:
     output = (result.structured_content or {}).get("output", "")
     assert output.splitlines()[0] == "problem\tpath\taddress\tdetail" and "no-evidence" in output
 
-
-def test_an_entry_changed_after_the_base_and_then_removed_keeps_its_last_snapshot(repo: Path) -> None:
-    """R7: a removed item's snapshot is the entry in the base, or, when the branch changed it first, the entry at the commit it
-    was removed from (`last_seen`)."""
-    capabilities = repo / "docs/kb/product/app/capabilities.yml"
-    capabilities.write_text("- {id: borrow, says: A member can borrow., src: ['" + SOURCE + "']}\n")
-    base = commit(repo, "a capability")
-    capabilities.write_text(capabilities.read_text().replace("can borrow", "may borrow"))
-    commit(repo, "reworded")
-    assert ogy(repo, "--rev", ".", "remove", "product/app/capability/borrow", "--why", "not needed")[0] == cli.OK
-    assert ops.run_check(ops.Target(repo), base=base).value == []

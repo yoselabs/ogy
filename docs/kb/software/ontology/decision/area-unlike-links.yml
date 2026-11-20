@@ -14,3 +14,7 @@ answers:
   said: 'Yes, all: area.unlike becomes a link to areas'
   at: '2026-11-20T03:09:38+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: links-and-says
+  said: 'Yes, all four: unlike links the areas; each old sentence stays word for word in says as Not here'
+  at: '2026-11-20T03:52:00+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

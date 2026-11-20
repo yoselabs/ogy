@@ -13,3 +13,7 @@ answers:
   said: 'Yes, all: realizes keeps three senses; a capability must realize a goal'
   at: '2026-11-20T03:36:01+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: work
+  said: 'Yes, all four: a capability without a goal is work left, unrealized, until goals are written'
+  at: '2026-11-20T03:51:53+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

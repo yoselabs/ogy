@@ -3,18 +3,21 @@
 import dataclasses
 from collections.abc import Collection
 
-from git_porcelain.errors import MissingRevision
+from git_porcelain import RealRepo
+from git_porcelain.errors import GitError
 
 from ogy import removed
 from ogy.base import check_base, read_ledgers
-from ogy.kindchange import before
+from ogy.kindchange import before, migrated
 from ogy.layout import REMOVED_FILE
 from ogy.links import link_items, resolve
-from ogy.model import Finding, Problem, home_of, link_values, parse_address
+from ogy.model import Address, Finding, Problem, home_of, link_values, parse_address
 from ogy.removal import known_addresses, snapshot_problems
 from ogy.retype import Retype
 from ogy.snapshot import Snapshot, load
 from ogy.source import GitSource, Source
+
+HISTORY = 500  # commits after the base read for the last version of a removed entry
 
 
 def findings_of(problems: list[removed.Problem], snapshot: Snapshot) -> list[Finding]:
@@ -82,20 +85,45 @@ def check_against_base(snapshot: Snapshot, source: Source, base: Snapshot, base_
     in_base, rename = {item.id for ledger in old.values() for item in ledger.items}, Retype(snapshot.ontology).address
     new = [item for ledger in written.values() for item in ledger.items if rename(item.id) not in in_base]
     then = load(base_source, before(snapshot.ontology)) if any(rename(item.id) != item.id for item in new) else base
+    branch = _Branch(snapshot, source, base_source)
+
     def problems(item: removed.Item) -> list[str]:
-        found = snapshot_problems(then if rename(item.id) != item.id else base, item)
-        return found if found and _changed_then_removed(snapshot, base_source, item) else []
+        if rename(item.id) != item.id:
+            return snapshot_problems(then, item)
+        found, address = snapshot_problems(base, item), parse_address(item.id, snapshot.ontology)
+        if not found or address is None or address not in base.entries:
+            return found  # no entry in the base: nothing on the branch stands in for it
+        last = branch.last_version(address)
+        return found if last is None or snapshot_problems(last, item) else []
     found += findings_of(removed.check_new_snapshots(new, (), problems), snapshot)
     return found
 
 
-def _changed_then_removed(snapshot: Snapshot, base_source: Source, item: removed.Item) -> list[str]:
-    """An entry changed after the base and then removed: its snapshot is the entry at `last_seen`, the commit it was removed
-    from, which the branch reached from the base (its problems there, else none)."""
-    if not isinstance(base_source, GitSource) or not item.last_seen:
-        return ["snapshot differs from the entry in the base"]
-    try:
-        seen = GitSource(base_source.repo, item.last_seen, base_source.kb)
-    except MissingRevision:
-        return [f"last_seen {item.last_seen} is no commit"]
-    return snapshot_problems(load(seen, snapshot.ontology), item)
+class _Branch:
+    """The commits after the base up to the checked one (the worktree reads HEAD's), read from Git history, never from a
+    ledger field: an entry changed on the branch and then removed has as its snapshot its last version there."""
+
+    def __init__(self, snapshot: Snapshot, source: Source, base_source: Source) -> None:
+        self.snapshot, self.base, self.read = snapshot, base_source, dict[str, Snapshot]()
+        self.shas: list[str] | None = None
+        self.checked = source.rev if isinstance(source, GitSource) else "HEAD"
+
+    def _commits(self) -> list[str]:
+        if self.shas is None:
+            self.shas = []
+            if isinstance(self.base, GitSource):
+                try:
+                    log = RealRepo(self.base.repo).history([self.checked], not_on=[self.base.rev], limit=HISTORY)
+                    self.shas = [entry.sha for entry in log]
+                except GitError:
+                    self.shas = []
+        return self.shas
+
+    def last_version(self, address: Address) -> Snapshot | None:
+        """The newest commit after the base that holds the entry, as `ogy migrate` would read it."""
+        for sha in self._commits():
+            if sha not in self.read and isinstance(self.base, GitSource):
+                self.read[sha] = migrated(load(GitSource(self.base.repo, sha, self.base.kb), self.snapshot.ontology, retyped=True))
+            if sha in self.read and address in self.read[sha].entries:
+                return self.read[sha]
+        return None

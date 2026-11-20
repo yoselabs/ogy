@@ -190,6 +190,11 @@ holds an old name is the finding `needs-migration`. `ogy migrate` writes the mig
   layer (with that area's `area.yml` when it has none), renames every address under the old folder (links, `sets` keys, the
   removed items of the folder's `removed.yml`, which moves too) and keeps the agreements current. Then `ogy move` each entry to the
   area that uses it;
+- an agreement written when a step's agreement held only its own fingerprint is re-set to the hash that covers its rows
+  only when the step and every row read with it are as they were in the commit that wrote the agreement (found in Git
+  history); otherwise the step comes back to the owner as changed since agreed;
+- a removed item whose entry the branch changed before removing it has as its snapshot the entry's last version after the
+  base (read from Git history, never from the item's `last_seen`); an entry the base never had is no removal;
 - `check --base` reads the base migrated, so a migration commit is no edit of an append-only part. Removed items keep the
   names they had; nothing is recorded (Git keeps the old names).
 The old fingerprints are computed under the kinds as they were (`kindchange.before`). A changed field type is no declared

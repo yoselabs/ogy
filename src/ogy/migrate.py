@@ -18,6 +18,7 @@ from ogy.kindchange import Change, Kept, before, changes, moved_table
 from ogy.model import Address, Problem
 from ogy.moves import renamer
 from ogy.relocate import rename_all
+from ogy.restamp import proven
 from ogy.retype import Retype, applied, collisions, retype
 from ogy.snapshot import Snapshot, build, kb_paths
 from ogy.target import Target
@@ -35,7 +36,7 @@ class Migrated:
     unbuilt: list[str] = field(default_factory=list)  # built lines deleted: their entry needs no proof
 
     def lines(self) -> list[str]:
-        if not self.changes and not self.moved and not self.retyped and not self.built and not self.unbuilt:
+        if not self.changes and not self.moved and not self.retyped and not self.built and not self.unbuilt and not self.agreed:
             return ["nothing to migrate"]
         out = [f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}"
                for old, new in self.retyped]
@@ -140,11 +141,12 @@ def migrate(target: Target) -> Migrated:
     table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
                                          if (root / old / removed.FILE).is_file()}}
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
-    if not found and not table and not tidied and not retyped and not _old_lines(target, snapshot):
+    stamped = proven(target.repo, target.kb, snapshot) if not was else {}
+    if not found and not table and not tidied and not retyped and not stamped and not _old_lines(target, snapshot):
         return Migrated([], [], [], [])
     kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str,
                 also)
-    agreed = _agreements(snapshot, kept)
+    agreed = {**stamped, **_agreements(snapshot, kept)}
     lines: list[str] = []
     unbuilt: list[str] = []
     moved: list[tuple[Address, Address]] = []
