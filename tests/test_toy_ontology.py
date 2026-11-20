@@ -330,3 +330,20 @@ def test_a_kind_gaining_an_input_field_makes_no_work_and_unsetting_an_input_does
     assert same.build_hash(_at(same, PICK)) == plain.build_hash(_at(plain, PICK))  # a new, unset input adds nothing: no work
     move = f"{PICK}/move/go"
     assert before.build_hash(_at(before, move)) != plain.build_hash(_at(plain, move))  # set -> unset of `held_by` moves the hash
+
+
+def test_a_link_into_a_later_toy_layer_is_a_finding(toy: Path) -> None:
+    """`link_direction: later-to-earlier`: tech names business; a business entry naming tech is `layer-direction`."""
+    norm = toy / "docs/kb/business/shop/norm/limit.yml"
+    norm.write_text(norm.read_text() + "reason: [tech/shop/screen/page]\n")
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["layer-direction"]
+
+
+def test_a_stage_a_machine_acts_at_comes_back_through_a_screen_wired_to_the_machine(toy: Path) -> None:
+    """`if_reaches: [who?sort=machine]` (a forward hop kept by the target's field), then a path that comes back to the stage
+    itself (`same`): a stage a machine acts at is served by a screen wired to that machine."""
+    people, page = toy / "docs/kb/business/shop/people.yml", toy / "docs/kb/tech/shop/screen/page.yml"
+    people.write_text(people.read_text().replace("sort: human", "sort: machine"))
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["unmet-requirement"]
+    page.write_text(page.read_text() + "wired_to: [business/shop/person/shopper]\n")
+    assert w(toy, "check")[0] == cli.OK

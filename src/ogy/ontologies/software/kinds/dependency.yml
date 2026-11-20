@@ -1,7 +1,7 @@
 kind: dependency
 was: {kind: external}
 about: a library or service the product depends on and does not own
-guidance: "A library or service the product depends on and does not own; `pin` says which version. Its surprises are workarounds; the rules it is held to are named with `satisfies`. Choosing it is a decision; the dependency records it. A system that calls us is an actor."
+guidance: "`pin` says which version; its surprises are workarounds; choosing it is a decision. A system that calls us is an actor. The product layer never names a dependency: a row tells a program actor (a payment provider), the dependency `realizes` it and the handler performing the row `uses` the dependency."
 like: "a package or service dependency: something we call and do not own"
 unlike: "a UML dependency arrow; a system that calls us, which is an actor"
 harm: [tells-outside]
@@ -11,4 +11,5 @@ layers: [software]
 fields:
   says: {required: true}                             # what it provides
   pin: {}
+  realizes: {type: link, to: [actor]}                # the program actor rows tell (a payment provider)
 dropped: [terms]

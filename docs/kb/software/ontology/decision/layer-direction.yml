@@ -1,0 +1,18 @@
+structure: true
+question: May a product entry link to a software entry?
+context: 'Bead ogy-yy9.75, D5 (harmony review finding 2): ontology.yml orders the layers and declares link_direction later-to-earlier; the check layer-direction reads every link field. Found before the fix: docs/kb 7 (2 conditions and 2 tells naming software dependencies, 3 answers delegated under software decisions), tool-library 1, taskloop-fit 52 (all in the land workflow, cut). The two delegation decisions and their rules moved to product/review; product rows tell or read the agent instead of git and claude-code.'
+options:
+  never:
+    label: 'Never: a link stays in its layer or names an earlier one; software names product (an error)'
+  listed:
+    label: Never for new links; existing ones are listed as work
+  allowed:
+    label: Allowed; the layers are folders only
+proposal:
+  chose: never
+  why: It is what the layer principle says.
+answers:
+- chose: never
+  said: 'Yes, all: D5 a, product never names software; software names product'
+  at: '2026-11-20T02:28:09+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -60,7 +60,8 @@ steps:
         when:
           text: another ogy write holds the write lock
           reads:
-          - software/storage/dependency/git
+          - product/capture/entity/entry
+          - product/shared/actor/agent
         then: refused
     agreed:
       at: '2026-11-19T18:04:45+01:00'

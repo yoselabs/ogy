@@ -59,11 +59,18 @@ class Reserved(BaseModel):
     sentence: tuple[str, ...] = ()  # other names for a sentence: a kind names its sentence field with `sentence:`
 
 
+class Direction(StrEnum):
+    """Which way a link may cross the ordered layers."""
+
+    LATER_TO_EARLIER = "later-to-earlier"  # a link stays in its layer or names an earlier one (software names product)
+
+
 class Declared(BaseModel):
     """An `ontology.yml`."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-    layers: tuple[str, ...]  # the top folders entries live under, in order: a later layer may name an earlier one
+    layers: tuple[str, ...]  # the top folders entries live under, in order
+    link_direction: Direction | None = None  # which way a link may cross the layers (`layer-direction`); unset: any way
     shared: Shared
     common: dict[str, FieldSpec]  # fields every entry may carry beside its kind's
     renamed: dict[str, str] = {}  # old common field name -> new: an entry written before holds the old one until `ogy migrate`
@@ -77,6 +84,13 @@ class Declared(BaseModel):
     def rank(self, tag: str | None) -> int:
         """The review order of a harm tag; no tag comes last."""
         return self.harms.index(tag) if tag in self.harms else len(self.harms)
+
+    def reversed_link(self, origin: str, target: str) -> bool:
+        """A link from the layer `origin` to the layer `target` goes the way the declared direction forbids; an entry outside
+        the layers (a fixed folder) is never one."""
+        if self.link_direction is None or origin not in self.layers or target not in self.layers:
+            return False
+        return self.layers.index(target) > self.layers.index(origin)
 
     def scheme_of(self, item: str) -> Scheme | None:
         """The evidence scheme an item names, None when it names none."""

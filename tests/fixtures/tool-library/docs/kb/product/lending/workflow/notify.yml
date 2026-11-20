@@ -9,9 +9,9 @@ steps:
       ok:
         order: 1
         when:
-          text: the mailer accepted the message
+          text: the message for the member was accepted
           reads:
-          - software/lending/dependency/mailer
+          - product/lending/actor/member
         then: sent
         effects:
         - do: tell

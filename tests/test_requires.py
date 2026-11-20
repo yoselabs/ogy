@@ -4,7 +4,7 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 
 import pytest
-from tests.conftest import declared
+from tests.conftest import SIGN_IN, declared
 
 from ogy.model import Problem
 from ogy.ontology import OntologyError, parse_kinds
@@ -89,6 +89,38 @@ def test_an_attribute_nothing_writes_or_accepts_is_never_written(kb: Make) -> No
     assert unmet(kb, {**flow, "product/app/workflow/ask.yml": told}) == {"product/app/entity/loan/attribute/member"}
 
 
+PAY = """\
+says: A fee is paid.
+start: charge
+steps:
+  charge:
+    says: The product asks the payment provider to charge the member.
+    cases:
+      otherwise: {then: done, effects: [{do: tell, "on": software/app/actor/provider}]}
+ends:
+  done: {result: success, says: Paid.}
+"""
+PAYING = {"software/app/actors.yml": "- {id: provider, says: The payment provider., nature: program}\n",
+          "software/app/workflow/pay.yml": PAY,
+          "software/app/handler/charge.yml": "says: Charges.\nperforms: [software/app/workflow/pay/step/charge/case/otherwise]\n"}
+CARDS = "says: The card network.\nrealizes: software/app/actor/provider\n"
+
+
+def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_dependency_realizing_it(kb: Make) -> None:
+    case = "software/app/workflow/pay/step/charge/case/otherwise"
+    assert unmet(kb, PAYING) == {case}
+    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS}) == {case}  # nobody uses it for this row
+    used = PAYING["software/app/handler/charge.yml"] + "uses: [software/app/dependency/cards]\n"
+    assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS, "software/app/handler/charge.yml": used}) == set()
+    person = PAYING["software/app/actors.yml"].replace("program", "human")  # only a program actor is realized by a dependency
+    assert unmet(kb, {**PAYING, "software/app/actors.yml": person}) == set()
+
+
+def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
+    flow = SIGN_IN.replace("because: [product/app/actor/member]", "because: [software/app/interface/sign-in-page]")
+    assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in") in kb({"product/app/workflow/sign-in.yml": flow}).findings()
+
+
 HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
 
 
@@ -102,6 +134,9 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {ty
     ("{if_set: a, if_equals: {field: a, value: x}, needs_field: b, error: e}", "not both"),
     ("{if_unset: c, needs_field: b, error: e}", "if_unset names no field c"),
     ("{kinds: [thing], or_paths: [[b]], error: e}", "further paths beside a path"),
+    ("{kinds: [thing], same: true, error: e}", "comes back to the entry"),
+    ("{if_set: a, if_reaches: [b], kinds: [thing], path: [b], error: e}", "not both"),
+    ("{kinds: [thing], path: [b], status: x, error: e}", "only a requirement that is work names its status"),
 ])
 def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, message: str) -> None:
     with pytest.raises(OntologyError, match=message):

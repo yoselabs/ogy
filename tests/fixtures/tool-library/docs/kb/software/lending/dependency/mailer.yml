@@ -1,5 +1,6 @@
 says: Sends mail over SMTP.
 pin: smtplib (Python 3.15)
+realizes: software/lending/actor/mail-relay
 workarounds:
   slow-at-night:
     when:

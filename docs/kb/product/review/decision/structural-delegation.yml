@@ -5,12 +5,12 @@ options:
   fable-decides:
     label: Fable decides the four structural questions; the owner may veto each at session end
     sets:
-      software/ontology/rule/structural-delegation:
+      product/review/rule/structural-delegation:
         says: Fable answers the four structural questions of the ontology review (actor nature, shared homes, rule `by`, guess `sets`) under this delegation; each answer is listed by `ogy dropped` for the owner's veto.
   owner-decides:
     label: The owner decides each on its own card
     sets:
-      software/ontology/rule/structural-delegation:
+      product/review/rule/structural-delegation:
         says: The owner answers each of the four structural questions of the ontology review on its own card.
 proposal:
   chose: fable-decides

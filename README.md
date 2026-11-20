@@ -139,7 +139,11 @@ is an area no more.
   not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
 entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. A business actor lives in product, a technical one
-(CI, a scheduler, a program calling us) in software.
+(CI, a scheduler, a program calling us or one we tell) in software.
+- The layers are in order and `ontology.yml` says which way a link may cross them (`link_direction: later-to-earlier`): a link
+  stays in its layer or names an earlier one, so software names product and product never names software (`layer-direction`,
+  any link field, `delegated` of an answer included; the constitution is outside the layers). In product the outside party is
+  an actor; in software the handler `uses` the dependency.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
@@ -210,7 +214,9 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
   entity (owner, 2026-11-20), or an interface `accepts` it or its entity; else `unmet-requirement`
   (never-written).
 - Conditions (`when` of a case or a choice; `derived`) may name actors.
-- What it depends on: `dependency` and its `workaround`s.
+- What it depends on: `dependency` and its `workaround`s. A dependency `realizes` the program actor that rows tell (a payment
+  provider); a row that tells a program actor has a handler that performs it and `uses` a dependency realizing that actor
+  (`actor.nature` is read here).
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
 - Held to: any entry names the rules it is held to with `satisfies`; a
   rule has no `on`. `satisfies` is an input of the rows and interfaces only (`input: {satisfies: content}`), so adding a rule stales
@@ -219,10 +225,12 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_unset: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one
-value or a list), then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself), or along any
-of `or_paths`, an entry of `kinds` that sets none of `without`; an unmet one is `unmet-requirement`, or, with `work: true`,
-work left (`unserved`) rather than a finding. A path hop is a link field, `<-field` backward (`<-field?key=a|b`: only links
-whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
+value or a list, `if_reaches: <path>`: the path reaches anything), then needs a field (`needs_field`) or reaches along a link
+`path` (none: the entry itself), or along any of `or_paths`, an entry of `kinds` that sets none of `without`; with `same: true`
+the path must come back to the entry itself (for an item of a list part, the entry holding it). An unmet one is
+`unmet-requirement`, or, with `work: true`, work left under its `status` (`unserved` when it names none) rather than a finding.
+A path hop is a link field (`field?key=a|b`: only targets whose `key` is a or b), `<-field` backward (`<-field?key=a|b`: only
+links whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
 `links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
 

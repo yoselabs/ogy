@@ -19,6 +19,7 @@ from ogy.kinds import (
     Requirement,
     Shape,
     Was,
+    where,
 )
 
 REMOVED_FILE = "removed.yml"
@@ -214,8 +215,8 @@ def _requirement(kinds: Mapping[str, Kind], name: str, kind: Kind, need: Require
     if kind.shape is Shape.INLINE and kind.holding is Holds.LIST:
         if need.if_part is not None:
             found.append(f"{name}: an item of a list part holds no parts, so no requirement has if_part")
-        if any(path and (path[0] not in kind.fields or kind.fields[path[0]].type not in (FieldType.LINK, FieldType.LINKS))
-               for path in need.paths):
+        if any(path and (where(path[0])[0] not in kind.fields or kind.fields[where(path[0])[0]].type not in (
+                FieldType.LINK, FieldType.LINKS)) for path in (*need.paths, need.if_reaches)):
             found.append(f"{name}: the path of an item of a list part starts at one of its link fields")
         if need.work:
             found.append(f"{name}: an item of a list part has no address, so no requirement of it is work")

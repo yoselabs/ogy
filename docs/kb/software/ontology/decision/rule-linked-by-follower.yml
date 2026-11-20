@@ -51,7 +51,7 @@ answers:
   said: Drop rule on; by everywhere; per-kind fingerprint choice.
   at: '2026-11-18T23:22:40+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-  delegated: software/ontology/decision/structural-delegation
+  delegated: product/review/decision/structural-delegation
 - chose: declared
   said: Took every recommendation of Fable's revised round
   at: '2026-11-19T17:47:11+01:00'

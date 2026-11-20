@@ -1,0 +1,16 @@
+structure: true
+question: How does the product layer name an outside system the product tells?
+context: 'Bead ogy-yy9.75, D5: dependency.realizes -> actor; an effect that tells a program actor needs a handler performing its row that uses a dependency realizing the actor (requires: if_reaches on?nature=program, a path back to the row with same). It is the first reader of actor.nature. Program actors live in software (rule actors-split-by-layer): git realizes committer, claude-code realizes mcp-client.'
+options:
+  realizes:
+    label: A program actor that rows tell; the dependency realizes it and the handler uses the dependency
+  dependency:
+    label: Rows tell the dependency directly
+proposal:
+  chose: realizes
+  why: Swapping a vendor then touches software only.
+answers:
+- chose: realizes
+  said: 'Yes, all: D5 a, dependency realizes the program actor, and a row telling it has a handler using that dependency'
+  at: '2026-11-20T02:28:29+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

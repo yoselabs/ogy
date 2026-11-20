@@ -16,7 +16,7 @@ from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
 from ogy.model import Entry, Finding, Problem
-from ogy.requires import applies, satisfied, unmet
+from ogy.requires import applies, reaching, satisfied, unmet
 from ogy.settle import check_decisions
 from ogy.snapshot import Snapshot, load
 from ogy.source import Source
@@ -81,10 +81,14 @@ class Checker:
                       "then to the area that uses it: run `ogy migrate`, then `ogy move`")
 
     def _links(self, entry: Entry) -> None:
+        declared = self.snapshot.ontology.declared
         for item in link_items(self.snapshot.ontology, entry):
             found = resolve(self.snapshot.ontology, self.snapshot.entries, entry.address, item)
             if found.problem is not None:
                 self._add(found.problem, entry, found.detail)
+            elif (target := found.target) is not None and declared.reversed_link(entry.address.layer, target.layer):
+                self._add(Problem.LAYER_DIRECTION, entry, f"{item.field}: {target} is in a later layer; a link stays in its layer or "
+                          f"names an earlier one ({', '.join(declared.layers)})")
 
     def _form(self, kind: Kind, entry: Entry) -> None:
         for group in kind.exactly_one_of:
@@ -101,15 +105,15 @@ class Checker:
             if len(matching) != 1:
                 self._add(Problem.ONE_PART, entry, f"exactly one {rule.kind} with {rule.field}: {rule.equals}, found {len(matching)}")
 
-
     def _items(self, kind: Kind, entry: Entry) -> None:
         """The requirements of the items of a `holds: list` part (an effect), reported on the entry that holds them."""
         for part in self.snapshot.ontology.parts_of(kind.kind):
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST and part.requires else None
             for item in items if isinstance(items, list) else ():
-                for need in (need for need in part.requires if not need.work) if isinstance(item, dict) else ():
-                    if applies(need, item, lambda _: False) and not satisfied(self.snapshot, need, part.kind, entry.address, item,
-                                                                             item=True):
+                reaches = reaching(self.snapshot, entry.address, item, part.kind) if isinstance(item, dict) else None
+                for need in (need for need in part.requires if not need.work) if isinstance(item, dict) and reaches else ():
+                    if applies(need, item, lambda _: False, reaches) and not satisfied(self.snapshot, need, part.kind, entry.address,
+                                                                                      item, item=True):
                         self._add(Problem.UNMET, entry, f"{part.key}: {need.error}")
 
 

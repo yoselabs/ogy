@@ -21,7 +21,7 @@ class Status(StrEnum):
 
     UNBUILT = "unbuilt"  # never built
     CHANGED = "changed"  # built, then its build hash changed: its meaning, its proofs or a declared input
-    UNSERVED = "unserved"  # a requirement its kind declares as work is unmet (an actor step nothing serves): to build, no fault
+    UNSERVED = "unserved"  # a requirement its kind declares as work, naming no status of its own, is unmet: to build, no fault
     REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"
@@ -32,7 +32,7 @@ class Work:
     """One thing still to do. `address` is text: a removed entry has none to resolve."""
 
     address: str
-    status: Status
+    status: Status | str  # a requirement that is work may name its own status (`requires: [{work: true, status: ...}]`)
     build_hash: str  # what the built line is compared with: the meaning, proofs and what the kind reaches
     built: str | None
     note: str = ""
@@ -46,8 +46,9 @@ def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
 
 
 def _unmet(snapshot: Snapshot) -> list[Work]:
-    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): its error is the note."""
-    return [Work(str(address), Status.UNSERVED, "", None, need.error) for address in sorted(snapshot.entries)
+    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): under the status it names
+    (`unserved` when none), its error the note."""
+    return [Work(str(address), need.status or Status.UNSERVED, "", None, need.error) for address in sorted(snapshot.entries)
             for need in unmet(snapshot, address, work=True)]
 
 

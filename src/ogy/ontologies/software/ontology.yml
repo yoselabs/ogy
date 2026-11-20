@@ -4,7 +4,9 @@
 #                                      (`area.yml`; `every_area` makes an area without it `missing-entry`)
 #   <folder>/<file>                    a kind that names a fixed folder with `area` (the glossary, the constitution)
 # A kind lists the layers it may appear in (`layers:`); the folder is the layer's only home.
-layers: [product, software]
+layers: [product, software]                          # in order
+link_direction: later-to-earlier                     # a link stays in its layer or names an earlier one: software names product,
+                                                     # product never names software (`layer-direction`)
 shared:                                              # the reserved area of every layer: what two of its areas use
   area: shared
   says: "What two or more areas of this layer use: their shared terms, actors and enums."

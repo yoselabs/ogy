@@ -5,12 +5,12 @@ options:
   fable-reviews:
     label: Fable reviews what waits for the owner and fixes what is wrong; agreements stay the owner's
     sets:
-      software/ontology/rule/review-delegation:
+      product/review/rule/review-delegation:
         says: Fable reviews the entries waiting for the owner and fixes what is wrong; an agent records each fix's answer under this delegation, and only the owner agrees to a sentence.
   owner-reviews:
     label: The owner reviews each waiting entry first
     sets:
-      software/ontology/rule/review-delegation:
+      product/review/rule/review-delegation:
         says: The owner reviews each waiting entry before any fix.
 proposal:
   chose: fable-reviews

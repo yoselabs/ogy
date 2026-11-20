@@ -23,7 +23,7 @@ options:
 proposal: {chose: two, why: Small.}
 """
 EFFECT = files("ogy").joinpath("ontologies", "software", "kinds", "effect.yml").read_text()
-EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith("requires:") or "if_equals: {field: do" in line]
+EFFECT_PAIRS = [line + "\n" for line in EFFECT.splitlines() if line.startswith(("requires:", "  - {", "  # "))]
 # quantity.unit becomes `per`, effect.on is dropped, answer.note becomes `hedge` (the paths and names that read them follow);
 # a pair whose first text is empty appends the second to the file
 CHANGES = {
