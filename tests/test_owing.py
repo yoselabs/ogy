@@ -88,3 +88,19 @@ def test_owed_work_is_listed_under_the_entrys_own_bare_area(product_only: Path) 
     code, lines = ogy(product_only, "work", "software/app")
     assert code == cli.FINDINGS and any(line.startswith(f"unserved: {STEP}") for line in lines), lines
     assert not any(line.startswith("unserved") for line in ogy(product_only, "work", "product/app")[1])
+
+
+def test_review_and_status_take_a_declared_layer_with_no_entries(product_only: Path) -> None:
+    code, lines = ogy(product_only, "--rev", ".", "review", "software")
+    assert (code, lines) == (cli.OK, ["nothing to ask"])
+    code, lines = ogy(product_only, "status", "software")
+    assert code == cli.OK and lines[0] == "findings: 0 (ogy check)" and "work left: 2 (ogy work)" in lines, lines
+
+
+def test_an_attribute_nothing_writes_is_the_products_work_not_softwares(product_only: Path) -> None:
+    loan = product_only / "docs/kb/product/app/entity/loan.yml"
+    loan.parent.mkdir(parents=True)
+    loan.write_text("says: A loan.\nattributes:\n  days: {type: number}\n")
+    product, software = ogy(product_only, "work", "product")[1], ogy(product_only, "work", "software")[1]
+    assert any(line.startswith("unwritten: product/app/entity/loan/attribute/days") for line in product), product
+    assert not any(line.startswith("unwritten") for line in software), software
