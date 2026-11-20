@@ -88,9 +88,9 @@ def _resolve(snapshot: Snapshot, text: str) -> Address:
 
 
 def _scope(snapshot: Snapshot, scope: str | None) -> str | None:
-    """The scope asked for (a layer, `<layer>/<area>` or an area in every layer), which must have entries; NotFoundError with
-    the scopes that are near it otherwise."""
-    known = set().union(*(scopes(address.home) for address in snapshot.entries))
+    """The scope asked for: a layer `layers:` declares (with entries or not yet), or a `<layer>/<area>` or an area that has
+    entries; NotFoundError with the scopes that are near it otherwise."""
+    known = set(snapshot.ontology.layers).union(*(scopes(address.home) for address in snapshot.entries))
     if scope is not None and scope not in known:
         raise NotFoundError(f"no layer or area {scope}" + near.hint(scope, known))
     return scope
@@ -158,10 +158,10 @@ def _ledger(source: Source) -> dict[str, removed.Item]:
     return {item.id: item for ledger in read_ledgers(source)[0].values() for item in ledger.items}
 
 
-def _owing_home(item: Work, ontology: Ontology) -> str:
-    """The home that owes the work: the entry's own, or, for a requirement a later layer owes, that layer and the entry's area."""
-    home = home_of(item.address, ontology)
-    return f"{item.owed_by}/{home.rsplit('/', 1)[-1]}" if item.owed_by else home
+def _owes(item: Work, scope: str | None, ontology: Ontology) -> bool:
+    """The work is in the scope: by the entry's own home, or, for a requirement a later layer owes, by that layer alone (the
+    entry's area need not exist there)."""
+    return scope in (None, item.owed_by) if item.owed_by else in_scope(home_of(item.address, ontology), scope)
 
 
 def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
@@ -170,9 +170,7 @@ def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
     source, snapshot = target.read()
     _scope(snapshot, scope)
     work = [
-        item
-        for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source))
-        if in_scope(_owing_home(item, snapshot.ontology), scope)
+        item for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source)) if _owes(item, scope, snapshot.ontology)
     ]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
 

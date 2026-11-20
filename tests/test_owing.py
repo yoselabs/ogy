@@ -5,7 +5,8 @@ from importlib.resources import files
 lazy from pathlib import Path
 
 import pytest
-from tests.conftest import commit, ogy
+from git_porcelain import run_git
+from tests.conftest import FILES, commit, ogy
 
 from ogy import cli
 from ogy.ontology import OntologyError, packaged, parse_kinds
@@ -49,3 +50,25 @@ def test_work_of_a_layer_is_what_it_owes_and_an_unoffered_choice_is_work_not_a_f
     assert not any(line.startswith("unoffered") for line in product)
     whole = ogy(repo, "--rev", ".", "work")[1]
     assert {line for line in software + product if not line.startswith("by ")} <= set(whole)  # the whole is every layer's
+
+
+@pytest.fixture
+def product_only(tmp_path: Path) -> Path:
+    """A product layer committed alone: the software layer is declared in `layers:` and has no entry yet."""
+    run_git(tmp_path, "init", "-q", "-b", "main")
+    for rel, text in FILES.items():
+        if not rel.startswith("docs/kb/software/"):
+            (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+            (tmp_path / rel).write_text(text)
+    commit(tmp_path, "product")
+    return tmp_path
+
+
+def test_a_declared_layer_with_no_entries_is_a_scope_and_owes_its_work(product_only: Path) -> None:
+    """Fable's review, problem 1: `work software` and `check software` before software has an entry."""
+    assert ogy(product_only, "check", "software") == (cli.OK, ["ok"])
+    code, software = ogy(product_only, "work", "software")
+    assert code == cli.FINDINGS and any(line.startswith(f"unserved: {STEP}") for line in software), software
+    product = ogy(product_only, "work", "product")[1]
+    assert not any(line.startswith("unserved") for line in product), product
+    assert ogy(product_only, "work", "software/app")[0] == cli.NOT_FOUND  # owed work is matched by layer, never by an area
