@@ -40,6 +40,20 @@ steps:
           on: product/removal/entity/removed-item
         - do: delete
           on: product/capture/entity/entry
+      single-part:
+        order: 3
+        when:
+          text: the entry is the single part of its parent
+          reads:
+          - product/capture/entity/entry
+        then: refused
+      bad-why:
+        order: 4
+        when:
+          text: the reason looks like an address but names no live decision or removed item, or the replacement chain ends at no live entry
+          reads:
+          - product/removal/entity/removed-item
+        then: refused
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -48,7 +62,7 @@ steps:
 ends:
   removed:
     result: success
-    says: The entry is gone from its file, and its item is in removed.yml when the base commit had it, or ogy init starts with it; one born since leaves none (Git keeps it).
+    says: The entry is gone from its file. removed.yml holds its item if the base commit had the entry or ogy init starts with it; otherwise none (Git keeps it).
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

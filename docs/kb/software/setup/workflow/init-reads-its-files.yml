@@ -11,21 +11,22 @@ steps:
         label: Set up
         then: read
   read:
-    says: ogy init reads .mcp.json, .claude/settings.json and the flags.
+    says: ogy init reads ogy.yml, AGENTS.md, CLAUDE.md, .mcp.json, .claude/settings.json, the prek config, core.hooksPath and the flags.
     cases:
       unreadable:
         order: 1
         when:
-          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+          text: a file it reads is not UTF-8 or not of the shape it merges into, a file stands where it needs a folder, another tool owns core.hooksPath, no land branch is given or named by the remote, or the flags contradict ogy.yml
           reads:
           - software/setup/dependency/claude-code
+          - software/storage/dependency/git
         then: refused
       otherwise:
         then: all-read
 ends:
   refused:
     result: failure
-    says: Nothing is written; the refusal names the file or flag at fault.
+    says: Nothing is written; the refusal says what is at fault.
   all-read:
     result: success
     says: Every file it merges into was read.
