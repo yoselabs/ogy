@@ -272,6 +272,6 @@ def check_decisions(snapshot: Snapshot, _source: Source) -> list[Finding]:
             *_in_force(snapshot, decision),
             *(item for answer in decision.answers for item in _delegation(found, decision, answer)),
         ]
-        if not decision.answers and decision.proposal is None:
-            problems.append(_finding(decision, Problem.NO_PROPOSAL, "a decision with no answer needs a proposal"))
+        if not decision.answers and decision.proposal is None and decision.options:  # no options: a bare question, asked as it is
+            problems.append(_finding(decision, Problem.NO_PROPOSAL, "a decision with options and no answer needs a proposal"))
     return problems

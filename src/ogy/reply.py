@@ -227,6 +227,9 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
             snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
             found_decision = next((d for d in decisions(snapshot) if str(d.address) == card.address), None)
             chose = _recommended(found_decision)
+            if not card.options:  # a bare question: no option to take
+                kept.append(f"{card.address} has no options: answer it in words ({card.label}: <your words>)")
+                continue
             if not isinstance(chose, str) or chose not in card.options:
                 kept.append(f"{card.address} has no recommended option: choose one ({card.label} a)")
                 continue

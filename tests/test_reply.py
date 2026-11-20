@@ -1,6 +1,7 @@
 """`ogy review` keeps its rounds by id; `ogy reply` applies the grammar to the round it answers, keeping a paraphrase, never a quote."""
 
 import asyncio
+import json
 lazy from pathlib import Path
 
 import any_yaml
@@ -267,3 +268,20 @@ def test_a_workflow_is_one_card_and_one_yes_agrees_to_its_parts(repo: Path) -> N
     assert code != cli.OK and "lists" in "\n".join(out), out
     assert r(repo, f"yes {label}", "--round", round_of(lines))[0] == cli.OK
     assert "decided by you" in status(repo, "product/app/workflow/borrow/step/ask")
+
+
+def test_a_bare_question_needs_no_proposal_and_is_answered_in_words(repo: Path) -> None:
+    """Fable's blocker 6: a decision with no options is a question as it is; with options, the proposal stays required."""
+    q = "product/app/decision/wallets"
+    code, lines = w(repo, "put", json.dumps({"address": q, "question": "Do we accept wallets?"}))
+    assert code == cli.OK, lines
+    assert w(repo, "check")[0] == cli.OK
+    shown = w(repo, "review")[1]
+    assert f"Q1. question  {q}" in shown and "   Answer in words: Q1: <your words>" in shown, shown
+    code, lines = r(repo, "yes all", "--round", round_of(shown))
+    assert code == cli.OK and lines[-1].endswith(f"not done: {q} has no options: answer it in words (Q1: <your words>)"), lines
+    code, lines = r(repo, "Q1: only cards for now", "--round", round_of(shown))
+    assert code == cli.OK and lines[-1].endswith("has no option yet: add one that says it (`put`), then `answer` it with a paraphrase")
+    options = {"address": q, "options": {"yes": {"label": "Yes"}, "no": {"label": "No"}}}
+    code, lines = w(repo, "put", json.dumps(options))
+    assert code == cli.REFUSED and "no-proposal" in lines[0], lines
