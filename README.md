@@ -209,6 +209,9 @@ command appears without an edit). Every tool describes itself (its description i
 
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
+- Unused (work left `unused`, never a finding, computed from links): a rule nothing `satisfies` and that `constrains`
+  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires. Each kind
+  declares it as a work requirement with `status: unused`.
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A capability `realizes` a
   goal; one that realizes none is work left (`unrealized` in `ogy work`) until the goal is written, not a finding.
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `interface`
@@ -243,7 +246,8 @@ value or a list, `if_reaches: <path>`: the path reaches anything), then needs a 
 the path must come back to the entry itself (for an item of a list part, the entry holding it). An unmet one is
 `unmet-requirement`, or, with `work: true`, work left under the `status` it names (step: `unserved`) rather than a finding.
 A path hop is a link field (`field?key=a|b`: only targets whose `key` is a or b), `<-field` backward (`<-field?key=a|b`: only
-links whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
+links whose holder, the entry or the list part item, has `key` a or b; `<-*` by any link field), `^` the parent or `/kind`
+the parts; `kinds: [any]` takes an entry of any kind. So an effect's `do`
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
 `links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
 

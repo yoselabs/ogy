@@ -366,3 +366,13 @@ def test_a_toy_stage_needs_proof_only_while_it_holds_a_move() -> None:
     journey = texts["business/shop/journey/buy.yml"].replace("finishes:", "  think: {tells: The shopper thinks., next: done}\nfinishes:")
     snapshot = build(named(str(TOY), Path(".")), {**texts, "business/shop/journey/buy.yml": journey})
     assert snapshot.needs_proof(_at(snapshot, PICK)) and not snapshot.needs_proof(_at(snapshot, "business/shop/journey/buy/stage/think"))
+
+
+def test_a_toy_norm_nothing_links_to_is_idle_work(toy: Path) -> None:
+    """`<-*` follows a link of any field backward and `kinds: [any]` takes what it reaches; unmet, it is work under the
+    status the toy names (`idle`), never a finding."""
+    assert w(toy, "check")[0] == cli.OK
+    assert "idle: business/shop/norm/limit (now -, built -) a norm nothing links to" in w(toy, "work")[1]
+    journey = toy / "docs/kb/business/shop/journey/buy.yml"
+    journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
+    assert not any(line.startswith("idle:") for line in w(toy, "work")[1])

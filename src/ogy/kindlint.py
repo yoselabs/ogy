@@ -194,7 +194,7 @@ def _rules(kinds: Mapping[str, Kind], name: str, kind: Kind) -> list[str]:
                   ("if_unset", need.if_unset)) if field is not None and field not in kind.fields]
         if need.if_part is not None and not (need.if_part in kinds and kinds[need.if_part].is_part(name)):
             found.append(f"{name}: requirement if_part names no part kind {need.if_part}")
-        found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds]
+        found += [f"{name}: requirement names unknown kind {target}" for target in need.kinds if target not in kinds and target != ANY]
         found += _requirement(kinds, name, kind, need)
     if kind.one_part is not None and kind.one_part.kind not in kinds:
         found.append(f"{name}: one_part names unknown kind {kind.one_part.kind}")

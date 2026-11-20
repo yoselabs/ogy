@@ -2,7 +2,7 @@
 
 A path is a list of hops. `field` follows that link field forward (`field?key=a|b`: only to targets whose `key` is a or b),
 `<-field` follows it backward (entries whose `field` points here; `<-field?key=a|b` only where the entry, or the list part
-item that holds the link, has `key` a or b),
+item that holds the link, has `key` a or b; `<-*` by any link field),
 `^` goes to the entry's parent, `/kind` goes to the parts of that kind, and a final `=field` reads that field's values from
 the entries reached. A final `=@id`, `=@address` or `=@fingerprint` is answered by the snapshot (keys, full addresses, or
 the reached entries' own fingerprints, so a performer goes stale when the row it performs changes).
@@ -19,6 +19,7 @@ from ogy.model import Address, Entry
 from ogy.ontology import Ontology
 
 BACK = "<-"
+ANY_FIELD = "*"  # `<-*`: the entries that link here by any field
 PARENT = "^"
 VALUE = "="
 PARTS = "/"
@@ -58,6 +59,7 @@ class LinkIndex:
         self.entries = entries
         self._forward: dict[tuple[Address, str], set[Address]] = {}
         self._backward: dict[tuple[Address, str], list[tuple[Address, Mapping[str, object]]]] = {}
+        self._into: dict[Address, set[Address]] = {}
         self._parts: dict[tuple[Address, str], set[Address]] = {}
         for address, entry in entries.items():
             parent = address.parent()
@@ -69,6 +71,7 @@ class LinkIndex:
                     self._forward.setdefault((address, item.field), set()).add(target)
                     holder = item.item if item.item is not None else entry.fields
                     self._backward.setdefault((target, item.field), []).append((address, holder))
+                    self._into.setdefault(target, set()).add(address)
 
     def forward(self, address: Address, field: str) -> set[Address]:
         return self._forward.get((address, field), set())
@@ -76,6 +79,8 @@ class LinkIndex:
     def backward(self, address: Address, field: str) -> set[Address]:
         """The entries whose `field` points here; `field?key=a|b`: only those links whose holder (the entry, or the list part
         item that holds the link) has `key` a or b."""
+        if field == ANY_FIELD:
+            return set(self._into.get(address, set()))
         name, key, wanted = where(field)
         return {source for source, holder in self._backward.get((address, name), []) if kept(holder, key, wanted)}
 

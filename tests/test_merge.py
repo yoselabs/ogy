@@ -37,7 +37,7 @@ def _texts(was: str | None = None) -> dict[str, str]:
 def unmerged() -> Ontology:
     """The software kinds as they were before view and command merged into interface."""
     texts = {rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ").replace(
-        ", interface]", ", view, command]")
+        ", interface]", ", view, command]").replace(", interface,", ", view, command,")
              for rel, text in _texts().items() if rel != "kinds/interface.yml"}
     texts |= {f"kinds/{item.name}": item.read_text() for item in BEFORE.iterdir()}
     return parse_kinds(texts, packaged().declared)

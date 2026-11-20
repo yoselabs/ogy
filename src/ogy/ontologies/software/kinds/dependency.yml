@@ -8,6 +8,8 @@ harm: [tells-outside]
 shape: file
 sentence: says
 layers: [software]
+requires:
+  - {path: ["<-*"], kinds: [any], work: true, status: unused, error: "a dependency nothing links to"}
 fields:
   satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to
   says: {required: true}                             # what it provides

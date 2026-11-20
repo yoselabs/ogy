@@ -38,6 +38,9 @@ WORK = {
     (f"{S}/interface/borrow-page", Status.CHANGED),  # held to that rule (`satisfies`, a content input)
     (f"{S}/setting/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
+    # unused: nothing satisfies or is constrained by the rule; nothing links to the setting; no effect fires the transition
+    *((address, "unused") for address in (f"{P}/entity/loan/transition/return", f"{P}/rule/agent-decides-fee-details",
+                                          f"{P}/rule/fees-round-up", f"{S}/setting/remind-every", f"{S}/setting/smtp-host")),
 }
 # kind.field -> why this knowledge base leaves it empty
 UNEXERCISED: dict[str, str] = {}

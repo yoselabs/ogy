@@ -9,6 +9,8 @@ layers: [product, software]
 needs_proof: true
 fingerprint: {proofs: true}
 input_from: {satisfies: {fields: [pin]}}             # a dependency held to it changes its pin: its proofs are suspect
+requires:
+  - {path: ["<-satisfies"], or_paths: [[constrains]], kinds: [step, choice, case, timeout, interface, handler, dependency, workflow, quantity, enum, setting, entity, attribute, state], work: true, status: unused, error: "a rule nothing satisfies and that constrains nothing"}
 fields:
   says: {required: true}
   constrains: {type: links, to: [quantity, enum, setting, entity, attribute, state], input: content}   # the data it holds to: a change is work

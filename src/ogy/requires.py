@@ -4,7 +4,7 @@ field it needs or the kinds it reaches along a link path (see `paths`), or, with
 from collections.abc import Callable, Mapping
 from functools import partial
 
-from ogy.kinds import Holds, Requirement, where
+from ogy.kinds import ANY, Holds, Requirement, where
 from ogy.links import LinkItem, resolve
 from ogy.model import Address, link_values
 from ogy.paths import kept
@@ -61,7 +61,8 @@ def satisfied(snapshot: Snapshot, need: Requirement, kind: str, origin: Address,
     reached = {found for path in need.paths for found in _reached(snapshot, path, origin, fields, kind if item else None)}
     if need.same:
         return origin in reached and snapshot.kind_of(origin).kind in need.kinds
-    return any(address.kind in need.kinds and _bare(snapshot.entries[address].fields, need.without) for address in reached)
+    return any((ANY in need.kinds or address.kind in need.kinds) and _bare(snapshot.entries[address].fields, need.without)
+               for address in reached)
 
 
 def has_part(snapshot: Snapshot, address: Address, kind: str) -> bool:

@@ -60,6 +60,8 @@ def _walk(found: Reads, kinds: dict[str, Kind], start: str, hops: Iterable[str],
             break
         elif hop == "^":
             current = {parent for kind in current if kind in kinds for parent in kinds[kind].part_of}
+        elif hop == "<-*":
+            current = {k for k, kind in kinds.items() if any({*current, ANY} & set(spec.to) for spec in kind.fields.values())}
         elif hop.startswith("<-"):
             name, key, _ = where(hop[2:])
             current = {k for k, kind in kinds.items() if name in kind.fields and {*current, ANY} & set(kind.fields[name].to)}
