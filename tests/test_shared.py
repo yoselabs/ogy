@@ -2,9 +2,10 @@
 (`moved_from`) moves there with `ogy migrate`, keeping agreements, links and removed items."""
 
 import json
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from pathlib import Path
+from typing import override
+lazy from pathlib import Path
 
 from tests.conftest import Kb, commit, ogy
 
@@ -14,7 +15,7 @@ from ogy.ontology import Ontology, packaged
 from ogy.status import Agreement, agreement
 from ogy.target import Target
 
-type Make = Callable[[dict[str, str | None] | None], Kb]
+type Make = Callable[[Mapping[str, str | None] | None], Kb]
 KB = "docs/kb"
 TERMS = "- {id: fee, word: fee, says: What a loan costs.}\n- {id: old, word: old fee, says: What a loan cost before.}\n"
 NAMES = "question: Drop the old word?\noptions:\n  drop: {label: Drop it, sets: {glossary/term/old: null}}\n"
@@ -28,6 +29,7 @@ def w(repo: Path, *argv: str) -> tuple[int, list[str]]:
 class Moved(Target):
     """The repository read by an ogy whose term kind moved out of the fixed folder glossary/ (no shipped kind does now)."""
 
+    @override
     def kinds(self) -> Ontology:
         ontology = packaged()
         term = ontology.kinds["term"].model_copy(update={"moved_from": "glossary/terms.yml"})
@@ -51,7 +53,9 @@ def test_migrate_moves_a_fixed_folder_to_the_shared_area(repo: Path) -> None:
     base = old_glossary(repo)
     target = Moved(repo)
     assert {(item.problem, str(item.address or item.path)) for item in ops.run_check(target).value} == {
-        (Problem.NEEDS_MIGRATION, "glossary/term/fee"), (Problem.NEEDS_MIGRATION, "glossary/removed.yml")}
+        (Problem.NEEDS_MIGRATION, "glossary/term/fee"),
+        (Problem.NEEDS_MIGRATION, "glossary/removed.yml"),
+    }
     lines = ops.run_migrate(target).value.lines()
     assert lines[0] == "moved glossary/term/fee to product/shared/term/fee: `ogy move` it to the area that uses it"
     assert not (repo / KB / "glossary").exists() and (repo / KB / "product/shared/area.yml").is_file()
@@ -69,11 +73,13 @@ def test_migrate_moves_a_fixed_folder_to_the_shared_area(repo: Path) -> None:
 
 
 def test_only_terms_actors_and_sets_live_in_the_shared_area(kb: Make) -> None:
-    shared = {"product/shared/actors.yml": "- {id: owner, says: The owner., nature: human}\n",
-              "product/shared/enums.yml": "- {id: colours, says: The colours., members: [red]}\n",
-              "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
-              "software/shared/area.yml": "says: What two software areas use.\n",
-              "software/shared/actors.yml": "- {id: ci, says: The CI runner., nature: program}\n"}
+    shared = {
+        "product/shared/actors.yml": "- {id: owner, says: The owner., nature: human}\n",
+        "product/shared/enums.yml": "- {id: colours, says: The colours., members: [red]}\n",
+        "product/shared/glossary.yml": "- {id: fee, word: fee, says: What a loan costs.}\n",
+        "software/shared/area.yml": "says: What two software areas use.\n",
+        "software/shared/actors.yml": "- {id: ci, says: The CI runner., nature: program}\n",
+    }
     assert not {item for item in kb(shared).findings() if item[0] is Problem.BAD_PATH}
     found = kb({"product/shared/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR}\n"}).findings()
     assert (Problem.BAD_PATH, "product/shared/quantities.yml") in found

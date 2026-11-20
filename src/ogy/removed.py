@@ -5,15 +5,17 @@ Plain data in and out (address strings, dicts, a root Path) so any caller can wi
 that return problems; the snapshot is opaque and checked only by a validator the caller passes when an item is
 appended."""
 
-import dataclasses
-import datetime
+import datetime as dt
 import operator
 import re
-from collections.abc import Callable, Collection, Iterable, Mapping
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
+lazy from pathlib import Path
 
 import any_yaml
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Collection, Iterable, Mapping
 
 __all__ = [
     "FILE",
@@ -32,13 +34,10 @@ __all__ = [
     "check_unrecorded",
     "check_why",
     "find_reuse",
-    "follow",
     "from_raw",
-    "moved_item",
     "parse",
+    "raw_item",
     "read_all",
-    "rehome",
-    "rehomed",
     "search",
 ]
 
@@ -72,7 +71,7 @@ class Item:
     said: str | None
     why: str | None
     replaced_by: str | None
-    at: datetime.datetime
+    at: dt.datetime
     last_seen: str
     hash: str
     ontology: str
@@ -87,7 +86,7 @@ class Ledger:
 
 
 class RemovedError(Exception):
-    def __init__(self, problems: list[Problem]):
+    def __init__(self, problems: list[Problem]) -> None:
         super().__init__("; ".join(f"{p.code} {p.address}: {p.detail}" for p in problems))
         self.problems = problems
 
@@ -109,13 +108,13 @@ def _text_or_none(value: object) -> bool:
     return value is None or isinstance(value, str)
 
 
-def _when(value: object) -> datetime.datetime | None:
+def _when(value: object) -> dt.datetime | None:
     if isinstance(value, str):
         try:
-            value = datetime.datetime.fromisoformat(value)
+            value = dt.datetime.fromisoformat(value)
         except ValueError:
             return None
-    if isinstance(value, datetime.datetime) and value.utcoffset() is not None:
+    if isinstance(value, dt.datetime) and value.utcoffset() is not None:
         return value
     return None
 
@@ -126,8 +125,12 @@ def _parent_problems(raw: dict[str, object], address: str, home: str) -> list[Pr
         return [] if parent is None else [_bad(address, "parent must be null for an entity")]
     if not isinstance(parent, dict) or set(parent) != {"address", "key", "position"}:
         return [_bad(address, "parent must be {address, key, position} for a part")]
-    ok = (isinstance(parent["address"], str) and isinstance(parent["key"], str)
-          and isinstance(parent["position"], int) and not isinstance(parent["position"], bool))
+    ok = (
+        isinstance(parent["address"], str)
+        and isinstance(parent["key"], str)
+        and isinstance(parent["position"], int)
+        and not isinstance(parent["position"], bool)
+    )
     if not ok or parent["position"] < 0:
         return [_bad(address, "parent has wrong types")]
     if parent["address"] != "/".join(parts[:-2]):
@@ -169,17 +172,27 @@ def _text(raw: dict[str, object], key: str) -> str | None:
 def from_raw(raw: dict[str, object]) -> Item:
     """The item of a mapping that `check_envelope` accepted."""
     parent, at, snapshot = raw["parent"], _when(raw["at"]), raw["snapshot"]
-    if at is None or not isinstance(parent, dict | None) or not isinstance(snapshot, dict):
-        raise ValueError("not an item: check its envelope first")
-    return Item(str(raw["id"]), str(raw["kind"]),
-                None if parent is None else Parent(str(parent["address"]), str(parent["key"]), int(parent["position"])),
-                _text(raw, "title"), _text(raw, "said"), _text(raw, "why"), _text(raw, "replaced_by"), at,
-                str(raw["last_seen"]), str(raw["hash"]), str(raw["ontology"]), snapshot)
+    if at is None or (parent is not None and not isinstance(parent, dict)) or not isinstance(snapshot, dict):
+        msg = "not an item: check its envelope first"
+        raise ValueError(msg)
+    return Item(
+        str(raw["id"]),
+        str(raw["kind"]),
+        None if parent is None else Parent(str(parent["address"]), str(parent["key"]), int(parent["position"])),
+        _text(raw, "title"),
+        _text(raw, "said"),
+        _text(raw, "why"),
+        _text(raw, "replaced_by"),
+        at,
+        str(raw["last_seen"]),
+        str(raw["hash"]),
+        str(raw["ontology"]),
+        snapshot,
+    )
 
 
-def _raw(item: Item) -> dict[str, object]:
-    parent = None if item.parent is None else {"address": item.parent.address, "key": item.parent.key,
-                                               "position": item.parent.position}
+def raw_item(item: Item) -> dict[str, object]:
+    parent = None if item.parent is None else {"address": item.parent.address, "key": item.parent.key, "position": item.parent.position}
     return {**{k: getattr(item, k) for k in _KEYS}, "parent": parent, "snapshot": item.snapshot}
 
 
@@ -223,7 +236,7 @@ def _all_items(ledgers: Iterable[Ledger]) -> list[Item]:
 def append(root: Path, home: str, item: Item, snapshot_check: Callable[[Item], list[str]]) -> None:
     """Add one item at the end of its home's file. Raises RemovedError when the envelope is bad, the id is already in
     a ledger, or `snapshot_check` (given the item; returns problem details) finds the snapshot wanting (R7)."""
-    problems = check_envelope(_raw(item), home)
+    problems = check_envelope(raw_item(item), home)
     ledgers, existing = read_all(root)
     if existing:
         raise RemovedError(existing)
@@ -234,74 +247,17 @@ def append(root: Path, home: str, item: Item, snapshot_check: Callable[[Item], l
     if problems:
         raise RemovedError(problems)
     path = root / home / FILE
-    any_yaml.append_item_file(path, "items", _raw(item), initial=f"format: {FORMAT}\n")
+    any_yaml.append_item_file(path, "items", raw_item(item), initial=f"format: {FORMAT}\n")
 
 
-def follow(root: Path, rename: Callable[[str], str]) -> list[str]:
-    """After a move: the `why` and `replaced_by` of every item name the address the entry has now (the only change to an
-    item R3 lets through). Returns the files rewritten, relative to `root`."""
-    written: list[str] = []
-    for path in sorted([*root.glob(f"*/{FILE}"), *root.glob(f"*/*/{FILE}")]):
-        doc = any_yaml.load(path.read_text(encoding="utf-8"))
-        items = doc.get("items") if isinstance(doc, dict) else None
-        changed = False
-        for raw in items if isinstance(items, list) else []:
-            for key in ("why", "replaced_by"):
-                if isinstance(raw, dict) and isinstance(value := raw.get(key), str) and is_address(value) and rename(value) != value:
-                    raw[key], changed = rename(value), True
-        if changed:
-            any_yaml.write(path, doc)
-            written.append(path.relative_to(root).as_posix())
-    return written
-
-
-def _prefixed(old: str, new: str) -> Callable[[str], str]:
-    return lambda text: new + text[len(old):] if text.startswith(old + "/") else text
-
-
-def moved_item(item: Item, rename: Callable[[str], str]) -> Item:
-    parent = item.parent and Parent(rename(item.parent.address), item.parent.key, item.parent.position)
-    return dataclasses.replace(item, id=rename(item.id), parent=parent, why=item.why and rename(item.why),
-                               replaced_by=item.replaced_by and rename(item.replaced_by))
-
-
-def rehomed(ledgers: Mapping[str, Ledger], old: str, new: str) -> dict[str, Ledger]:
-    """The ledgers after the home `old` (a fixed folder its kind moved out of) became `new`: its items follow the items `new`
-    already holds, every address in them under `new`. What `rehome` writes and how `check --base` reads the base."""
-    found = dict(ledgers)
-    moved = found.pop(old, None)
-    if moved is None:
-        return found
-    held = found[new].items if new in found else ()
-    found[new] = Ledger(new, FORMAT, (*held, *(moved_item(item, _prefixed(old, new)) for item in moved.items)))
-    return found
-
-
-def rehome(root: Path, old: str, new: str) -> list[str]:
-    """Write `rehomed` for the ledger of `old`: its items go to the end of `new`'s ledger and its file is deleted (`ogy migrate`,
-    the one change to a ledger besides an append and a move's `follow`). Returns the files written, relative to `root`."""
-    ledgers, problems = parse({f"{home}/{FILE}": (root / home / FILE).read_text(encoding="utf-8")
-                               for home in (old, new) if (root / home / FILE).is_file()})
-    if problems:
-        raise RemovedError(problems)
-    if old not in ledgers:
-        return []
-    ledger = rehomed(ledgers, old, new)[new]
-    path = root / new / FILE
-    path.parent.mkdir(parents=True, exist_ok=True)
-    any_yaml.write(path, {"format": FORMAT, "items": [_raw(item) for item in ledger.items]})
-    (root / old / FILE).unlink()
-    return [f"{old}/{FILE}", f"{new}/{FILE}"]
-
-
-def check_new_snapshots(items: Iterable[Item], base_ids: Collection[str],
-                        validator: Callable[[Item], list[str]]) -> list[Problem]:
+def check_new_snapshots(items: Iterable[Item], base_ids: Collection[str], validator: Callable[[Item], list[str]]) -> list[Problem]:
     """R7: only items not in the base are checked; an old snapshot is never read."""
     return [Problem("bad-snapshot", i.id, d) for i in items if i.id not in base_ids for d in validator(i)]
 
 
-def check_append_only(base: Ledger | None, current: Ledger | None, home: str,
-                      same: Callable[[Item, Item], bool] = operator.eq) -> list[Problem]:
+def check_append_only(
+    base: Ledger | None, current: Ledger | None, home: str, same: Callable[[Item, Item], bool] = operator.eq
+) -> list[Problem]:
     """R3: against the base version of a home's ledger; `same(old, now)` says an item is unchanged (by default: equal)."""
     if base is None:
         return []
@@ -328,8 +284,11 @@ def find_reuse(items: Iterable[Item], live: Iterable[str]) -> list[Problem]:
 def check_unrecorded(base: Iterable[str], live: Collection[str], items: Iterable[Item]) -> list[Problem]:
     """R1: an address in the base and absent now needs an item at it or above it."""
     ids = [item.id for item in items]
-    return [Problem("removed-unrecorded", a, "gone since the base and no removed.yml item covers it")
-            for a in sorted(base) if a not in live and not any(_covers(i, a) for i in ids)]
+    return [
+        Problem("removed-unrecorded", a, "gone since the base and no removed.yml item covers it")
+        for a in sorted(base)
+        if a not in live and not any(_covers(i, a) for i in ids)
+    ]
 
 
 ADDRESSY = re.compile(r"[a-z0-9-]+(?:/[a-z0-9_-]+)+")
@@ -345,10 +304,12 @@ def check_why(items: Iterable[Item], known: Collection[str], agreed: str) -> lis
     An item whose snapshot a person agreed to (its common field `agreed`) needs an address, not plain words or none."""
     items = list(items)
     seen = {*known, *(i.id for i in items)}
-    out = [Problem("removed-without-why", i.id, f"why {i.why} is no decision")
-           for i in items if is_address(i.why) and i.why not in seen]
-    return out + [Problem("removed-without-why", i.id, "a person agreed to it, so why is the address of a decision")
-                  for i in items if not is_address(i.why) and isinstance(i.snapshot.get(agreed), dict)]
+    out = [Problem("removed-without-why", i.id, f"why {i.why} is no decision") for i in items if is_address(i.why) and i.why not in seen]
+    return out + [
+        Problem("removed-without-why", i.id, "a person agreed to it, so why is the address of a decision")
+        for i in items
+        if not is_address(i.why) and isinstance(i.snapshot.get(agreed), dict)
+    ]
 
 
 def check_replacements(items: Iterable[Item], live: Collection[str]) -> list[Problem]:
@@ -361,8 +322,13 @@ def check_replacements(items: Iterable[Item], live: Collection[str]) -> list[Pro
             nxt = by_id.get(step.replaced_by)
             if nxt is None or nxt.id in seen:
                 code = "link-to-removed" if nxt else "dangling-link"
-                out.append(Problem(code, item.id, f"replaced_by {item.replaced_by} ends at {step.replaced_by}"
-                                   + (" in a cycle" if nxt else " which is gone")))
+                out.append(
+                    Problem(
+                        code,
+                        item.id,
+                        f"replaced_by {item.replaced_by} ends at {step.replaced_by}" + (" in a cycle" if nxt else " which is gone"),
+                    )
+                )
                 break
             step = nxt
             seen.add(step.id)
@@ -376,8 +342,11 @@ def check_links(links: Iterable[tuple[str, str]], items: Iterable[Item]) -> list
     """R8: (source, target) pairs whose target is removed; the text names the item's why and replacement. The caller
     leaves out the allowed ones (`agreed`, an item's why and parent.address)."""
     by_id = {i.id: i for i in items}
-    return [Problem("link-to-removed", s, f"{t} was removed (why: {by_id[t].why}, replaced by: {by_id[t].replaced_by})")
-            for s, t in links if t in by_id]
+    return [
+        Problem("link-to-removed", s, f"{t} was removed (why: {by_id[t].why}, replaced by: {by_id[t].replaced_by})")
+        for s, t in links
+        if t in by_id
+    ]
 
 
 def search(items: Iterable[Item], words: Iterable[str] = (), parent: str | None = None) -> list[Item]:
@@ -390,8 +359,10 @@ def search(items: Iterable[Item], words: Iterable[str] = (), parent: str | None 
     out: list[Item] = []
     level = [parent]
     while level:
-        kids = sorted((i for i in items if i.parent and i.parent.address in level and i not in out),
-                      key=lambda i: (level.index(i.parent.address) if i.parent else 0, i.parent.position if i.parent else 0))
+        kids = sorted(
+            (i for i in items if i.parent and i.parent.address in level and i not in out),
+            key=lambda i: (level.index(i.parent.address) if i.parent else 0, i.parent.position if i.parent else 0),
+        )
         out += kids
         level = [i.id for i in kids]
     return out

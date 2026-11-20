@@ -5,17 +5,18 @@ Two entries that would become one are refused until one is moved to a new id."""
 from dataclasses import dataclass
 from importlib.resources import files
 from pathlib import Path
+from typing import override
 
 import any_yaml
 import pytest
-from tests.conftest import commit
+from tests.conftest import address_of, commit, dig
 from tests.test_migrate import build_hash, fingerprint
 
 from ogy import built, ops, writes
-from ogy.model import Problem, parse_address
+from ogy.model import Problem
 from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.target import Target
-from ogy.writes import WriteRefused
+from ogy.writes import WriteRefusedError
 
 PAGE, CLI, OLD = "software/app/view/page", "software/app/command/lend", "software/app/view/old"
 NEW_PAGE, NEW_CLI = "software/app/interface/page", "software/app/interface/lend"
@@ -36,15 +37,21 @@ def _texts(was: str | None = None) -> dict[str, str]:
 
 def unmerged() -> Ontology:
     """The software kinds as they were before view and command merged into interface."""
-    texts = {rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ").replace(
-        ", interface]", ", view, command]").replace(", interface,", ", view, command,")
-             for rel, text in _texts().items() if rel != "kinds/interface.yml"}
+    texts = {
+        rel: text.replace("[interface]", "[view, command]")
+        .replace("[interface, ", "[view, command, ")
+        .replace(", interface]", ", view, command]")
+        .replace(", interface,", ", view, command,")
+        for rel, text in _texts().items()
+        if rel != "kinds/interface.yml"
+    }
     texts |= {f"kinds/{item.name}": item.read_text() for item in BEFORE.iterdir()}
     return parse_kinds(texts, packaged().declared)
 
 
 @dataclass(frozen=True)
 class Unmerged(Target):
+    @override
     def kinds(self) -> Ontology:
         return unmerged()
 
@@ -64,11 +71,12 @@ def before(repo: Path) -> str:
     (kb / "software/app/decision").mkdir(parents=True)
     (kb / "software/app/decision/page.yml").write_text(
         f"question: Is the page plain?\noptions:\n  plain: {{label: Plain, sets: {{{PAGE}: {{says: The page.}}}}}}\n"
-        "proposal: {chose: plain, why: Simple.}\n")
+        "proposal: {chose: plain, why: Simple.}\n"
+    )
     ops.run_remove(target, OLD, why="not needed")
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [PAGE, CLI])
     for text in (PAGE, CLI):
-        built.stamp(kb, target.read()[1].entries[parse_address(text, target.kinds())].path, text, built.Line(build_hash(target, text)))
+        built.stamp(kb, target.read()[1].entries[address_of(text, target.kinds())].path, text, built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
     return commit(repo, "before the merge")
 
@@ -85,11 +93,11 @@ def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path
     assert (kb / "software/app/removed.yml").read_text() == ledger and OLD in ledger  # a ledger keeps the names its items had
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
-    cli = entries[parse_address(NEW_CLI, target.kinds())].fields
+    cli = entries[address_of(NEW_CLI, target.kinds())].fields
     assert cli["form"] == "cli" and cli["invoked_as"] == "ogy lend"  # the command's default, its own field kept
-    assert entries[parse_address(NEW_PAGE, target.kinds())].fields["form"] == "web"  # the view's default
+    assert entries[address_of(NEW_PAGE, target.kinds())].fields["form"] == "web"  # the view's default
     for text in (NEW_PAGE, NEW_CLI):
-        assert entries[parse_address(text, target.kinds())].fields["agreed"]["hash"] == fingerprint(target, text)
+        assert dig(entries[address_of(text, target.kinds())].fields, "agreed", "hash") == fingerprint(target, text)
     work = {item.address for item in ops.run_work(target).value}
     assert NEW_PAGE not in work and NEW_CLI not in work  # built, and still built: a merge is no work
     assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
@@ -101,12 +109,14 @@ def test_a_view_and_a_command_of_one_id_are_refused_until_one_moves(repo: Path, 
     kb = repo / "docs/kb"
     (kb / "software/app/command/page.yml").write_text(f"says: The page as a command.\ninvoked_as: ogy page\n{SERVES}")
     commit(repo, "a command of the view's id")
-    why = (f"software/app/command/page and {PAGE} would both become {NEW_PAGE}: `ogy move` one of them to a new id first, "
-           "with the ogy version (its kinds) from before the merge")
+    why = (
+        f"software/app/command/page and {PAGE} would both become {NEW_PAGE}: `ogy move` one of them to a new id first, "
+        "with the ogy version (its kinds) from before the merge"
+    )
     found = {(item.problem, item.path, item.detail) for item in ops.run_check(Target(repo)).value}
     assert (Problem.NEEDS_MIGRATION, f"{PAGE}.yml", why) in found
     assert (Problem.NEEDS_MIGRATION, "software/app/command/page.yml", why) in found
-    with pytest.raises(WriteRefused) as refused:
+    with pytest.raises(WriteRefusedError) as refused:
         ops.run_migrate(Target(repo))
     assert refused.value.reasons == [f"needs-migration: {why}"]
     assert (kb / f"{PAGE}.yml").is_file() and (kb / f"{CLI}.yml").is_file()  # nothing moved

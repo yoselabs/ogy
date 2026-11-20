@@ -1,18 +1,21 @@
 """A whole knowledge base at one commit: its ontology, its entries by address, and what reading them found."""
 
-from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from content_digest import digest
 
 from ogy.kinds import Holds, Kind
 from ogy.layout import BUILT_DIR, read_files
 from ogy.model import Address, Entry, Finding, Problem, link_values, parse_address
-from ogy.ontology import Ontology
 from ogy.paths import LinkIndex, inputs, inputs_from
 from ogy.retype import Retype, applied, problems
-from ogy.source import Source
+lazy from ogy.ontology import Ontology
+lazy from ogy.source import Source
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 FINGERPRINT_LENGTH = 12
 
@@ -33,8 +36,14 @@ def fingerprint(kind: Kind, entry: Entry, parts: Sequence[object] = (), also: Se
     `src` and the other common fields are outside it, and so is a field the entry leaves unset: a kind that gains a field
     changes no fingerprint. The build hash adds the set of its proof ids (`proofs`: the common field that holds them) and what
     its inputs read (`input`, then `input_from` only where set: `also`)."""
-    payload: dict[str, object] = {"kind": kind.kind, **{name: _plain(entry.fields[name]) for name, spec in sorted(kind.fields.items())
-                                                        if not spec.note and entry.fields.get(name) is not None}}
+    payload: dict[str, object] = {
+        "kind": kind.kind,
+        **{
+            name: _plain(entry.fields[name])
+            for name, spec in sorted(kind.fields.items())
+            if not spec.note and entry.fields.get(name) is not None
+        },
+    }
     if parts:
         payload["parts"] = list(parts)
     if kind.fingerprint.proofs and proofs:
@@ -101,8 +110,9 @@ class Snapshot:
         for a term that names an entry, that entry's sentence. A row or a named sentence that changes sends the entry back to
         the owner; an entry without either keeps its plain fingerprint."""
         kind = self.kind_of(address)
-        also: list[object] = [[str(row), self.fingerprint(row)] for name in sorted(self.ontology.rows())
-                              for row in self.links.parts(address, name)]
+        also: list[object] = [
+            [str(row), self.fingerprint(row)] for name in sorted(self.ontology.rows()) for row in self.links.parts(address, name)
+        ]
         names = kind.glossary.names if kind.glossary is not None else None
         if names is not None and self.entries[address].fields.get(names) is not None:
             also.append([names, self.sentence(address)])
@@ -125,12 +135,15 @@ class Snapshot:
             if kind.kind not in self._inputs:
                 self._inputs[kind.kind] = inputs(self.ontology, kind)
             # an input that reads nothing adds nothing: a kind that gains a link field (or a merge that brings one) stales nothing
-            also: list[object] = sorted(  # keyed and sorted by path: reordering a kind file's fields or inputs moves no hash
+            named = sorted(  # keyed and sorted by path: reordering a kind file's fields or inputs moves no hash
                 ([" ".join(path), found] for path in self._inputs[kind.kind] if (found := self._along(address, path))),
-                key=lambda item: str(item[0]))
-            reached = sorted(([" ".join(path), found] for path in inputs_from(kind) if (found := self._along(address, path, True))),
-                             key=lambda item: str(item[0]))
-            also += [["reached", reached]] if reached else []
+                key=lambda item: str(item[0]),
+            )
+            reached = sorted(
+                ([" ".join(path), found] for path in inputs_from(kind) if (found := self._along(address, path, only_set=True))),
+                key=lambda item: str(item[0]),
+            )
+            also: list[object] = [*named, *([["reached", reached]] if reached else [])]
             entry = self.entries[address]
             self._prints[key] = fingerprint(kind, entry, self._unkeyed(address), also, self.ontology.roles.proof if proofs else None)
         finally:
@@ -144,14 +157,17 @@ class Snapshot:
             notes = {name for name, spec in part.fields.items() if spec.note}
             if part.holding is Holds.LIST:
                 items = self.entries[address].fields.get(part.key or "")
-                kept = [{k: v for k, v in item.items() if k not in notes} if isinstance(item, dict) else item
-                        for item in items] if isinstance(items, list) else items
+                kept = (
+                    [{k: v for k, v in item.items() if k not in notes} if isinstance(item, dict) else item for item in items]
+                    if isinstance(items, list)
+                    else items
+                )
                 found.append([part.key, kept])
             elif part.holding is Holds.ONE and (one := address.part(part.kind)) in self.entries:
                 found.append([part.key, {k: v for k, v in self.entries[one].fields.items() if k not in notes}])
         return found
 
-    def _along(self, address: Address, path: tuple[str, ...], only_set: bool = False) -> list[str]:
+    def _along(self, address: Address, path: tuple[str, ...], *, only_set: bool = False) -> list[str]:
         reached, values = self.links.walk(address, path)
         values = [value for value in values if value is not None] if only_set else values
         match path[-1] if path else "":
@@ -188,7 +204,7 @@ def build(ontology: Ontology, files: dict[str, str]) -> Snapshot:
     return Snapshot(ontology, entries, findings)
 
 
-def load(source: Source, ontology: Ontology, retyped: bool = False) -> Snapshot:
+def load(source: Source, ontology: Ontology, *, retyped: bool = False) -> Snapshot:
     """Every entry file of the knowledge base in one batch read; `retyped`: as `ogy migrate` renames the kinds (`ogy.retype`)."""
     files = source.read(kb_paths(source.listing()))
     return build(ontology, applied(ontology, files) if retyped else files)

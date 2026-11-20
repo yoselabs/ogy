@@ -7,11 +7,11 @@ resolution and impact (every link, links and expr field), and the review rank (`
 read a field by its name follow from the roles the kinds declare (`named`): the sentence, the glossary, the
 printed-first kind, the settling names. `ogy show` prints every field and is no reader."""
 
-from collections.abc import Iterable
+lazy from collections.abc import Iterable
 
 from ogy.kinds import ANY, LINKING, Flow, Holds, Kind, Requirement, where
-from ogy.ontology import Ontology
 from ogy.paths import inputs, inputs_from
+lazy from ogy.ontology import Ontology
 
 AVOIDED, REVIEW, GLOSSARY = "check avoided-word", "printer review", "printer glossary"
 
@@ -37,6 +37,7 @@ def named(ontology: Ontology) -> dict[str, set[str]]:
             add(f"{kind.kind}.{kind.sentence}", "check term-too-long", GLOSSARY)
             add(f"{kind.kind}.{glossary.avoid}", AVOIDED, "check word-clash", GLOSSARY)
     return found
+
 
 type Reads = dict[tuple[str, str], set[str]]
 
@@ -93,9 +94,17 @@ def _requirement(found: Reads, kinds: dict[str, Kind], name: str, need: Requirem
 
 def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> None:
     rows = (flow.choice, flow.case, flow.timeout)
-    wanted = [(container, flow.start), *((container, field) for field in flow.roots), *((k, flow.then) for k in (flow.step, *rows)),
-              (flow.step, flow.actor), (flow.step, flow.calls), (flow.case, flow.covers), (flow.case, flow.when),
-              (flow.case, flow.order), *((k, field) for k in flow.servers for field in (flow.serves, flow.offers))]
+    wanted = [
+        (container, flow.start),
+        *((container, field) for field in flow.roots),
+        *((k, flow.then) for k in (flow.step, *rows)),
+        (flow.step, flow.actor),
+        (flow.step, flow.calls),
+        (flow.case, flow.covers),
+        (flow.case, flow.when),
+        (flow.case, flow.order),
+        *((k, field) for k in flow.servers for field in (flow.serves, flow.offers)),
+    ]
     for kind, field in wanted:
         _mark(found, kind, field, "flow", kinds)
 
@@ -103,9 +112,11 @@ def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> N
 def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
     for kind in kinds.values():
         if (names := kind.settling) is not None:
-            wanted = [(names.option, names.sets), *((names.proposal, f) for f in (names.chose, names.sets, names.heard)),
-                      *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note,
-                                                    names.delegated))]
+            wanted = [
+                (names.option, names.sets),
+                *((names.proposal, f) for f in (names.chose, names.sets, names.heard)),
+                *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note, names.delegated)),
+            ]
             for part, field in wanted:
                 _mark(found, part, field, "settling", kinds)
 
@@ -122,7 +133,9 @@ def _compared(ontology: Ontology, reached: set[str]) -> set[str]:
 
 def readers(ontology: Ontology) -> dict[tuple[str, str], list[str]]:
     """`(kind, field)` -> the sorted names of what reads it, for every field of every kind (empty: nothing does)."""
-    kinds, found, reached = ontology.kinds, {}, set()
+    kinds = ontology.kinds
+    found: Reads = {}
+    reached: set[str] = set()
     for name, kind in kinds.items():
         for need in kind.requires:
             _requirement(found, kinds, name, need)
@@ -156,5 +169,9 @@ def readers_lines(ontology: Ontology, only: str | None = None) -> list[str]:
     lines = [f"{kind}.{field}: {', '.join(names) or 'nothing'}" for (kind, field), names in found.items()]
     idle = [f"{kind}.{field}" for (kind, field), names in found.items() if not names]
     stale = [f"{kind}.{field}" for (kind, field), names in found.items() if names == ["fingerprint"]]
-    return [*lines, "", f"read by nothing ({len(idle)}): {', '.join(idle) or 'none'}",
-            f"read only by the fingerprint ({len(stale)}): {', '.join(stale) or 'none'}"]
+    return [
+        *lines,
+        "",
+        f"read by nothing ({len(idle)}): {', '.join(idle) or 'none'}",
+        f"read only by the fingerprint ({len(stale)}): {', '.join(stale) or 'none'}",
+    ]

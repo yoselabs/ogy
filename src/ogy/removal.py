@@ -1,24 +1,24 @@
 """`ogy remove`: delete an entry or a part, and append its item (envelope and snapshot) to its area's removed ledger."""
 
-import datetime
+import datetime as dt
 from collections.abc import Callable, Mapping
-from pathlib import Path
+lazy from pathlib import Path
 
 from ogy import removed
 from ogy.edit import Editor
 from ogy.kinds import Holds
 from ogy.links import link_items, resolve
 from ogy.model import Address, parse_address
-from ogy.ontology import Ontology
 from ogy.removed import Item, Parent
 from ogy.settle import decisions
-from ogy.snapshot import Snapshot
-from ogy.verdict import Refusal
+from ogy.verdict import RefusalError
+lazy from ogy.ontology import Ontology
+lazy from ogy.snapshot import Snapshot
 
-type Clock = Callable[[], datetime.datetime]
+type Clock = Callable[[], dt.datetime]
 
 
-class RemoveRefused(Refusal):
+class RemoveRefusedError(RefusalError):
     """The address cannot be removed now; `reasons` say why."""
 
     prefix = "not removed: "
@@ -45,7 +45,8 @@ def snapshot_problems(base: Snapshot, item: Item) -> list[str]:
     address = parse_address(item.id, base.ontology)
     if address is None or address not in base.entries:
         return [f"no entry {item.id} in the base"]
-    shot, found = item.snapshot, []
+    shot = item.snapshot
+    found: list[str] = []
     if shot != entry_snapshot(base, address):
         found.append("snapshot differs from the entry in the base")
     if item.hash != base.fingerprint(address):
@@ -79,15 +80,18 @@ def refusals(snapshot: Snapshot, address: Address) -> list[str]:
                 found.append(f"{origin} links to {target} ({item.field})")
     for decision in decisions(snapshot):
         force = decision.in_force
-        for text, given in (force.sets if force else {}).items():
+        if force is None:
+            continue
+        for text, given in force.sets.items():
             target = parse_address(text, snapshot.ontology)
             if isinstance(given, dict) and target is not None and _inside(target, address):
                 found.append(f"{decision.address} in force gives fields to {text}")
     return found
 
 
-def build_item(snapshot: Snapshot, address: Address, why: str | None, replaced_by: str | None, at: datetime.datetime,
-               last_seen: str, ontology: str) -> Item:
+def build_item(
+    snapshot: Snapshot, address: Address, why: str | None, replaced_by: str | None, *, at: dt.datetime, last_seen: str, ontology: str
+) -> Item:
     fields = snapshot.entries[address].fields
     parent = address.parent()
     where = None
@@ -95,16 +99,28 @@ def build_item(snapshot: Snapshot, address: Address, why: str | None, replaced_b
         siblings = [a for a in snapshot.entries if a.parent() == parent and a.kind == address.kind]
         where = Parent(str(parent), snapshot.kind_of(address).key or "", siblings.index(address))
     title, says = fields.get(snapshot.ontology.roles.title), _said(snapshot.kind_of(address).sentence, fields)
-    return Item(str(address), address.kind, where, title if isinstance(title, str) else None, says if isinstance(says, str) else None,
-                why, replaced_by, at, last_seen, snapshot.fingerprint(address), ontology,
-                entry_snapshot(snapshot, address))
+    return Item(
+        str(address),
+        address.kind,
+        where,
+        title if isinstance(title, str) else None,
+        says if isinstance(says, str) else None,
+        why,
+        replaced_by,
+        at,
+        last_seen,
+        snapshot.fingerprint(address),
+        ontology,
+        entry_snapshot(snapshot, address),
+    )
 
 
-def remove(root: Path, kb: str, ontology: Ontology, name: str, text: str, why: str | None, to: str | None,
-           now: datetime.datetime, last_seen: str) -> Item:
+def remove(
+    root: Path, kb: str, ontology: Ontology, name: str, text: str, *, why: str | None, to: str | None, now: dt.datetime, last_seen: str
+) -> Item:
     """Delete the entry at `text` from the worktree and append its ledger item; refuses before writing anything."""
     if not why or not why.strip():
-        raise RemoveRefused(["why is required: the address of the decision that said so, or the reason in plain words"])
+        raise RemoveRefusedError(["why is required: the address of the decision that said so, or the reason in plain words"])
     editor = Editor(root, kb, ontology)
     snapshot = editor.snapshot()
     address = snapshot.resolve(text)
@@ -116,12 +132,12 @@ def remove(root: Path, kb: str, ontology: Ontology, name: str, text: str, why: s
     reasons = refusals(snapshot, address)
     if snapshot.kind_of(address).holding is Holds.ONE and address.parent() is not None:
         reasons.append(f"{address} is the single {address.kind} of its parent: change it, or remove the parent")
-    item = build_item(snapshot, address, why, to, now, last_seen, name)
+    item = build_item(snapshot, address, why, to, at=now, last_seen=last_seen, ontology=name)
     problems = removed.check_why([item], known_addresses(snapshot), snapshot.ontology.roles.agreed)
     problems += removed.check_replacements([item], [str(a) for a in snapshot.entries])
     reasons += [f"{p.code}: {p.detail}" for p in problems]
     if reasons:
-        raise RemoveRefused(reasons)
+        raise RemoveRefusedError(reasons)
     removed.append(root / kb, address.home, item, lambda new: snapshot_problems(snapshot, new))
     editor.remove(address)
     return item

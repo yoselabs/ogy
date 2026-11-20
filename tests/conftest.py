@@ -1,20 +1,24 @@
 """Small knowledge bases written into a temporary folder, read with the software ontology."""
 
 import shutil
-from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from pathlib import Path
+from typing import TYPE_CHECKING
+lazy from pathlib import Path
 
 import pytest
 from git_porcelain import run_git
 
 from ogy import cli
 from ogy.check import check
-from ogy.declared import Declared
-from ogy.model import Problem
+from ogy.model import Problem, parse_address
 from ogy.ontology import Ontology, packaged
 from ogy.snapshot import Snapshot, load
 from ogy.source import KB_DIR, WorktreeSource
+lazy from ogy.declared import Declared
+lazy from ogy.model import Address
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Mapping
 
 SOURCE = "code:app.py#lend"  # the repository fixture's one Python file
 CODE = "def lend():\n    return True\n"
@@ -43,11 +47,13 @@ GOOD: dict[str, str] = {
     "product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n",
     "product/app/workflow/sign-in.yml": SIGN_IN,
     "software/app/interface/sign-in-page.yml": (
-        "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/decision/sign-in]\n"),
+        "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/decision/sign-in]\n"
+    ),
     "product/app/decision/sign-in.yml": (
         "question: Do members sign in?\noptions:\n  members: {label: Members sign in}\n  anyone: {label: Anyone borrows}\n"
         "proposal: {chose: members, why: Loans need a member.}\n"
-        "answers: [{chose: members, said: Members sign in, at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1'}]\n"),
+        "answers: [{chose: members, said: Members sign in, at: '2026-11-12T10:05:00+01:00', where: 'ai:claude/1'}]\n"
+    ),
 }
 
 
@@ -64,7 +70,7 @@ class Kb:
         shutil.copytree(self.source.root, home / KB_DIR)
         return home
 
-    def findings(self, evidence: bool = False, landing: bool = False, started: bool = False) -> set[tuple[Problem, str]]:
+    def findings(self, *, evidence: bool = False, landing: bool = False, started: bool = False) -> set[tuple[Problem, str]]:
         """The findings; `no-evidence` only with `evidence=True` and `never-started` (nothing starts a workflow) only with
         `started=True`, so a test of one rule does not carry a `src` on every entry or a root for every workflow."""
         found = check(self.snapshot, self.source, landing=landing)
@@ -106,7 +112,8 @@ FILES = {
     "docs/kb/product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human, src: ['code:app.py#lend']}\n",
     "docs/kb/product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: ['code:app.py#lend']}\n",
     "docs/kb/software/app/interface/page.yml": (
-        "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"),
+        "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
+    ),
     "docs/kb/product/app/workflow/borrow.yml": """\
 says: A tool is lent.
 src: ['code:app.py#lend']
@@ -125,7 +132,8 @@ ends:
   done: {result: success, says: The tool is lent.}
 """,
     "docs/kb/software/app/handler/lend.yml": (
-        "says: Lends.\nperforms: [product/app/workflow/borrow/step/ask/choice/go]\nsrc: ['code:app.py#lend']\n"),
+        "says: Lends.\nperforms: [product/app/workflow/borrow/step/ask/choice/go]\nsrc: ['code:app.py#lend']\n"
+    ),
 }
 
 
@@ -147,3 +155,25 @@ def repo(tmp_path: Path) -> Path:
 
 def ogy(repo: Path, *argv: str) -> tuple[int, list[str]]:
     return cli.run(["--repo", str(repo), *argv])
+
+
+def entry(snapshot: Snapshot, text: str) -> Address:
+    """The address of an entry the snapshot holds."""
+    found = snapshot.resolve(text)
+    assert found is not None, text
+    return found
+
+
+def address_of(text: str, kinds: Ontology) -> Address:
+    """The address a text names under the kinds."""
+    found = parse_address(text, kinds)
+    assert found is not None, text
+    return found
+
+
+def dig(value: object, *keys: str) -> object:
+    """The value under nested mapping keys."""
+    for key in keys:
+        assert isinstance(value, dict), key
+        value = value[key]
+    return value

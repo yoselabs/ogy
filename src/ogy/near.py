@@ -1,9 +1,9 @@
 """Near misses: what a person meant when the name they typed is not there."""
 
 import difflib
-from collections.abc import Iterable
+lazy from collections.abc import Iterable
 
-from ogy.snapshot import Snapshot
+lazy from ogy.snapshot import Snapshot
 
 MOST = 3
 

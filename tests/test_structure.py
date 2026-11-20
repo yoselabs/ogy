@@ -3,7 +3,7 @@
 import json
 import shutil
 from collections.abc import Callable, Mapping
-from pathlib import Path
+lazy from pathlib import Path
 
 import any_yaml
 import pytest
@@ -18,8 +18,10 @@ from ogy.ontology import packaged
 
 type MakeKb = Callable[[Mapping[str, str | None] | None], Kb]
 RULE = "product/app/rule/layers-are-folders"
-LAYERS = {"keep": {"label": "Keep the folders", "sets": {RULE: {"says": "Every entry lives under a layer folder."}}},
-          "drop": {"label": "Drop them", "sets": {RULE: None}}}
+LAYERS = {
+    "keep": {"label": "Keep the folders", "sets": {RULE: {"says": "Every entry lives under a layer folder."}}},
+    "drop": {"label": "Drop them", "sets": {RULE: None}},
+}
 LAYOUT = "product/app/decision/keep-the-layers"
 
 
@@ -92,8 +94,10 @@ def test_coverage_counts_the_kinds_that_own_a_file_by_layer(kb: MakeKb) -> None:
 
 def test_an_area_named_like_the_repository_is_a_check_error(kb: MakeKb, repo: Path) -> None:
     snapshot = kb(None).snapshot
-    assert [(str(f.problem), f.path) for f in product_areas(snapshot, "app")] == [("product-area", "product/app"),
-                                                                                  ("product-area", "software/app")]
+    assert [(str(f.problem), f.path) for f in product_areas(snapshot, "app")] == [
+        ("product-area", "product/app"),
+        ("product-area", "software/app"),
+    ]
     assert product_areas(snapshot, "library") == [] and product_areas(snapshot, "App") != []
     named = repo.with_name("app")
     shutil.copytree(repo, named)

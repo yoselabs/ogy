@@ -2,12 +2,13 @@
 
 import argparse
 import asyncio
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
-from fastmcp import FastMCP
+from fastmcp import Client
 from fastmcp.exceptions import ToolError
 from tests.conftest import GOOD
+lazy from fastmcp import FastMCP
 
 from ogy import cli
 from ogy.mcp_server import build
@@ -71,3 +72,44 @@ def test_exit_codes_2_to_4_are_tool_errors_and_the_server_goes_on(tmp_path: Path
 
 def test_the_reply_tool_requires_its_round() -> None:
     assert "round" in tools(build())["reply"]["required"]
+
+
+PROTOCOL_VERSION = "2025-11-25"  # the revision this server negotiates; an SDK bump that moves it shows here as a diff
+
+
+def test_the_negotiated_protocol_version_is_pinned() -> None:
+    async def negotiated() -> str:
+        async with Client(build()) as client:
+            assert client.initialize_result is not None
+            return str(client.initialize_result.protocolVersion)
+
+    assert asyncio.run(negotiated()) == PROTOCOL_VERSION
+
+
+def test_a_client_sees_the_tool_set_and_a_call_round_trips(tmp_path: Path) -> None:
+    write_kb(tmp_path)
+
+    async def session() -> tuple[set[str], bool, object]:
+        async with Client(build()) as client:
+            listed = {tool.name for tool in await client.list_tools()}
+            result = await client.call_tool("check", {"repo": str(tmp_path), "rev": "."})
+            return listed, result.is_error, result.structured_content
+
+    listed, is_error, structured = asyncio.run(session())
+    assert listed == commands() - {"mcp", "init"}
+    assert not is_error and structured == {"exit_code": cli.OK, "output": "problem\tpath\taddress\tdetail"}
+
+
+def test_a_wrong_or_unknown_argument_is_an_error_result_naming_it(tmp_path: Path) -> None:
+    write_kb(tmp_path)
+    where = {"repo": str(tmp_path), "rev": "."}
+
+    async def bad(arguments: dict[str, object]) -> tuple[bool, str]:
+        async with Client(build()) as client:
+            result = await client.call_tool("show", arguments, raise_on_error=False)
+            return result.is_error, result.content[0].model_dump()["text"]
+
+    wrong_type = asyncio.run(bad({**where, "address": 5}))
+    unknown = asyncio.run(bad({**where, "address": "product/app/actor/member", "colour": "red"}))
+    assert wrong_type[0] and "address" in wrong_type[1]
+    assert unknown[0] and "colour" in unknown[1]

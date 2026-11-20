@@ -4,6 +4,7 @@ Usage: python3 -I blame-list.py SCORING_DIR RUNS_DIR
 Prints, per error, `run fact what`, the scorers' notes, and the run's original row (not the rewritten copy).
 """
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -11,8 +12,12 @@ from pathlib import Path
 LINE = re.compile(r"^(\d+): ([01]) ([01]) \|(.*?)\| wrong links: \d+ \|?(.*)$")
 
 
-def main(scoring, runs):
-    arm_of = dict(reversed(line.split()) for line in (scoring / "map.txt").read_text().splitlines())
+def say(text: str) -> None:
+    sys.stdout.write(text + "\n")
+
+
+def main(scoring: Path, runs: Path) -> None:
+    arm_of = {blind: label for label, blind in (line.split() for line in (scoring / "map.txt").read_text().splitlines())}
     marks = {}
     for path in sorted((scoring / "scores").glob("*.md")):
         run = None
@@ -31,8 +36,12 @@ def main(scoring, runs):
             continue
         label = arm_of[run]
         rows = [r for r in (runs / f"{label}.md").read_text().splitlines() if re.match(rf"^\|\s*\[?{fact}\]?\s*\|", r)]
-        print(f"{label} [{fact}] {' '.join(errors)}\n  s1: {pair[0][3]}\n  s2: {pair[1][3]}\n  row: {rows[0] if rows else '?'}\n")
+        say(f"{label} [{fact}] {' '.join(errors)}\n  s1: {pair[0][3]}\n  s2: {pair[1][3]}\n  row: {rows[0] if rows else '?'}\n")
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]))
+    parser = argparse.ArgumentParser(description="List the errors the blame pass reads from a scoring folder and its runs folder.")
+    parser.add_argument("scoring", type=Path, help="the scoring folder (map.txt and scores/)")
+    parser.add_argument("runs", type=Path, help="the runs folder, with each run's original rows")
+    given = parser.parse_args()
+    main(given.scoring, given.runs)

@@ -2,7 +2,7 @@
 
 - Python 3.15+, `uv`, `just`. `just install`, `just check` and `just test` are the gates.
 - No `subprocess` in `src/` or `tests/`; Git goes through shelf's `git-porcelain`. YAML goes through shelf's `any-yaml`;
-  hashes, Python symbols, Markdown anchors, test reach and MCP tools through shelf too. `ruff.toml` bans the raw libraries.
+  hashes, Python symbols, Markdown anchors, test reach and MCP tools through shelf too. the banned-api table in `pyproject.toml` bans the raw libraries.
 - Caps: 400 lines per source file, 80 per function, 800 per test file. Tests are pytest functions or classes.
 - Ontology, skill and checker changes: read [README](README.md) "What goes where". Every change names its eval in
   [evals/ledger.md](evals/ledger.md) or says it is untested. Every eval follows [evals/README.md](evals/README.md) and
@@ -35,7 +35,7 @@
     listing the answers recorded live with their paraphrases and any given for the owner under a delegation, so the owner
     can correct or veto one.
   - Write with `ogy put` (one batch for create and update; new, untested). Never write kb YAML by hand.
-- AGENTS.md and CLAUDE.md are separate files with the same content: mirror every edit.
+- AGENTS.md is the only instructions file; there is no CLAUDE.md (owner, 2026-11-20).
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
 ## Beads Issue Tracker
@@ -144,7 +144,7 @@ there; everything else lives in the area that owns it. Change it only through og
   edit: it renames and moves in one write and keeps the owner's agreements and the built lines current; a dropped field that held a
   value is printed, and that entry comes back to the owner as changed. What it moved lands in `product/shared`: `just ogy move` each
   entry to the area that uses it.
-- Reads see the worktree by default (`--rev .`); CI reads a commit with `just ogy --rev HEAD check`. The flags `--repo --rev --ontology`
+- Reads see the worktree by default (`--rev .`); a gate script reads a commit with `just ogy --rev HEAD check`. The flags `--repo --rev --ontology`
   go before or after the command: `just ogy show <address> --rev HEAD`.
 - Every write is checked; fix what it refuses. Run `just ogy check` before you hand over: every finding is an error, there are no
   warnings. Exit codes: 0 ok, 1 findings, 2 usage, 3 refused, 4 not found.
@@ -162,3 +162,51 @@ there; everything else lives in the area that owns it. Change it only through og
   answer with `just ogy answer ... --delegated <that decision>`; `just ogy dropped` lists those answers, and you list them to the
   owner at session end.
 <!-- END OGY -->
+
+<!-- BEGIN SHELF RESOLVER BLOCK — managed by shelf's onboarding; safe to re-run -->
+### The shelf — shared micro-software you consume
+
+This project consumes **the shelf** (`github.com/yoselabs/shelf`) — shared, ownable,
+contract-guaranteed software pieces, pinned in `pyproject.toml` by git tag. Reach for it before
+hand-rolling substrate; adopt only if **DEEP · STABLE · WINS**; contribute back by *promotion*.
+
+**Three things fire the loop**, not one: substrate glue you are about to write; a bug whose root
+cause was a *dependency's* behaviour; and — the quiet one — a dependency that worked fine and was
+merely **verbose**, where you wrote an expression and thought "why isn't this a method?". "Stop
+caring about X" includes how much you must type to use X. Promote the **thing** a domain has (a type
+the consumer holds), name it `any-<domain>`, never `<lib>-extra`.
+
+**Full behaviour = the shelf loop.** Resolve it **once per session, lazily** — the first time you
+consider adopting or promoting substrate, never at startup:
+
+1. Find the local clone: `$SHELF_HOME` → `../shelf` → `~/Workspaces/shelf`.
+2. If absent (greenfield), clone it once: `git clone https://github.com/yoselabs/shelf ~/Workspaces/shelf`.
+3. Read `<shelf>/docs/agent-loop.md` and follow it. Load once; cache for the session.
+
+Never hit GitHub to start a session or to write code — only to clone (once) or during an actual
+adopt/promote (a lazy `git pull` at that checkpoint). Never commit a local `path=`/editable shelf
+source (the commit guard blocks it).
+<!-- END SHELF RESOLVER BLOCK -->
+
+<!-- blueprint:begin -->
+## Working agreement (managed by blueprint; do not edit between the markers)
+
+Done = the bead's scenarios green and `just check` green. Never `--no-verify`. Commit only on the owner's yes.
+Read a file below when its trigger applies, not before.
+
+| file | read when |
+|---|---|
+| [docs/agents/constitution.md](docs/agents/constitution.md) | before changing anything: how work is done here |
+| [docs/agents/working-with-agents.md](docs/agents/working-with-agents.md) | at session start and handoff: loop, rules, survey |
+| [docs/agents/gate.md](docs/agents/gate.md) | when a check fails, or you add one or touch hooks |
+| [docs/agents/testing.md](docs/agents/testing.md) | before writing or changing any test |
+| [docs/agents/architecture.md](docs/agents/architecture.md) | before adding a module, dependency or layer |
+| [docs/agents/health.md](docs/agents/health.md) | before planning a bead: the trends that say slicing is failing |
+| [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md) | before creating, claiming or closing work (`bd`) |
+| [docs/agents/domain.md](docs/agents/domain.md) | before naming a concept or recording a decision; index: `docs/adr/INDEX.md` |
+| [docs/agents/python.md](docs/agents/python.md) | before writing or changing python code |
+| [docs/agents/shell.md](docs/agents/shell.md) | before writing or changing shell code |
+| [docs/agents/mcp.md](docs/agents/mcp.md) | before writing or changing mcp code |
+
+Run `/blueprint` to audit this repo's setup; it changes nothing until the owner says yes.
+<!-- blueprint:end -->

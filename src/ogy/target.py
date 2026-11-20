@@ -1,15 +1,15 @@
 """A knowledge base to read: its repository, commit and ontology (its folder is `docs/kb`); the merge base its checks compare against."""
 
 from dataclasses import dataclass, replace
-from pathlib import Path
+lazy from pathlib import Path
 
 from git_porcelain import GitError, RealRepo
 
 from ogy.check import check
-from ogy.model import Finding
 from ogy.ontology import DEFAULT_ONTOLOGY, Ontology, named
 from ogy.snapshot import Snapshot, load
 from ogy.source import KB_DIR, Source, open_source
+lazy from ogy.model import Finding
 
 
 @dataclass(frozen=True)
@@ -40,7 +40,7 @@ def merge_base(target: Target) -> str | None:
         repo = RealRepo(target.repo)
         found = repo.merge_base(rev, "main")
         return None if found is None or found == repo.commit(rev) else str(found)
-    except (GitError, ValueError):
+    except GitError, ValueError:
         return None
 
 
@@ -50,5 +50,9 @@ def worktree_findings(target: Target) -> list[Finding]:
     source, snapshot = here.read()
     found = merge_base(here)
     older = open_source(here.repo, found, here.kb, required=False) if found else None
-    return check(snapshot, source, older if older is not None and older.listing() else None,  # none at the base: nothing to compare
-                 product=here.repo.resolve().name)
+    return check(
+        snapshot,
+        source,
+        older if older is not None and older.listing() else None,  # none at the base: nothing to compare
+        product=here.repo.resolve().name,
+    )

@@ -6,6 +6,7 @@ once, in four cells (fact, kind, links, why), with a kind cell that is not empty
 tolerated and reported. Prints one line per file and exits 1 when any file is malformed.
 """
 
+import argparse
 import re
 import sys
 from pathlib import Path
@@ -44,10 +45,12 @@ def main(paths: list[str]) -> int:
         found = problems(text)
         extra = sum(1 for line in text.splitlines() if line.strip() and not line.lstrip().startswith("|"))
         note = f" ({extra} lines outside the table)" if extra else ""
-        print(f"{name}: {'MALFORMED: ' + '; '.join(found) if found else 'ok'}{note}")
+        sys.stdout.write((f"{name}: {'MALFORMED: ' + '; '.join(found) if found else 'ok'}{note}") + "\n")
         bad += bool(found)
     return 1 if bad else 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    cli = argparse.ArgumentParser(description="Check that each run file holds a well-formed fact table.")
+    cli.add_argument("paths", nargs="+", help="run files to check")
+    sys.exit(main(cli.parse_args().paths))

@@ -16,16 +16,32 @@
 #   --no-session-persistence  nothing kept for a later run to find
 # The run starts in an empty temporary folder, so no project file is in reach.
 set -uo pipefail
-if [ $# -ne 5 ]; then echo "usage: run.sh TAG MODEL EFFORT ARM N" >&2; exit 2; fi
+if [ $# -ne 5 ]; then
+  echo "usage: run.sh TAG MODEL EFFORT ARM N" >&2
+  exit 2
+fi
 tag=$1 model=$2 effort=$3 arm=$4 n=$5
-case "$model" in claude-*-*) ;; *) echo "MODEL must be a full model id (claude-...), not an alias: $model" >&2; exit 2 ;; esac
+case "$model" in claude-*-*) ;; *)
+  echo "MODEL must be a full model id (claude-...), not an alias: $model" >&2
+  exit 2
+  ;;
+esac
 here=$(cd "$(dirname "$0")" && pwd)
 out="$here/runs/$tag"
-if [ ! -f "$here/inputs/$arm.md" ]; then echo "no input for arm $arm" >&2; exit 2; fi
-if [ -e "$out/$arm-$n.md" ] || [ -e "$out/meta/$arm-$n.json" ]; then echo "exists: $tag/$arm-$n" >&2; exit 2; fi
+if [ ! -f "$here/inputs/$arm.md" ]; then
+  echo "no input for arm $arm" >&2
+  exit 2
+fi
+if [ -e "$out/$arm-$n.md" ] || [ -e "$out/meta/$arm-$n.json" ]; then
+  echo "exists: $tag/$arm-$n" >&2
+  exit 2
+fi
 mkdir -p "$out/meta" "$out/excluded"
 work=$(mktemp -d)
-{ cat "$here/inputs/$arm.md"; printf '\nOutput path: answer.md\n'; } | (cd "$work" && claude -p \
+{
+  cat "$here/inputs/$arm.md"
+  printf '\nOutput path: answer.md\n'
+} | (cd "$work" && claude -p \
   --model "$model" --effort "$effort" --safe-mode --restricted --disable-slash-commands --strict-mcp-config \
   --no-session-persistence --tools Write --permission-mode acceptEdits --permission-prompts none \
   --output-format json) >"$out/meta/$arm-$n.json"

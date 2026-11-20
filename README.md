@@ -271,7 +271,7 @@ ogy holds business logic: kinds, checks, status, decisions, the removed ledger a
 live in [shelf](https://github.com/yoselabs/shelf) packages: Git access (`git-porcelain`), YAML (`any-yaml`, `yaml-merge`),
 Markdown anchors (`any-markdown`), hashes (`content-digest`), Python symbols (`py-symbols`), MCP tools (`argparse-mcp` on
 FastMCP 3), atomic writes (`atomic-io`), the write lock (`process-lock`), agent tables (`lean-wire`), settings and managed
-blocks (`settings-base`, `managed-region`). `test-reach` is a dev dependency with pytest. `ruff.toml` bans the raw libraries
+blocks (`settings-base`, `managed-region`). `test-reach` is a dev dependency with pytest. the banned-api table in `pyproject.toml` bans the raw libraries
 (ruamel, ast, hashlib, coverage, pytest, argparse internals, raw git) in `src`. See [docs/shelf-audit.md](https://github.com/yoselabs/ogy/blob/979df808f576/docs/shelf-audit.md).
 
 ## Develop

@@ -1,11 +1,14 @@
 """Links: which values of an entry are links, and what a link names (a full address, or a local key of a nearby part)."""
 
-from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from ogy.kinds import ANY, FieldType, Holds
 from ogy.model import Address, Entry, Problem, link_values, parse_address
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
 
 
 @dataclass(frozen=True)

@@ -17,7 +17,7 @@ import any_yaml
 
 from ogy.kinds import Holds, Kind, Shape, Was
 from ogy.layout import BUILT_DIR, REMOVED_FILE
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
 
 type Files = Mapping[str, str]
 type Parts = Mapping[str, tuple[Kind, Was | None]]  # a key in an entry -> the part kind under it, the old kind it was kept as
@@ -30,10 +30,9 @@ class Retype:
         self.ontology = ontology
         self.kinds = ontology.renamed_kinds()  # old name -> the kind now
         self.files = {old.file: kind.file for kind in self.kinds.values() for old in kind.was if old.file and kind.file}
-        self.marks = (*(f"/{old}" for old in self.kinds), *(f"{old.key}:" for kind in self.kinds.values() for old in kind.was
-                                                            if old.key))
+        self.marks = (*(f"/{old}" for old in self.kinds), *(f"{old.key}:" for kind in self.kinds.values() for old in kind.was if old.key))
 
-    def _kinds(self, text: str, back: bool) -> list[list[str]] | None:
+    def _kinds(self, text: str, *, back: bool) -> list[list[str]] | None:
         """Each segment of the address `text` as the names it may have (the old names, with `back`), None for other text."""
         segments = text.split("/")
         head = 2 if segments[0] in self.ontology.layers else 1 if segments[0] in self.ontology.fixed_folders() else 0
@@ -75,8 +74,11 @@ class Retype:
 
     def stale(self, rel: str, text: str) -> bool:
         """The file holds an old name: its path, an address or a part key may change (a cheap test, before any parse)."""
-        return bool(self.kinds) and rel.rsplit("/", 1)[-1] != REMOVED_FILE and (
-            self.path(rel) != rel or any(mark in text for mark in self.marks))
+        return (
+            bool(self.kinds)
+            and rel.rsplit("/", 1)[-1] != REMOVED_FILE
+            and (self.path(rel) != rel or any(mark in text for mark in self.marks))
+        )
 
     def was(self, rel: str) -> Was | None:
         """The old kind whose entries an entry file held before the rename (None: the file kept its kind)."""
@@ -157,7 +159,7 @@ class Retype:
             parts |= {part.key: (part, None)} if part.key else {}
             parts |= {was.key: (part, was) for was in part.was if was.key}  # only an old key tells an old part from a new one
         done = self._mapping(data, parts, old.renamed if old else {})
-        for field, value in (old.defaults if old else {}).items():
+        for field, value in old.defaults.items() if old else ():
             done.setdefault(field, value)
         return done
 
@@ -191,11 +193,15 @@ def collisions(ontology: Ontology, files: Files) -> dict[str, str]:
         if len(rels) < 2:
             continue
         if new in rels:
-            why = (f"{' and '.join(map(_named, moving))} would move onto {_named(new)}, which is already there: `ogy move` one "
-                   "of them to a new id first")
+            why = (
+                f"{' and '.join(map(_named, moving))} would move onto {_named(new)}, which is already there: `ogy move` one "
+                "of them to a new id first"
+            )
         else:
-            why = (f"{' and '.join(map(_named, moving))} would both become {_named(new)}: `ogy move` one of them to a new id "
-                   "first, with the ogy version (its kinds) from before the merge")
+            why = (
+                f"{' and '.join(map(_named, moving))} would both become {_named(new)}: `ogy move` one of them to a new id "
+                "first, with the ogy version (its kinds) from before the merge"
+            )
         found |= dict.fromkeys(rels, why)
     return found
 
@@ -226,8 +232,10 @@ def retype(ontology: Ontology, files: Files, stuck: Mapping[str, str] | None = N
 def applied(ontology: Ontology, files: Files, stuck: Mapping[str, str] | None = None) -> dict[str, str]:
     """The files as `ogy migrate` leaves them after the kind renames."""
     changes = retype(ontology, files, stuck)
-    return {**{rel: text for rel, text in files.items() if rel not in changes}, **{rel: text for rel, text in changes.items()
-                                                                                  if text is not None}}
+    return {
+        **{rel: text for rel, text in files.items() if rel not in changes},
+        **{rel: text for rel, text in changes.items() if text is not None},
+    }
 
 
 def problems(ontology: Ontology, files: Files) -> dict[str, str]:
@@ -235,5 +243,8 @@ def problems(ontology: Ontology, files: Files) -> dict[str, str]:
     two files that would become one is moved."""
     work = Retype(ontology)
     renamed = ", ".join(f"{old} is now {kind.kind}" for old, kind in sorted(work.kinds.items()))
-    return {rel: f"holds old kind names ({renamed}): run `ogy migrate`" for rel, text in files.items()
-            if work.stale(rel, text) and (work.path(rel) != rel or work.text(rel, text) != text)} | collisions(ontology, files)
+    return {
+        rel: f"holds old kind names ({renamed}): run `ogy migrate`"
+        for rel, text in files.items()
+        if work.stale(rel, text) and (work.path(rel) != rel or work.text(rel, text) != text)
+    } | collisions(ontology, files)

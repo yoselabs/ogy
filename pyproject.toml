@@ -15,7 +15,6 @@ dependencies = [
     "content-digest==0.1.0",
     "py-symbols==0.1.0",
     "fastmcp>=3.4,<4",
-    "mcp<2",
     "atomic-io==0.2.0",
     "git-porcelain==0.24.0",
     "lean-wire==0.3.0",
@@ -23,16 +22,34 @@ dependencies = [
     "pydantic==2.14.3",
     "process-lock==0.2.1",
     "settings-base==0.1.0",
-    "yaml-merge==0.2.0",
 ]
 
 [project.scripts]
-ogy = "ogy.cli:main"
+ogy = "ogy.entry:main"
 
 [dependency-groups]
-dev = ["pytest==9.2.0", "test-reach==0.1.0", "verb-cli==0.2.0"]
+dev = [
+    "blueprint",
+    "any-gate-python[pytest]",
+    "any-gate",
+    "pytest==9.2.0",
+    "test-reach==0.1.0",
+    "verb-cli==0.2.0",
+    "rust-just==1.59.0",
+    "pytest-cov==7.1.0",
+    "ruff==0.17.0",
+    "pyrefly==1.3.2",
+    "codespell==2.4.3",
+    "deptry==0.25.1",
+    "import-linter==2.15",
+]
 
 [tool.uv.sources]
+blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.5.0" }
+any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "any-gate-python-v0.1.2" }
+stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "any-gate-python-v0.1.2" }
+any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "any-lease-v0.1.0" }
+any-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate", tag = "any-gate-python-v0.1.2" }
 test-reach = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/test-reach", tag = "test-reach-v0.1.0" }
 verb-cli = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/verb-cli", tag = "verb-cli-v0.2.0" }
 atomic-io = { git = "https://github.com/yoselabs/shelf.git", subdirectory = "packages/atomic-io", tag = "atomic-io-v0.2.0" }
@@ -64,7 +81,228 @@ testpaths = ["tests"]
 addopts = "--import-mode=importlib -p no:cacheprovider"
 
 [tool.uv]
+required-version = ">=0.13.0"
+# ogy imports no mcp module itself: the former direct pin on the transitive dependency of fastmcp is now a constraint.
+constraint-dependencies = ["mcp<2"]
 override-dependencies = [
     "atomic-io @ git+https://github.com/yoselabs/shelf.git@atomic-io-v0.2.0#subdirectory=packages/atomic-io",
     "yaml-merge @ git+https://github.com/yoselabs/shelf.git@yaml-merge-v0.2.0#subdirectory=packages/yaml-merge",
+    "content-digest @ git+https://github.com/yoselabs/shelf.git@content-digest-v0.1.0#subdirectory=packages/content-digest",
+    "process-lock @ git+https://github.com/yoselabs/shelf.git@process-lock-v0.2.1#subdirectory=packages/process-lock",
 ]
+
+[tool.ruff]
+target-version = "py315"
+src = ["src"]
+line-length = 140
+output-format = "concise"
+
+[tool.ruff.format]
+# ruff 0.17 formats the python fenced in markdown. The READMEs' snippets are hand-aligned prose
+# illustrations, not code under test, and the catalog projects some of them: keep them as written.
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = [
+    # correctness & the core
+    "F",    # pyflakes — real bugs (undefined names, unused imports)
+    "E", "W",  # pycodestyle
+    "PLC", "PLE", "PLR", "PLW",  # pylint — the useful quarter of it
+    "B",    # bugbear — likely-wrong constructs
+    "BLE",  # no blind `except:` / `except Exception` swallowing
+    "TRY",  # tryceratops — exception antipatterns
+    "RSE",  # raise — no needless parens on re-raise
+    "EM",   # exception messages assigned to a var (clean tracebacks)
+    "RET",  # return-branch hygiene
+    "SIM",  # simplifiable constructs
+    "C4",   # comprehension quality
+    "C90",  # mccabe — cyclomatic complexity ceiling
+    "PIE",  # misc lints
+    "FURB", # refurb — modernizations
+    "FLY",  # f-string over str.join
+    # typing & annotations
+    "ANN",  # full annotation enforcement — everything typed
+    "UP",   # pyupgrade — modern syntax for the target version
+    "FA",   # future annotations where needed
+    "TC",   # type-checking-only imports go under TYPE_CHECKING
+    "PYI",  # stub/typing hygiene
+    # imports & structure
+    "I",    # isort
+    "TID",  # tidy-imports (no relative parent imports)
+    "ICN",  # import-convention (np, pd, …)
+    "INP",  # no implicit-namespace packages (missing __init__)
+    "A",    # flake8-builtins — the builtin-named-concept convention
+    "N",    # pep8-naming
+    "SLF",  # no private-member access across boundaries
+    # safety & correctness of effects
+    "S",    # bandit — security (subprocess, eval, tmp, etc.)
+    "DTZ",  # timezone-aware datetimes only
+    "LOG", "G",  # logging done right (no f-strings in log calls)
+    "T10",  # no leftover breakpoint()/pdb
+    "T20",  # no stray print() in library code
+    "ASYNC",# async pitfalls
+    "PTH",  # pathlib over os.path
+    "FBT",  # no boolean-trap positional args
+    "ISC",  # implicit string concat (ISC001 off — formatter owns it)
+    # docs & rot
+    # `D` (pydocstyle) is deliberately absent. Docstrings are written where they carry
+    # a decision — why this exists, what breaks without it — not on every public name.
+    # The full google convention would have a2kay writing 379 of them, 110 of those on
+    # methods whose signature already says everything. The owner's call, 2026-09-12. The
+    # docstrings already written here stay; they just stop being mandatory.
+    "ERA",  # no commented-out code (leave it smaller, constitution III/VIII)
+    "ARG",  # no unused arguments
+    "PERF", # obvious performance footguns
+    "RUF",  # ruff's own rules (RUF100 catches stale noqa)
+]
+ignore = [
+    "ANN401",  # allow `Any` in genuinely-variadic *args/**kwargs
+    "PLR0913", # arg count — deep functions legitimately take many args
+    "PLR2004", # magic values — too noisy at this scale; revisit if it bites
+    "ISC001",  # single-line implicit concat — the formatter owns this; would conflict
+    "TRY003",  # long messages in raise — EM handles the real concern; TRY003 over-fires
+    "S603",    # subprocess call w/ shell=False — the whole point of git-porcelain; audited by design
+    # S607 partial path: `git-porcelain` shells out to `git` BY NAME on purpose, and
+    # hardcoding `/usr/bin/git` is wrong on any machine that is not this one. Global
+    # rather than per-file so a consumer that shells out from `src/` inherits the same
+    # answer instead of rediscovering it.
+    "S607",
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# OGY's own rules (AGENTS.md): processes, YAML, hashes, Python symbols, test reach and MCP tools go through shelf packages.
+"subprocess".msg = "Git and processes go through shelf packages (git-porcelain)."
+"ruamel".msg = "YAML goes through shelf's any-yaml."
+"ruamel.yaml".msg = "YAML goes through shelf's any-yaml."
+"ast".msg = "Python symbols go through shelf's py-symbols."
+"hashlib".msg = "Hashes go through shelf's content-digest (git-porcelain.blob_sha for Git blobs)."
+"coverage".msg = "Which code a test reaches is shelf's test-reach."
+"pytest".msg = "pytest is for tests only; running tests for reach is shelf's test-reach."
+"argparse._SubParsersAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._StoreTrueAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._StoreFalseAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._AppendAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"argparse._HelpAction".msg = "Do not reach into argparse internals; MCP tools come from shelf's argparse-mcp."
+"git_porcelain.run_git".msg = "Use the typed git-porcelain API (RealRepo, head, git_dir ...), not raw git."
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.ruff.lint.flake8-builtins]
+# our modules are named for the concept they own; that is the convention, not a clash.
+builtins-allowed-modules = ["types"]
+
+[tool.ruff.lint.flake8-type-checking]
+# Pydantic resolves field annotations at runtime, so a model's imports must NOT move
+# behind `TYPE_CHECKING`. Found in a2kay: `TC --fix` moved them and every model failed
+# to build. Five packages here declare pydantic, so this repo is exposed the same way.
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+
+[tool.ruff.lint.per-file-ignores]
+# One relaxation list, shared with every consumer. A test asserts, uses magic numbers and fake tokens, binds a boolean
+# positionally, reaches into the private of the thing it tests, and prints its report: all of that is what a test is for.
+# TID251: tests are pytest, set repositories up with raw git (conftest) and read the CLI parser's subcommands (test_mcp);
+# keep subprocess out of tests by review.
+"tests/**" = ["ANN", "ARG", "S101", "S104", "S105", "S106", "PLR2004", "PLR0915", "PYI034", "TRY300", "TRY301", "FBT001", "SLF", "INP", "T201", "TID251"]
+# evals/: pre-registered protocol scripts, run as `python3 -I <script>`, never imported. Their hyphenated names are cited by the
+# protocol's own documents, so the files stay as named (INP001: not a package). The two blind.py shuffle with a seeded
+# random.Random so a blinding is reproducible (S311: not cryptography).
+"evals/blind.py" = ["INP001", "S311"]
+"evals/naming/v2/blind.py" = ["INP001", "S311"]
+"evals/naming/v2/check-neutral.py" = ["INP001"]
+"evals/naming/v2/check-run.py" = ["INP001"]
+"evals/naming/v2/guess-rate.py" = ["INP001"]
+"evals/naming/v2/tally.py" = ["INP001"]
+"evals/naming/v2/blame-list.py" = ["INP001"]
+
+[tool.deptry]
+known_first_party = ["ogy"]
+
+[tool.codespell]
+# bench/corpus (source PDFs, binary) + bench/outputs (raw engine output, incl.
+# scanned-page OCR text) are generated/fixture data, not authored content —
+# real typos there are the engines' problem, not this repo's.
+#
+# tests/fixtures/*.html likewise: those are pages CAPTURED VERBATIM from live
+# sites. Editing one to satisfy a spellchecker would make it a hand-written
+# approximation — the precise defect dom-schema exists to prevent — so the
+# fixture is authoritative and the linter yields to it, never the reverse.
+#
+# docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
+skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
+# doctrine/glossary coinages the dictionary flags but we mean on purpose.
+ignore-words-list = "mis,createable,wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
+# A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
+ignore-regex = "\\[[A-Za-z]{2}\\][a-z]+"
+check-filenames = ""
+
+# ── coverage — measured by `just check-all` (the release gate); the floor is `fail_under` below ───
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+fail_under = 65
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",  # protocol/abstract stubs
+]
+
+# Shared SLOC caps, copied to consumers with the linter preset.
+[tool.pyrefly]
+preset = "strict"
+use-ignore-files = false
+search-path = [".", "tests"]
+
+[tool.pyrefly.errors]
+deprecated = "error"
+untyped-import = "error"
+unnecessary-type-conversion = "error"
+unannotated-return = "error"
+no-any-return-explicit = "error"
+no-any-return-implicit = "error"
+unused-ignore = "error"
+unused-type-ignore = "error"
+unnecessary-comparison = "error"
+missing-super-call = "error"
+implicit-bool = false
+unused-call-result = false
+
+[[tool.pyrefly.sub-config]]
+matches = "tests/**"
+
+[tool.pyrefly.sub-config.errors]
+implicit-any-parameter = false
+implicit-any-type-argument = false
+implicit-any-lambda = false
+implicit-any-attribute = false
+implicit-any-empty-container = false
+unannotated-return = false
+
+
+# ── architecture: import edges (import-linter); banned APIs live in [tool.ruff.lint.flake8-tidy-imports.banned-api] ──
+[tool.importlinter]
+root_package = "ogy"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Only the MCP server module imports the MCP libraries"
+type = "forbidden"
+source_modules = ["ogy"]
+forbidden_modules = ["fastmcp", "mcp", "argparse_mcp"]
+ignore_imports = ["ogy.mcp_server -> fastmcp", "ogy.mcp_server -> argparse_mcp"]
+
+[[tool.importlinter.contracts]]
+name = "Entry points sit above the command layer, which sits above the operations"
+type = "layers"
+layers = ["ogy.__main__", "ogy.entry", "ogy.mcp_server", "ogy.cli", "ogy.commands", "ogy.ops"]
+
+[[tool.importlinter.contracts]]
+name = "No import cycles between the modules of ogy"
+type = "acyclic_siblings"
+ancestors = ["ogy"]

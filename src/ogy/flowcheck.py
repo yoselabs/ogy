@@ -3,10 +3,10 @@
 from collections import deque
 from dataclasses import dataclass
 
-from ogy.kinds import Flow
 from ogy.model import Address, Finding, Problem
-from ogy.snapshot import Snapshot
-from ogy.source import Source
+lazy from ogy.kinds import Flow
+lazy from ogy.snapshot import Snapshot
+lazy from ogy.source import Source
 
 
 @dataclass(frozen=True)
@@ -29,8 +29,9 @@ def graph(snapshot: Snapshot, flow: Flow, container: Address) -> Graph:
     parts = snapshot.links.parts
     steps = parts(container, flow.step)
     rows = {step: {kind: parts(step, kind) for kind in (flow.choice, flow.case, flow.timeout)} for step in steps}
-    targets = {step: {target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then)}
-               for step in steps}
+    targets = {
+        step: {target for kind in rows[step].values() for row in kind for target in link(snapshot, row, flow.then)} for step in steps
+    }
     return Graph(container, steps, parts(container, flow.end), rows, targets)
 
 
@@ -156,13 +157,24 @@ def orphans(snapshot: Snapshot, flow: Flow, kind: str) -> list[Finding]:
     started = {address for address in flows if _root(snapshot, flow, address)}
     grown = True
     while grown:
-        led = {address for address in flows if address not in started and any(
-            _top(source) in started for field in (flow.then, flow.calls) for source in snapshot.links.backward(address, field))}
+        led = {
+            address
+            for address in flows
+            if address not in started
+            and any(_top(source) in started for field in (flow.then, flow.calls) for source in snapshot.links.backward(address, field))
+        }
         started |= led
         grown = bool(led)
-    return [Finding(Problem.NEVER_STARTED, snapshot.entries[address].path, "nothing starts it: no actor on its first step, no "
-                    f"{' or '.join(flow.roots)}, and no started workflow leads to it", address)
-            for address in flows if address not in started]
+    return [
+        Finding(
+            Problem.NEVER_STARTED,
+            snapshot.entries[address].path,
+            f"nothing starts it: no actor on its first step, no {' or '.join(flow.roots)}, and no started workflow leads to it",
+            address,
+        )
+        for address in flows
+        if address not in started
+    ]
 
 
 def check_flows(snapshot: Snapshot, _source: Source) -> list[Finding]:

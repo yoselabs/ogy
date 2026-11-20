@@ -1,6 +1,6 @@
 """Editing by address, the author's comments, YAML 1.2 and the fingerprint."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 import any_yaml
 import pytest
@@ -40,8 +40,11 @@ def test_put_adds_entity_list_item_and_parts(editor: Editor) -> None:
     editor.put(ASK.part("choice", "stay"), {"label": "Stay", "then": "done"})
     snapshot = editor.snapshot()
     assert {str(address) for address in snapshot.entries} >= {
-        "product/app/actor/member", "product/app/quantity/late", "product/app/workflow/borrow/step/ask/timeout",
-        "product/app/workflow/borrow/step/ask/choice/stay"}
+        "product/app/actor/member",
+        "product/app/quantity/late",
+        "product/app/workflow/borrow/step/ask/timeout",
+        "product/app/workflow/borrow/step/ask/choice/stay",
+    }
     assert snapshot.entries[Address("product", "app", (("quantity", "late"),))].path == "product/app/quantities.yml"
     assert snapshot.findings == []
 

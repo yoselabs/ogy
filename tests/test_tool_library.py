@@ -20,13 +20,26 @@ ROOT = Path(__file__).parent / "fixtures" / "tool-library"
 P, S = "product/lending", "software/lending"
 BORROW = f"{P}/workflow/borrow/step"
 UNBUILT = [  # D15: no step, handler or quantity, and an entity only with transitions (tool has none)
-    f"{P}/rule/agent-decides-fee-details", f"{P}/rule/at-most-max-loans", f"{P}/rule/fees-round-up",
-    f"{P}/rule/tools-are-checked-on-return", f"{BORROW}/ask/choice/leave", f"{BORROW}/ask/timeout", f"{BORROW}/record/case/full",
-    f"{BORROW}/record/case/otherwise", f"{BORROW}/standing/case/otherwise", f"{BORROW}/standing/case/owes",
-    f"{P}/workflow/close-loan/step/close/case/otherwise", f"{P}/workflow/notify/step/send/case/ok",
-    f"{P}/workflow/notify/step/send/case/otherwise", f"{P}/workflow/remind/step/call/case/otherwise",
-    f"{P}/workflow/remind/step/call/case/sent", f"{S}/interface/borrow-cli", f"{S}/setting/remind-every",
-    f"{S}/rule/one-reminder-a-day", f"{S}/dependency/mailer/workaround/slow-at-night", f"{S}/interface/leave-button",
+    f"{P}/rule/agent-decides-fee-details",
+    f"{P}/rule/at-most-max-loans",
+    f"{P}/rule/fees-round-up",
+    f"{P}/rule/tools-are-checked-on-return",
+    f"{BORROW}/ask/choice/leave",
+    f"{BORROW}/ask/timeout",
+    f"{BORROW}/record/case/full",
+    f"{BORROW}/record/case/otherwise",
+    f"{BORROW}/standing/case/otherwise",
+    f"{BORROW}/standing/case/owes",
+    f"{P}/workflow/close-loan/step/close/case/otherwise",
+    f"{P}/workflow/notify/step/send/case/ok",
+    f"{P}/workflow/notify/step/send/case/otherwise",
+    f"{P}/workflow/remind/step/call/case/otherwise",
+    f"{P}/workflow/remind/step/call/case/sent",
+    f"{S}/interface/borrow-cli",
+    f"{S}/setting/remind-every",
+    f"{S}/rule/one-reminder-a-day",
+    f"{S}/dependency/mailer/workaround/slow-at-night",
+    f"{S}/interface/leave-button",
     f"{S}/interface/loans-report",
 ]
 WORK = {
@@ -39,8 +52,16 @@ WORK = {
     (f"{S}/setting/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
     # unused: nothing satisfies or is constrained by the rule; nothing links to the setting; no effect fires the transition
-    *((address, "unused") for address in (f"{P}/entity/loan/transition/return", f"{P}/rule/agent-decides-fee-details",
-                                          f"{P}/rule/fees-round-up", f"{S}/setting/remind-every", f"{S}/setting/smtp-host")),
+    *(
+        (address, "unused")
+        for address in (
+            f"{P}/entity/loan/transition/return",
+            f"{P}/rule/agent-decides-fee-details",
+            f"{P}/rule/fees-round-up",
+            f"{S}/setting/remind-every",
+            f"{S}/setting/smtp-host",
+        )
+    ),
 }
 # kind.field -> why this knowledge base leaves it empty
 UNEXERCISED: dict[str, str] = {}
@@ -71,7 +92,9 @@ def filled(snapshot: Snapshot) -> set[str]:
         found |= {f"{kind.kind}.{name}" for name, value in entry.fields.items() if value is not None}
         for part in snapshot.ontology.parts_of(kind.kind):
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST else None
-            found |= {f"{part.kind}.{name}" for item in items or [] if isinstance(item, dict) for name in item}
+            found |= {
+                f"{part.kind}.{name}" for item in (items if isinstance(items, list) else []) if isinstance(item, dict) for name in item
+            }
     return found
 
 

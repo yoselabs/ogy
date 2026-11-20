@@ -1,6 +1,6 @@
 """Words nobody agreed yet wait for the owner (an error only on a land), and `review --from docs|code` pages them."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 from git_porcelain import run_git
 from tests.conftest import commit
@@ -9,12 +9,15 @@ from tests.test_writes import w
 
 from ogy import cli
 
-TERMS = ("- {id: land, word: land, says: To finish a delivery., avoid: [merge, complete], src: [doc:<rev>:docs/spec.md#land]}\n"
-         "- {id: gate, word: gate, says: The check before a land., src: [doc:<rev>:docs/spec.md#land]}\n")
+TERMS = (
+    "- {id: land, word: land, says: To finish a delivery., avoid: [merge, complete], src: [doc:<rev>:docs/spec.md#land]}\n"
+    "- {id: gate, word: gate, says: The check before a land., src: [doc:<rev>:docs/spec.md#land]}\n"
+)
 SLOT = "- {id: slot, word: slot, says: A place to work., src: [doc:<rev>:docs/spec.md#work]}\n"  # a word two areas use
 SPEC = "# Spec\n\n## Land\n\nLand is finishing.\n\n## Work\n\nA slot is a place.\n"
-PROPOSES = ("question: Name it?\noptions:\n  a: {{label: A, sets: {{product/app/term/{word}: {{says: {says}}}}}}}\n"
-            "proposal: {{chose: a, why: b}}\n")
+PROPOSES = (
+    "question: Name it?\noptions:\n  a: {{label: A, sets: {{product/app/term/{word}: {{says: {says}}}}}}}\nproposal: {{chose: a, why: b}}\n"
+)
 SAYS = {"land": "To finish a delivery.", "gate": "The check before a land."}
 
 
@@ -81,8 +84,7 @@ def test_review_from_docs_yes_with_numbers(repo: Path) -> None:
 
 
 def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
-    (repo / "docs/kb/product/app/capabilities.yml").write_text(
-        "- {id: borrow, says: A member borrows., src: [code:src/x.py#f]}\n")
+    (repo / "docs/kb/product/app/capabilities.yml").write_text("- {id: borrow, says: A member borrows., src: [code:src/x.py#f]}\n")
     (repo / "src").mkdir()
     (repo / "src/x.py").write_text("def f():\n    pass\n")
     lines = w(repo, "review", "--from", "code")[1]
@@ -95,8 +97,8 @@ def test_review_screen_puts_the_proposal_first_and_counts_decisions_apart(repo: 
     decision = "question: How much?\noptions:\n  low: {label: Low, sets: {product/app/quantity/fee: {is: 1}}}\n"
     (repo / "docs/kb/product/app/decision").mkdir()
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(
-        decision + "  high: {label: High, sets: {product/app/quantity/fee: {is: 2}}}\n"
-        "proposal: {chose: high, why: fees are small}\n")
+        decision + "  high: {label: High, sets: {product/app/quantity/fee: {is: 2}}}\nproposal: {chose: high, why: fees are small}\n"
+    )
     lines = w(repo, "review")[1]
     text = "\n".join(lines)
     assert lines[0].startswith("round r") and "1 questions open · 0 answered by you | entries:" in lines[1]
@@ -108,11 +110,12 @@ def test_review_screen_puts_the_proposal_first_and_counts_decisions_apart(repo: 
 
 def test_a_decision_reads_answered_by_you_with_the_date(repo: Path) -> None:
     (repo / "docs/kb/product/app/decision").mkdir()
-    (repo / "docs/kb/product/app/decision/fee.yml").write_text(PROPOSES.format(word="x", says="Said.").replace("product/app/term/x",
-                                                                                                               "product/app/quantity/fee")
-                                                  .replace("says: Said.", "is: 3"))
-    done = w(repo, "answer", "product/app/decision/fee", "a", "--said", "Option a", "--where", "ai:claude/1",
-             "--at", "2026-11-12T10:05:00+01:00")
+    (repo / "docs/kb/product/app/decision/fee.yml").write_text(
+        PROPOSES.format(word="x", says="Said.").replace("product/app/term/x", "product/app/quantity/fee").replace("says: Said.", "is: 3")
+    )
+    done = w(
+        repo, "answer", "product/app/decision/fee", "a", "--said", "Option a", "--where", "ai:claude/1", "--at", "2026-11-12T10:05:00+01:00"
+    )
     assert done[0] == cli.OK, done
     shown = w(repo, "show", "product/app/decision/fee")[1]
     assert any(line.startswith("status (computed): answered by you, 2026-11-12") for line in shown), shown
@@ -136,7 +139,10 @@ def test_anchors_lists_a_files_headings_and_missing_doc_offers_the_nearest(repo:
     assert code == cli.OK and lines == ["spec   # Spec", "land     ## Land", "work     ## Work"]
     assert w(repo, "anchors", "docs/none.md")[0] == cli.NOT_FOUND
     (repo / "docs/kb/product/app/glossary.yml").write_text(
-        ("- {id: land, word: land, says: To end., src: [doc:<rev>:docs/spec.md#lnad]}\n"
-         "- {id: gate, word: gate, says: A check., src: [doc:<rev>:docs/spec.md#zzz]}\n").replace("<rev>", rev))
+        (
+            "- {id: land, word: land, says: To end., src: [doc:<rev>:docs/spec.md#lnad]}\n"
+            "- {id: gate, word: gate, says: A check., src: [doc:<rev>:docs/spec.md#zzz]}\n"
+        ).replace("<rev>", rev)
+    )
     found = [line for line in w(repo, "check")[1] if line.startswith("missing-doc")]
     assert any("(did you mean land" in line for line in found) and any("`ogy anchors docs/spec.md` lists them" in line for line in found)

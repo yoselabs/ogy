@@ -1,9 +1,9 @@
 """Agreement, status, the label of an unagreed entry and the review queue. Computed from a snapshot, never stored."""
 
-from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import datetime
 from enum import StrEnum
+lazy from collections.abc import Mapping
+lazy from datetime import datetime
 
 from ogy.declared import Reader, Scheme
 from ogy.fieldtypes import AGREED_HASH
@@ -11,7 +11,7 @@ from ogy.kinds import Holds, Kind
 from ogy.links import link_items, resolve
 from ogy.model import Address, parse_address
 from ogy.settle import Decision, decision_of, decisions, moment, settles, settling_of
-from ogy.snapshot import Snapshot
+lazy from ogy.snapshot import Snapshot
 
 MAX_CARDS = 7
 
@@ -112,7 +112,8 @@ def label(snapshot: Snapshot, address: Address) -> Label:
 
 def sources(snapshot: Snapshot, address: Address) -> list[tuple[str, Scheme]]:
     """The entry's evidence items, each with its scheme."""
-    items = snapshot.entries[address].fields.get(snapshot.ontology.roles.src) or []
+    given = snapshot.entries[address].fields.get(snapshot.ontology.roles.src)
+    items: list[object] = given if isinstance(given, list) else []
     declared = snapshot.ontology.declared
     return [(item, scheme) for item in items if isinstance(item, str) and (scheme := declared.scheme_of(item)) is not None]
 
@@ -137,8 +138,9 @@ def status(snapshot: Snapshot, address: Address, hashes: dict[str, str] | None =
 
 def _member_harms(kind: Kind, fields: Mapping[str, object]) -> list[str]:
     """The harms of the enum members the fields hold (`member_harm:` in the kind file)."""
-    return [tag for name, spec in kind.fields.items() if isinstance(value := fields.get(name), str)
-            for tag in spec.member_harm.get(value, ())]
+    return [
+        tag for name, spec in kind.fields.items() if isinstance(value := fields.get(name), str) for tag in spec.member_harm.get(value, ())
+    ]
 
 
 def harm(snapshot: Snapshot, address: Address) -> str | None:
@@ -180,7 +182,7 @@ def _reason(decision: Decision) -> str:
     """The line under a question: why the AI proposed it, unless the proposal rests on the owner's words (the card's `heard` line)."""
     if decision.answers:
         return ""
-    fields = decision.proposal.fields if decision.proposal and not decision.heard else {}
+    fields: Mapping[str, object] = decision.proposal.fields if decision.proposal and not decision.heard else {}
     value = fields.get(decision.names.why)
     return f"AI proposal because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
@@ -194,12 +196,22 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     said = decision.heard if not decision.answers else None
     addresses = [decision.address.part(names.option, key) for key in keys]
     options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
-    return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
-                snapshot.sentence(decision.address) or "", proposal if isinstance(proposal, str) else "",
-                snapshot.agreed_print(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
-                context=decision.entry.text(names.context) or "",
-                then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
-                earlier=_earlier(decision) if kind == "delegated" else "", alone=asked_alone(snapshot, tags[0] if tags else None))
+    return Card(
+        kind,
+        decision.address,
+        tags[0] if tags else None,
+        sum(count.get(found, 0) for found in settled),
+        snapshot.sentence(decision.address) or "",
+        proposal if isinstance(proposal, str) else "",
+        snapshot.agreed_print(decision.address),
+        options,
+        said if isinstance(said, str) else "",
+        _reason(decision),
+        context=decision.entry.text(names.context) or "",
+        then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
+        earlier=_earlier(decision) if kind == "delegated" else "",
+        alone=asked_alone(snapshot, tags[0] if tags else None),
+    )
 
 
 def _then(snapshot: Snapshot, sets: object) -> tuple[str, ...]:
@@ -254,20 +266,33 @@ def evidence(snapshot: Snapshot, address: Address) -> str:
 def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Address, int]) -> Card:
     """A `yes` or `changed` card; a word of the glossary shows its word, its meaning and the words it is not."""
     fields, glossary = snapshot.entries[address].fields, snapshot.kind_of(address).glossary
-    avoid = fields.get(glossary.avoid) or [] if glossary else []
+    listed = fields.get(glossary.avoid) if glossary else None
+    avoid: list[object] = listed if isinstance(listed, list) else []
     word = str(fields.get(glossary.word) or "") if glossary else ""
     tag = harm(snapshot, address)
-    return Card(kind, address, tag, count.get(address, 0), _says(snapshot, address), alone=asked_alone(snapshot, tag),
-                fingerprint=snapshot.agreed_print(address), evidence=evidence(snapshot, address), word=word,
-                avoid=tuple(str(item) for item in avoid) if word and isinstance(avoid, list) else ())
+    return Card(
+        kind,
+        address,
+        tag,
+        count.get(address, 0),
+        _says(snapshot, address),
+        alone=asked_alone(snapshot, tag),
+        fingerprint=snapshot.agreed_print(address),
+        evidence=evidence(snapshot, address),
+        word=word,
+        avoid=tuple(str(item) for item in avoid) if word and isinstance(avoid, list) else (),
+    )
 
 
 def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
     """Questions and the decisions an agent answered under delegation, then entries decided by AI and entries changed since
     agreed, each group by harm then dependants; at most `limit` in all (None: every one)."""
     count, hashes = dependants(snapshot), agreed_hashes(snapshot)
-    questions = [_asked(snapshot, decision, count, "question" if not decision.answers else "delegated")
-                 for decision in decisions(snapshot) if not decision.answers or delegated(decision)]
+    questions = [
+        _asked(snapshot, decision, count, "question" if not decision.answers else "delegated")
+        for decision in decisions(snapshot)
+        if not decision.answers or delegated(decision)
+    ]
     cards: list[Card] = []
     for address in snapshot.entries:
         if not snapshot.kind_of(address).asked or not snapshot.ontology.carded(snapshot.kind_of(address)):
@@ -277,6 +302,8 @@ def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
                 cards.append(entry_card(snapshot, "changed", address, count))
             case Status.NOBODY if label(snapshot, address) is Label.AI or snapshot.kind_of(address).must_be_agreed:
                 cards.append(entry_card(snapshot, "yes", address, count))
+            case _:
+                pass  # a question is asked from its decision, an entry nobody must agree is not asked
 
     def order(card: Card) -> tuple[int, int, str]:
         return snapshot.ontology.declared.rank(card.harm), -card.dependants, str(card.address)
@@ -308,8 +335,17 @@ def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int])
         members.sort(key=lambda card: (card.address != top, str(card.address)))
         kind = "changed" if any(card.kind == "changed" for card in members) else "yes"
         worst = min((card.harm for card in members), key=snapshot.ontology.declared.rank, default=None)
-        alone.append(Card(kind, top, worst, count.get(top, 0), _says(snapshot, top), fingerprint=snapshot.agreed_print(top),
-                          alone=asked_alone(snapshot, worst),
-                          evidence=evidence(snapshot, top),
-                          members=tuple((card.address, card.text, card.fingerprint) for card in members)))
+        alone.append(
+            Card(
+                kind,
+                top,
+                worst,
+                count.get(top, 0),
+                _says(snapshot, top),
+                fingerprint=snapshot.agreed_print(top),
+                alone=asked_alone(snapshot, worst),
+                evidence=evidence(snapshot, top),
+                members=tuple((card.address, card.text, card.fingerprint) for card in members),
+            )
+        )
     return alone

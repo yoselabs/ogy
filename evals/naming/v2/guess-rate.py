@@ -7,8 +7,13 @@ hit when it says `old` for an A run, or `new` or `new+lines` for a C0 run. A "?"
 gives 50%. Arm C is given beside it, never pooled in; arm B is scored in batches of its own and is not asked.
 """
 
+import argparse
 import sys
 from pathlib import Path
+
+
+def say(text: str) -> None:
+    sys.stdout.write(text + "\n")
 
 
 def main(scoring: Path) -> None:
@@ -29,16 +34,18 @@ def main(scoring: Path) -> None:
             row[2] += guess == "?"
     total = counts["A"][0] + counts["C0"][0]
     if not total:
-        print("no guesses on A or C0 runs read")
+        say("no guesses on A or C0 runs read")
         return
     hits = counts["A"][1] + counts["C0"][1]
     unsure = counts["A"][2] + counts["C0"][2]
-    print(f"old against new, arms A and C0: {hits} of {total} guesses, {hits / total:.0%} (blind guessing: 50%)")
-    print(f"could not tell: {unsure} of {total}")
+    say(f"old against new, arms A and C0: {hits} of {total} guesses, {hits / total:.0%} (blind guessing: 50%)")
+    say(f"could not tell: {unsure} of {total}")
     for arm, (n, hit, _) in counts.items():
         if n:
-            print(f"  arm {arm}: {hit} of {n} on the right side")
+            say(f"  arm {arm}: {hit} of {n} on the right side")
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]))
+    cli = argparse.ArgumentParser(description="Print how often the scorers guessed each blinded run's arm.")
+    cli.add_argument("scoring", type=Path, help="scoring folder holding map.txt and guesses/")
+    main(cli.parse_args().scoring)

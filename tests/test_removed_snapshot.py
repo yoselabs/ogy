@@ -1,7 +1,7 @@
 """R7 against the base: a removed item's snapshot is the entry in the base, or, when the branch changed the entry first, its
 last version on the branch (base..the checked commit), read from Git history and never from the item's `last_seen`."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 import any_yaml
 from git_porcelain import run_git

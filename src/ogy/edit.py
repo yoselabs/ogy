@@ -1,16 +1,16 @@
 """Change entries in the worktree by address, whatever file shape their kind uses. Returns the paths written."""
 
-from collections.abc import Mapping
-from pathlib import Path
+lazy from collections.abc import Mapping
+lazy from pathlib import Path
 
 import any_yaml
 
 from ogy.kinds import Holds, Kind, Shape
 from ogy.layout import path_for
-from ogy.model import Address
-from ogy.ontology import Ontology
 from ogy.snapshot import Snapshot, load
 from ogy.source import WorktreeSource
+lazy from ogy.model import Address
+lazy from ogy.ontology import Ontology
 
 type Data = dict[str, object]
 
@@ -84,7 +84,7 @@ class Editor:
         rel = path_for(kind, address.home, address.key)
         if kind.shape is Shape.LIST:
             data = self._read(rel)
-            items = data if isinstance(data, list) else []
+            items: list[object] = data if isinstance(data, list) else []
             items.append({"id": address.key, **fields})
             return [self._write(rel, items)]
         return [self._write(rel, dict(fields))]
@@ -134,7 +134,7 @@ class Editor:
             (self.root / self.kb / rel).rename(self.root / self.kb / new)
             return [f"{self.kb}/{rel}", f"{self.kb}/{new}"]
         data = self._read(rel)
-        items = data if isinstance(data, list) else []
+        items: list[object] = data if isinstance(data, list) else []
         item = next(item for item in items if isinstance(item, dict) and item.get("id") == address.key)
         rest = [other for other in items if other is not item]
         item = {**item, "id": key} if key else item

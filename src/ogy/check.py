@@ -5,6 +5,7 @@ of evidence, decisions, the glossary, the removed ledgers and the built record a
 """
 
 from collections.abc import Callable
+lazy from collections.abc import Mapping
 
 from ogy.coverage import check_every_area, product_areas
 from ogy.evidencecheck import check_evidence
@@ -47,8 +48,9 @@ class Checker:
     def _fields(self, kind: Kind, entry: Entry) -> None:
         listed = [part for part in self.snapshot.ontology.parts_of(kind.kind) if part.holding is Holds.LIST]
         known = {part.key for part in listed if part.key}
-        for problem, detail in fields_problems(self.snapshot.ontology, self.snapshot.ontology.specs(kind), entry.fields, known,
-                                               old=self.snapshot.ontology.old_names(kind)):
+        for problem, detail in fields_problems(
+            self.snapshot.ontology, self.snapshot.ontology.specs(kind), entry.fields, known, old=self.snapshot.ontology.old_names(kind)
+        ):
             self._add(problem, entry, detail)
         for problem in self._reshape(kind, entry.fields):
             self._add(Problem.NEEDS_MIGRATION, entry, problem)
@@ -64,12 +66,18 @@ class Checker:
                     self._add(problem, entry, f"{part.key}: {detail}")
 
     @staticmethod
-    def _reshape(kind: Kind, fields: dict[str, object]) -> list[str]:
+    def _reshape(kind: Kind, fields: Mapping[str, object]) -> list[str]:
         """An old value the kind revalued, or a part's mapping it folded into a field: `ogy migrate` rewrites it."""
-        found = [f"{name} holds a part's mapping, now its {inner}: run `ogy migrate`" for name, inner in kind.folded.items()
-                 if isinstance(fields.get(name), dict)]
-        return found + [f"{name} {value} is now {', '.join(f'{k} {v}' for k, v in values[value].items())}: run `ogy migrate`"
-                        for name, values in kind.revalued.items() if isinstance(value := fields.get(name), str) and value in values]
+        found = [
+            f"{name} holds a part's mapping, now its {inner}: run `ogy migrate`"
+            for name, inner in kind.folded.items()
+            if isinstance(fields.get(name), dict)
+        ]
+        return found + [
+            f"{name} {value} is now {', '.join(f'{k} {v}' for k, v in values[value].items())}: run `ogy migrate`"
+            for name, values in kind.revalued.items()
+            if isinstance(value := fields.get(name), str) and value in values
+        ]
 
     def _layer(self, kind: Kind, entry: Entry) -> None:
         layer = entry.address.layer
@@ -77,8 +85,12 @@ class Checker:
             self._add(Problem.BAD_LAYER, entry, f"{kind.kind} may live in the layers {list(kind.layers)}, not {layer}")
         if not layer and (folder := kind.moved_folder) is not None and entry.address.parent() is None:
             home = self.snapshot.ontology.moved_homes()[folder]
-            self._add(Problem.NEEDS_MIGRATION, entry, f"{kind.kind} moved from {kind.moved_from} to {home}/{kind.file} and "
-                      "then to the area that uses it: run `ogy migrate`, then `ogy move`")
+            self._add(
+                Problem.NEEDS_MIGRATION,
+                entry,
+                f"{kind.kind} moved from {kind.moved_from} to {home}/{kind.file} and "
+                "then to the area that uses it: run `ogy migrate`, then `ogy move`",
+            )
 
     def _links(self, entry: Entry) -> None:
         declared = self.snapshot.ontology.declared
@@ -87,8 +99,12 @@ class Checker:
             if found.problem is not None:
                 self._add(found.problem, entry, found.detail)
             elif (target := found.target) is not None and declared.reversed_link(entry.address.layer, target.layer):
-                self._add(Problem.LAYER_DIRECTION, entry, f"{item.field}: {target} is in a later layer; a link stays in its layer or "
-                          f"names an earlier one ({', '.join(declared.layers)})")
+                self._add(
+                    Problem.LAYER_DIRECTION,
+                    entry,
+                    f"{item.field}: {target} is in a later layer; a link stays in its layer or "
+                    f"names an earlier one ({', '.join(declared.layers)})",
+                )
 
     def _form(self, kind: Kind, entry: Entry) -> None:
         for group in kind.exactly_one_of:
@@ -111,9 +127,12 @@ class Checker:
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST and part.requires else None
             for item in items if isinstance(items, list) else ():
                 reaches = reaching(self.snapshot, entry.address, item, part.kind) if isinstance(item, dict) else None
-                for need in (need for need in part.requires if not need.work) if reaches is not None else ():
-                    if applies(need, item, lambda _: False, reaches) and not satisfied(self.snapshot, need, part.kind, entry.address,
-                                                                                      item, item=True):
+                if reaches is None:
+                    continue
+                for need in (need for need in part.requires if not need.work):
+                    if applies(need, item, lambda _: False, reaches) and not satisfied(
+                        self.snapshot, need, part.kind, entry.address, item, item=True
+                    ):
                         self._add(Problem.UNMET, entry, f"{part.key}: {need.error}")
 
 
@@ -123,25 +142,43 @@ def check_entries(snapshot: Snapshot, _source: Source) -> list[Finding]:
 
 def check_sets_direction(snapshot: Snapshot, _source: Source) -> list[Finding]:
     """`layer-direction` over a decision's `sets` keys: a decision names what it sets, so it lives in that layer or a later one."""
-    declared, found = snapshot.ontology.declared, []
+    declared = snapshot.ontology.declared
+    found: list[Finding] = []
     for decision in decisions(snapshot):
-        named = sorted({text for sets in decision.sets_all() for text in (sets if isinstance(sets, dict) else {})})
+        named = sorted({text for sets in decision.sets_all() for text in (sets if isinstance(sets, dict) else ())})
         for text in named:
-            if (target := parse_address(text, snapshot.ontology)) is not None and declared.reversed_link(decision.address.layer,
-                                                                                                         target.layer):
-                found.append(Finding(Problem.LAYER_DIRECTION, decision.entry.path, f"sets: {text} is in a later layer; a decision "
-                                     f"sets entries of its layer or an earlier one ({', '.join(declared.layers)})", decision.address))
+            target = parse_address(text, snapshot.ontology)
+            if target is not None and declared.reversed_link(decision.address.layer, target.layer):
+                found.append(
+                    Finding(
+                        Problem.LAYER_DIRECTION,
+                        decision.entry.path,
+                        f"sets: {text} is in a later layer; a decision "
+                        f"sets entries of its layer or an earlier one ({', '.join(declared.layers)})",
+                        decision.address,
+                    )
+                )
     return found
 
 
-CHECKS: tuple[Check, ...] = (check_entries, check_sets_direction, check_every_area, check_flows, check_evidence, check_decisions,
-                             check_terms, check_ledgers, check_lints)
+CHECKS: tuple[Check, ...] = (
+    check_entries,
+    check_sets_direction,
+    check_every_area,
+    check_flows,
+    check_evidence,
+    check_decisions,
+    check_terms,
+    check_ledgers,
+    check_lints,
+)
 # Errors only when a land is asked for: nobody has agreed yet is waiting for the owner, not a fault (`ogy check` counts it).
 LANDING: tuple[Check, ...] = (check_term_agreement, check_proposed_terms)
 
 
-def check(snapshot: Snapshot, source: Source, base: Source | None = None, landing: bool = False,
-          product: str | None = None) -> list[Finding]:
+def check(
+    snapshot: Snapshot, source: Source, base: Source | None = None, *, landing: bool = False, product: str | None = None
+) -> list[Finding]:
     """Every check on one snapshot; with a `base` source (the merge base), also what the base forbids changing, under
     `landing` a proposed word only when the change adds it (a word the base already had blocks no one), and with `product`
     (the repository's name) no area named like it."""
@@ -151,8 +188,11 @@ def check(snapshot: Snapshot, source: Source, base: Source | None = None, landin
     older = migrated(load(base, snapshot.ontology, retyped=True)) if base is not None else None  # the base as `ogy migrate` would write it
     if landing:
         for run in LANDING:
-            findings.extend(item for item in run(snapshot, source)
-                            if older is None or item.problem is not Problem.PROPOSED_TERM or item.address not in older.entries)
+            findings.extend(
+                item
+                for item in run(snapshot, source)
+                if older is None or item.problem is not Problem.PROPOSED_TERM or item.address not in older.entries
+            )
     if base is not None and older is not None:
         findings.extend(check_against_base(snapshot, source, older, base))
     return findings

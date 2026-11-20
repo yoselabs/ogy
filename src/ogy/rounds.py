@@ -4,14 +4,14 @@ The last few rounds are kept. It is local working state next to the Git director
 never part of the knowledge base."""
 
 import re
-from pathlib import Path
+lazy from pathlib import Path
 
 from atomic_io import atomic_write_text
 from content_digest import digest_text
 from git_porcelain import git_dir
 from pydantic import BaseModel, ConfigDict, ValidationError
 
-from ogy.status import Card
+lazy from ogy.status import Card
 
 FOLDER = "ogy-rounds"
 KEEP = 10
@@ -49,11 +49,20 @@ def labelled(cards: list[Card]) -> list[tuple[str, Card]]:
     return [(f"Q{next(asked)}" if card.kind not in ENTRY_CARDS else str(next(entries)), card) for card in cards]
 
 
-def make(cards: list[Card], everything: bool) -> Round:
-    shown = tuple(Shown(label=label, kind=card.kind, address=str(card.address), shown=card.text, fingerprint=card.fingerprint,
-                        options=tuple(key for key, _ in card.options), structure=card.alone,
-                        members=tuple((str(address), fingerprint) for address, _, fingerprint in card.members))
-                  for label, card in labelled(cards))
+def make(cards: list[Card], *, everything: bool) -> Round:
+    shown = tuple(
+        Shown(
+            label=label,
+            kind=card.kind,
+            address=str(card.address),
+            shown=card.text,
+            fingerprint=card.fingerprint,
+            options=tuple(key for key, _ in card.options),
+            structure=card.alone,
+            members=tuple((str(address), fingerprint) for address, _, fingerprint in card.members),
+        )
+        for label, card in labelled(cards)
+    )
     body = Round(id="", everything=everything, cards=shown).model_dump_json()
     return Round(id="r" + digest_text(body, length=6), everything=everything, cards=shown)
 
@@ -66,13 +75,13 @@ def _folder(repo: Path) -> Path | None:
 def _read(path: Path) -> Round | None:
     try:
         return Round.model_validate_json(path.read_text())
-    except (ValidationError, OSError):
+    except ValidationError, OSError:
         return None
 
 
 def _all(repo: Path) -> list[Round]:
     folder = _folder(repo)
-    found = [_read(path) for path in sorted(folder.glob("*.json"))] if folder is not None and folder.is_dir() else []
+    found: list[Round | None] = [_read(path) for path in sorted(folder.glob("*.json"))] if folder is not None and folder.is_dir() else []
     return sorted((item for item in found if item is not None), key=lambda item: item.seq)
 
 

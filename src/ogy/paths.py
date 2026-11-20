@@ -11,12 +11,16 @@ Kind files write no paths for the build hash: the `input` a kind declares on its
 parts, `Kind.input`) and its reverse `input_from` are read as such paths (`inputs`, `inputs_from`).
 """
 
-from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING
 
 from ogy.kinds import Input, Kind, Picked, where
 from ogy.links import link_items, resolve
-from ogy.model import Address, Entry
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping, Sequence
+
+    from ogy.model import Address, Entry
 
 BACK = "<-"
 ANY_FIELD = "*"  # `<-*`: the entries that link here by any field
@@ -101,14 +105,14 @@ class LinkIndex:
             if hop.startswith(DERIVED):
                 break
             if hop.startswith(PARTS):
-                current = {part for address in current for part in self.parts(address, hop[len(PARTS):])}
+                current = {part for address in current for part in self.parts(address, hop[len(PARTS) :])}
             elif hop.startswith(VALUE):
                 values.extend(self.entries[address].fields.get(hop[1:]) for address in sorted(current))
                 break
             elif hop == PARENT:
                 current = {parent for address in current if (parent := address.parent()) is not None and parent in self.entries}
             elif hop.startswith(BACK):
-                current = {source for address in current for source in self.backward(address, hop[len(BACK):])}
+                current = {source for address in current for source in self.backward(address, hop[len(BACK) :])}
             else:
                 current = {target for address in current for target in self.onward(address, hop)}
         return current, values

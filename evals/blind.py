@@ -5,6 +5,7 @@ Runs are files named <arm><n>.md (A1.md, B3.md, ...). Writes OUT_DIR/blind/R<id>
 the groups: each holds two runs of every arm, shuffled. The first run of each group goes to the agreement scorer.
 """
 
+import argparse
 import random
 import shutil
 import sys
@@ -30,8 +31,13 @@ def main(runs_dir: Path, out_dir: Path, seed: int) -> None:
         rng.shuffle(group)
         groups.append(group)
     for group in groups:
-        print(" ".join(group))
+        sys.stdout.write((" ".join(group)) + "\n")
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3]))
+    cli = argparse.ArgumentParser(description="Blind-rename eval runs and split them into scorer groups.")
+    cli.add_argument("runs_dir", type=Path, help="folder of run files")
+    cli.add_argument("out_dir", type=Path, help="folder the blinded runs and the map are written to")
+    cli.add_argument("seed", type=int, help="seed of the shuffle")
+    args = cli.parse_args()
+    main(args.runs_dir, args.out_dir, args.seed)

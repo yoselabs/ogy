@@ -2,9 +2,9 @@
 printed whole to an agent before the glossary."""
 
 from ogy.kindtext import likeness_lines
-from ogy.model import Entry
-from ogy.snapshot import Snapshot
 from ogy.terms import glossary_lines
+lazy from ogy.model import Entry
+lazy from ogy.snapshot import Snapshot
 
 
 def principles(snapshot: Snapshot) -> list[Entry]:
@@ -29,5 +29,5 @@ def constitution_lines(snapshot: Snapshot) -> list[str]:
 def printed_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
     """What an agent reads first: the constitution, then the glossary (of one area and what it shares, when `home` is given), then
     for the whole glossary what mainstream notion each kind is like and unlike."""
-    kinds = likeness_lines(snapshot.ontology) if home is None else []
+    kinds: list[str] = likeness_lines(snapshot.ontology) if home is None else []
     return [*constitution_lines(snapshot), *glossary_lines(snapshot, home), *([""] if kinds else []), *kinds]

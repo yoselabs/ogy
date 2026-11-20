@@ -11,18 +11,18 @@ from dataclasses import dataclass, field
 
 from atomic_io import atomic_write_text
 
-from ogy import built, removed
+from ogy import built, removed, removed_moves
 from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
 from ogy.kindchange import Change, Kept, before, changes, moved_table
-from ogy.model import Address, Problem
+from ogy.model import Address, Problem, home_address
 from ogy.moves import renamer
 from ogy.relocate import rename_all
 from ogy.restamp import proven
 from ogy.retype import Retype, applied, collisions, retype
 from ogy.snapshot import Snapshot, build, kb_paths
-from ogy.target import Target
-from ogy.writes import WriteRefused, commit, files, findings_after
+from ogy.writes import WriteRefusedError, commit, files, findings_after
+lazy from ogy.target import Target
 
 
 @dataclass(frozen=True)
@@ -38,10 +38,15 @@ class Migrated:
     def lines(self) -> list[str]:
         if not self.changes and not self.moved and not self.retyped and not self.built and not self.unbuilt and not self.agreed:
             return ["nothing to migrate"]
-        out = [f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}"
-               for old, new in self.retyped]
-        out += [f"renamed {c.address} {c.field} to {c.new}" if c.new else f"dropped {c.address} {c.field} (it held {c.value!r}): "
-               "the owner sees this entry as changed" for c in self.changes]
+        out = [
+            f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}" for old, new in self.retyped
+        ]
+        out += [
+            f"renamed {c.address} {c.field} to {c.new}"
+            if c.new
+            else f"dropped {c.address} {c.field} (it held {c.value!r}): the owner sees this entry as changed"
+            for c in self.changes
+        ]
         out += [f"moved {old} to {new}: `ogy move` it to the area that uses it" for old, new in self.moved]
         out += [f"kept the agreement current: {address}" for address in self.agreed]
         out += [f"deleted the built line of {text}: it needs no proof" for text in self.unbuilt]
@@ -62,7 +67,8 @@ def _built(target: Target, snapshot: Snapshot, kept: Kept, unbuilt: list[str]) -
     """Re-set the `own` hash of the built lines that only a rename changed, write without its old keys a line that holds
     any (an old `deps` goes: a changed input is read from the build hash, never re-stamped), and delete the line of a live entry
     that needs no proof (listed in `unbuilt`)."""
-    root, done = target.repo / target.kb, []
+    root = target.repo / target.kb
+    done: list[str] = []
     folder = root / built.BUILT
     for file in sorted(folder.rglob("*.yml")) if folder.is_dir() else ():
         source, changed = file.relative_to(folder).as_posix(), False
@@ -85,8 +91,10 @@ def _built(target: Target, snapshot: Snapshot, kept: Kept, unbuilt: list[str]) -
 
 def _old_lines(target: Target, snapshot: Snapshot) -> bool:
     """A built line still holds a key built lines no longer have, or is the line of a live entry that needs no proof."""
-    return any(line.dropped or ((address := snapshot.resolve(text)) is not None and not snapshot.needs_proof(address))
-               for text, line in built.read_all(target.repo / target.kb).items())
+    return any(
+        line.dropped or ((address := snapshot.resolve(text)) is not None and not snapshot.needs_proof(address))
+        for text, line in built.read_all(target.repo / target.kb).items()
+    )
 
 
 def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address, Address]) -> list[tuple[Address, Address]]:
@@ -105,14 +113,13 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
     rename_all(ed, target, snapshot, table)
     root = target.repo / target.kb
     for old, new in table.items():
-        removed.rehome(root, str(old), str(new))
+        removed_moves.rehome(root, str(old), str(new))
         if (root / old.area).is_dir() and not any((root / old.area).iterdir()):
             (root / old.area).rmdir()
     return moved
 
 
-def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], tuple[Snapshot, Snapshot] | None,
-                                                            list[tuple[str, str]]]:
+def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], tuple[Snapshot, Snapshot] | None, list[tuple[str, str]]]:
     """The files the kind renames change (none collide), the knowledge base as it was under the old kind names, read with
     every declared rename and with the kind renames only (None when no kind was renamed), and each changed file as (old path,
     new path)."""
@@ -131,21 +138,22 @@ def migrate(target: Target) -> Migrated:
     when it leaves a new error."""
     ontology, work, raw = target.kinds(), Retype(target.kinds()), files(target)
     if stuck := collisions(ontology, raw):
-        raise WriteRefused(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
+        raise WriteRefusedError(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
     retyped, olds, pairs = _retyped(target, raw)
-    was, also = olds if olds else (None, None)
+    was, also = olds or (None, None)
     now = applied(ontology, raw, stuck={})
     snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
     root, homes = target.repo / target.kb, snapshot.ontology.moved_homes()
-    table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
-                                         if (root / old / removed.FILE).is_file()}}
+    table = {
+        **moved_table(snapshot),
+        **{Address("", old, ()): home_address(new) for old, new in homes.items() if (root / old / removed.FILE).is_file()},
+    }
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
-    stamped = proven(target.repo, target.kb, snapshot) if not was else {}
+    stamped: dict[Address, dict[str, object]] = {} if was else proven(target.repo, target.kb, snapshot)
     if not found and not table and not tidied and not retyped and not stamped and not _old_lines(target, snapshot):
         return Migrated([], [], [], [])
-    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str,
-                also)
+    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str, also)
     agreed = {**stamped, **_agreements(snapshot, kept)}
     lines: list[str] = []
     unbuilt: list[str] = []

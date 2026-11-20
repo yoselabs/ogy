@@ -25,21 +25,135 @@ from pathlib import Path
 
 ALLOWED = {"of", "is", "at", "on", "when", "then", "for", "do", "after", "from", "to"}
 STOP = {
-    "a", "an", "the", "and", "or", "but", "not", "no", "nor", "of", "is", "are", "was", "be", "been", "it", "its", "this", "that",
-    "these", "those", "to", "from", "in", "on", "at", "by", "for", "with", "without", "as", "so", "than", "then", "when", "which",
-    "who", "whose", "what", "where", "how", "why", "we", "us", "our", "you", "your", "they", "their", "them", "he", "she", "his",
-    "her", "i", "me", "my", "one", "two", "three", "any", "all", "each", "every", "some", "other", "others", "more", "most", "less",
-    "only", "also", "never", "ever", "always", "can", "may", "must", "will", "would", "should", "could", "do", "does", "did", "done",
-    "has", "have", "had", "there", "here", "up", "down", "out", "over", "under", "into", "between", "before", "after", "once",
-    "again", "per", "if", "else", "until", "while", "because", "about", "against", "own", "same", "such", "just", "yet", "still",
-    "like", "unlike"
+    "a",
+    "an",
+    "the",
+    "and",
+    "or",
+    "but",
+    "not",
+    "no",
+    "nor",
+    "of",
+    "is",
+    "are",
+    "was",
+    "be",
+    "been",
+    "it",
+    "its",
+    "this",
+    "that",
+    "these",
+    "those",
+    "to",
+    "from",
+    "in",
+    "on",
+    "at",
+    "by",
+    "for",
+    "with",
+    "without",
+    "as",
+    "so",
+    "than",
+    "then",
+    "when",
+    "which",
+    "who",
+    "whose",
+    "what",
+    "where",
+    "how",
+    "why",
+    "we",
+    "us",
+    "our",
+    "you",
+    "your",
+    "they",
+    "their",
+    "them",
+    "he",
+    "she",
+    "his",
+    "her",
+    "i",
+    "me",
+    "my",
+    "one",
+    "two",
+    "three",
+    "any",
+    "all",
+    "each",
+    "every",
+    "some",
+    "other",
+    "others",
+    "more",
+    "most",
+    "less",
+    "only",
+    "also",
+    "never",
+    "ever",
+    "always",
+    "can",
+    "may",
+    "must",
+    "will",
+    "would",
+    "should",
+    "could",
+    "do",
+    "does",
+    "did",
+    "done",
+    "has",
+    "have",
+    "had",
+    "there",
+    "here",
+    "up",
+    "down",
+    "out",
+    "over",
+    "under",
+    "into",
+    "between",
+    "before",
+    "after",
+    "once",
+    "again",
+    "per",
+    "if",
+    "else",
+    "until",
+    "while",
+    "because",
+    "about",
+    "against",
+    "own",
+    "same",
+    "such",
+    "just",
+    "yet",
+    "still",
+    "like",
+    "unlike",
 }
 HERE = Path(__file__).resolve().parent
 
 
+def say(text: str) -> None:
+    sys.stdout.write(text + "\n")
+
+
 def forms(word: str) -> set[str]:
     """The word and its plain inflections: plural, past, -ing, with a dropped e or a doubled last letter."""
-    base = word[:-1] if word.endswith("e") else word
+    base = word.removesuffix("e")
     out = {word, word + "s", word + "es", word + "d", base + "ed", base + "ing", word + "ing"}
     out |= {word + word[-1] + "ed", word + word[-1] + "ing"}
     if word.endswith("y"):
@@ -118,17 +232,19 @@ def main() -> int:
     name_hits = sorted(f"{w} ({banned[w]})" if w != banned[w] else w for w in fact_words if w in banned)
     member_hits = sorted(w for w in fact_words if w in member_forms and w not in banned)
     line_hits = sorted(w for w in fact_words if w in only and w not in banned)
-    print(f"arms read: {' '.join(p.stem for p in inputs) or 'none'}; names checked: {len(names)}; "
-          f"members only some arms print: {len(some_members)}; arm-only words: {len(arm_only)}")
+    say(
+        f"arms read: {' '.join(p.stem for p in inputs) or 'none'}; names checked: {len(names)}; "
+        f"members only some arms print: {len(some_members)}; arm-only words: {len(arm_only)}"
+    )
     if name_hits:
-        print("names used in the facts: " + ", ".join(name_hits))
+        say("names used in the facts: " + ", ".join(name_hits))
     if member_hits:
-        print("enum members only some arms print, used in the facts: " + ", ".join(member_hits))
+        say("enum members only some arms print, used in the facts: " + ", ".join(member_hits))
     if line_hits:
-        print("arm-only words used in the facts: " + ", ".join(line_hits))
+        say("arm-only words used in the facts: " + ", ".join(line_hits))
     if name_hits or member_hits or line_hits:
         return 1
-    print("facts are neutral")
+    sys.stdout.write(("facts are neutral") + "\n")
     return 0
 
 

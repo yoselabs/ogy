@@ -1,6 +1,6 @@
 """The constitution: a fixed folder beside the glossary, agreed by the owner, cited with `because`, printed first."""
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from typing import TYPE_CHECKING
 
 from ogy.constitution import printed_lines
@@ -8,13 +8,13 @@ from ogy.find import find
 from ogy.graph import context
 from ogy.layout import locate, path_for
 from ogy.model import Address, Problem
-from ogy.ontology import Ontology
 from ogy.review import review
+lazy from ogy.ontology import Ontology
 
 if TYPE_CHECKING:
     from conftest import Kb
 
-type Make = Callable[[dict[str, str | None] | None], Kb]
+type Make = Callable[[Mapping[str, str | None] | None], Kb]
 
 SAY = "- {id: graph, says: The ontology is a graph of linked entries., why: Storage is no meaning.}\n"
 PRINCIPLE = Address("", "constitution", (("principle", "graph"),))
@@ -45,7 +45,7 @@ def test_review_asks_a_principle_nobody_agreed_to(kb: Make) -> None:
 
 def test_find_and_show_list_who_cites_a_principle(kb: Make) -> None:
     snapshot = kb({"constitution/principles.yml": SAY, **RULE}).snapshot
-    rows = find(snapshot, [], [], None, None, None, None, PRINCIPLE)
+    rows = find(snapshot, [], [], None, None, state=None, parent=None, cites=PRINCIPLE)
     assert [row.address for row in rows] == ["software/app/rule/stored-anywhere"]
     assert [str(edge.address) for edge in context(snapshot, PRINCIPLE).referenced_by] == ["software/app/rule/stored-anywhere"]
 

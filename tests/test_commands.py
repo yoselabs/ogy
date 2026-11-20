@@ -1,6 +1,6 @@
 """The CLI and library calls over a small knowledge base kept in Git."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 from tests.conftest import commit, ogy
 
@@ -26,8 +26,12 @@ def test_impact_lists_the_closure(repo: Path) -> None:
     code, lines = ogy(repo, "impact", "product/app/quantity/fee")
     assert code == cli.OK and "reached by product/app/workflow/borrow/step/ask/timeout" in lines
     code, lines = ogy(repo, "impact", "product/app/workflow/borrow/step/ask/choice/go")
-    assert {"reaches product/app/workflow/borrow/end/done", "reaches product/app/workflow/borrow", "reaches product/app/actor/member",
-            "reached by software/app/handler/lend"} <= set(lines)
+    assert {
+        "reaches product/app/workflow/borrow/end/done",
+        "reaches product/app/workflow/borrow",
+        "reaches product/app/actor/member",
+        "reached by software/app/handler/lend",
+    } <= set(lines)
 
 
 def test_work_and_check_exit_codes(repo: Path) -> None:

@@ -2,6 +2,7 @@
 
 import re
 from pathlib import Path
+from typing import override
 
 from ogy.check import check
 from ogy.model import Problem
@@ -19,6 +20,7 @@ class Stand(WorktreeSource):
     """The fit was captured from the task-loop repository, which this one does not hold: every `code:` link names a stand-in
     file that defines its symbol, so the links are read as they were when the fit was written."""
 
+    @override
     def repo_file(self, path: str, rev: str | None = None) -> str | None:
         symbols: dict[str, set[str]] = {}
         for text in self.root_texts().values():
@@ -33,7 +35,7 @@ class Stand(WorktreeSource):
         return self.read(self.listing())
 
 
-def findings(folder: str, root: Path = V5, source: WorktreeSource | None = None, landing: bool = True) -> set[tuple[Problem, str]]:
+def findings(folder: str, root: Path = V5, source: WorktreeSource | None = None, *, landing: bool = True) -> set[tuple[Problem, str]]:
     source = source or WorktreeSource(root, folder)
     return {(item.problem, str(item.address)) for item in check(load(source, packaged()), source, landing=landing)}
 
@@ -46,8 +48,11 @@ def test_taskloop_fit_has_only_expected_findings() -> None:
     terms = {"claim", "land", "squash", "target-tip", "gate", "checked-commit"}
     expected = {(Problem.TERM_NOT_AGREED, f"product/shared/term/{word}") for word in terms}
     assert findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb")) == expected
-    assert not {item for item in findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb"), landing=False)
-                if item[0] is Problem.TERM_NOT_AGREED}  # waiting for the owner, an error only when a land is asked for
+    assert not {
+        item
+        for item in findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb"), landing=False)
+        if item[0] is Problem.TERM_NOT_AGREED
+    }  # waiting for the owner, an error only when a land is asked for
 
 
 def test_taskloop_fit_reads_every_part_with_a_slash_address() -> None:

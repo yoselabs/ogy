@@ -1,6 +1,6 @@
 """The built record: stamps, work left, removal work, sourced changes."""
 
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 
@@ -68,13 +68,16 @@ def test_changed_doc_section_is_reported() -> None:
     assert built.sourced_changes(record, {FEE: {"doc:a.md#fee": "bb"}}) == {}
 
 
-@pytest.mark.parametrize("text", [
-    "a: {own: x}\n",
-    "a: {own: 1, covers: [], sourced: {}}\n",
-    "a: {own: x, deps: {}, sourced: {}}\n",
-    "a: {own: x, covers: [], sourced: {}}\na: {own: y, covers: [], sourced: {}}\n",
-    "- a\n",
-])
+@pytest.mark.parametrize(
+    "text",
+    [
+        "a: {own: x}\n",
+        "a: {own: 1, covers: [], sourced: {}}\n",
+        "a: {own: x, deps: {}, sourced: {}}\n",
+        "a: {own: x, covers: [], sourced: {}}\na: {own: y, covers: [], sourced: {}}\n",
+        "- a\n",
+    ],
+)
 def test_bad_built_line(tmp_path: Path, text: str) -> None:
     path = tmp_path / "built" / SRC
     path.parent.mkdir(parents=True)

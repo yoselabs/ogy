@@ -5,15 +5,15 @@ removal work until the line is deleted; an entry whose evidence (a symbol, a doc
 listed.
 """
 
-from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import StrEnum
+lazy from collections.abc import Mapping
 
 from ogy import built, evidence, removed
-from ogy.built import Line
 from ogy.declared import Reader
 from ogy.requires import unmet
-from ogy.snapshot import Snapshot
+lazy from ogy.built import Line
+lazy from ogy.snapshot import Snapshot
 
 
 class Status(StrEnum):
@@ -40,22 +40,30 @@ class Work:
 def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
     proving = [a for a in sorted(snapshot.entries) if snapshot.needs_proof(a)]
     current = {str(a): snapshot.build_hash(a) for a in proving}
-    return [Work(text, Status(why), current[text], record[text].own if text in record else None)
-            for text, why in built.work_left(record, current).items()]
+    return [
+        Work(text, Status(why), current[text], record[text].own if text in record else None)
+        for text, why in built.work_left(record, current).items()
+    ]
 
 
 def _unmet(snapshot: Snapshot) -> list[Work]:
     """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): under the status it names
     its error the note."""
-    return [Work(str(address), need.status or "", "", None, need.error) for address in sorted(snapshot.entries)
-            for need in unmet(snapshot, address, work=True)]
+    return [
+        Work(str(address), need.status or "", "", None, need.error)
+        for address in sorted(snapshot.entries)
+        for need in unmet(snapshot, address, work=True)
+    ]
 
 
 def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, removed.Item]) -> list[Work]:
     """B2: the `why` of the ledger item is printed beside the work. A line on a live entry that needs no proof (its kind no
     longer does, or an entity lost its transitions) is removal work too: `ogy migrate` deletes it."""
-    found = [Work(str(address), Status.REMOVED, "", record[str(address)].own, "needs no proof: `ogy migrate` deletes the line")
-             for address in sorted(snapshot.entries) if str(address) in record and not snapshot.needs_proof(address)]
+    found = [
+        Work(str(address), Status.REMOVED, "", record[str(address)].own, "needs no proof: `ogy migrate` deletes the line")
+        for address in sorted(snapshot.entries)
+        if str(address) in record and not snapshot.needs_proof(address)
+    ]
     for text in built.removal_work(record, (str(a) for a in snapshot.entries)):
         item = next((ledger[i] for i in sorted(ledger, key=len, reverse=True) if text == i or text.startswith(i + "/")), None)
         found.append(Work(text, Status.REMOVED, "", record[text].own, f"why: {item.why}" if item else "no ledger item"))
@@ -71,15 +79,18 @@ def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Read
     """B3: the symbol or the document section now is not the one the entry was captured from."""
     live = {str(a) for a in snapshot.entries}
     schemes = snapshot.ontology.declared.evidence
-    now = {text: {link: evidence.receipt(link, read, schemes) or "" for link in line.sourced}
-           for text, line in record.items() if text in live}
-    return [Work(text, Status.DOC_CHANGED if _reads(snapshot, link) is Reader.SECTION else Status.CODE_CHANGED, "", record[text].own,
-                 link)
-            for text, links in built.sourced_changes(record, now).items() for link in links]
+    now = {
+        text: {link: evidence.receipt(link, read, schemes) or "" for link in line.sourced} for text, line in record.items() if text in live
+    }
+    return [
+        Work(text, Status.DOC_CHANGED if _reads(snapshot, link) is Reader.SECTION else Status.CODE_CHANGED, "", record[text].own, link)
+        for text, links in built.sourced_changes(record, now).items()
+        for link in links
+    ]
 
 
-def work_left(snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read,
-              ledger: Mapping[str, removed.Item] | None = None) -> list[Work]:
+def work_left(
+    snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read, ledger: Mapping[str, removed.Item] | None = None
+) -> list[Work]:
     """Unbuilt and changed entries, unmet requirements that are work, removal work, and sources that changed since capture."""
-    return [*_unbuilt(snapshot, record), *_unmet(snapshot), *_gone(record, snapshot, ledger or {}),
-            *_sourced(record, snapshot, read)]
+    return [*_unbuilt(snapshot, record), *_unmet(snapshot), *_gone(record, snapshot, ledger or {}), *_sourced(record, snapshot, read)]

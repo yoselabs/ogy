@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Stand-in for the claude CLI: logs its arguments, writes the files a session would, prints a canned harness result.
+set -euo pipefail
+printf 'claude %s\n' "$*" >>"$STUB_LOG"
+if [ "${1:-}" = "--version" ]; then
+  echo "9.9.9 (stub)"
+  exit 0
+fi
+cat >/dev/null
+case " $* " in
+*" --resume "*)
+  if [ -n "${STUB_GUESS:-}" ]; then echo guess >guess.md; fi
+  ;;
+*)
+  if [ -n "${STUB_ANSWER:-}" ]; then echo answer >answer.md; fi
+  if [ -n "${STUB_SCORES:-}" ]; then echo scores >scores.md; fi
+  ;;
+esac
+if [ -n "${STUB_JSON:-}" ]; then
+  printf '%s\n' "$STUB_JSON"
+else
+  echo '{}'
+fi
+exit "${STUB_EXIT:-0}"

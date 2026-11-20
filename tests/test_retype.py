@@ -4,23 +4,26 @@ that names them is rewritten, and what was agreed or built stays current."""
 import re
 from dataclasses import dataclass
 from importlib.resources import files
-from pathlib import Path
+from typing import override
+lazy from pathlib import Path
 
 import pytest
-from tests.conftest import commit
+from tests.conftest import address_of, commit, dig
 from tests.test_migrate import DECISION, build_hash, fingerprint
 
 from ogy import built, ops, writes
-from ogy.model import Problem, parse_address
+from ogy.model import Problem
 from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.target import Target
 
 FEE, LEND, GO = "product/app/quantity/fee", "software/app/handler/lend", "product/app/workflow/borrow/step/ask/choice/go"
 NEW_LEND, NEW_GO = "software/app/worker/lend", "product/app/workflow/borrow/step/ask/pick/go"
 # handler (one file each) becomes worker, actor (a list file) becomes role, the part choice (key choices) becomes pick (picks)
-RENAMES = {"handler": ("worker", "was: {kind: handler}\n"),
-           "actor": ("role", "was: {kind: actor, file: actors.yml}\n"),
-           "choice": ("pick", "was: {kind: choice, key: choices}\n")}
+RENAMES = {
+    "handler": ("worker", "was: {kind: handler}\n"),
+    "actor": ("role", "was: {kind: actor, file: actors.yml}\n"),
+    "choice": ("pick", "was: {kind: choice, key: choices}\n"),
+}
 
 
 def _texts(renames: dict[str, tuple[str, str]]) -> dict[str, str]:
@@ -43,6 +46,7 @@ def renamed() -> Ontology:
 
 @dataclass(frozen=True)
 class Renamed(Target):
+    @override
     def kinds(self) -> Ontology:
         return renamed()
 
@@ -55,8 +59,9 @@ def before(repo: Path) -> str:
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(DECISION)
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
     for text in (FEE, GO):
-        built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
-                    built.Line(build_hash(target, text)))
+        built.stamp(
+            repo / "docs/kb", target.read()[1].entries[address_of(text, target.kinds())].path, text, built.Line(build_hash(target, text))
+        )
     assert not ops.run_check(target).value
     return commit(repo, "before the kind rename")
 
@@ -77,7 +82,7 @@ def test_migrate_moves_the_entries_and_keeps_what_was_agreed_and_built(repo: Pat
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
     for text in (NEW_LEND, NEW_GO, FEE):
-        assert entries[parse_address(text, target.kinds())].fields["agreed"]["hash"] == fingerprint(target, text)
+        assert dig(entries[address_of(text, target.kinds())].fields, "agreed", "hash") == fingerprint(target, text)
     work = {item.address for item in ops.run_work(target).value}
     assert FEE not in work and NEW_GO not in work  # built, and still built: a rename is no work
     assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
@@ -102,8 +107,10 @@ attributes:
   notes: {says: What the desk wrote., type: list}
   due: {says: When it is due., type: time}
 """
-DESK = ("says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\naccepts: [product/app/entity/loan]\n"
-        "src: ['code:app.py#lend']\n")
+DESK = (
+    "says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\naccepts: [product/app/entity/loan]\n"
+    "src: ['code:app.py#lend']\n"
+)
 HEARD = DECISION.replace("proposal: {chose: two, why: Small.}", "proposal: {chose: two, why: Small., heard: {said: Two seems fair}}")
 
 
@@ -122,10 +129,11 @@ def test_migrate_rewrites_the_values_a_kind_reshaped(repo: Path) -> None:
     ops.run_migrate(target)
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
-    fields = {key: entries[parse_address(f"product/app/entity/loan/attribute/{key}", target.kinds())].fields
-              for key in ("member", "notes", "due")}
+    fields = {
+        key: entries[address_of(f"product/app/entity/loan/attribute/{key}", target.kinds())].fields for key in ("member", "notes", "due")
+    }
     assert "type" not in fields["member"] and fields["notes"]["many"] is True and fields["due"]["type"] == "datetime"
-    assert fields["member"]["agreed"]["hash"] == fingerprint(target, member)  # the owner's yes still holds
-    assert entries[parse_address("product/app/decision/fee/proposal", target.kinds())].fields["heard"] == "Two seems fair"
+    assert dig(fields["member"], "agreed", "hash") == fingerprint(target, member)  # the owner's yes still holds
+    assert entries[address_of("product/app/decision/fee/proposal", target.kinds())].fields["heard"] == "Two seems fair"
     commit(repo, "migrated")
     assert not ops.run_check(Target(repo, rev="HEAD"), base=base).value

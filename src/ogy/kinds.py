@@ -77,7 +77,8 @@ class Picked(BaseModel):
     @model_validator(mode="after")
     def _one(self) -> Self:
         if bool(self.fields) == bool(self.parts):
-            raise ValueError("a picked input names fields or parts, one of them")
+            msg = "a picked input names fields or parts, one of them"
+            raise ValueError(msg)
         return self
 
 
@@ -144,15 +145,20 @@ class Requirement(BaseModel):
     @model_validator(mode="after")
     def _one_condition(self) -> Self:
         if sum(item is not None for item in (self.if_set, self.if_unset, self.if_part, self.if_equals)) + bool(self.if_reaches) > 1:
-            raise ValueError("a requirement has one of if_set, if_unset, if_part, if_equals and if_reaches, not both")
+            msg = "a requirement has one of if_set, if_unset, if_part, if_equals and if_reaches, not both"
+            raise ValueError(msg)
         if self.same and not self.path:
-            raise ValueError("a requirement that comes back to the entry (same) has a path")
+            msg = "a requirement that comes back to the entry (same) has a path"
+            raise ValueError(msg)
         if (self.status is not None) != self.work:
-            raise ValueError("a requirement that is work names its status, and only it")
+            msg = "a requirement that is work names its status, and only it"
+            raise ValueError(msg)
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
-            raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
+            msg = "a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both"
+            raise ValueError(msg)
         if self.or_paths and not (self.path and all(self.or_paths)):
-            raise ValueError("or_paths are further paths beside a path, none of them empty")
+            msg = "or_paths are further paths beside a path, none of them empty"
+            raise ValueError(msg)
         return self
 
     @property

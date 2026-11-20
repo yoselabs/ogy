@@ -12,6 +12,7 @@ Batches, each for two scorers who do not see each other's marks (score.sh):
 Unlike evals/blind.py, which reads the arm from the first letter and forms groups of two runs per arm.
 """
 
+import argparse
 import random
 import re
 import sys
@@ -19,6 +20,10 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 OWN = {"B"}  # arms scored in batches of their own
+
+
+def say(text: str) -> None:
+    sys.stdout.write(text + "\n")
 
 
 def vocabulary(arm: str) -> tuple[dict[str, str], dict[str, str]]:
@@ -81,11 +86,16 @@ def main(runs_dir: Path, out_dir: Path, seed: int) -> None:
         batch = [pool.pop() for pool in pools.values() if pool]
         rng.shuffle(batch)
         pooled.append(" ".join(batch))
-    apart = [" ".join(own[i:i + 3]) for i in range(0, len(own), 3)]
+    apart = [" ".join(own[i : i + 3]) for i in range(0, len(own), 3)]
     (out_dir / "batches.txt").write_text("".join(line + "\n" for line in pooled))
     (out_dir / "batches-own.txt").write_text("".join(line + "\n" for line in apart))
-    print("\n".join(["pooled:", *pooled, "own:", *apart]))
+    say("\n".join(["pooled:", *pooled, "own:", *apart]))
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3]))
+    cli = argparse.ArgumentParser(description="Blind-rename the naming eval v2 runs and split them into scorer batches.")
+    cli.add_argument("runs_dir", type=Path, help="folder of run files")
+    cli.add_argument("out_dir", type=Path, help="folder the blinded runs and the map are written to")
+    cli.add_argument("seed", type=int, help="seed of the shuffle")
+    args = cli.parse_args()
+    main(args.runs_dir, args.out_dir, args.seed)

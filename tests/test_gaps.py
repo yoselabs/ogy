@@ -2,7 +2,7 @@
 
 import asyncio
 from collections.abc import Callable, Mapping
-from pathlib import Path
+lazy from pathlib import Path
 
 import pytest
 from process_lock import ProcessLock
@@ -49,8 +49,10 @@ def test_because_cites_a_principle_or_a_decision_never_a_source(kb: MakeKb) -> N
 
 def test_a_decision_settling_the_entry_stands_for_its_src(kb: MakeKb) -> None:
     values = "- {id: fee, says: The fee., is: 2, unit: EUR}\n"
-    decision = ("question: Q?\nsrc: [" + SOURCE + "]\noptions:\n  a: {label: A, sets: {product/app/quantity/fee: {is: 1}}}\n"
-                "proposal: {chose: a, why: Likely.}\n")
+    decision = (
+        "question: Q?\nsrc: [" + SOURCE + "]\noptions:\n  a: {label: A, sets: {product/app/quantity/fee: {is: 1}}}\n"
+        "proposal: {chose: a, why: Likely.}\n"
+    )
     assert evidence(kb({"product/app/quantities.yml": values})) == {"product/app/quantity/fee"}
     assert evidence(kb({"product/app/quantities.yml": values, "product/app/decision/q.yml": decision})) == set()
 
@@ -79,8 +81,8 @@ def test_harm_may_be_declared_on_a_field(kb: MakeKb) -> None:
 def test_a_link_to_a_removed_address_is_one_finding(repo: Path) -> None:
     ogy(repo, "--rev", ".", "remove", "software/app/interface/page", "--why", "not needed")
     (repo / "docs/kb/software/app/interface/card.yml").write_text(
-        "says: A card.\nform: web\nsrc: ['code:app.py#lend']\n"
-        "includes: [software/app/interface/page]\n")
+        "says: A card.\nform: web\nsrc: ['code:app.py#lend']\nincludes: [software/app/interface/page]\n"
+    )
     _, lines = ogy(repo, "--rev", ".", "check")
     assert [line.split(":")[0] for line in lines if "software/app/interface/page" in line] == ["dangling-link"]
 
@@ -102,7 +104,8 @@ def test_remove_runs_under_one_lock_and_resumes_after_a_crash(repo: Path, monkey
     assert code == cli.REFUSED and "another ogy write holds" in lines[0] and (repo / "docs/kb/software/app/handler/lend.yml").exists()
 
     def crash(*_: object) -> list[str]:
-        raise OSError("crash between the two writes")
+        msg = "crash between the two writes"
+        raise OSError(msg)
 
     monkeypatch.setattr(removal.Editor, "remove", crash)
     with pytest.raises(OSError):
@@ -126,4 +129,3 @@ def test_agents_get_tables(tmp_path: Path) -> None:
     result = asyncio.run(build().call_tool("check", {"repo": str(tmp_path), "rev": "."}))
     output = (result.structured_content or {}).get("output", "")
     assert output.splitlines()[0] == "problem\tpath\taddress\tdetail" and "no-evidence" in output
-

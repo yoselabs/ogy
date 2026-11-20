@@ -5,21 +5,36 @@ with one flow-style line per address, sorted by address. Only this module writes
 (addresses, fingerprint strings, dicts and the knowledge base root); finding an address's source file is the caller's."""
 
 import dataclasses
-from collections.abc import Iterable, Mapping
-from pathlib import Path
+from typing import TYPE_CHECKING
+lazy from pathlib import Path
 
 import any_yaml
 from atomic_io import atomic_write_text
 
 from ogy.model import Finding, Problem
-from ogy.source import Source
+lazy from ogy.source import Source
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
 
 BUILT = "built"
 _KEYS = {"own", "covers", "sourced"}
 _DROPPED = {"deps"}  # keys a built line no longer has: the file is `needs-migration` until `ogy migrate` writes it without them
 
-__all__ = ["BUILT", "BuiltError", "Line", "read", "read_all", "read_source", "removal_work", "sourced_changes", "stamp", "unstamp",
-           "work_left", "write"]
+__all__ = [
+    "BUILT",
+    "BuiltError",
+    "Line",
+    "read",
+    "read_all",
+    "read_source",
+    "removal_work",
+    "sourced_changes",
+    "stamp",
+    "unstamp",
+    "work_left",
+    "write",
+]
 
 
 class BuiltError(ValueError):
@@ -44,18 +59,22 @@ def path_of(kb: Path, source: str) -> Path:
 
 def _strings(value: object, where: str) -> dict[str, str]:
     if not isinstance(value, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in value.items()):
-        raise BuiltError(f"{where}: expected a mapping of strings")
+        msg = f"{where}: expected a mapping of strings"
+        raise BuiltError(msg)
     return dict(value)
 
 
 def _line(address: str, raw: object, where: str) -> Line:
     if isinstance(raw, dict) and set(raw) - _KEYS - _DROPPED:
-        raise BuiltError(f"{where}: {address} has keys of its own: {sorted(set(raw) - _KEYS - _DROPPED)}", Problem.STORED_STATE)
+        msg = f"{where}: {address} has keys of its own: {sorted(set(raw) - _KEYS - _DROPPED)}"
+        raise BuiltError(msg, Problem.STORED_STATE)
     if not isinstance(raw, dict) or set(raw) - _DROPPED != _KEYS:
-        raise BuiltError(f"{where}: {address} needs exactly {sorted(_KEYS)}")
+        msg = f"{where}: {address} needs exactly {sorted(_KEYS)}"
+        raise BuiltError(msg)
     covers = raw["covers"]
     if not isinstance(raw["own"], str) or not isinstance(covers, list) or not all(isinstance(c, str) for c in covers):
-        raise BuiltError(f"{where}: {address} has a wrong own or covers")
+        msg = f"{where}: {address} has a wrong own or covers"
+        raise BuiltError(msg)
     return Line(raw["own"], tuple(covers), _strings(raw["sourced"], where), tuple(sorted(set(raw) & _DROPPED)))
 
 
@@ -64,11 +83,13 @@ def parse(text: str, where: str) -> dict[str, Line]:
     try:
         data = any_yaml.load(text)
     except any_yaml.YAMLError as error:  # a repeated key is a YAML error
-        raise BuiltError(f"{where}: {error}") from error
+        msg = f"{where}: {error}"
+        raise BuiltError(msg) from error
     if data is None:
         return {}
     if not isinstance(data, dict):
-        raise BuiltError(f"{where}: expected a mapping of address to line")
+        msg = f"{where}: expected a mapping of address to line"
+        raise BuiltError(msg)
     return {str(address): _line(str(address), raw, where) for address, raw in data.items()}
 
 
@@ -92,8 +113,11 @@ def read_source(source: Source) -> tuple[dict[str, Line], list[Finding]]:
             continue
         found += [Finding(Problem.BAD_BUILT, path, f"{address} is written twice") for address in lines if address in record]
         if old := sorted({key for line in lines.values() for key in line.dropped}):
-            found.append(Finding(Problem.NEEDS_MIGRATION, path, f"its lines hold {', '.join(old)}, which built lines no longer "
-                                 "have: run `ogy migrate`"))
+            found.append(
+                Finding(
+                    Problem.NEEDS_MIGRATION, path, f"its lines hold {', '.join(old)}, which built lines no longer have: run `ogy migrate`"
+                )
+            )
         record.update(lines)
     return record, found
 
@@ -107,7 +131,8 @@ def read_all(kb: Path) -> dict[str, Line]:
             continue
         for address, line in read(kb, file.relative_to(root).as_posix()).items():
             if address in record:
-                raise BuiltError(f"{BUILT}: {address} is written twice")
+                msg = f"{BUILT}: {address} is written twice"
+                raise BuiltError(msg)
             record[address] = line
     return record
 

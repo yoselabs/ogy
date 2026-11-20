@@ -1,11 +1,14 @@
 """What a value must be for each field type. Every function returns the problems, none raises."""
 
-from collections.abc import Callable, Collection, Mapping
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from ogy.kinds import FieldSpec, FieldType
 from ogy.model import Problem, parse_address
-from ogy.ontology import Ontology
+lazy from ogy.ontology import Ontology
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Collection, Mapping
 
 type Found = list[tuple[Problem, str]]
 HEX = frozenset("0123456789abcdef")
@@ -39,8 +42,9 @@ def _expr(value: object) -> bool:
     """A condition or derivation: its text, and the entries it reads, at least one (decision guard-is-a-case): a condition
     that reads nothing relies on something the knowledge base does not describe."""
     reads = value.get("reads") if isinstance(value, dict) else None
-    return (isinstance(value, dict) and isinstance(value.get("text"), str) and set(value) <= {"text", "reads"}
-            and _texts(reads) and bool(reads))
+    return (
+        isinstance(value, dict) and isinstance(value.get("text"), str) and set(value) <= {"text", "reads"} and _texts(reads) and bool(reads)
+    )
 
 
 def _number(value: object) -> bool:
@@ -94,8 +98,10 @@ def sets_problems(ontology: Ontology, value: object) -> Found:
         elif not isinstance(fields, dict):
             found.append((Problem.WRONG_TYPE, f"{key} is a mapping of fields or null"))
         else:
-            found += [(problem, f"{key}: {detail}") for problem, detail in
-                      fields_problems(ontology, ontology.specs(kind), fields, partial=True, old=ontology.old_names(kind))]
+            found += [
+                (problem, f"{key}: {detail}")
+                for problem, detail in fields_problems(ontology, ontology.specs(kind), fields, partial=True, old=ontology.old_names(kind))
+            ]
     return found
 
 
@@ -127,10 +133,16 @@ def agreed_problems(ontology: Ontology, value: object) -> Found:
     if not isinstance(value, dict) or set(value) != agreed_keys(ontology):
         return [(Problem.WRONG_TYPE, f"is {shape}")]
     fingerprint, said = value[AGREED_HASH], value[names.said]
-    found: Found = [] if isinstance(fingerprint, str) and len(fingerprint) == FINGERPRINT_LENGTH and set(fingerprint) <= HEX else [
-        (Problem.WRONG_TYPE, f"{AGREED_HASH} is {FINGERPRINT_LENGTH} hex")]
-    found += [] if isinstance(said, str) and said.strip() else [
-        (Problem.WRONG_TYPE, f"{names.said} is a short paraphrase of what the person said")]
+    found: Found = (
+        []
+        if isinstance(fingerprint, str) and len(fingerprint) == FINGERPRINT_LENGTH and set(fingerprint) <= HEX
+        else [(Problem.WRONG_TYPE, f"{AGREED_HASH} is {FINGERPRINT_LENGTH} hex")]
+    )
+    found += (
+        []
+        if isinstance(said, str) and said.strip()
+        else [(Problem.WRONG_TYPE, f"{names.said} is a short paraphrase of what the person said")]
+    )
     for name in (names.at, names.where):
         spec = _answer_spec(ontology, name)
         if spec is not None and not _simple(spec, value[name]):
@@ -148,8 +160,15 @@ def value_problems(ontology: Ontology, spec: FieldSpec, value: object) -> Found:
             return [] if _simple(spec, value) else [(Problem.WRONG_TYPE, f"is {_expected(spec)}")]
 
 
-def fields_problems(ontology: Ontology, specs: Mapping[str, FieldSpec], data: Mapping[str, object], known: Collection[str] = (),
-                    *, partial: bool = False, old: Mapping[str, str | None] | None = None) -> Found:
+def fields_problems(
+    ontology: Ontology,
+    specs: Mapping[str, FieldSpec],
+    data: Mapping[str, object],
+    known: Collection[str] = (),
+    *,
+    partial: bool = False,
+    old: Mapping[str, str | None] | None = None,
+) -> Found:
     """Unknown fields, values of the wrong type and, unless `partial`, missing required fields; `known` are part keys, `old` the
     names the kind renamed or dropped (`Kind.old_names`), which `ogy migrate` rewrites."""
     found: Found = []
@@ -160,8 +179,12 @@ def fields_problems(ontology: Ontology, specs: Mapping[str, FieldSpec], data: Ma
         elif spec is None:
             if old and name in old:
                 now = old[name]
-                found.append((Problem.NEEDS_MIGRATION, f"{name} is now {now}: run `ogy migrate`" if now else
-                              f"{name} was dropped from the kind: run `ogy migrate`"))
+                found.append(
+                    (
+                        Problem.NEEDS_MIGRATION,
+                        f"{name} is now {now}: run `ogy migrate`" if now else f"{name} was dropped from the kind: run `ogy migrate`",
+                    )
+                )
             elif name in ontology.declared.reserved.computed:
                 found.append((Problem.STORED_STATE, f"{name} is computed, see `ogy show`"))
             elif name not in known:
