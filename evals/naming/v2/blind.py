@@ -9,6 +9,7 @@ Unlike evals/blind.py, which reads the arm from the first letter and
 forms groups of two runs per arm (a fifth run falls out).
 """
 
+import argparse
 import random
 import re
 import sys
@@ -69,4 +70,9 @@ def main(runs_dir: Path, out_dir: Path, seed: int) -> None:
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3]))
+    cli = argparse.ArgumentParser(description="Blind-rename the naming eval v2 runs and split them into scorer batches.")
+    cli.add_argument("runs_dir", type=Path, help="folder of run files")
+    cli.add_argument("out_dir", type=Path, help="folder the blinded runs and the map are written to")
+    cli.add_argument("seed", type=int, help="seed of the shuffle")
+    args = cli.parse_args()
+    main(args.runs_dir, args.out_dir, args.seed)

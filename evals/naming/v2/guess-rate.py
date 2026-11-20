@@ -6,6 +6,7 @@ share of exact hits, the share of "?" and the share of hits on old against not o
 guessing would give. A "?" counts as a miss.
 """
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -40,4 +41,6 @@ def main(scoring: Path) -> None:
 
 
 if __name__ == "__main__":
-    main(Path(sys.argv[1]))
+    cli = argparse.ArgumentParser(description="Print how often the scorers guessed each blinded run's arm.")
+    cli.add_argument("scoring", type=Path, help="scoring folder holding map.txt and guesses/")
+    main(cli.parse_args().scoring)
