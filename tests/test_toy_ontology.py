@@ -2,6 +2,7 @@
 area and fixed folder has another name than the software ontology's, read from a folder on disk. check, review, reply, answer,
 put, remove, glossary and init work on it unchanged."""
 
+import os
 from pathlib import Path
 
 import any_yaml
@@ -69,12 +70,12 @@ def _names(ontology: Ontology) -> set[str]:
 
 @pytest.fixture
 def toy(tmp_path: Path) -> Path:
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     for rel, text in {**FILES, "ogy.yml": f"ontology: {TOY}\nland: main\n"}.items():
         (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / rel).write_text(text)
-    run_git(tmp_path, *IDENTITY, "add", "-A")
-    run_git(tmp_path, *IDENTITY, "commit", "-q", "-m", "toy")
+    run_git(tmp_path, *IDENTITY, "add", "-A", ambient=os.environ)
+    run_git(tmp_path, *IDENTITY, "commit", "-q", "-m", "toy", ambient=os.environ)
     return tmp_path
 
 
@@ -224,7 +225,7 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
     (folder / "ontology.yml").write_text(declared.replace("roles:", "renamed: {held_by: bound_by}\nroles:"))
     journey = toy / "docs/kb/business/shop/journey/buy.yml"
     journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
-    run_git(toy, *IDENTITY, "commit", "-qam", "held to the limit")
+    run_git(toy, *IDENTITY, "commit", "-qam", "held to the limit", ambient=os.environ)
     (toy / "ogy.yml").write_text(f"ontology: {folder}\nland: main\n")
     found = w(toy, "check")[1]
     assert any(line.startswith("needs-migration: business/shop/norm/limit.yml") for line in found)
@@ -314,9 +315,9 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
         assert at is not None
         built.stamp(toy / "docs/kb", old.read()[1].entries[at].path, text, built.Line(old.read()[1].build_hash(at)))
     assert w(toy, "check")[0] == cli.OK
-    run_git(toy, *IDENTITY, "add", "-A")
-    run_git(toy, *IDENTITY, "commit", "-qm", "a console")
-    base = run_git(toy, "rev-parse", "HEAD").strip()
+    run_git(toy, *IDENTITY, "add", "-A", ambient=os.environ)
+    run_git(toy, *IDENTITY, "commit", "-qm", "a console", ambient=os.environ)
+    base = run_git(toy, "rev-parse", "HEAD", ambient=os.environ).strip()
     (toy / "ogy.yml").write_text(f"ontology: {one}\nland: main\n")
     assert any(line.startswith("needs-migration: tech/shop/console/till.yml") for line in w(toy, "check")[1])
     assert w(toy, "migrate")[0] == cli.OK and w(toy, "check")[1][0] == "ok"
@@ -330,8 +331,8 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     for text in ("tech/shop/surface/page", "tech/shop/surface/till"):
         at = parse_address(text, now.kinds())
         assert at is not None and dig(snapshot.entries[at].fields, "accepted", "hash") == snapshot.fingerprint(at) and at not in work
-    run_git(toy, *IDENTITY, "add", "-A")
-    run_git(toy, *IDENTITY, "commit", "-qm", "merged")
+    run_git(toy, *IDENTITY, "add", "-A", ambient=os.environ)
+    run_git(toy, *IDENTITY, "commit", "-qm", "merged", ambient=os.environ)
     assert not ops.run_check(Target(toy, rev="HEAD", ontology=str(one)), base=base).value
 
 

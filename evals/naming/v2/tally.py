@@ -50,7 +50,7 @@ T95 = [
 def parse(path: Path) -> dict[str, dict[int, dict[str, Any]]]:
     runs: dict[str, dict[int, dict[str, Any]]] = {}
     current: dict[int, dict[str, Any]] | None = None
-    for line in path.read_text().splitlines():
+    for line in path.read_text(encoding="utf-8").splitlines():
         if line.startswith("## R"):
             current = runs.setdefault(line[3:].strip(), {})
         elif current is not None and (m := LINE.match(line)):

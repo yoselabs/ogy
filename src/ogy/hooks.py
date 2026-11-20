@@ -40,7 +40,7 @@ def _zero(sha: str) -> bool:
 
 def _git(repo: Path, *args: str, env: dict[str, str] | None = None) -> str:
     """git's answer, stripped; empty when it says no (`-q` reads)."""
-    done = RealRepo(repo).run(repo, *args, check=False, env=env)
+    done = RealRepo(repo, ambient=os.environ).try_run(repo, *args, env=env)
     return done.out.strip() if done.rc == 0 else ""
 
 
@@ -48,7 +48,7 @@ def staged(repo: Path) -> Update:
     """pre-commit: a throwaway commit of the index (the one `git commit` writes from, `GIT_INDEX_FILE` in a hook), on HEAD."""
     index = os.environ.get("GIT_INDEX_FILE")
     env = {"GIT_INDEX_FILE": str(Path(index).absolute())} if index else {}
-    git = RealRepo(repo)
+    git = RealRepo(repo, ambient=os.environ)
     tree = git.run(repo, "write-tree", env=env).out.strip()
     parent = _git(repo, "rev-parse", "-q", "--verify", "HEAD")
     rev = git.run(repo, "commit-tree", tree, *(("-p", parent) if parent else ()), "-m", "staged", env=STAGED).out.strip()

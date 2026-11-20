@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+import os
 lazy from pathlib import Path
 
 import pytest
@@ -174,7 +175,7 @@ def test_since_you_agreed_never_diffs_against_text_nobody_agreed_to(repo: Path) 
 
 def test_a_half_workflow_commits_on_a_branch_and_landing_refuses_it(repo: Path) -> None:
     """Fable's blocker 8: an end no step reaches yet and a workflow nothing starts are a layer not finished, not a fault."""
-    run_git(repo, "checkout", "-q", "-b", "later")
+    run_git(repo, "checkout", "-q", "-b", "later", ambient=os.environ)
     half = {
         "address": "product/app/workflow/remind",
         "says": "A late borrower is reminded.",

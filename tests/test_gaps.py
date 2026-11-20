@@ -99,7 +99,7 @@ def test_history_has_the_built_rows_and_the_delivery_commit(repo: Path) -> None:
 
 def test_remove_runs_under_one_lock_and_resumes_after_a_crash(repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     git = repo / ".git"
-    with ProcessLock.acquire(git / "ogy.lock", reentrant=False):
+    with ProcessLock.acquire_exclusive(git / "ogy.lock"):
         code, lines = ogy(repo, "--rev", ".", "remove", "software/app/handler/lend", "--why", "not needed")
     assert code == cli.REFUSED and "another ogy write holds" in lines[0] and (repo / "docs/kb/software/app/handler/lend.yml").exists()
 

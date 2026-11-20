@@ -28,8 +28,8 @@ wheels = [
 
 [[package]]
 name = "any-gate"
-version = "0.1.1"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.2.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "any-lease" },
     { name = "atomic-io" },
@@ -39,10 +39,12 @@ dependencies = [
 
 [[package]]
 name = "any-gate-python"
-version = "0.1.2"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.2.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "any-gate" },
+    { name = "child-env" },
+    { name = "content-digest" },
     { name = "stream-proc" },
 ]
 
@@ -54,24 +56,25 @@ pytest = [
 
 [[package]]
 name = "any-lease"
-version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-lease&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.3.2"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-lease&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
+    { name = "content-digest" },
     { name = "process-lock" },
 ]
 
 [[package]]
 name = "any-markdown"
-version = "0.4.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-markdown&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.5.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-markdown&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "markdown-it-py" },
 ]
 
 [[package]]
 name = "any-yaml"
-version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-yaml&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.1.1"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-yaml&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "atomic-io" },
     { name = "ruamel-yaml" },
@@ -93,7 +96,7 @@ wheels = [
 [[package]]
 name = "argparse-mcp"
 version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fargparse-mcp&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fargparse-mcp&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "fastmcp" },
     { name = "pydantic" },
@@ -101,8 +104,8 @@ dependencies = [
 
 [[package]]
 name = "atomic-io"
-version = "0.2.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.3.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "attrs"
@@ -137,8 +140,8 @@ wheels = [
 
 [[package]]
 name = "blueprint"
-version = "0.7.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.9.1"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "cachetools"
@@ -213,6 +216,11 @@ wheels = [
 ]
 
 [[package]]
+name = "child-env"
+version = "0.3.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fchild-env&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+
+[[package]]
 name = "click"
 version = "8.5.1"
 source = { registry = "https://pypi.org/simple" }
@@ -241,8 +249,8 @@ wheels = [
 
 [[package]]
 name = "content-digest"
-version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fcontent-digest&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.2.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fcontent-digest&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "coverage"
@@ -490,8 +498,12 @@ server = [
 
 [[package]]
 name = "git-porcelain"
-version = "0.24.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fgit-porcelain&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.27.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fgit-porcelain&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+dependencies = [
+    { name = "child-env" },
+    { name = "stream-proc" },
+]
 
 [[package]]
 name = "griffelib"
@@ -730,7 +742,7 @@ wheels = [
 [[package]]
 name = "lean-wire"
 version = "0.3.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Flean-wire&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Flean-wire&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "pydantic" },
 ]
@@ -738,7 +750,7 @@ dependencies = [
 [[package]]
 name = "managed-region"
 version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fmanaged-region&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fmanaged-region&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "markdown-it-py"
@@ -834,26 +846,26 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "any-markdown", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-markdown&tag=blueprint-v0.7.0" },
-    { name = "any-yaml", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-yaml&tag=blueprint-v0.7.0" },
-    { name = "argparse-mcp", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fargparse-mcp&tag=blueprint-v0.7.0" },
-    { name = "atomic-io", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.7.0" },
-    { name = "content-digest", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fcontent-digest&tag=blueprint-v0.7.0" },
+    { name = "any-markdown", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-markdown&tag=blueprint-v0.9.1" },
+    { name = "any-yaml", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-yaml&tag=blueprint-v0.9.1" },
+    { name = "argparse-mcp", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fargparse-mcp&tag=blueprint-v0.9.1" },
+    { name = "atomic-io", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.9.1" },
+    { name = "content-digest", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fcontent-digest&tag=blueprint-v0.9.1" },
     { name = "fastmcp", specifier = ">=3.4,<4" },
-    { name = "git-porcelain", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fgit-porcelain&tag=blueprint-v0.7.0" },
-    { name = "lean-wire", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Flean-wire&tag=blueprint-v0.7.0" },
-    { name = "managed-region", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fmanaged-region&tag=blueprint-v0.7.0" },
-    { name = "process-lock", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fprocess-lock&tag=blueprint-v0.7.0" },
-    { name = "py-symbols", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fpy-symbols&tag=blueprint-v0.7.0" },
+    { name = "git-porcelain", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fgit-porcelain&tag=blueprint-v0.9.1" },
+    { name = "lean-wire", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Flean-wire&tag=blueprint-v0.9.1" },
+    { name = "managed-region", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fmanaged-region&tag=blueprint-v0.9.1" },
+    { name = "process-lock", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fprocess-lock&tag=blueprint-v0.9.1" },
+    { name = "py-symbols", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fpy-symbols&tag=blueprint-v0.9.1" },
     { name = "pydantic", specifier = "==2.14.3" },
-    { name = "settings-base", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fsettings-base&tag=blueprint-v0.7.0" },
+    { name = "settings-base", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fsettings-base&tag=blueprint-v0.9.1" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=blueprint-v0.7.0" },
-    { name = "any-gate-python", extras = ["pytest"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=blueprint-v0.7.0" },
-    { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.7.0" },
+    { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=blueprint-v0.9.1" },
+    { name = "any-gate-python", extras = ["pytest"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=blueprint-v0.9.1" },
+    { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.9.1" },
     { name = "codespell", specifier = "==2.4.3" },
     { name = "deptry", specifier = "==0.25.1" },
     { name = "import-linter", specifier = "==2.15" },
@@ -862,8 +874,8 @@ dev = [
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "ruff", specifier = "==0.17.0" },
     { name = "rust-just", specifier = "==1.59.0" },
-    { name = "test-reach", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Ftest-reach&tag=blueprint-v0.7.0" },
-    { name = "verb-cli", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.7.0" },
+    { name = "test-reach", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Ftest-reach&tag=blueprint-v0.9.1" },
+    { name = "verb-cli", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.9.1" },
 ]
 
 [[package]]
@@ -928,8 +940,11 @@ wheels = [
 
 [[package]]
 name = "process-lock"
-version = "0.2.1"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fprocess-lock&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.4.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fprocess-lock&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+dependencies = [
+    { name = "stream-proc" },
+]
 
 [[package]]
 name = "py-key-value-aio"
@@ -958,8 +973,11 @@ memory = [
 
 [[package]]
 name = "py-symbols"
-version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fpy-symbols&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.2.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fpy-symbols&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+dependencies = [
+    { name = "content-digest" },
+]
 
 [[package]]
 name = "pycparser"
@@ -1344,8 +1362,8 @@ wheels = [
 
 [[package]]
 name = "settings-base"
-version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fsettings-base&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.2.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fsettings-base&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "pydantic-settings" },
 ]
@@ -1377,13 +1395,13 @@ wheels = [
 
 [[package]]
 name = "stream-proc"
-version = "0.9.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fstream-proc&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.12.1"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fstream-proc&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "test-reach"
 version = "0.1.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Ftest-reach&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Ftest-reach&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "coverage" },
     { name = "py-symbols" },
@@ -1435,8 +1453,8 @@ wheels = [
 
 [[package]]
 name = "verb-cli"
-version = "0.2.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+version = "0.3.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 
 [[package]]
 name = "watchfiles"
@@ -1515,7 +1533,7 @@ wheels = [
 [[package]]
 name = "yaml-merge"
 version = "0.2.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fyaml-merge&tag=blueprint-v0.7.0#6566d3a9d7c2c64c129ccfc13566de9bd1810903" }
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fyaml-merge&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
 dependencies = [
     { name = "ruamel-yaml" },
 ]

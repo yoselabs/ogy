@@ -1,5 +1,6 @@
 """Read a knowledge base from a Git commit (git-porcelain: one tree listing, one batch read) or from the worktree, counting files read."""
 
+import os
 from typing import Protocol
 lazy from collections.abc import Iterable
 lazy from pathlib import Path
@@ -40,7 +41,7 @@ class Source(Protocol):
 def _at(repo: Path, rev: str, path: str) -> str | None:
     """A file's text at a commit, None when the commit or the file does not exist."""
     try:
-        tree = RealRepo(repo).tree(rev)
+        tree = RealRepo(repo, ambient=os.environ).tree(rev)
         data = None if tree is None else tree.read(path)
     except GitError:
         return None
@@ -77,8 +78,8 @@ class GitSource(_TreeSource):
 
     def __init__(self, repo: Path, rev: str, kb: str) -> None:
         self.repo = repo
-        self.rev = str(RealRepo(repo).commit(rev))
-        self._git = RealRepo(repo)
+        self.rev = str(RealRepo(repo, ambient=os.environ).commit(rev))
+        self._git = RealRepo(repo, ambient=os.environ)
         super().__init__(kb, self._git.tree(f"{self.rev}:{kb}"))
         self._commit: Tree | None = None
 

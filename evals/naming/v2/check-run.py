@@ -41,7 +41,7 @@ def problems(text: str) -> list[str]:
 def main(paths: list[str]) -> int:
     bad = 0
     for name in paths:
-        text = Path(name).read_text()
+        text = Path(name).read_text(encoding="utf-8")
         found = problems(text)
         extra = sum(1 for line in text.splitlines() if line.strip() and not line.lstrip().startswith("|"))
         note = f" ({extra} lines outside the table)" if extra else ""

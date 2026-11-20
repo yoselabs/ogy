@@ -1,5 +1,6 @@
 """One verdict on every result: exit codes, refusals on stderr, and a target that fails closed."""
 
+import os
 lazy from pathlib import Path
 
 import pytest
@@ -28,8 +29,8 @@ def test_every_op_result_carries_its_verdict(repo: Path) -> None:
 def test_a_missing_knowledge_base_folder_is_a_refusal_not_a_green_check(repo: Path) -> None:
     empty = repo.with_name(repo.name + "-empty")
     empty.mkdir()
-    run_git(empty, "init", "-q", "-b", "main")
-    run_git(empty, *IDENTITY, "commit", "--allow-empty", "-qm", "nothing")
+    run_git(empty, "init", "-q", "-b", "main", ambient=os.environ)
+    run_git(empty, *IDENTITY, "commit", "--allow-empty", "-qm", "nothing", ambient=os.environ)
     code, lines = ogy(empty, "check")
     assert code == cli.REFUSED and len(lines) == 1 and "no knowledge-base folder docs/kb/" in lines[0]
     code, lines = ogy(empty, "--rev", "HEAD", "glossary")

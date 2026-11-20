@@ -4,6 +4,7 @@ commit whose file holds that same stored `agreed.hash` (following the file back 
 read as `ogy migrate` would, gives that entry the same hash again. A yes written with an edit in one commit, or a hash taken under
 older kinds, finds no such version, and the card is read whole: a diff against text nobody agreed to would lie."""
 
+import os
 from functools import lru_cache
 lazy from pathlib import Path
 
@@ -50,7 +51,7 @@ def _differ(old: object, new: object) -> tuple[str, str]:
 
 def _commits(repo: Path, path: str) -> list[tuple[str, str]]:
     """(commit, the file's path in it) for every commit that changed the file, oldest first, following renames."""
-    done = RealRepo(repo).run(repo, "log", "--follow", "--format=%x00%H", "--name-only", "--", path, check=False)
+    done = RealRepo(repo, ambient=os.environ).try_run(repo, "log", "--follow", "--format=%x00%H", "--name-only", "--", path)
     found: list[tuple[str, str]] = []
     for block in done.out.split("\0")[1:]:
         lines = [line for line in block.splitlines() if line]
@@ -77,7 +78,7 @@ def _agreed_version(repo: Path, kb: str, snapshot: Snapshot, address: Address, a
     changed the file. A later commit holding the same yes holds later edits, so only the oldest is the version agreed to."""
     prefix = f"{kb}/".lstrip("/")
     commits = _commits(repo, prefix + snapshot.entries[address].path)
-    git, last = RealRepo(repo), None
+    git, last = RealRepo(repo, ambient=os.environ), None
     for sha, path in commits:
         tree = git.tree(sha)
         data = None if tree is None else tree.read(path)

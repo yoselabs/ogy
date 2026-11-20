@@ -45,25 +45,25 @@ dev = [
 ]
 
 [tool.uv.sources]
-blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.7.0" }
-any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "blueprint-v0.7.0" }
-stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "blueprint-v0.7.0" }
-any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "blueprint-v0.7.0" }
-any-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate", tag = "blueprint-v0.7.0" }
-test-reach = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/test-reach", tag = "blueprint-v0.7.0" }
-verb-cli = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/verb-cli", tag = "blueprint-v0.7.0" }
-atomic-io = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/atomic-io", tag = "blueprint-v0.7.0" }
-lean-wire = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/lean-wire", tag = "blueprint-v0.7.0" }
-managed-region = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/managed-region", tag = "blueprint-v0.7.0" }
-settings-base = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/settings-base", tag = "blueprint-v0.7.0" }
-process-lock = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/process-lock", tag = "blueprint-v0.7.0" }
-git-porcelain = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/git-porcelain", tag = "blueprint-v0.7.0" }
-any-markdown = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-markdown", tag = "blueprint-v0.7.0" }
-any-yaml = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-yaml", tag = "blueprint-v0.7.0" }
-argparse-mcp = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/argparse-mcp", tag = "blueprint-v0.7.0" }
-content-digest = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/content-digest", tag = "blueprint-v0.7.0" }
-py-symbols = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/py-symbols", tag = "blueprint-v0.7.0" }
-yaml-merge = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/yaml-merge", tag = "blueprint-v0.7.0" }
+blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.9.1" }
+any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "blueprint-v0.9.1" }
+stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "blueprint-v0.9.1" }
+any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "blueprint-v0.9.1" }
+any-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate", tag = "blueprint-v0.9.1" }
+test-reach = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/test-reach", tag = "blueprint-v0.9.1" }
+verb-cli = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/verb-cli", tag = "blueprint-v0.9.1" }
+atomic-io = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/atomic-io", tag = "blueprint-v0.9.1" }
+lean-wire = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/lean-wire", tag = "blueprint-v0.9.1" }
+managed-region = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/managed-region", tag = "blueprint-v0.9.1" }
+settings-base = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/settings-base", tag = "blueprint-v0.9.1" }
+process-lock = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/process-lock", tag = "blueprint-v0.9.1" }
+git-porcelain = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/git-porcelain", tag = "blueprint-v0.9.1" }
+any-markdown = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-markdown", tag = "blueprint-v0.9.1" }
+any-yaml = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-yaml", tag = "blueprint-v0.9.1" }
+argparse-mcp = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/argparse-mcp", tag = "blueprint-v0.9.1" }
+content-digest = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/content-digest", tag = "blueprint-v0.9.1" }
+py-symbols = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/py-symbols", tag = "blueprint-v0.9.1" }
+yaml-merge = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/yaml-merge", tag = "blueprint-v0.9.1" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ogy"]
@@ -97,11 +97,13 @@ output-format = "concise"
 exclude = ["*.md"]
 
 [tool.ruff.lint]
+preview = true
+explicit-preview-rules = true  # only PLW1514 (a shelf preset rule) is preview
 select = [
     # correctness & the core
     "F",    # pyflakes — real bugs (undefined names, unused imports)
     "E", "W",  # pycodestyle
-    "PLC", "PLE", "PLR", "PLW",  # pylint — the useful quarter of it
+    "PLC", "PLE", "PLR", "PLW", "PLW1514",  # pylint — the useful quarter of it; 1514: open() names its encoding
     "B",    # bugbear — likely-wrong constructs
     "BLE",  # no blind `except:` / `except Exception` swallowing
     "TRY",  # tryceratops — exception antipatterns

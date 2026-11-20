@@ -1,5 +1,6 @@
 """`ogy history <address | home>` (`<layer>/<area>`): computed from Git, the agreements, the answers and the removed ledger."""
 
+import os
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 lazy from collections.abc import Iterable
@@ -76,7 +77,7 @@ def built_rows(older: dict[str, Line], newer: dict[str, Line], subject: str, whe
 
 def git_rows(repo: Path, kb: str, ontology: Ontology, rev: str, subject: str, *, limit: int = LIMIT) -> tuple[list[Row], list[str]]:
     """One row per entry change and per `built/` line change of each commit that changed `subject`, read from consecutive commits."""
-    log = RealRepo(repo).history([rev], limit=limit)
+    log = RealRepo(repo, ambient=os.environ).history([rev], limit=limit)
     rows: list[Row] = []
     for number, commit in enumerate(log):
         older = open_source(repo, log[number + 1].sha, kb, required=False) if number + 1 < len(log) else Nothing()

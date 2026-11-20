@@ -124,7 +124,7 @@ def _migrate(target: Target, _: argparse.Namespace, **__: object) -> Result:
 def _put(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     if args.file == "-" and agent:  # over MCP stdin is the protocol, not the caller's text
         raise ops.WriteRefusedError(["--file - reads standard input, which an MCP tool cannot: pass the records"])
-    texts = [*args.records, *([sys.stdin.read() if args.file == "-" else Path(args.file).read_text()] if args.file else [])]
+    texts = [*args.records, *([sys.stdin.read() if args.file == "-" else Path(args.file).read_text(encoding="utf-8")] if args.file else [])]
     done = ops.run_put(target, put.read_records(texts), args.why)
     return done.verdict, [str(item) for item in done.value]
 

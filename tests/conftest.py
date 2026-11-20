@@ -1,5 +1,6 @@
 """Small knowledge bases written into a temporary folder, read with the software ontology."""
 
+import os
 import shutil
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -139,14 +140,14 @@ ends:
 
 
 def commit(repo: Path, message: str) -> str:
-    run_git(repo, *IDENTITY, "add", "-A")
-    run_git(repo, *IDENTITY, "commit", "-q", "-m", message)
-    return run_git(repo, "rev-parse", "HEAD").strip()
+    run_git(repo, *IDENTITY, "add", "-A", ambient=os.environ)
+    run_git(repo, *IDENTITY, "commit", "-q", "-m", message, ambient=os.environ)
+    return run_git(repo, "rev-parse", "HEAD", ambient=os.environ).strip()
 
 
 @pytest.fixture
 def repo(tmp_path: Path) -> Path:
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     for rel, text in FILES.items():
         (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / rel).write_text(text)

@@ -3,6 +3,7 @@ as the remote holds it (`target.landed`), so a part born and dropped on an unpus
 
 import io
 import json
+import os
 lazy from pathlib import Path
 
 import pytest
@@ -31,11 +32,11 @@ def to_remote(repo: Path, tmp_path_factory: pytest.TempPathFactory, name: str = 
     """The repository with every entry agreed and pushed to the remote `name`, main tracking it when `track`."""
     agreed(repo)
     remote = tmp_path_factory.mktemp("remote") / "kb.git"
-    run_git(repo, "clone", "-q", "--bare", str(repo), str(remote))
-    run_git(repo, "remote", "add", name, str(remote))
-    run_git(repo, "fetch", "-q", name)
+    run_git(repo, "clone", "-q", "--bare", str(repo), str(remote), ambient=os.environ)
+    run_git(repo, "remote", "add", name, str(remote), ambient=os.environ)
+    run_git(repo, "fetch", "-q", name, ambient=os.environ)
     if track:
-        run_git(repo, "branch", "-q", "--set-upstream-to", f"{name}/main", "main")
+        run_git(repo, "branch", "-q", "--set-upstream-to", f"{name}/main", "main", ambient=os.environ)
     return repo
 
 
@@ -52,7 +53,7 @@ def test_a_part_born_and_dropped_on_unpushed_main_leaves_no_item_and_lands(
     was recorded, because the removal base was local main; the land check compares with the remote's main, which never had
     it. What has landed is main's upstream (any remote), else origin/main."""
     pushed = to_remote(repo, tmp_path_factory, name, track=track)
-    old = run_git(pushed, "rev-parse", f"{name}/main").strip()
+    old = run_git(pushed, "rev-parse", f"{name}/main", ambient=os.environ).strip()
     skip = {"label": "Skip", "then": "done"}
     code, lines = w(pushed, "put", json.dumps({"address": CHOICES, "choices": {"go": GO, "skip": skip}}))
     assert code == cli.OK, lines
@@ -61,7 +62,7 @@ def test_a_part_born_and_dropped_on_unpushed_main_leaves_no_item_and_lands(
     assert code == cli.OK, lines
     assert not (pushed / "docs/kb/product/app/removed.yml").exists()
     agreed(pushed)
-    new = run_git(pushed, "rev-parse", "HEAD").strip()
+    new = run_git(pushed, "rev-parse", "HEAD", ambient=os.environ).strip()
     monkeypatch.setattr("sys.stdin", io.StringIO(f"refs/heads/main {new} refs/heads/main {old}\n"))
     code, lines = ogy(pushed, "hook", "pre-push")
     assert code == cli.OK, lines
@@ -78,20 +79,21 @@ def test_migrate_drops_an_item_the_base_never_had_and_keeps_the_others(pushed: P
     item for a part the base had stays, and stays once it has landed too."""
     choices(pushed, "keep")
     agreed(pushed)
-    landed = run_git(pushed, "rev-parse", "HEAD").strip()
-    run_git(pushed, "update-ref", "refs/remotes/origin/main", landed)  # keep has landed
+    landed = run_git(pushed, "rev-parse", "HEAD", ambient=os.environ).strip()
+    run_git(pushed, "update-ref", "refs/remotes/origin/main", landed, ambient=os.environ)  # keep has landed
     choices(pushed, "keep", "skip")
     agreed(pushed)
-    run_git(pushed, "branch", "-q", "--unset-upstream", "main")
-    run_git(pushed, "update-ref", "-d", "refs/remotes/origin/main")  # the base as it was: local main
+    run_git(pushed, "branch", "-q", "--unset-upstream", "main", ambient=os.environ)
+    run_git(pushed, "update-ref", "-d", "refs/remotes/origin/main", ambient=os.environ)  # the base as it was: local main
     choices(pushed, why="Neither")
     ledger = pushed / "docs/kb/product/app/removed.yml"
     assert "choice/skip" in ledger.read_text() and "choice/keep" in ledger.read_text()
-    run_git(pushed, "update-ref", "refs/remotes/origin/main", landed)
+    run_git(pushed, "update-ref", "refs/remotes/origin/main", landed, ambient=os.environ)
     code, lines = w(pushed, "migrate")
     assert code == cli.OK and lines == [f"dropped the removed item {SKIP}: the base never had it (Git keeps it)"], lines
     assert "choice/skip" not in ledger.read_text() and "choice/keep" in ledger.read_text()
     assert w(pushed, "check")[0] == cli.OK
     assert w(pushed, "migrate")[1] == ["nothing to migrate"]
-    run_git(pushed, "update-ref", "refs/remotes/origin/main", commit(pushed, "neither"))  # landed: the base's ledger holds keep
+    # landed: the base's ledger holds keep
+    run_git(pushed, "update-ref", "refs/remotes/origin/main", commit(pushed, "neither"), ambient=os.environ)
     assert w(pushed, "migrate")[1] == ["nothing to migrate"]  # an item the base's ledger holds stays, its entry long gone

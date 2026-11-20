@@ -7,6 +7,7 @@ ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CL
 `starts.yml`), unless removed. Every name in them comes from the ontology folder."""
 
 import json
+import os
 import shutil
 from dataclasses import dataclass
 lazy from pathlib import Path
@@ -77,7 +78,7 @@ def _land(repo: Path, given: str | None) -> str | None:
         raise InitRefusedError(msg)
     if held is not None or given is not None or git_dir(repo) is None:
         return held or given
-    remote = symbolic_ref(repo, "refs/remotes/origin/HEAD")
+    remote = symbolic_ref(repo, "refs/remotes/origin/HEAD", ambient=os.environ)
     if remote is None:
         raise InitRefusedError(NO_REMOTE_LAND)
     return remote.removeprefix("refs/remotes/origin/")
@@ -140,8 +141,8 @@ def _hook(repo: Path, written: list[str]) -> None:
         rel = f"{HOOKS_DIR}/{name}"
         _put(repo, rel, HOOK.format(ogy=invocation(repo), name=name), written)
         (repo / rel).chmod(0o755)
-    if git_dir(repo) is not None and config_get(repo, "core.hooksPath") != HOOKS_DIR:
-        RealRepo(repo).run(repo, "config", "core.hooksPath", HOOKS_DIR)
+    if git_dir(repo) is not None and config_get(repo, "core.hooksPath", ambient=os.environ) != HOOKS_DIR:
+        RealRepo(repo, ambient=os.environ).run(repo, "config", "core.hooksPath", HOOKS_DIR)
         written.append("git config core.hooksPath")
 
 
@@ -269,7 +270,7 @@ def doctor(repo: Path) -> list[str]:
     if (
         all((repo / HOOKS_DIR / name).is_file() for name in HOOKS)
         and git_dir(repo) is not None
-        and config_get(repo, "core.hooksPath") != HOOKS_DIR
+        and config_get(repo, "core.hooksPath", ambient=os.environ) != HOOKS_DIR
     ):
         lines.append(f"git does not use {HOOKS_DIR}: run `ogy init`")
     try:

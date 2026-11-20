@@ -1,6 +1,7 @@
 """Which layer owes a requirement, computed from `layers:` and `link_direction` (`ogy.owing`), and the work it makes."""
 
 import json
+import os
 from importlib.resources import files
 lazy from pathlib import Path
 
@@ -58,7 +59,7 @@ def test_work_of_a_layer_is_what_it_owes_and_an_unoffered_choice_is_work_not_a_f
 @pytest.fixture
 def product_only(tmp_path: Path) -> Path:
     """A product layer committed alone: the software layer is declared in `layers:` and has no entry yet."""
-    run_git(tmp_path, "init", "-q", "-b", "main")
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     for rel, text in FILES.items():
         if not rel.startswith("docs/kb/software/"):
             (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
