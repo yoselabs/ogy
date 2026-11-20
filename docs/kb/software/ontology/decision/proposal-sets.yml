@@ -5,12 +5,12 @@ options:
   sets:
     label: A proposal gives its values with sets, as an option does
     sets:
-      software/ontology/rule/guess-sets:
+      software/ontology/rule/proposal-sets:
         says: A proposal that chooses no option gives its values with `sets`, the same field and shape an option uses.
   keep-value:
     label: Keep guess.value
     sets:
-      software/ontology/rule/guess-sets:
+      software/ontology/rule/proposal-sets:
 proposal:
   chose: sets
   why: One shape, one name; `value` also names a kind.
