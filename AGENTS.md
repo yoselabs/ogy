@@ -35,7 +35,7 @@
     listing the answers recorded live with their paraphrases and any given for the owner under a delegation, so the owner
     can correct or veto one.
   - Write with `ogy put` (one batch for create and update; new, untested). Never write kb YAML by hand.
-- AGENTS.md and CLAUDE.md are separate files with the same content: mirror every edit.
+- AGENTS.md is the only instructions file; there is no CLAUDE.md (owner, 2026-11-20).
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:1105d646 -->
 ## Beads Issue Tracker
@@ -187,3 +187,26 @@ Never hit GitHub to start a session or to write code — only to clone (once) or
 adopt/promote (a lazy `git pull` at that checkpoint). Never commit a local `path=`/editable shelf
 source (the commit guard blocks it).
 <!-- END SHELF RESOLVER BLOCK -->
+
+<!-- blueprint:begin -->
+## Working agreement (managed by blueprint; do not edit between the markers)
+
+Done = the bead's scenarios green and `just check` green. Never `--no-verify`. Commit only on the owner's yes.
+Read a file below when its trigger applies, not before.
+
+| file | read when |
+|---|---|
+| [docs/agents/constitution.md](docs/agents/constitution.md) | before changing anything: how work is done here |
+| [docs/agents/working-with-agents.md](docs/agents/working-with-agents.md) | at session start and handoff: loop, rules, survey |
+| [docs/agents/gate.md](docs/agents/gate.md) | when a check fails, or you add one or touch hooks |
+| [docs/agents/testing.md](docs/agents/testing.md) | before writing or changing any test |
+| [docs/agents/architecture.md](docs/agents/architecture.md) | before adding a module, dependency or layer |
+| [docs/agents/health.md](docs/agents/health.md) | before planning a bead: the trends that say slicing is failing |
+| [docs/agents/issue-tracker.md](docs/agents/issue-tracker.md) | before creating, claiming or closing work (`bd`) |
+| [docs/agents/domain.md](docs/agents/domain.md) | before naming a concept or recording a decision; index: `docs/adr/INDEX.md` |
+| [docs/agents/python.md](docs/agents/python.md) | before writing or changing python code |
+| [docs/agents/shell.md](docs/agents/shell.md) | before writing or changing shell code |
+| [docs/agents/mcp.md](docs/agents/mcp.md) | before writing or changing mcp code |
+
+Run `/blueprint` to audit this repo's setup; it changes nothing until the owner says yes.
+<!-- blueprint:end -->

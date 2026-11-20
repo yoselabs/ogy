@@ -22,3 +22,8 @@ arch:
 # The gate's one extension point (see .blueprint/base.just).
 [private]
 check-extra: arch
+
+# The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).
+[group('gate')]
+check-all: check
+    uv run pytest --cov

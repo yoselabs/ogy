@@ -16,3 +16,24 @@ reason = "OGY keeps its glossary and decisions in the KB (owner delegated this t
 decided_by = "owner"
 expires = 2027-03-01
 
+[[override]]
+id = "stack.shell.strict-mode"
+scope = "evals/naming/v2/drive.sh"
+reason = "reads run.sh's exit status (0 counts, 3 excluded and replaced, anything else stops the sitting); -e would end the sitting at the first exclusion (the owner delegated the eval-script decision to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
+[[override]]
+id = "stack.shell.strict-mode"
+scope = "evals/naming/v2/run.sh"
+reason = "a failed claude call must still reach the classifier that records the exclusion and exits 3 (the owner delegated the eval-script decision to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
+[[override]]
+id = "stack.shell.strict-mode"
+scope = "evals/naming/v2/score.sh"
+reason = "a failed claude call is judged by the missing scores.md; the guess step may fail without losing the scores (the owner delegated the eval-script decision to the lead, 2026-11-20)"
+decided_by = "owner"
+expires = 2027-03-01
+
