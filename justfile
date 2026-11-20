@@ -19,9 +19,36 @@ ogy *args:
 arch:
     uv run lint-imports
 
+# Every tracked shell script passes shellcheck at its default severity (same behaviour as .blueprint/shell.just).
+[group('gate')]
+scripts scope="changed":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v shellcheck >/dev/null || { echo "scripts: shellcheck is not installed -- run just tools" >&2; exit 2; }
+    list=$(mktemp); trap 'rm -f "$list"' EXIT
+    uv run python -m any_gate changed --scope {{ scope }} --config .shellcheckrc '*.sh' > "$list"
+    [ -s "$list" ] || { echo "skipped scripts: no shell script changed"; exit 0; }
+    xargs -0 shellcheck < "$list"
+
+# Shell formatting: shfmt -d over every tracked script (style in .editorconfig); a diff and exit 1 when unformatted.
+[group('gate')]
+shfmt:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v shfmt >/dev/null || { echo "shfmt: not installed -- run just tools" >&2; exit 2; }
+    git ls-files -z '*.sh' | xargs -0 -r shfmt -d
+
+# Shell tests: bats over tests/shell, scripts run in a temporary folder with their external binaries stubbed.
+[group('gate')]
+shell-test:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v bats >/dev/null || { echo "shell-test: bats is not installed -- run just tools" >&2; exit 2; }
+    bats tests/shell
+
 # The gate's one extension point (see .blueprint/base.just).
 [private]
-check-extra: arch
+check-extra: arch shfmt shell-test
 
 # The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).
 [group('gate')]

@@ -143,8 +143,8 @@ wheels = [
 
 [[package]]
 name = "blueprint"
-version = "0.4.0"
-source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.4.0#25dbdf635a56dd64f8c2bc703a6a806469438ee1" }
+version = "0.5.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.5.0#2dfe82fb74944fab99b7cc3cd482ed98151acb24" }
 
 [[package]]
 name = "cachetools"
@@ -859,7 +859,7 @@ requires-dist = [
 dev = [
     { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=any-gate-python-v0.1.2" },
     { name = "any-gate-python", extras = ["pytest"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=any-gate-python-v0.1.2" },
-    { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.4.0" },
+    { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.5.0" },
     { name = "codespell", specifier = "==2.4.3" },
     { name = "deptry", specifier = "==0.25.1" },
     { name = "import-linter", specifier = "==2.15" },

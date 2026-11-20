@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Stand-in for uv: logs its arguments and prints what `ogy kinds --map` and `ogy glossary` would.
+printf 'uv %s\n' "$*" >>"$STUB_LOG"
+case "$*" in
+*"ogy kinds --map"*) printf 'head\nkinds, like and unlike:\n  hidden line\ntail\n' ;;
+*"ogy glossary"*) echo "GLOSSARY-TEXT" ;;
+esac
+exit "${STUB_UV_EXIT:-0}"

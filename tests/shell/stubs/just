@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Stand-in for just: logs its arguments and exits with STUB_JUST_EXIT.
+printf 'just %s\n' "$*" >>"$STUB_LOG"
+exit "${STUB_JUST_EXIT:-0}"

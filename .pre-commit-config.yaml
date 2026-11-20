@@ -82,6 +82,18 @@ repos:
     language: system
     types: [python]
     stages: [pre-commit]
+- repo: https://github.com/koalaman/shellcheck-precommit
+  rev: v0.11.0
+  hooks:
+  - id: shellcheck
+- repo: local
+  hooks:
+  - id: shfmt
+    name: shfmt -d
+    entry: shfmt -d
+    language: system
+    files: \.sh$
+    stages: [pre-commit]
 - repo: local
   hooks:
   - id: kb-staged-check

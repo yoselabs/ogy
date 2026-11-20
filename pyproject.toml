@@ -45,7 +45,7 @@ dev = [
 ]
 
 [tool.uv.sources]
-blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.4.0" }
+blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.5.0" }
 any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "any-gate-python-v0.1.2" }
 stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "any-gate-python-v0.1.2" }
 any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "any-lease-v0.1.0" }

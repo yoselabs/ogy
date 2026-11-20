@@ -22,10 +22,27 @@ lazy from collections.abc import Sequence
 from argparse_mcp import tools_from_parser
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
+from fastmcp.tools.tool_transform import ToolAnnotations
 
 from ogy import cli
 
 NO_TOOL = ("mcp", "init")  # the subcommand that starts this server, and the one a person runs once to set a repository up
+
+# Annotations are hints to the client, all four set: the read tools change nothing; `review` saves a round; `answer` and `reply`
+# add agreements; `put`, `remove`, `move` and `migrate` overwrite or rewrite entries. Every tool works on one local repository.
+WRITES_ADDING = {"review", "answer", "reply"}
+WRITES_OVERWRITING = {"put", "remove", "move", "migrate"}
+
+
+def annotations(name: str) -> ToolAnnotations:
+    """The four hints of a tool: read-only (and so idempotent), adding, or overwriting."""
+    reads = name not in WRITES_ADDING | WRITES_OVERWRITING
+    return ToolAnnotations(
+        readOnlyHint=reads,
+        destructiveHint=name in WRITES_OVERWRITING,
+        idempotentHint=reads or name in {"put", "move", "migrate"},
+        openWorldHint=False,
+    )
 
 
 def _run(argv: Sequence[str]) -> cli.Result:
@@ -49,6 +66,7 @@ def build() -> FastMCP:
         if tool.name == "reply":  # the round is named over MCP: a bare reply would resolve against whichever round is newest
             tool.parameters["required"] = [*tool.parameters.get("required", []), "round"]
         if tool.name not in NO_TOOL:
+            tool.annotations = annotations(tool.name)
             server.add_tool(tool)
     return server
 

@@ -1,0 +1,1986 @@
+[
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the GitHub anchors of a Markdown file. Every heading's anchor, which is what `doc:<commit>:<file>#<anchor>` may name.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "description": "a Markdown file of the repository",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "file"
+      ],
+      "type": "object"
+    },
+    "name": "anchors",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "choose an option of a decision, with a short paraphrase of what the person said. ogy keeps no message and no quote: the answer is `chose`, `said` (one short line, your paraphrase of what the person said, fitted to the decision), `from` (human, or ai with --delegated), `at` and `where`. It applies the option's sets and agrees to no sentence: only a review round's yes does. Show the paraphrase to the person in the read-back.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "description": "ISO 8601 with a UTC offset (default: now)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "decision": {
+          "description": "the decision's address",
+          "type": "string"
+        },
+        "delegated": {
+          "anyOf": [
+            {
+              "description": "an agent answers: the decision whose answer, a person's, let it decide this; without it a person answered",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "anyOf": [
+            {
+              "description": "the person's hedge or condition, paraphrased (`for now`, `on condition that ...`)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "option": {
+          "description": "the key of the option chosen",
+          "type": "string"
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "said": {
+          "description": "one short line: your paraphrase of what the person said, plain and fitted to the decision; never their words verbatim",
+          "type": "string"
+        },
+        "where": {
+          "description": "a uri of a scheme the answer kind accepts (`ogy kinds <answer kind>` lists them), e.g. ai:claude/<session-id>",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "option",
+        "said",
+        "where"
+      ],
+      "type": "object"
+    },
+    "name": "answer",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the problems of the knowledge base. Exit 1 when there are any. Takes an area to check only it.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "description": "check only this area",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "base": {
+          "anyOf": [
+            {
+              "description": "the commit the entries are checked against (default: merge base with main)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "landing": {
+          "anyOf": [
+            {
+              "description": "also report what blocks a land only (proposed terms) (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "check",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the flow of a workflow as Mermaid",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "type": "object"
+    },
+    "name": "diagram",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the entries changed between two commits or the worktree",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "description": "a commit, or . for the worktree",
+          "type": "string"
+        },
+        "before": {
+          "description": "a commit, or . for the worktree",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "before",
+        "after"
+      ],
+      "type": "object"
+    },
+    "name": "diff",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "what no person has seen. Guesses that say no, removals with no why, guesses that differ from the answer.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "dropped",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "search live and removed entries (a table). Entries whose address or sentence hold every word, over live and removed entries, narrowed by the options.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "description": "only this area",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cites": {
+          "anyOf": [
+            {
+              "description": "only the entries that link to this address (the ones that cite a principle)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "description": "only this kind of entry (see `kinds`)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "description": "only the parts of this address, live and removed",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "removed": {
+          "anyOf": [
+            {
+              "description": "only removed entries (same as --state removed) (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "state": {
+          "anyOf": [
+            {
+              "description": "only this state of its sentence",
+              "enum": [
+                "question",
+                "changed",
+                "you",
+                "nobody",
+                "removed"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "words": {
+          "anyOf": [
+            {
+              "description": "words the address or the sentence holds, all of them",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "find",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the constitution, then the terms of the product, with what they say. Agents read this first: every principle of the constitution, whole, then the shared terms of each layer, then the terms of each area. For one area, its terms and the shared ones it reads.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "description": "only this area, <layer>/<area>, with the shared terms of its layer (and, in software, of product)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "glossary",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "what changed, who said so, what is in force; computed from Git",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "an address or an area",
+          "type": "string"
+        },
+        "limit": {
+          "anyOf": [
+            {
+              "description": "how many commits to read (default 100)",
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "type": "object"
+    },
+    "name": "history",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "what a change reaches and what reaches it",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "type": "object"
+    },
+    "name": "impact",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the kinds of the ontology, or one. What each kind is, how to decide when to use it (guidance), what it holds, links to and requires. Read `ogy kinds <kind>` before creating an entry of that kind.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "anyOf": [
+            {
+              "description": "only this kind",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "map": {
+          "anyOf": [
+            {
+              "description": "the whole ontology as an indented tree, one line per kind grouped by layer (! required, -> one link, ->> many links, [] a list part, indentation = part of), then its rules (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "readers": {
+          "anyOf": [
+            {
+              "description": "for each field, what reads it: the fingerprint, requires, flow, settling, links and impact, a named check or printer; or nothing (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "kinds",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "rewrite the entries to the field renames, drops and folder moves their kinds declare. A kind file keeps a renamed field's old name (`renamed: {old: new}`) and a dropped one (`dropped: [...]`); an entry that holds one is `needs-migration`. Renames every old name (in entries, list parts and `sets`) and keeps current the agreements and built lines it only renamed; a kind that absorbed several (`was: [...]`) takes their entries, refusing two of one area and id; removes dropped fields and prints each value removed, leaving that entry's agreement so the owner sees the change. A kind that moved out of a fixed folder (`moved_from`) has its entries and removed items there moved to the area shared of its first layer, every address renamed; `move` each to the area that uses it. Records nothing. One atomic write.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "migrate",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "move an entry to another area or a new id, keeping its kind and agreements. Moves the entry and what it owns, and writes the new address wherever the old one is named (links, answers, removed items); an agreement that was current stays current. Records nothing: Git keeps the move, and `check --base` tells it from a loss. One atomic write.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]",
+          "type": "string"
+        },
+        "area": {
+          "description": "the new area, <layer>/<area> when the layer changes too (the kind must allow it), or the full new address to rename it",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "address",
+        "area"
+      ],
+      "type": "object"
+    },
+    "name": "move",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "add or change entries: one or many records in one checked, atomic write. A record is a mapping: `address` (or `kind`, `layer`, `area`, `id`) and the fields of the entry; an address that exists is changed (`field: null` removes a field), a new one is added. The records are JSON or YAML (a mapping, or an array of them), as arguments, from --file (- is standard input), or both. The batch is checked together: a decision and the entries its options set may come in one call. Nothing is written when any record is refused.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "anyOf": [
+            {
+              "description": "a file of records (- for standard input)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "records": {
+          "anyOf": [
+            {
+              "description": "a JSON or YAML mapping or array of mappings",
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "why": {
+          "anyOf": [
+            {
+              "description": "why the parts a record drops are removed: a decision address, or plain words",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "put",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": true,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "delete an entry and record it in its area's removed.yml. Always changes the worktree.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "to": {
+          "anyOf": [
+            {
+              "description": "the address that replaces it",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "why": {
+          "description": "why it is removed: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to)",
+          "type": "string"
+        }
+      },
+      "required": [
+        "address",
+        "why"
+      ],
+      "type": "object"
+    },
+    "name": "remove",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "apply the owner's reply to a review round. Grammar: yes, yes all or decide (every recommendation), yes 1 3, 2: sentence, no 4, Q1 b, later. The text is the grammar line: the owner's, or your reading of their natural words. ogy keeps no message and no quote: --said is one short line, your paraphrase of what the owner said, kept with --at and --where on every answer and agreement written (`from: human`). Nothing is written when nothing applies.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "anyOf": [
+            {
+              "description": "ISO 8601 with a UTC offset (default: now)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "note": {
+          "anyOf": [
+            {
+              "description": "the owner's hedge or condition, paraphrased (`for now`), on the answers written",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "round": {
+          "anyOf": [
+            {
+              "description": "the round id `review` printed (default on the CLI: the newest round of this knowledge base; required over MCP)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "said": {
+          "description": "one short line: your paraphrase of what the person said, plain and fitted to the decision; never their words verbatim",
+          "type": "string"
+        },
+        "text": {
+          "description": "the reply as a grammar line (`yes`, `yes 1 3`, `Q1 b`)",
+          "type": "string"
+        },
+        "where": {
+          "description": "a uri of a scheme the answer kind accepts (`ogy kinds <answer kind>` lists them), e.g. ai:claude/<session-id>",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "said",
+        "where",
+        "round"
+      ],
+      "type": "object"
+    },
+    "name": "reply",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": false,
+      "openWorldHint": false,
+      "readOnlyHint": false
+    },
+    "description": "what you are asked: at most 7 cards, with a count per area. SAVES the round (its id is printed) that `reply --round` resolves against.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "all": {
+          "anyOf": [
+            {
+              "description": "every card, not the first 7 (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "area": {
+          "anyOf": [
+            {
+              "description": "only this area",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "md": {
+          "anyOf": [
+            {
+              "description": "Markdown, to paste into a ticket (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "page": {
+          "anyOf": [
+            {
+              "description": "with --from: the page (default 1; agreed pages drop out) (default 1)",
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source": {
+          "anyOf": [
+            {
+              "description": "page through what nobody agreed to yet that came from documents (a section or the terms of an area per page) or from code (an area per page); `yes` agrees to the page",
+              "enum": [
+                "docs",
+                "code"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "review",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "one entry: its fields, links, parts, status, decision, sources and built line. Also the entry's parents, what links to it and what it links to. For an address a decision said no to, that.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "description": "<layer>/<area>/<kind>/<id>[/<part kind>/<key>...]",
+          "type": "string"
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "type": "object"
+    },
+    "name": "show",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "the standing of an area or of everything in one screen. Counts per area, findings, work left and dropped. Saves nothing.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "description": "only this area",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "coverage": {
+          "anyOf": [
+            {
+              "description": "also, per layer, the kinds that have no entry (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "status",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
+    "description": "what is built against the entries and what is left. Exit 1 when work is left. Takes an area.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "anyOf": [
+            {
+              "description": "only this area",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "work",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  }
+]
