@@ -111,7 +111,11 @@ repos:
     # just is pinned as the `rust-just` dev dependency (ADR 0023); a repo without uv runs `just check` from brew.
     # Skipped only when the working tree is clean and HEAD's tree already passed `just check` (any-gate, a dev dependency
     # pinned by git tag); any doubt runs it. A repo with no python runs `just check` directly.
-    entry: uv run python -m any_gate pre-push --gate check -- uv run just check
+    # First `just kb` (`ogy hook pre-push`, the landing checks on a push to main), outside any-gate's record: the record keys
+    # on the tree, so a tree that passed on a branch would let `git push origin HEAD:main` land unchecked. blueprint allows
+    # no pre-push hook beside the gate (hooks.pre-push-is-the-gate), so it runs in the gate's own entry.
+    # prek names only the first ref of a push: `git push o later main` is decided by `later` alone, so push main on its own.
+    entry: sh -c 'uv run just kb && exec uv run python -m any_gate pre-push --gate check -- uv run just check'
     language: system
     always_run: true
     pass_filenames: false

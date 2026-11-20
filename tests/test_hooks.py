@@ -129,3 +129,12 @@ def test_a_land_is_checked_against_the_commit_main_held(fresh: Path, monkeypatch
     new = first_commit(fresh)
     code, lines = hook(fresh, monkeypatch, "pre-push", f"refs/heads/main {new} refs/heads/main {old}\n")
     assert code == cli.FINDINGS and any("removed-unrecorded" in line and "clerk" in line for line in lines), lines
+
+
+def test_ogys_own_push_runs_the_landing_hook_outside_the_gate_record() -> None:
+    """Fable's second review, problem 3: any-gate skips `just check` for a tree that already passed, so `git push origin HEAD:main`
+    would skip the landing check; ogy's own pre-push runs `ogy hook pre-push` (`just kb`) before any-gate decides. blueprint
+    allows no second pre-push hook, so it is the first command of the gate hook's entry."""
+    text = (Path(__file__).parent.parent / ".pre-commit-config.yaml").read_text()
+    gate = [line for line in text.splitlines() if line.lstrip().startswith("entry:") and "any_gate pre-push" in line]
+    assert len(gate) == 1 and "just kb && " in gate[0] and gate[0].index("just kb") < gate[0].index("any_gate"), gate
