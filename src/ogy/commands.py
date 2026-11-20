@@ -26,6 +26,14 @@ def _check(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     return done.verdict, [*render.render_findings(done.value), *render.waiting_line(ops.run_waiting(target, args.area))]
 
 
+def _hook(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    done = ops.run_hook(target, args.name, sys.stdin.read() if args.name == "pre-push" else "")
+    lines: list[str] = []
+    for update, found in done.value:
+        lines += [f"{'land' if update.land else 'check'} {update.ref} at {update.rev[:12]}", *render.render_findings(found)]
+    return done.verdict, lines
+
+
 def _status(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_status(target, args.area, with_coverage=args.coverage)
     return done.verdict, wire.status(done.value) if agent else render.render_status(done.value)
@@ -139,6 +147,7 @@ def _reply(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
 
 HANDLERS: dict[str, Handler] = {
     "check": _check,
+    "hook": _hook,
     "anchors": _anchors,
     "status": _status,
     "show": _show,

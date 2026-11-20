@@ -171,14 +171,13 @@ def test_init_check_is_the_doctor_and_writes_nothing(tmp_path: Path) -> None:
     assert any("not this checkout" in line for line in cli.run(["--repo", str(tmp_path), "init", "--check"])[1])
 
 
-def test_init_installs_a_pre_commit_hook_that_checks_the_staged_tree(tmp_path: Path) -> None:
+def test_init_installs_the_hooks_that_run_ogy_hook(tmp_path: Path) -> None:
     run_git(tmp_path, "init", "-q", "-b", "main")
     code, lines = cli.run(["--repo", str(tmp_path), "init"])
     hook = tmp_path / ".githooks/pre-commit"
-    assert code == cli.OK and ".githooks/pre-commit" in "".join(lines) and hook.stat().st_mode & 0o111
-    text = hook.read_text()
-    assert "git write-tree" in text and "git commit-tree" in text and '--rev "$commit" check' in text
-    assert "diff --cached" not in text  # every commit: a code rename can break a `code:` source
+    assert code == cli.OK and ".githooks/pre-commit" in "".join(lines) and ".githooks/pre-push" in "".join(lines)
+    assert hook.stat().st_mode & 0o111 and 'hook pre-commit "$@"' in hook.read_text()
+    assert "diff --cached" not in hook.read_text()  # every commit: a code rename can break a `code:` source
     assert run_git(tmp_path, "config", "core.hooksPath").strip() == ".githooks"
     assert not [line for line in cli.run(["--repo", str(tmp_path), "init"])[1] if line.startswith("wrote")]  # idempotent
     hook.unlink()

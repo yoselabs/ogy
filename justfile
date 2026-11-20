@@ -46,15 +46,23 @@ shell-test:
     command -v bats >/dev/null || { echo "shell-test: bats is not installed -- run just tools" >&2; exit 2; }
     bats tests/shell
 
-# The knowledge base is ready to land: `ogy check --landing` (an unfinished layer, a word nobody agreed). The pre-push hook runs it
-# through `just check`.
+# The knowledge base, through `ogy hook` (src/ogy/hooks.py), which runs the landing checks (an unfinished layer, a word nobody
+# agreed) only on a land: in a push (prek's variables name its first ref), when the remote ref is main; else when the branch
+# checked out is main. An ordinary branch gets the plain `ogy check`. The hooks `ogy init` writes call the same entry point.
 [group('gate')]
-kb-landing:
-    uv run --frozen --no-sync python -I -m ogy check --landing
+kb:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    ogy=(uv run --frozen --no-sync python -I -m ogy)
+    if [ -n "${PRE_COMMIT_REMOTE_BRANCH:-}" ]; then
+        printf '%s %s %s %s\n' "$PRE_COMMIT_LOCAL_BRANCH" "$PRE_COMMIT_TO_REF" "$PRE_COMMIT_REMOTE_BRANCH" "${PRE_COMMIT_FROM_REF:-0}" | "${ogy[@]}" hook pre-push
+    else
+        "${ogy[@]}" hook gate
+    fi
 
 # The gate's one extension point (see .blueprint/base.just).
 [private]
-check-extra: arch shfmt shell-test kb-landing
+check-extra: arch shfmt shell-test kb
 
 # The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).
 [group('gate')]

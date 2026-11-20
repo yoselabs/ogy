@@ -27,12 +27,10 @@ START, END = "<!-- BEGIN OGY -->", "<!-- END OGY -->"
 HOOKS_DIR = ".githooks"
 HOOK = """\
 #!/bin/sh
-# Written by `ogy init`: check the knowledge base as staged for this commit. Every commit: a code rename can break a `code:` source.
-tree=$(git write-tree) || exit 1
-parent=$(git rev-parse -q --verify HEAD)
-commit=$(git commit-tree "$tree" ${{parent:+-p $parent}} -m staged) || exit 1
-exec {ogy} --rev "$commit" check
+# Written by `ogy init`: `ogy hook` checks the commit this hook guards, with the landing checks on a push to main.
+exec {ogy} hook {name} "$@"
 """
+HOOKS = ("pre-commit", "pre-push")
 SERVER = {"command": "uvx", "args": ["--from", "git+https://github.com/yoselabs/ogy", "ogy", "mcp"]}
 CHECKOUT = ["run", "--frozen", "--no-sync", "python", "-I", "-m", "ogy"]  # ogy's own repository runs the code in front of it
 PUBLISHED = "uvx --from git+https://github.com/yoselabs/ogy ogy"
@@ -105,14 +103,11 @@ def _block(repo: Path, ontology: Ontology, rel: str, written: list[str]) -> None
 
 
 def _hook(repo: Path, written: list[str]) -> None:
-    """The tracked pre-commit hook that runs `ogy check` on the staged tree, and `core.hooksPath` pointing at it."""
-    rel = f"{HOOKS_DIR}/pre-commit"
-    text = HOOK.format(ogy=invocation(repo))
-    path = repo / rel
-    if not path.exists() or path.read_text() != text:
-        atomic_write_text(path, text)
-        written.append(rel)
-    path.chmod(0o755)
+    """The tracked hooks that run `ogy hook` (`ogy.hooks`), and `core.hooksPath` pointing at them."""
+    for name in HOOKS:
+        rel = f"{HOOKS_DIR}/{name}"
+        _put(repo, rel, HOOK.format(ogy=invocation(repo), name=name), written)
+        (repo / rel).chmod(0o755)
     if git_dir(repo) is not None and config_get(repo, "core.hooksPath") != HOOKS_DIR:
         RealRepo(repo).run(repo, "config", "core.hooksPath", HOOKS_DIR)
         written.append("git config core.hooksPath")
@@ -221,9 +216,14 @@ def doctor(repo: Path) -> list[str]:
             have = path.read_text() if path.exists() else ""
             if block(repo, ontology, have) != have:
                 lines.append(f"{rel} has no current ogy block: run `ogy init`")
-    if not (repo / HOOKS_DIR / "pre-commit").is_file():
-        lines.append(f"missing {HOOKS_DIR}/pre-commit (checks the knowledge base on commit): run `ogy init`")
-    elif git_dir(repo) is not None and config_get(repo, "core.hooksPath") != HOOKS_DIR:
+    lines.extend(
+        f"missing {HOOKS_DIR}/{name} (runs `ogy hook {name}`): run `ogy init`" for name in HOOKS if not (repo / HOOKS_DIR / name).is_file()
+    )
+    if (
+        all((repo / HOOKS_DIR / name).is_file() for name in HOOKS)
+        and git_dir(repo) is not None
+        and config_get(repo, "core.hooksPath") != HOOKS_DIR
+    ):
         lines.append(f"git does not use {HOOKS_DIR}: run `ogy init`")
     try:
         server = _mapping(_json(repo, ".mcp.json"), "mcpServers", ".mcp.json").get("ogy")

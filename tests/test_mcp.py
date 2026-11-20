@@ -30,7 +30,7 @@ def write_kb(root: Path) -> None:
 
 
 def test_one_tool_per_subcommand() -> None:
-    assert set(tools(build())) == commands() - {"mcp", "init"}  # a person runs init once; mcp is the server
+    assert set(tools(build())) == commands() - {"mcp", "init", "hook"}  # a person runs init once; mcp is the server; Git runs hook
 
 
 def test_every_tool_takes_the_global_options() -> None:
@@ -96,7 +96,7 @@ def test_a_client_sees_the_tool_set_and_a_call_round_trips(tmp_path: Path) -> No
             return listed, result.is_error, result.structured_content
 
     listed, is_error, structured = asyncio.run(session())
-    assert listed == commands() - {"mcp", "init"}
+    assert listed == commands() - {"mcp", "init", "hook"}
     assert not is_error and structured == {"exit_code": cli.OK, "output": "problem\tpath\taddress\tdetail"}
 
 

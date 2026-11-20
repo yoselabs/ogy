@@ -156,6 +156,16 @@ def _asks(commands: Adder) -> None:
         "Proposals that say no, removals with no why, proposals that differ from the answer.",
     )
     _verb(commands, "mcp", "serve the commands as MCP tools over stdio")
+    hooking = _verb(
+        commands,
+        "hook",
+        "what a Git hook or the gate runs: the check of what it guards, with the landing checks on a land",
+        "pre-commit checks the staged tree, never a land; pre-push reads the pushed refs from standard input and runs check "
+        "--landing on a push to the remote main branch; gate checks the worktree, with --landing when main is checked out. "
+        "Any other branch gets the plain check. Not an MCP tool: Git runs it.",
+    )
+    hooking.add_argument("name", choices=["pre-commit", "pre-push", "gate"], help="the hook that runs, or the gate")
+    hooking.add_argument("hook_args", nargs="*", metavar="arg", help="what Git passes the hook (pre-push: the remote and its URL)")
 
 
 def _writes(commands: Adder) -> None:

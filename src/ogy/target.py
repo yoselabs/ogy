@@ -13,6 +13,8 @@ from ogy.source import KB_DIR, Source, open_source
 from ogy.verdict import MissingTargetError
 lazy from ogy.model import Address, Finding
 
+MAIN = "main"  # the branch a land updates; the base a branch is checked against
+
 
 @dataclass(frozen=True)
 class Target:
@@ -40,7 +42,7 @@ def merge_base(target: Target) -> str | None:
     rev = "HEAD" if target.rev == "." else target.rev
     try:
         repo = RealRepo(target.repo)
-        found = repo.merge_base(rev, "main")
+        found = repo.merge_base(rev, MAIN)
         return None if found is None or found == repo.commit(rev) else str(found)
     except GitError, ValueError:
         return None

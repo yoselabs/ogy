@@ -1,7 +1,7 @@
 """`ogy mcp`: the `ogy` commands as MCP tools over stdio, one tool per subcommand.
 
 The tools are built from the argparse structure of `ogy.cli.parser()` by shelf's `argparse-mcp`, so a new subcommand appears
-here without an edit; its description is the command's own (`init` and `mcp` are no tools). Each tool calls `ogy.cli.run` in this
+here without an edit; its description is the command's own (`init`, `mcp` and `hook` are no tools). Each tool calls `ogy.cli.run` in this
 process, the same operation the CLI uses. The global options (`--repo`, `--rev`, ...) are inputs of every tool. The result is
 the exit code and the output: a table or a record for an agent.
 
@@ -26,7 +26,7 @@ from fastmcp.tools.tool_transform import ToolAnnotations
 
 from ogy import cli
 
-NO_TOOL = ("mcp", "init")  # the subcommand that starts this server, and the one a person runs once to set a repository up
+NO_TOOL = ("mcp", "init", "hook")  # the subcommand that starts this server, the one a person runs once, the one Git runs
 
 # Annotations are hints to the client, all four set: the read tools change nothing; `review` saves a round; `answer` and `reply`
 # add agreements; `put`, `remove`, `move` and `migrate` overwrite or rewrite entries. Every tool works on one local repository.

@@ -11,7 +11,7 @@ lazy from pathlib import Path
 from git_porcelain import git_dir, head
 from process_lock import LockHeldError, ProcessLock
 
-from ogy import near, put, removal, removed, reply, rounds, writes
+from ogy import hooks, near, put, removal, removed, reply, rounds, writes
 from ogy.base import read_ledgers
 from ogy.built import Line, read_source
 from ogy.check import check
@@ -117,6 +117,16 @@ def run_check(target: Target, base: str | None = None, *, landing: bool = False,
         if only is None or _in_scope(item, only, snapshot.ontology)
     ]
     return Run(found_in, source.reads + (older.reads if older else 0), Verdict.FINDINGS if found_in else Verdict.OK)
+
+
+def run_hook(target: Target, name: str, pushed: str = "") -> Run[list[tuple[hooks.Update, list[Finding]]]]:
+    """What a Git hook or the gate guards, each update checked at the commit it will hold: `pre-commit` the staged tree,
+    `pre-push` each branch of the push (`pushed`: the hook's standard input), `gate` the worktree; a land (`ogy.hooks`) with the
+    landing checks."""
+    one = {"pre-commit": hooks.staged, "gate": hooks.checked_out}.get(name)
+    updates = [one(target.repo)] if one else hooks.pushed(target.repo, pushed)
+    found = [(update, run_check(target.at(update.rev), update.base, landing=update.land).value) for update in updates]
+    return Run(found, 0, Verdict.FINDINGS if any(items for _, items in found) else Verdict.OK)
 
 
 def run_waiting(target: Target, area: str | None = None) -> int:
