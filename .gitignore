@@ -12,3 +12,5 @@ dist/
 
 # bd hook files: prek owns the hooks (blueprint recipe)
 .beads/hooks/
+.claude/worktrees/
+.worktrees/

@@ -2,6 +2,6 @@
 
 import sys
 
-from ogy.cli import main
+from ogy.entry import main
 
 sys.exit(main())

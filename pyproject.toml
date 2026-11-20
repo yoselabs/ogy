@@ -15,7 +15,6 @@ dependencies = [
     "content-digest==0.1.0",
     "py-symbols==0.1.0",
     "fastmcp>=3.4,<4",
-    "mcp<2",
     "atomic-io==0.2.0",
     "git-porcelain==0.24.0",
     "lean-wire==0.3.0",
@@ -23,11 +22,10 @@ dependencies = [
     "pydantic==2.14.3",
     "process-lock==0.2.1",
     "settings-base==0.1.0",
-    "yaml-merge==0.2.0",
 ]
 
 [project.scripts]
-ogy = "ogy.cli:main"
+ogy = "ogy.entry:main"
 
 [dependency-groups]
 dev = [
@@ -44,6 +42,7 @@ dev = [
     "codespell==2.4.3",
     "deptry==0.25.1",
     "pytest-xdist==3.8.0",
+    "import-linter==2.15",
 ]
 
 [tool.uv.sources]
@@ -84,6 +83,8 @@ addopts = "--import-mode=importlib -p no:cacheprovider"
 
 [tool.uv]
 required-version = ">=0.13.0"
+# ogy imports no mcp module itself: the former direct pin on the transitive dependency of fastmcp is now a constraint.
+constraint-dependencies = ["mcp<2"]
 override-dependencies = [
     "atomic-io @ git+https://github.com/yoselabs/shelf.git@atomic-io-v0.2.0#subdirectory=packages/atomic-io",
     "yaml-merge @ git+https://github.com/yoselabs/shelf.git@yaml-merge-v0.2.0#subdirectory=packages/yaml-merge",
@@ -229,7 +230,7 @@ known_first_party = ["ogy"]
 # fixture is authoritative and the linter yields to it, never the reverse.
 #
 # docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
-skip = "evals/*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
+skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
 # doctrine/glossary coinages the dictionary flags but we mean on purpose.
 ignore-words-list = "wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
 # A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
@@ -243,6 +244,7 @@ source = ["src"]
 omit = ["*/tests/*"]
 
 [tool.coverage.report]
+fail_under = 92
 show_missing = true
 skip_covered = false
 exclude_lines = [
@@ -283,3 +285,25 @@ implicit-any-attribute = false
 implicit-any-empty-container = false
 unannotated-return = false
 
+
+# ── architecture: import edges (import-linter); banned APIs live in [tool.ruff.lint.flake8-tidy-imports.banned-api] ──
+[tool.importlinter]
+root_package = "ogy"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Only the MCP server module imports the MCP libraries"
+type = "forbidden"
+source_modules = ["ogy"]
+forbidden_modules = ["fastmcp", "mcp", "argparse_mcp"]
+ignore_imports = ["ogy.mcp_server -> fastmcp", "ogy.mcp_server -> argparse_mcp"]
+
+[[tool.importlinter.contracts]]
+name = "Entry points sit above the command layer, which sits above the operations"
+type = "layers"
+layers = ["ogy.__main__", "ogy.entry", "ogy.mcp_server", "ogy.cli", "ogy.commands", "ogy.ops"]
+
+[[tool.importlinter.contracts]]
+name = "No import cycles between the modules of ogy"
+type = "acyclic_siblings"
+ancestors = ["ogy"]

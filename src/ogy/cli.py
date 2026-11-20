@@ -5,7 +5,7 @@ import sys
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
-from ogy import config, mcp_server, ops  # mcp_server imports this module back; it is used only at call time
+from ogy import config, ops
 from ogy.commands import HANDLERS, Result
 from ogy.find import STATES
 from ogy.init import doctor
@@ -269,9 +269,11 @@ def target_of(args: argparse.Namespace) -> Target:
     return Target(args.repo, rev=_first(args.rev, settings.rev, "."), ontology=_first(args.ontology, settings.ontology, DEFAULT_ONTOLOGY))
 
 
-def dispatch(args: argparse.Namespace, *, agent: bool) -> Result:
+def dispatch(args: argparse.Namespace, *, agent: bool, serve: Callable[[], None] | None = None) -> Result:
     if args.command == "mcp":
-        mcp_server.main()
+        if serve is None:
+            return USAGE, ["the MCP server starts from the console entry: run `ogy mcp`"]
+        serve()
         return OK, []
     if args.command == "init" and args.check:
         problems = doctor(args.repo)
@@ -285,16 +287,18 @@ def dispatch(args: argparse.Namespace, *, agent: bool) -> Result:
     return HANDLERS[args.command](target_of(args), args, agent=agent)
 
 
-def run(argv: Sequence[str], *, agent: bool = False) -> Result:
-    """Run one command; `agent` prints tables and records (over MCP) instead of lines for a person."""
+def run(argv: Sequence[str], *, agent: bool = False, serve: Callable[[], None] | None = None) -> Result:
+    """Run one command; `agent` prints tables and records (over MCP) instead of lines for a person.
+
+    `serve` starts the MCP server for `ogy mcp`: the entry point above this module passes it, so this module never imports the server."""
     try:
-        return dispatch(parser().parse_args(argv), agent=agent)
+        return dispatch(parser().parse_args(argv), agent=agent, serve=serve)
     except RefusalError as error:
         return error.verdict, error.lines()
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    code, lines = run(sys.argv[1:] if argv is None else argv)
+def main(argv: Sequence[str] | None = None, *, serve: Callable[[], None] | None = None) -> int:
+    code, lines = run(sys.argv[1:] if argv is None else argv, serve=serve)
     if lines:
         print("\n".join(lines), file=sys.stderr if code >= USAGE else sys.stdout)
     return code

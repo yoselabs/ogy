@@ -25,7 +25,7 @@ for id in $ids; do cp "$dir/blind/$id.md" "$work/"; done
 ls "$work" >"$dir/meta/$name.files"
 session=$(python3 -I -c 'import uuid; print(uuid.uuid4())')
 flags=(--model "$model" --effort "$effort" --safe-mode --restricted --disable-slash-commands --strict-mcp-config
-  --tools Read,Write --permission-mode acceptEdits --permission-prompts none --output-format json)
+  --tools "Read,Write" --permission-mode acceptEdits --permission-prompts none --output-format json)
 (cd "$work" && claude -p "${flags[@]}" --session-id "$session" <"$here/scorer-prompt.md") >"$dir/meta/$name.json"
 if [ ! -s "$work/scores.md" ]; then echo "no scores.md from $name; see $dir/meta/$name.json" >&2; exit 1; fi
 cp "$work/scores.md" "$dir/scores/$name.md"
