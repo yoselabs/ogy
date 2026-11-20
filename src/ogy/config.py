@@ -65,7 +65,8 @@ def read(repo: Path) -> Config:
 
 
 def land(repo: Path) -> str:
-    """The land branch `ogy.yml` names; refuses (NoLandError) when it names none."""
+    """The land branch `ogy.yml` names; refuses (NoLandError) when it names none. Every reader of `land` goes through it (the
+    hooks, the merge base a check and a removal compare against, init and its doctor), so none falls back to a guess."""
     found = read(repo).land
     if found is None:
         raise NoLandError(NO_LAND)

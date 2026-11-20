@@ -70,7 +70,7 @@ def _names(ontology: Ontology) -> set[str]:
 @pytest.fixture
 def toy(tmp_path: Path) -> Path:
     run_git(tmp_path, "init", "-q", "-b", "main")
-    for rel, text in {**FILES, "ogy.yml": f"ontology: {TOY}\n"}.items():
+    for rel, text in {**FILES, "ogy.yml": f"ontology: {TOY}\nland: main\n"}.items():
         (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / rel).write_text(text)
     run_git(tmp_path, *IDENTITY, "add", "-A")
@@ -225,7 +225,7 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
     journey = toy / "docs/kb/business/shop/journey/buy.yml"
     journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")
     run_git(toy, *IDENTITY, "commit", "-qam", "held to the limit")
-    (toy / "ogy.yml").write_text(f"ontology: {folder}\n")
+    (toy / "ogy.yml").write_text(f"ontology: {folder}\nland: main\n")
     found = w(toy, "check")[1]
     assert any(line.startswith("needs-migration: business/shop/norm/limit.yml") for line in found)
     assert any("held_by is now bound_by" in line for line in found)
@@ -300,7 +300,7 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     ).replace("  shows_moves:", "  typed: {}\n  shows_moves:")
     two = _folder(tmp_path_factory.mktemp("toy-console"), {"console": console}, "[screen, console]")
     one = _folder(tmp_path_factory.mktemp("toy-merged"), {"screen": "", "surface": surface}, "[surface]")
-    (toy / "ogy.yml").write_text(f"ontology: {two}\n")
+    (toy / "ogy.yml").write_text(f"ontology: {two}\nland: main\n")
     (toy / "docs/kb/tech/shop/console/till.yml").parent.mkdir(parents=True)
     (toy / "docs/kb/tech/shop/console/till.yml").write_text(
         "tells: The till.\nserves_stages: [business/shop/journey/buy/stage/pick]\ntyped_as: buy\nsource: ['py:app.py#buy']\n"
@@ -317,7 +317,7 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     run_git(toy, *IDENTITY, "add", "-A")
     run_git(toy, *IDENTITY, "commit", "-qm", "a console")
     base = run_git(toy, "rev-parse", "HEAD").strip()
-    (toy / "ogy.yml").write_text(f"ontology: {one}\n")
+    (toy / "ogy.yml").write_text(f"ontology: {one}\nland: main\n")
     assert any(line.startswith("needs-migration: tech/shop/console/till.yml") for line in w(toy, "check")[1])
     assert w(toy, "migrate")[0] == cli.OK and w(toy, "check")[1][0] == "ok"
     till = read(toy, "tech/shop/surface/till.yml")

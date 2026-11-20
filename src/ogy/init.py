@@ -68,7 +68,10 @@ def _land(repo: Path, given: str | None) -> str | None:
     """The land branch `ogy.yml` keeps: the one it names, else `--land`, else the remote's default branch (`origin/HEAD`); None
     outside a Git repository. Refuses (InitRefusedError) a `--land` that contradicts `ogy.yml` and a repository whose remote names
     no default branch: the branch checked out may be a feature branch, so it is never taken."""
-    held = config.read(repo).land
+    try:
+        held: str | None = config.land(repo)
+    except config.NoLandError:
+        held = None
     if given is not None and held is not None and given != held:
         msg = f"{config.CONFIG_FILE} already says land: {held}, not {given}"
         raise InitRefusedError(msg)
@@ -241,8 +244,11 @@ def doctor(repo: Path) -> list[str]:
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
-    elif git_dir(repo) is not None and config.read(repo).land is None:
-        lines.append(config.NO_LAND)
+    elif git_dir(repo) is not None:
+        try:
+            config.land(repo)
+        except config.NoLandError as error:
+            lines.append(str(error))
     ontology = named(config.read(repo).ontology or DEFAULT_ONTOLOGY, repo)
     lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(ontology) if not (repo / KB_DIR / rel).is_file())
     lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, ontology))

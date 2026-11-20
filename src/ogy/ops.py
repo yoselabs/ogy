@@ -105,7 +105,7 @@ def _in_scope(finding: Finding, scope: str, ontology: Ontology) -> bool:
 
 def run_check(target: Target, base: str | None = None, *, landing: bool = False, area: str | None = None) -> Run[list[Finding]]:
     """Every check (of one scope when given: a layer, `<layer>/<area>` or an area); against `base` (a commit), else the merge
-    base with the land branch when there is one."""
+    base with the land branch (refused when `ogy.yml` names none, in a Git repository)."""
     source, snapshot = target.read()
     only = _scope(snapshot, area)
     found = base or merge_base(target)

@@ -174,6 +174,18 @@ def test_remove_part_keeps_its_place_and_the_id_is_not_reused(repo: Path) -> Non
     }
 
 
+def test_every_reader_of_the_land_branch_refuses_when_ogy_yml_names_none(repo: Path) -> None:
+    """After the second review, fix 3: `check` with no base and `remove` read the land branch (the merge base a branch is checked
+    and a removal recorded against); with no `land:` they refuse as the hooks do, never check or record against HEAD unsaid."""
+    (repo / "ogy.yml").write_text("ontology: software\n")
+    no_land = (cli.USAGE, ["ogy.yml names no land branch (`land:`): run `ogy init`"])
+    assert ogy(repo, "--rev", ".", "check") == no_land
+    assert ogy(repo, "--rev", "HEAD", "check") == no_land
+    assert ogy(repo, "--rev", ".", "remove", "software/app/handler/lend", "--why", "not needed") == no_land
+    assert (repo / "docs/kb/software/app/handler/lend.yml").is_file() and not (repo / "docs/kb/software/app/removed.yml").exists()
+    assert ogy(repo, "--rev", ".", "check", "--base", "HEAD") == (cli.OK, ["ok"])  # a base given reads no land branch
+
+
 def test_a_deletion_without_an_item_is_found_against_the_base(repo: Path) -> None:
     (repo / "docs/kb/software/app/handler/lend.yml").unlink()
     code, lines = ogy(repo, "--rev", ".", "check", "--base", "HEAD")

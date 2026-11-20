@@ -5,9 +5,10 @@ Every hook calls this entry point (ogy's own through prek and its gate, and the 
 it alone. A land is an update of the land branch `ogy.yml` names (`land`, which `ogy init` records): a push whose remote ref is
 that branch (checked against the commit it held there; any other pushed branch against its merge base with the land branch, as
 a removal is recorded), or the gate run with it checked out. A land gets `check --landing`; any other update the plain check.
-With no land branch named, `pre-push` and `gate` refuse: nothing can be told to be a land. A commit is never a land: a merge
-into the land branch runs no pre-commit hook, so the push is where a land is caught, and a fresh repository's starting entries
-wait for the owner's yes in review, which comes before its first land, not before its first commit."""
+With no land branch named, every hook refuses (`config.land`, which every reader of it goes through): nothing can be told
+to be a land, and no base can be found. A commit is never a land: a merge into the land branch runs no pre-commit hook, so the
+push is where a land is caught, and a fresh repository's starting entries wait for the owner's yes in review, which comes
+before its first land, not before its first commit."""
 
 import os
 from dataclasses import dataclass

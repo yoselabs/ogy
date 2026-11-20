@@ -4,7 +4,7 @@ against, with the land branch `ogy.yml` names (`land`)."""
 from dataclasses import dataclass, replace
 lazy from pathlib import Path
 
-from git_porcelain import GitError, MissingRevision, RealRepo, head
+from git_porcelain import GitError, MissingRevision, RealRepo, git_dir, head
 
 from ogy import config
 from ogy.check import check
@@ -48,12 +48,13 @@ class Target:
 
 
 def merge_base(target: Target) -> str | None:
-    """The commit the knowledge base is checked against: its merge base with the land branch, None when `ogy.yml` names none
-    (`ogy init --check` says so), the branch does not exist or there is no history."""
-    rev = "HEAD" if target.rev == "." else target.rev
-    land = config.read(target.repo).land
-    if land is None:
+    """The commit the knowledge base is checked against: its merge base with the land branch, None outside a Git repository
+    (no history to compare with), when the branch does not exist or there is no history. Refuses (NoLandError) in a repository
+    whose `ogy.yml` names no land branch: nothing is checked or recorded against a guessed base."""
+    if git_dir(target.repo) is None:
         return None
+    land = config.land(target.repo)
+    rev = "HEAD" if target.rev == "." else target.rev
     try:
         repo = RealRepo(target.repo)
         found = repo.merge_base(rev, land)
