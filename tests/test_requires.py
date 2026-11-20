@@ -294,3 +294,12 @@ def test_a_capability_no_workflow_realizes_is_work(kb: Make) -> None:
     assert left(kb, lend, "no-workflow") == {"product/app/capability/lend"}
     realized = SIGN_IN.replace("start: ask\n", "start: ask\nrealizes: product/app/capability/lend\n")
     assert left(kb, {**lend, "product/app/workflow/sign-in.yml": realized}, "no-workflow") == set()
+
+
+def test_a_goal_no_capability_realizes_is_work(kb: Make) -> None:
+    """Decision goal-realized-by-capability (answer work, the sibling of no-workflow): a goal is written before the capabilities
+    that realize it, so until one does it is work, never a finding."""
+    goal = {"product/app/goals.yml": "- {id: tools, says: Members get tools.}\n"}
+    assert left(kb, goal, "unused") == {"product/app/goal/tools"}
+    lend = {**goal, "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
+    assert left(kb, lend, "unused") == set()

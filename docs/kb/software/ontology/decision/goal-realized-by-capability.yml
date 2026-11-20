@@ -1,0 +1,17 @@
+structure: true
+question: Is a goal that no capability realizes work left, or does the goal guidance stay prose?
+context: 'Prose-rules review 2026-11-20 (docs/reviews/2026-11-20-prose-rules.md, L10), the sibling of B2 (capability-realized-by-workflow, answered work): no prose said a goal must be realized; work unused on goal was built in cea25d2 and taken out in f57602d for want of a decision.'
+options:
+  work:
+    label: A goal no capability realizes is work left (unused) until a capability realizes it
+  prose:
+    label: Drop the requirement; a goal may have no capability
+proposal:
+  chose: work
+  why: A goal is written before the capabilities that reach it; until one does, the product does not yet pursue it, as for a capability with no workflow.
+answers:
+- chose: work
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T00:07:50+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: product/review/decision/judgement-delegation

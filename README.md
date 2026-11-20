@@ -221,7 +221,8 @@ command appears without an edit). Every tool describes itself (its description i
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
 - Unused (work left `unused`, never a finding, computed from links): a rule nothing `satisfies` and that `constrains`
-  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires. Each kind
+  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires; a goal no
+  capability realizes. Each kind
   declares it as a work requirement with `status: unused`.
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A capability `realizes` a
   goal; one that realizes none is work left (`unrealized` in `ogy work`) until the goal is written, not a finding. A

@@ -1,0 +1,17 @@
+structure: true
+question: May a handler perform a row that has no effect, or only rows with an effect?
+context: 'Prose-rules review 2026-11-20 (L8): the handler about and guidance say it performs the rows that have an effect, yet the check handler performs rows with none; the unhandled work asks for a handler only on rows with an effect.'
+options:
+  may:
+    label: A handler may perform a row with no effect; a row with an effect needs one (unhandled), a row without does not
+  effect-only:
+    label: A handler performs only rows with an effect; the check handler's rows lose their handler
+proposal:
+  chose: may
+  why: Code that refuses or checks without changing anything is still the unit behind the row; only the guidance implied otherwise.
+answers:
+- chose: may
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T00:08:03+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: product/review/decision/judgement-delegation

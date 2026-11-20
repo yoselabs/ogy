@@ -1,0 +1,17 @@
+structure: true
+question: Must every dependency link a decision that chose it, or is "choosing a dependency is a decision" guidance only?
+context: 'Prose-rules review 2026-11-20 (L9): the dependency guidance says choosing it is a decision; work for a dependency with no because to a decision is expressible today, but nobody agreed every dependency needs one.'
+options:
+  work:
+    label: A dependency with no because to a decision is work left
+  prose:
+    label: Keep it as guidance; a dependency need not link a decision
+proposal:
+  chose: prose
+  why: Most dependencies (Git, uv, the shelf packages) were never a choice worth a card; requiring one would fill review with decisions nobody made.
+answers:
+- chose: prose
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T00:07:57+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: product/review/decision/judgement-delegation

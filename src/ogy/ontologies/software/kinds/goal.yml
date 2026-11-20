@@ -7,6 +7,8 @@ shape: list
 sentence: says
 file: goals.yml
 layers: [product]
+requires:                     # owner, delegated (decision goal-realized-by-capability): until a capability realizes it, a goal is work
+  - {path: ["<-realizes"], kinds: [capability], work: true, status: unused, error: "a goal no capability realizes"}
 fields:
   says: {required: true}
   for: {type: links, to: [actor]}
