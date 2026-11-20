@@ -133,18 +133,43 @@ LONG = "A tool is lent to a member who asks for it, names the day it is wanted a
 
 
 def test_since_you_agreed_reads_the_commit_that_wrote_the_yes_and_shows_where_a_long_value_differs(repo: Path) -> None:
-    """Fable's review, problem 3: the agreed hash was taken under older kinds, so no rehash of old text matches it; the commit
-    that wrote it holds the version agreed to. A difference past the first 60 characters is shown, not cut off."""
+    """Fable's review, problem 3: the commit that wrote the yes holds the version agreed to. A difference past the first 60
+    characters is shown, not cut off. A hash no version rehashes to (taken under older kinds) is read whole."""
     flow = repo / "docs/kb/product/app/workflow/borrow.yml"
-    flow.write_text(flow.read_text().replace("says: A tool is lent.\n", f"says: {LONG}\nagreed: {OLD_YES}\n", 1))
-    code, lines = ogy(repo, "--rev", ".", "review", "product")
-    assert code == cli.OK and "   since you agreed: no commit that changed this file (1 read) wrote this yes: read it whole" in lines, lines
+    text = flow.read_text()
+    flow.write_text(text.replace("says: A tool is lent.\n", f"says: A tool is lent.\nagreed: {OLD_YES}\n", 1))
     commit(repo, "agreed under older kinds")
+    lines = ogy(repo, "--rev", ".", "review", "product")[1]
+    assert "   since you agreed: no commit holds the version agreed to (2 read): read it whole" in lines, lines
+    flow.write_text(text.replace("The member asks.", LONG))
+    round_id = ogy(repo, "--rev", ".", "review", "product")[1][0].split()[-1]
+    code, lines = ogy(repo, "--rev", ".", "reply", "yes all", "--said", "All of it", "--where", "ai:claude/1", "--round", round_id)
+    assert code == cli.OK, lines
+    commit(repo, "agreed")
     flow.write_text(flow.read_text().replace("to say yes.", "to say no."))
     commit(repo, "edited")
     lines = ogy(repo, "--rev", ".", "review", "product")[1]
-    said = [line for line in lines if line.startswith("   since you agreed: says:")]
-    assert said == ["   since you agreed: says: ...waits for the lender to say yes. -> ...waits for the lender to say no."], lines
+    said = [line for line in lines if line.startswith("   since you agreed: step/ask: says:")]
+    assert said == ["   since you agreed: step/ask: says: ...waits for the lender to say yes. -> ...waits for the lender to say no."], lines
+
+
+def test_since_you_agreed_never_diffs_against_text_nobody_agreed_to(repo: Path) -> None:
+    """Fable's second review, problem 2: a yes and an edit in one commit. That commit holds the stored hash but not the version
+    agreed to (rehashed, it differs), so the card is read whole, before the next edit and after it."""
+    round_id = ogy(repo, "--rev", ".", "review", "product")[1][0].split()[-1]
+    code, lines = ogy(repo, "--rev", ".", "reply", "yes all", "--said", "All of it", "--where", "ai:claude/1", "--round", round_id)
+    assert code == cli.OK, lines
+    flow = repo / "docs/kb/product/app/workflow/borrow.yml"
+    flow.write_text(flow.read_text().replace("The member asks.", "The member begs."))
+    commit(repo, "agreed and edited")
+    whole = "   since you agreed: step/ask: no commit holds the version agreed to (2 read): read it whole"
+    lines = ogy(repo, "--rev", ".", "review", "product")[1]
+    assert whole in lines and not any("as agreed" in line for line in lines), lines
+    flow.write_text(flow.read_text().replace("The member begs.", "The member pleads."))
+    commit(repo, "edited again")
+    lines = ogy(repo, "--rev", ".", "review", "product")[1]
+    assert not any("begs" in line for line in lines if "since you agreed" in line), lines
+    assert "   since you agreed: step/ask: no commit holds the version agreed to (3 read): read it whole" in lines, lines
 
 
 def test_a_half_workflow_commits_on_a_branch_and_landing_refuses_it(repo: Path) -> None:

@@ -1,8 +1,10 @@
 """What changed in an entry since a person agreed to it, read from Git: a `changed` card shows it, so the owner reads the
-change instead of the whole sentence again. An agreement keeps only the hash, taken under the kinds of its day, so the agreed
-version is never found by hashing old text again: it is the entry in the oldest commit whose file holds that same stored
-`agreed.hash` (the commit that wrote the yes), found by following the file back through its renames."""
+change instead of the whole sentence again. An agreement keeps only the hash: the agreed version is the entry in the oldest
+commit whose file holds that same stored `agreed.hash` (following the file back through its renames) and whose knowledge base,
+read as `ogy migrate` would, gives that entry the same hash again. A yes written with an edit in one commit, or a hash taken under
+older kinds, finds no such version, and the card is read whole: a diff against text nobody agreed to would lie."""
 
+from functools import lru_cache
 lazy from pathlib import Path
 
 from git_porcelain import GitError, RealRepo
@@ -10,9 +12,11 @@ from git_porcelain import GitError, RealRepo
 from ogy.kindchange import migrated
 from ogy.retype import applied
 from ogy.semdiff import fields_changed
-from ogy.snapshot import build
+from ogy.snapshot import build, load
+from ogy.source import open_source
 from ogy.status import Card, Status, agreed_of, status
 lazy from ogy.model import Address
+lazy from ogy.ontology import Ontology
 lazy from ogy.snapshot import Snapshot
 
 SHOWN = 60  # characters of a value shown whole
@@ -55,9 +59,22 @@ def _commits(repo: Path, path: str) -> list[tuple[str, str]]:
     return found[::-1]
 
 
+@lru_cache(maxsize=32)  # a commit's knowledge base never changes; one review rehashes many entries in the same few commits
+def _whole(repo: Path, kb: str, sha: str, ontology: Ontology) -> Snapshot:
+    """The whole knowledge base of commit `sha`, read as `ogy migrate` would."""
+    return migrated(load(open_source(repo, sha, kb, required=False), ontology, retyped=True))
+
+
+def _rehashed(repo: Path, kb: str, snapshot: Snapshot, sha: str, found: Address) -> str | None:
+    """The hash a yes would take of `found` in the whole knowledge base of commit `sha`."""
+    older = _whole(repo, kb, sha, snapshot.ontology)
+    return older.agreed_print(found) if found in older.entries else None
+
+
 def _agreed_version(repo: Path, kb: str, snapshot: Snapshot, address: Address, agreed: str) -> tuple[Snapshot, Address] | int:
     """The file of the oldest commit holding the entry (same kind and depth) with `agreed` as its stored hash, read alone as
-    `ogy migrate` would read it, and the entry's address there; else how many commits changed the file."""
+    `ogy migrate` would read it, and the entry's address there, when its hash rehashed is `agreed` too; else how many commits
+    changed the file. A later commit holding the same yes holds later edits, so only the oldest is the version agreed to."""
     prefix = f"{kb}/".lstrip("/")
     commits = _commits(repo, prefix + snapshot.entries[address].path)
     git, last = RealRepo(repo), None
@@ -71,7 +88,7 @@ def _agreed_version(repo: Path, kb: str, snapshot: Snapshot, address: Address, a
         for found in older.entries:
             yes = agreed_of(older, found)
             if yes is not None and yes.hash == agreed and found.kind == address.kind and len(found.path) == len(address.path):
-                return older, found
+                return (older, found) if _rehashed(repo, kb, snapshot, sha, found) == agreed else len(commits)
     return len(commits)
 
 
@@ -85,7 +102,7 @@ def changes(repo: Path, kb: str, snapshot: Snapshot, address: Address) -> tuple[
     except GitError:
         found = 0
     if isinstance(found, int):
-        return (f"no commit that changed this file ({found} read) wrote this yes: read it whole",)
+        return (f"no commit holds the version agreed to ({found} read): read it whole",)
     older, then = found
     old = {str(a).removeprefix(str(then)): older.entries[a] for a in older.entries if a == then or str(a).startswith(f"{then}/")}
     new = {
