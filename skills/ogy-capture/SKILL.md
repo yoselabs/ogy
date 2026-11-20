@@ -116,7 +116,7 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
 
 ## 7. Read back
 Read entries back with `ogy review` (at most 7 cards, with a count per area), in plain language, in three groups: what
-the owner said, what you concluded (and from what), what you assumed (one batch to confirm or correct). The owner
+the owner said, what you concluded (and from what), what you proposed (one batch to confirm or correct). The owner
 replies with `yes`, `yes all` (every recommendation), `yes 1 3`, `Q1 b`, `2: <new sentence>`, `no 4` or `later`; pass it to
 `ogy reply` with `--said`, your paraphrase of what they said.
 
@@ -131,7 +131,7 @@ A checker counterexample counts as a defect only if its trace is code-captured.
 ## Output
 1. The entries written (addresses).
 2. Owner questions: from `ogy review`, at most 7, most important first.
-3. Assumed for read-back, each with its proposal.
+3. Proposed for read-back: each open decision with its proposal.
 4. Hazard cells left open.
 
 ## Judge critically (owner, 2026-11-17)

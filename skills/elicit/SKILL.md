@@ -77,7 +77,7 @@ Q<n>. <short title>
 
 ## 6. Read back
 - Play back what you understood in plain sentences, in three groups: what they said, what you concluded (and from
-  what), and what you assumed (one batch to confirm or correct) (playback from superpowers).
+  what), and what you proposed (one batch to confirm or correct) (playback from superpowers).
 - Commands the owner may use: `skip`, `decide` (accept every recommendation; in a round it is `ogy reply "decide"`), `map decisions` (show the tree)
   (from iorlas-brainstorm).
 
@@ -102,6 +102,6 @@ Q<n>. <short title>
 ## Output
 - Decisions asked: each with its card, and the answer once given, with its paraphrase, who answered, when and where.
 - Derived facts, each with its sources.
-- Assumed: each with its proposed answer.
+- Proposed: each open decision with its proposal.
 - Still open.
 - Dropped: every proposal you decided against without asking, each with its reason.
