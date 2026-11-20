@@ -182,7 +182,7 @@ def _reason(decision: Decision) -> str:
         return ""
     fields = decision.guess.fields if decision.guess and not decision.heard else {}
     value = fields.get(decision.names.why)
-    return f"AI guess because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
+    return f"AI proposal because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
 
 def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], kind: str) -> Card:

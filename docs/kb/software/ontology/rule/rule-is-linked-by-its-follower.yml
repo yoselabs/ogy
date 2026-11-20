@@ -1,1 +1,1 @@
-says: An entry names the rules it is held to with `by`; a rule has no `on`; the kind files say which kinds take `by`.
+says: A behaviour entry (a step, a row, an interface, a handler, a dependency or a workflow) names the rules it is held to with `satisfies`; a rule names the data it constrains with `constrains`; a rule has no `on`; the kind files say which kinds take each.

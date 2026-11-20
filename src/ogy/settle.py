@@ -243,5 +243,5 @@ def check_decisions(snapshot: Snapshot, _source: Source) -> list[Finding]:
         problems += [*_uneven(decision), *_times(decision), *_in_force(snapshot, decision),
                      *(item for answer in decision.answers for item in _delegation(found, decision, answer))]
         if not decision.answers and decision.guess is None:
-            problems.append(_finding(decision, Problem.NO_GUESS, "a decision with no answer needs a guess"))
+            problems.append(_finding(decision, Problem.NO_GUESS, "a decision with no answer needs a proposal"))
     return problems

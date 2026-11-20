@@ -11,7 +11,7 @@
     hash: 4f4b601c8106
 - id: proof
   word: proof
-  says: A test, path.py::function, showing a rule or value holds in code; not evidence.
+  says: A test, path.py::function, showing a rule or quantity holds in code; not evidence.
   agreed:
     at: '2026-11-19T20:33:03+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

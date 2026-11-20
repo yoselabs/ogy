@@ -3,10 +3,10 @@ structure: true
 question: A guess with no option gives its values with `value`, an option gives the same shape with `sets`. Is the guess's field renamed to `sets`?
 options:
   sets:
-    label: Rename guess.value to sets
+    label: A proposal gives its values with sets, as an option does
     sets:
       software/ontology/rule/guess-sets:
-        says: A guess that chooses no option gives its values with `sets`, the same field and shape an option uses; a guess has no `value`.
+        says: A proposal that chooses no option gives its values with `sets`, the same field and shape an option uses.
   keep-value:
     label: Keep guess.value
     sets:

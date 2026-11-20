@@ -108,7 +108,8 @@ def render_show(found: Shown) -> list[str]:
     if found.decided_in is not None:
         decided = found.decided_in
         note = f"; note: {decided.note}" if decided.note else ""
-        lines.append(f"Decided in (computed): {decided.decision} (in force: {decided.option or 'its guess value'}, by {decided.by}){note}")
+        option = decided.option or "its proposal value"
+        lines.append(f"Decided in (computed): {decided.decision} (in force: {option}, by {decided.by}){note}")
     if found.came_from:
         lines.append(f"Came from (computed): {', '.join(found.came_from)}" + (", through the decision" if found.through_decision else ""))
     if found.settles:
@@ -200,7 +201,7 @@ def render_review_md(found: Review) -> list[str]:
 
 
 def render_dropped(found: Dropped) -> list[str]:
-    lines = [f"guess says no, nobody has seen it: {address}" for address in found.guessed_no]
+    lines = [f"proposal says no, nobody has seen it: {address}" for address in found.guessed_no]
     lines += [f"removed with no why: {item}" for item in found.unexplained]
     lines += [f"removed with plain words, not a decision: {item}" for item in found.plain_why]
     lines += [f"answer with a note (the owner's hedge or condition): {address}" for address in found.noted]

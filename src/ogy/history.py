@@ -118,8 +118,8 @@ def in_force(snapshot: Snapshot, subject: str) -> str | None:
         force = decision.in_force
         if decision.address == snapshot.resolve(subject) and force is not None:
             newest = max((a for a in decision.answers if a.at), key=lambda a: a.at, default=None)
-            by = f"owner, {newest.at:%Y-%m-%d}" if force.by_answer and newest else "AI guess, no answer yet"
-            return f"In force: {force.option or 'the guess value'} ({by})."
+            by = f"owner, {newest.at:%Y-%m-%d}" if force.by_answer and newest else "AI proposal, no answer yet"
+            return f"In force: {force.option or 'the proposal value'} ({by})."
     return None
 
 

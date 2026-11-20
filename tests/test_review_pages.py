@@ -100,7 +100,7 @@ def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Pat
     lines = w(repo, "review")[1]
     text = "\n".join(lines)
     assert lines[0].startswith("round r") and "1 questions open · 0 answered by you | entries:" in lines[1]
-    assert text.index("A. High  (recommended)") < text.index("B. Low") and "AI guess because: fees are small" in text
+    assert text.index("A. High  (recommended)") < text.index("B. Low") and "AI proposal because: fees are small" in text
     assert "Q1: <your words>" in text
     md = "\n".join(w(repo, "review", "--md")[1])
     assert md.startswith("## ogy review, round `r") and "### Q1. question" in md and "Round: `r" in md

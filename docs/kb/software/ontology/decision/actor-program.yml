@@ -3,10 +3,10 @@ structure: true
 question: A step's actor may link to an actor or an external, so `mcp-clients` is an external that acts. What is a third-party system that invokes a workflow, and what may a step's actor link to?
 options:
   program:
-    label: Actor nature [human, ai, program]; step.actor links only to actors; an external stays what the product depends on
+    label: Actor nature [human, ai, program]; step.actor links only to actors; a dependency stays what the product calls
     sets:
       software/ontology/rule/actor-program:
-        says: An actor's nature is human, ai or program; a third-party system that invokes a workflow is an actor of nature program; a step's actor links only to an actor; an external is only what the product depends on; a step with no actor is a system step.
+        says: An actor's nature is human, ai or program; a third-party system that invokes a workflow is an actor of nature program; a step's actor links only to an actor; a dependency is only what the product calls; a step with no actor is a system step.
   system:
     label: Actor nature [human, ai, system]; step.actor links only to actors
     sets:

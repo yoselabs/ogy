@@ -107,7 +107,7 @@ def test_absent_in_force_means_no_entry() -> None:
 
 
 def test_unanswered_decision_needs_a_guess() -> None:
-    assert problems(snap(decision(guess=""))) == {("no-guess", "product/app/decision/fee")}
+    assert problems(snap(decision(guess=""))) == {("no-proposal", "product/app/decision/fee")}
 
 
 def test_an_answer_chooses_the_option_and_agrees_to_no_sentence() -> None:
@@ -120,7 +120,8 @@ def test_an_answer_chooses_the_option_and_agrees_to_no_sentence() -> None:
 
 def test_problem_names_are_the_spec_names() -> None:
     names = {item.value for item in Problem}
-    assert {"uneven-options", "two-homes", "equal-at", "not-in-force", "bad-delegation", "no-guess"} <= names and "bad-quote" not in names
+    wanted = {"uneven-options", "two-homes", "equal-at", "not-in-force", "bad-delegation", "no-proposal"}
+    assert wanted <= names and "bad-quote" not in names
 
 
 def agreed_kb(fingerprint: str | None = None) -> Snapshot:
