@@ -214,3 +214,22 @@ C0-6 24 K | structural | The fixed layout other companies rely on. Attributes na
 | name | arm | fact | runs blamed of runs in the arm |
 |---|---|---|---|
 | external | A | 13 | 1 of 6 |
+
+[19], `workaround` without its parent [3] (C0-3, C0-4, C0-6, C-2, C-5, C-6): each why line was read on its own.
+All six give a reason for the kind (forced by the dependency, not chosen) and none for where it is written: `unclear`.
+
+## Arm B addendum, per run
+
+| run | B1 | B2 | B3 | B4 | B5 | B6 |
+|---|---|---|---|---|---|---|
+| B-1 | 0 | 1 | 0 | 1 | 0 | 0 |
+| B-2 | 1 | 1 | 0 | 1 | 1 | 1 |
+| B-3 | 1 | 1 | 0 | 1 | 0 | 1 |
+| B-4 | 1 | 1 | 0 | 1 | 0 | 1 |
+| B-5 | 0 | 1 | 0 | 1 | 0 | 1 |
+| B-6 | 0 | 1 | 1 | 1 | 0 | 1 |
+| of 6 | 3 | 6 | 1 | 6 | 1 | 5 |
+
+B3: B-3, B-4 and B-5 wrote `shows -> [24]` (a rule), which the map does not take (`shows->>entity|attribute`); not
+counted. B6: B-5 and B-6 state it from the end of [20] ("allows-from [10]", "allowed by -> [10]"); B-1 allows a new
+actor, not [20].

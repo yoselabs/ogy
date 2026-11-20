@@ -108,3 +108,17 @@ C0-6 24 K | structural | A promise that outside callers rely on is a rule about 
 | name | arm | fact | runs blamed of runs in the arm |
 |---|---|---|---|
 | external | A | 13 | 2 of 6 |
+
+## Arm B addendum, per run
+
+| run | B1 | B2 | B3 | B4 | B5 | B6 |
+|---|---|---|---|---|---|---|
+| B-1 | 1 | 1 | 1 | 1 | 1 | 1 |
+| B-2 | 1 | 1 | 1 | 1 | 1 | 1 |
+| B-3 | 1 | 1 | 1 | 1 | 1 | 1 |
+| B-4 | 0 | 1 | 1 | 1 | 1 | 1 |
+| B-5 | 1 | 1 | 1 | 1 | 1 | 1 |
+| B-6 | 1 | 1 | 1 | 1 | 1 | 1 |
+| of 6 | 5 | 6 | 6 | 6 | 6 | 6 |
+
+B5: every run has [25] `satisfied by [7]`, the handler that charges the card.

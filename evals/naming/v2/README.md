@@ -202,9 +202,11 @@ Scorer disagreement: mean absolute difference in link items 0.12 of 51 (`default
 of items on which the two differ, per run, is the same. No item differs in more than a third of the runs.
 
 Old against new guesses on A and C0 (`guess-rate.py`): 0 of 24 on the right side on both models, against 50% of
-blind guessing; 18 of 24 (`default`) and 24 of 24 (`small`) "could not tell". The 6 named guesses on `default` were
-all wrong: scorers read article slips from the rewrite ("an set", "a external") as signs of the old map, and those
-slips mark the rewritten arms. The scoring was blind in effect.
+blind guessing; 18 of 24 (`default`) and 24 of 24 (`small`) "could not tell". By the pre-registered test the
+scoring was blind. It was not blind to grouping: article slips left by the rewrite ("an set", "a external") let
+scorers tell the rewritten runs (C0, C) from A's runs in a batch; they read the slips as signs of the old map, so all
+6 named guesses on `default` were inverted. The marks do not depend on the arm, and the scorers agree within 0.5
+item, so this does not change the verdict.
 
 Per item and per fact: the tables in the tally files. What moved between A and C0, described only:
 
@@ -215,10 +217,26 @@ Per item and per fact: the tables in the tally files. What moved between A and C
   are silent on the parent, `unclear`); 15a 6 → 3.5 and 25a 6 → 3 (C0 left `proof` empty when the test path was
   not given); [13] stays low in A and C0 (0 and 1 of 6), while C and B have it in all 6.
 
-Found on every arm and model: fact [24] (the fixed reply layout of [10]) is written as its own `rule` by 45 of 48
-runs, where the key homes it on [10]. The why lines reason from the map and the constitution ("a check reads it",
+Arm C, the like/unlike lines, described only: on `default` it dropped [18] to 2 of 6 (four runs wrote `none`,
+reasoning that a view is a screen that serves steps and a tile serves none); on both models it placed the notifier
+[13] as a program actor in 6 of 6 runs, where A had 3 and 0 and C0 had 4 and 1.
+
+Found against [design.md](design.md)'s expectations of C0 over A: 9b gained on `small` (0 → 6); 22c, 15b and [10]
+did not move (at or near 6 of 6 in both, 15b 0 in both). [13] gained a little on `default` (3 → 4), not on `small`.
+
+Found on every arm and model: fact [24] (the fixed reply layout of [10]) is not homed on [10] in 45 of 48 runs, where
+the key homes it. On `default` all 24 runs wrote it as its own `rule`; on `small` the runs wrote a `rule`, new
+attributes of the bike, or both. The why lines reason from the map and the constitution ("a check reads it",
 rigid-where-checked): `structural`. It sits outside the 51. It reads as a question about the key or the map, not
 about a name.
+
+Nearest miss for rule 6: on `small`, `workaround` [19] was written without its parent [3] in 3 of 6 runs of C0 and
+of C (A's `deviation` 0 of 6, B 0 of 6). Each of the six why lines was read one by one; all are silent on the parent
+(`unclear`), so no name is refused. A fourth such run would have needed a `misled-by` reading to refuse it.
+
+Cross-check: every scorer's own per-run table was compared with the tally of their per-fact lines (link items,
+misplacements, false friends). One differs: R387 (`small`, A-3), scorer 1, table 46, lines 45 (six items at 0
+besides 15b). The lines are used.
 
 Arm B, absolute (every link item and K per fact: the B column of the tally files):
 
