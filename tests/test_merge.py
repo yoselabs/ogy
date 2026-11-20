@@ -140,5 +140,8 @@ def test_a_merge_keeps_one_file_per_entry_and_renames_into_fields() -> None:
         parse_kinds(_texts(WAS.replace("form", "shape")), packaged().declared)
     with pytest.raises(OntologyError, match="was command renamed says, which is still a field"):
         parse_kinds(_texts(WAS.replace("invoked_as: form", "says: form")), packaged().declared)
+    picked = {**_texts(), "kinds/step.yml": _texts()["kinds/step.yml"] + "input_from: {serves: {fields: [form]}}\n"}
+    with pytest.raises(OntologyError, match="form, which interface took from only some of the kinds"):
+        parse_kinds(picked, packaged().declared)
     with pytest.raises(OntologyError, match="was view, as another kind was"):
         parse_kinds(_texts("was: [{kind: view}, {kind: view}]\n"), packaged().declared)

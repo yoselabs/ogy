@@ -131,7 +131,19 @@ def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input
     targets = [kinds[target] for target in spec.to if target in kinds]
     return [f"{where}: input picks {field}, no field of {target.kind}" for field in given.fields for target in targets
             if field not in target.fields] + [f"{where}: input picks {part}, no part of {target.kind}" for part in given.parts
-                                              for target in targets if not (part in kinds and kinds[part].is_part(target.kind))]
+                                              for target in targets if not (part in kinds and kinds[part].is_part(target.kind))] + [
+        f"{where}: input picks {field}, {_SOME.format(target.kind)}" for field in given.fields for target in targets
+        if field in _partial(target)]
+
+
+_SOME = "which {} took from only some of the kinds it absorbed (`was.renamed`); a build before the merge has no one name for it"
+
+
+def _partial(kind: Kind) -> set[str]:
+    """The fields a kind that absorbed several has under a name that not every old kind's `was.renamed` gives it: a picked input
+    of one cannot be read back under a single old name."""
+    news = {new for old in kind.was for new in old.renamed.values()} if len(kind.was) > 1 else set()
+    return {new for new in news if any(new not in old.renamed.values() for old in kind.was)}
 
 
 def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -> list[str]:
@@ -156,6 +168,8 @@ def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
             found.append(f"{kind.kind}.input_from.{key}: names a link field that leads here, and picks fields of its holders")
         found += [f"{name}.input_from.{key}: picks {field}, no field of a kind linking here by {key}" for field in picked.fields
                   if holders and not any(field in other.fields for other in holders)]
+        found += [f"{name}.input_from.{key}: {field}, {_SOME.format(other.kind)}" for other in holders
+                  for field in (key, *picked.fields) if field in _partial(other)]
     if kind.needs_proof:
         found += [f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
                   for field, spec in {**declared.common, **kind.fields}.items()
