@@ -1,0 +1,7 @@
+says: Serve the commands as MCP tools over stdio.
+invoked_as: ogy mcp
+serves:
+- software/mcp/workflow/call-a-tool/step/call
+src:
+- code:src/ogy/cli.py#_asks
+form: cli

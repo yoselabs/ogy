@@ -1,6 +1,0 @@
-says: Set the repository up, or with --check say what is not set up; it is no MCP tool.
-invoked_as: ogy init [--ontology <name>] [--check]
-serves:
-- product/setup/workflow/init-repository/step/run
-src:
-- code:src/ogy/cli.py#_writes

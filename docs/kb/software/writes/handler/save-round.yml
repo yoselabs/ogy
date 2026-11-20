@@ -1,0 +1,7 @@
+says: Saves the round of cards ogy review showed, by id, in the Git directory.
+performs:
+- product/review/workflow/review-and-reply/step/show/choice/shown
+uses:
+- software/storage/dependency/git
+src:
+- code:src/ogy/rounds.py#save

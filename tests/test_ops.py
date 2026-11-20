@@ -113,7 +113,7 @@ def test_show_of_an_address_decided_no(kb: MakeKb) -> None:
 
 def test_work_reads_built_record_and_lists_removal_work(repo: Path) -> None:
     lend = ops.run_show(ops.Target(repo), "software/app/handler/lend").value.build_hash
-    line = "{own: %s, deps: {}, covers: [], sourced: {}}\n"
+    line = "{own: %s, covers: [], sourced: {}}\n"
     (repo / "docs/kb/built/software/app/handler").mkdir(parents=True)
     (repo / "docs/kb/built/software/app/handler/lend.yml").write_text(f"software/app/handler/lend: {line % lend}")
     (repo / "docs/kb/built/software/app/handler/gone.yml").write_text(f"software/app/handler/gone: {line % 'aaaaaaaaaaaa'}")

@@ -80,7 +80,7 @@ def test_status_coverage_lists_the_kinds_with_no_entry_per_layer(repo: Path) -> 
     product = next(line for line in lines if line.startswith("  product:"))
     software = next(line for line in lines if line.startswith("  software:"))
     assert "goal" in product and "capability" in product and "actor" not in product and "message" not in product
-    assert "command" in software and "view" not in software and "handler" not in software
+    assert "rule" in software and "interface" not in software and "handler" not in software
     assert not any(line.startswith("coverage") for line in w(repo, "status")[1])  # only when asked
 
 

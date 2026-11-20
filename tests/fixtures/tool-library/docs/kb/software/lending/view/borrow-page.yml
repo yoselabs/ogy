@@ -1,5 +1,0 @@
-says: The page where a member borrows a tool.
-serves:
-- product/lending/workflow/borrow/step/ask
-src:
-- code:src/library/pages.py#borrow_page

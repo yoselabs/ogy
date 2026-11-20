@@ -1,0 +1,15 @@
+question: Does creating an entity write its attributes, for never-written?
+context: "Stage 2b: taskloop-fit inserts land candidates by transition and docs/kb saves review rounds by create; a single declared switch (`|create` in attribute.yml's path) decides it."
+options:
+  counted:
+    label: A create effect on the entity writes its attributes
+  not-counted:
+    label: Only a write effect or an accepting interface writes an attribute
+proposal:
+  chose: counted
+  why: Creating a record sets its facts; otherwise every created entity needs a second write effect.
+answers:
+- chose: counted
+  said: 'Yes: a create on an entity writes its attributes, the declared default (owner 2026-11-20)'
+  at: '2026-11-20T01:51:07+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

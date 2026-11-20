@@ -1,0 +1,16 @@
+structure: true
+question: How does an interface say how it is reached?
+context: 'Bead ogy-yy9.75: interface `as` became `form`, fingerprinted, not a note. A check reads it (a cli interface says invoked_as), so it is an enum.'
+options:
+  enum:
+    label: A required enum form (web, cli, http, mcp, library, file, message); invoked_as kept, required when form is cli
+  text:
+    label: A free text form, a note
+proposal:
+  chose: enum
+  why: A check reads it, so its values are closed; the old view and command become web and cli.
+answers:
+- chose: enum
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:49:43+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

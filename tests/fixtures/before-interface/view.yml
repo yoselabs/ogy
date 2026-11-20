@@ -1,0 +1,15 @@
+kind: view
+about: a screen that serves actor steps; navigation between screens is computed from the flow
+guidance: "A screen that serves actor steps; `offers` lists the choices when it offers only some. A command line or API call is a command; the work behind a choice is a handler."
+like: "a screen or page that serves actor steps"
+unlike: "an MVC view template; a database view"
+shape: file
+sentence: says
+layers: [software]
+needs_proof: true
+fingerprint: {proofs: true}
+input: {satisfies: content}                         # a rule it is held to changes: it is stale
+fields:
+  says: {required: true}
+  serves: {type: links, to: [step], required: true, input: {parts: [choice]}}   # the served steps' set of choices changes: stale
+  offers: {type: links, to: [choice], input: none}

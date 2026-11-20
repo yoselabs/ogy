@@ -1,0 +1,7 @@
+says: What a change of an entry reaches and what reaches it.
+invoked_as: ogy impact <address>
+serves:
+- product/inspection/workflow/inspect-kb/step/read
+src:
+- code:src/ogy/cli.py#_reads
+form: cli

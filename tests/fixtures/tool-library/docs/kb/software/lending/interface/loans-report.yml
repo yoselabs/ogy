@@ -1,0 +1,8 @@
+says: The export of every open loan that the owner downloads.
+form: file
+shows:
+- product/lending/entity/loan
+allows:
+- product/lending/actor/owner
+src:
+- code:src/library/pages.py#loans_report

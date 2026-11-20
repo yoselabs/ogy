@@ -1,0 +1,15 @@
+question: May a kind have a field named shows?
+context: ontology.yml reserved `shows` as a sentence name; interface.shows is a link field (bead ogy-yy9.75, stage 2b).
+options:
+  unreserve:
+    label: Remove shows from the reserved sentence names
+  keep:
+    label: Keep it reserved and name the field otherwise
+proposal:
+  chose: unreserve
+  why: The owner approved interface.shows; a link field is no sentence.
+answers:
+- chose: unreserve
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:50:33+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

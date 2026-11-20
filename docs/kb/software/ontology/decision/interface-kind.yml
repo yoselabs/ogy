@@ -1,0 +1,16 @@
+structure: true
+question: Are view and command one kind, interface, in the ArchiMate sense?
+context: 'Harmony review finding 5: view and command both serve actor steps and offer choices; no check tells them apart. Bead ogy-yy9.75, interface option A.'
+options:
+  interface:
+    label: 'One kind, interface: where an actor reaches the product; like an ArchiMate application interface, unlike a UML, Java or TypeScript interface'
+  keep:
+    label: Keep view and command apart
+proposal:
+  chose: interface
+  why: One concept, one kind; a screen and a CLI command for one step are the same construct.
+answers:
+- chose: interface
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:49:30+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

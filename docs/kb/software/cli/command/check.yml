@@ -1,7 +1,0 @@
-says: The problems of the knowledge base, or of one area; exit 1 when there are any.
-invoked_as: ogy check [area] [--base <commit>] [--landing]
-serves:
-- product/checks/workflow/check-and-land/step/run
-- product/review/workflow/hand-over/step/check
-src:
-- code:src/ogy/cli.py#_reads

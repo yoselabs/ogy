@@ -131,6 +131,8 @@ steps:
         effects:
         - do: transition
           on: software/land/entity/land-candidate/transition/insert-delivered
+        - do: write
+          on: software/land/entity/land-candidate
         then: close
       changes-under-no-change:
         order: 4
@@ -157,11 +159,15 @@ steps:
         effects:
         - do: transition
           on: software/land/entity/land-candidate/transition/insert-pushable
+        - do: write
+          on: software/land/entity/land-candidate
         then: deliver
       otherwise:
         effects:
         - do: transition
           on: software/land/entity/land-candidate/transition/insert-pending
+        - do: write
+          on: software/land/entity/land-candidate
         then: validate
   validate:
     says: The required checks run on S in a free slot, in the land's own process.

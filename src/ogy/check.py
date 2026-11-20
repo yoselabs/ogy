@@ -5,7 +5,6 @@ of evidence, decisions, the glossary, the removed ledgers and the built record a
 """
 
 from collections.abc import Callable
-from functools import partial
 
 from ogy.coverage import check_every_area, product_areas
 from ogy.evidencecheck import check_evidence
@@ -16,8 +15,8 @@ from ogy.kinds import Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
-from ogy.model import Address, Entry, Finding, Problem
-from ogy.requires import applies, satisfied
+from ogy.model import Entry, Finding, Problem
+from ogy.requires import applies, satisfied, unmet
 from ogy.settle import check_decisions
 from ogy.snapshot import Snapshot, load
 from ogy.source import Source
@@ -87,21 +86,13 @@ class Checker:
             if found.problem is not None:
                 self._add(found.problem, entry, found.detail)
 
-    def _has_part(self, address: Address, kind: str) -> bool:
-        part = self.snapshot.ontology.get(kind)
-        if part is not None and part.holding is Holds.LIST:
-            return bool(self.snapshot.entries[address].fields.get(part.key or ""))
-        return bool(self.snapshot.links.parts(address, kind))
-
     def _form(self, kind: Kind, entry: Entry) -> None:
         for group in kind.exactly_one_of:
             present = [name for name in group if entry.fields.get(name) is not None]
             if len(present) != 1:
                 self._add(Problem.ONE_OF, entry, f"exactly one of {list(group)}, not {present}")
-        has_part = partial(self._has_part, entry.address)
-        for need in kind.requires:
-            if applies(need, entry.fields, has_part) and not satisfied(self.snapshot, need, kind.kind, entry.address, entry.fields):
-                self._add(Problem.UNMET, entry, need.error)
+        for need in unmet(self.snapshot, entry.address, work=False):
+            self._add(Problem.UNMET, entry, need.error)
         self._items(kind, entry)
         if kind.one_part is not None:
             rule = kind.one_part
@@ -116,7 +107,7 @@ class Checker:
         for part in self.snapshot.ontology.parts_of(kind.kind):
             items = entry.fields.get(part.key or "") if part.holding is Holds.LIST and part.requires else None
             for item in items if isinstance(items, list) else ():
-                for need in part.requires if isinstance(item, dict) else ():
+                for need in (need for need in part.requires if not need.work) if isinstance(item, dict) else ():
                     if applies(need, item, lambda _: False) and not satisfied(self.snapshot, need, part.kind, entry.address, item,
                                                                              item=True):
                         self._add(Problem.UNMET, entry, f"{part.key}: {need.error}")

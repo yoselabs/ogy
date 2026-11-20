@@ -1,0 +1,7 @@
+says: What the owner is asked, at most 7 cards with a count per area, or a page of what came from docs or code; it saves the round and prints its id.
+invoked_as: ogy review [area] [--all] [--from docs|code] [--page <n>] [--md]
+serves:
+- product/review/workflow/review-and-reply/step/show
+src:
+- code:src/ogy/cli.py#_asks
+form: cli

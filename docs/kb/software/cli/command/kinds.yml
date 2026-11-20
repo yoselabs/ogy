@@ -1,6 +1,0 @@
-says: The kinds of the ontology, or one, with what each holds, links to and requires.
-invoked_as: ogy kinds [kind]
-serves:
-- product/capture/workflow/capture-entries/step/read-glossary
-src:
-- code:src/ogy/cli.py#_asks

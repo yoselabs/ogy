@@ -1,7 +1,7 @@
 kind: handler
 was: {kind: operation}
 about: the code unit that performs the rows that have an effect, using dependencies
-guidance: "The code unit that performs the rows that have an effect, using dependencies. A view or a command serves a step to an actor; a handler does the work behind the row. One handler may perform several rows."
+guidance: "The code unit that performs the rows that have an effect, using dependencies. An interface serves a step to an actor; a handler does the work behind the row. One handler may perform several rows."
 like: "a command or event handler: the code unit that performs a row's effects"
 unlike: "a UML operation, a signature on a class; an OpenAPI operation"
 shape: file

@@ -1,0 +1,7 @@
+says: The GitHub anchors of a Markdown file, which is what a doc link may name.
+invoked_as: ogy anchors <file>
+serves:
+- product/inspection/workflow/inspect-kb/step/read
+src:
+- code:src/ogy/cli.py#_reads
+form: cli

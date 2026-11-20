@@ -15,10 +15,11 @@ from ogy.model import Finding, Problem
 from ogy.source import Source
 
 BUILT = "built"
-_KEYS = {"own", "deps", "covers", "sourced"}
+_KEYS = {"own", "covers", "sourced"}
+_DROPPED = {"deps"}  # keys a built line no longer has: the file is `needs-migration` until `ogy migrate` writes it without them
 
 __all__ = ["BUILT", "BuiltError", "Line", "read", "read_all", "read_source", "removal_work", "sourced_changes", "stamp", "unstamp",
-           "work_left"]
+           "work_left", "write"]
 
 
 class BuiltError(ValueError):
@@ -32,9 +33,9 @@ class BuiltError(ValueError):
 @dataclasses.dataclass(frozen=True)
 class Line:
     own: str
-    deps: Mapping[str, str] = dataclasses.field(default_factory=dict)
     covers: tuple[str, ...] = ()
     sourced: Mapping[str, str] = dataclasses.field(default_factory=dict)
+    dropped: tuple[str, ...] = dataclasses.field(default=(), compare=False)  # old keys the line still holds (`ogy migrate`)
 
 
 def path_of(kb: Path, source: str) -> Path:
@@ -48,14 +49,14 @@ def _strings(value: object, where: str) -> dict[str, str]:
 
 
 def _line(address: str, raw: object, where: str) -> Line:
-    if isinstance(raw, dict) and set(raw) - _KEYS:
-        raise BuiltError(f"{where}: {address} has keys of its own: {sorted(set(raw) - _KEYS)}", Problem.STORED_STATE)
-    if not isinstance(raw, dict) or set(raw) != _KEYS:
+    if isinstance(raw, dict) and set(raw) - _KEYS - _DROPPED:
+        raise BuiltError(f"{where}: {address} has keys of its own: {sorted(set(raw) - _KEYS - _DROPPED)}", Problem.STORED_STATE)
+    if not isinstance(raw, dict) or set(raw) - _DROPPED != _KEYS:
         raise BuiltError(f"{where}: {address} needs exactly {sorted(_KEYS)}")
     covers = raw["covers"]
     if not isinstance(raw["own"], str) or not isinstance(covers, list) or not all(isinstance(c, str) for c in covers):
         raise BuiltError(f"{where}: {address} has a wrong own or covers")
-    return Line(raw["own"], _strings(raw["deps"], where), tuple(covers), _strings(raw["sourced"], where))
+    return Line(raw["own"], tuple(covers), _strings(raw["sourced"], where), tuple(sorted(set(raw) & _DROPPED)))
 
 
 def parse(text: str, where: str) -> dict[str, Line]:
@@ -90,6 +91,9 @@ def read_source(source: Source) -> tuple[dict[str, Line], list[Finding]]:
             found.append(Finding(error.problem, path, str(error)))
             continue
         found += [Finding(Problem.BAD_BUILT, path, f"{address} is written twice") for address in lines if address in record]
+        if old := sorted({key for line in lines.values() for key in line.dropped}):
+            found.append(Finding(Problem.NEEDS_MIGRATION, path, f"its lines hold {', '.join(old)}, which built lines no longer "
+                                 "have: run `ogy migrate`"))
         record.update(lines)
     return record, found
 
@@ -109,11 +113,11 @@ def read_all(kb: Path) -> dict[str, Line]:
 
 
 def _record(line: Line) -> dict[str, object]:
-    return {"own": line.own, "deps": dict(sorted(line.deps.items())), "covers": list(line.covers),
-            "sourced": dict(sorted(line.sourced.items()))}
+    return {"own": line.own, "covers": list(line.covers), "sourced": dict(sorted(line.sourced.items()))}
 
 
-def _write(kb: Path, source: str, lines: Mapping[str, Line]) -> None:
+def write(kb: Path, source: str, lines: Mapping[str, Line]) -> None:
+    """Write the lines of one built file (none: delete it)."""
     path = path_of(kb, source)
     if not lines:
         path.unlink(missing_ok=True)
@@ -125,28 +129,26 @@ def stamp(kb: Path, source: str, address: str, line: Line) -> None:
     """The proof of `address` passed: write its line into the built file of its source file."""
     lines = read(kb, source)
     lines[address] = line
-    _write(kb, source, lines)
+    write(kb, source, lines)
 
 
 def unstamp(kb: Path, source: str, address: str) -> None:
     """The removal of `address` was delivered: delete its line (and the file when it was the last one)."""
     lines = read(kb, source)
     if lines.pop(address, None) is not None:
-        _write(kb, source, lines)
+        write(kb, source, lines)
 
 
-def work_left(record: Mapping[str, Line], current: Mapping[str, tuple[str, Mapping[str, str]]]) -> dict[str, str]:
-    """B1. `current` maps each `needs_proof` address to (its fingerprint now, {dependency: fingerprint now}).
-    Returns {address: "unbuilt" | "changed" | "input changed"} for the entries that are work."""
+def work_left(record: Mapping[str, Line], current: Mapping[str, str]) -> dict[str, str]:
+    """B1. `current` maps each `needs_proof` address to its build hash now (its meaning, proofs and declared inputs).
+    Returns {address: "unbuilt" | "changed"} for the entries that are work."""
     work: dict[str, str] = {}
-    for address, (own, deps) in sorted(current.items()):
+    for address, own in sorted(current.items()):
         line = record.get(address)
         if line is None:
             work[address] = "unbuilt"
         elif line.own != own:
             work[address] = "changed"
-        elif any(deps.get(dep) != fingerprint for dep, fingerprint in line.deps.items()):
-            work[address] = "input changed"
     return work
 
 

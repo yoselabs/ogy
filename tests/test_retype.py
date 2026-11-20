@@ -56,7 +56,7 @@ def before(repo: Path) -> str:
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [FEE, LEND, GO])
     for text in (FEE, GO):
         built.stamp(repo / "docs/kb", target.read()[1].entries[parse_address(text, target.kinds())].path, text,
-                    built.Line(build_hash(target, text), {LEND: build_hash(target, LEND)} if text == GO else {}))
+                    built.Line(build_hash(target, text)))
     assert not ops.run_check(target).value
     return commit(repo, "before the kind rename")
 
@@ -102,6 +102,8 @@ attributes:
   notes: {says: What the desk wrote., type: list}
   due: {says: When it is due., type: time}
 """
+DESK = ("says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\naccepts: [product/app/entity/loan]\n"
+        "src: ['code:app.py#lend']\n")
 HEARD = DECISION.replace("proposal: {chose: two, why: Small.}", "proposal: {chose: two, why: Small., heard: {said: Two seems fair}}")
 
 
@@ -110,6 +112,7 @@ def test_migrate_rewrites_the_values_a_kind_reshaped(repo: Path) -> None:
     target, member = Target(repo), "product/app/entity/loan/attribute/member"
     (repo / "docs/kb/product/app/entity").mkdir(parents=True)
     (repo / "docs/kb/product/app/entity/loan.yml").write_text(LOAN)
+    (repo / "docs/kb/software/app/interface/desk.yml").write_text(DESK)  # what writes the loan's facts
     (repo / "docs/kb/product/app/decision").mkdir(parents=True)
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(HEARD)
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [member])

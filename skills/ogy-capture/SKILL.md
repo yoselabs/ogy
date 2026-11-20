@@ -12,7 +12,7 @@ batch write for create and update), `proposal.heard`, `answer --said --where`, `
 The skill holds the flow; the ontology (`ogy kinds [kind]`) holds the shapes; `ogy check` holds the lints. Never write
 YAML by hand and never read a spec to learn a shape: ask `ogy kinds`. Read `ogy kinds <kind>` before you create the first
 entry of that kind in a session: its guidance says when to use it rather than a neighbour (an actor, a state or an
-attribute; a case or a choice's `when`; `satisfies` or `because`). `ogy kinds --map` shows the whole ontology and its rules (untested).
+attribute; a case or a choice's `when`; `satisfies` or `because`; an `interface`, where an actor reaches the product, or the `handler` behind it). `ogy kinds --map` shows the whole ontology and its rules (untested).
 
 ## 1. Glossary first
 Run `ogy glossary` before you read code or write a sentence (`ogy glossary <layer>/<area>` for one area and the shared

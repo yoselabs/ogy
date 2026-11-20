@@ -1,0 +1,16 @@
+structure: true
+question: Is an attribute that nothing writes and no interface accepts a finding?
+context: 'Bead ogy-yy9.75: finding never-written, a non-derived attribute neither accepted nor written. Declared on attribute as a requirement (if_unset derived, or_paths, the parent hop ^ and a filtered back hop <-on?do=write|create).'
+options:
+  finding:
+    label: 'never-written: an attribute that is not derived is written by an effect on it or its entity, or accepted by an interface (it or its entity)'
+  none:
+    label: No check
+proposal:
+  chose: finding
+  why: A fact nobody can set is either derived or missing its writer.
+answers:
+- chose: finding
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:50:26+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

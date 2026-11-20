@@ -52,7 +52,7 @@ def _simple(spec: FieldSpec, value: object) -> bool:
         FieldType.TEXT: lambda item: isinstance(item, str),
         FieldType.LINK: lambda item: isinstance(item, str),
         FieldType.TEXTS: _texts,
-        FieldType.LINKS: _texts,
+        FieldType.LINKS: lambda item: _texts(item) and bool(item),  # an empty list would read as set: leave the field out
         FieldType.NUMBER: _number,
         FieldType.FLAG: lambda item: isinstance(item, bool),
         FieldType.ENUM: lambda item: isinstance(item, str) and item in spec.of,
@@ -73,6 +73,8 @@ def _expected(spec: FieldSpec) -> str:
             return "a date, a time and a UTC offset (2026-11-12T10:05:00+01:00)"
         case FieldType.EXPR:
             return "a mapping {text, reads}, reads naming at least one entry it depends on"
+        case FieldType.LINKS:
+            return "links, at least one (for none, leave the field out)"
         case _:
             return str(spec.type)
 

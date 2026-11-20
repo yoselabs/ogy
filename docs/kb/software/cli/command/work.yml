@@ -1,6 +1,0 @@
-says: What the built record says is still to do; exit 1 when work is left.
-invoked_as: ogy work [area]
-serves:
-- product/inspection/workflow/inspect-kb/step/read
-src:
-- code:src/ogy/cli.py#_asks

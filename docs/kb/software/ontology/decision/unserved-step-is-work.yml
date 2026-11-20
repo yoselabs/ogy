@@ -1,0 +1,16 @@
+structure: true
+question: Is an actor step that no interface serves a finding or work left?
+context: "Bead ogy-yy9.75, interface option A: the step's serving requirement becomes work left. A requirement declares `work: true`; check skips it and ogy work lists it."
+options:
+  work:
+    label: Work left, declared in the kind file with work true
+  error:
+    label: A check error, as before
+proposal:
+  chose: work
+  why: A step captured before its screen is built is not wrong; it is still to build.
+answers:
+- chose: work
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:50:18+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

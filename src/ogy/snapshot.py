@@ -84,8 +84,8 @@ class Snapshot:
     def build_hash(self, address: Address, *, proofs: bool = True) -> str:
         """What the built record and work left compare: the meaning, the proofs, what the kind's inputs read (`input` of its
         link fields, common fields and parts) and its reverse inputs (`input_from`). Memoised. `proofs=False` is what reaches
-        other entries along `=@fingerprint`: a delivery adding a proof upstream must not make everything downstream stale. A
-        cycle contributes the key."""
+        other entries along `=@fingerprint`: a delivery adding a proof upstream must not make everything downstream stale. An
+        input that reads nothing is left out, each other one keyed by its path. A cycle contributes the key."""
         key = (address, "build" if proofs else "build-no-proofs")
         if key in self._prints:
             return self._prints[key]
@@ -96,7 +96,8 @@ class Snapshot:
             kind = self.kind_of(address)
             if kind.kind not in self._inputs:
                 self._inputs[kind.kind] = inputs(self.ontology, kind)
-            also: list[object] = [self._along(address, path) for path in self._inputs[kind.kind]]
+            # an input that reads nothing adds nothing: a kind that gains a link field (or a merge that brings one) stales nothing
+            also: list[object] = [[" ".join(path), found] for path in self._inputs[kind.kind] if (found := self._along(address, path))]
             reached = [[n, found] for n, path in enumerate(inputs_from(kind)) if (found := self._along(address, path, True))]
             also += [["reached", reached]] if reached else []
             entry = self.entries[address]

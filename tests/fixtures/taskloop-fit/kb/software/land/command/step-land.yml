@@ -1,4 +1,0 @@
-says: The person's command that lands one task.
-invoked_as: "tl step land TASK [--minutes N] [--summary | --withdraw | --no-change] [--accept-gate-changes]"
-serves: [product/land/workflow/land/step/ask]
-src: ["code:src/taskloop/land.py#LandRequest"]

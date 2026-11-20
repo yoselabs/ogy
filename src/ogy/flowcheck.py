@@ -106,7 +106,7 @@ class FlowChecker:
             offered |= set(listed) if self.has(server, self.flow.offers) else choices
         missing = sorted(str(choice) for choice in choices - offered)
         if missing:
-            self.add(Problem.NOT_OFFERED, step, f"no serving view or command offers {missing}")
+            self.add(Problem.NOT_OFFERED, step, f"no serving {' or '.join(self.flow.servers)} offers {missing}")
 
     def reach(self) -> None:
         g = self.graph

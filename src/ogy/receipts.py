@@ -12,7 +12,7 @@ from enum import StrEnum
 from ogy import built, evidence, removed
 from ogy.built import Line
 from ogy.declared import Reader
-from ogy.model import parse_address
+from ogy.requires import unmet
 from ogy.snapshot import Snapshot
 
 
@@ -20,8 +20,8 @@ class Status(StrEnum):
     """Where one piece of work stands."""
 
     UNBUILT = "unbuilt"  # never built
-    CHANGED = "changed"  # built, then its meaning changed
-    INPUT_CHANGED = "input changed"  # built, then something it was built against changed
+    CHANGED = "changed"  # built, then its build hash changed: its meaning, its proofs or a declared input
+    UNSERVED = "unserved"  # a requirement its kind declares as work is unmet (an actor step nothing serves): to build, no fault
     REMOVED = "removed"  # the entry is gone and its built line is not yet deleted
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"
@@ -38,19 +38,17 @@ class Work:
     note: str = ""
 
 
-def _deps_now(snapshot: Snapshot, line: Line) -> dict[str, str]:
-    found: dict[str, str] = {}
-    for text in line.deps:
-        address = parse_address(text, snapshot.ontology)
-        found[text] = snapshot.build_hash(address) if address in snapshot.entries else ""
-    return found
-
-
 def _unbuilt(snapshot: Snapshot, record: Mapping[str, Line]) -> list[Work]:
     proving = [a for a in sorted(snapshot.entries) if snapshot.kind_of(a).needs_proof]
-    current = {str(a): (snapshot.build_hash(a), _deps_now(snapshot, record[str(a)]) if str(a) in record else {}) for a in proving}
-    return [Work(text, Status(why), current[text][0], record[text].own if text in record else None)
+    current = {str(a): snapshot.build_hash(a) for a in proving}
+    return [Work(text, Status(why), current[text], record[text].own if text in record else None)
             for text, why in built.work_left(record, current).items()]
+
+
+def _unmet(snapshot: Snapshot) -> list[Work]:
+    """A requirement declared `work` that an entry does not meet yet (an actor step nothing serves): its error is the note."""
+    return [Work(str(address), Status.UNSERVED, "", None, need.error) for address in sorted(snapshot.entries)
+            for need in unmet(snapshot, address, work=True)]
 
 
 def _gone(record: Mapping[str, Line], snapshot: Snapshot, ledger: Mapping[str, removed.Item]) -> list[Work]:
@@ -80,5 +78,6 @@ def _sourced(record: Mapping[str, Line], snapshot: Snapshot, read: evidence.Read
 
 def work_left(snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read,
               ledger: Mapping[str, removed.Item] | None = None) -> list[Work]:
-    """Unbuilt and changed entries, removal work, and sources that changed since capture."""
-    return [*_unbuilt(snapshot, record), *_gone(record, snapshot, ledger or {}), *_sourced(record, snapshot, read)]
+    """Unbuilt and changed entries, unmet requirements that are work, removal work, and sources that changed since capture."""
+    return [*_unbuilt(snapshot, record), *_unmet(snapshot), *_gone(record, snapshot, ledger or {}),
+            *_sourced(record, snapshot, read)]

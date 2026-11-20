@@ -86,8 +86,10 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   its own and the common ones (`ontology.yml` states `none` for `because` and `satisfies`). A kind gives the input of a
   common field or of a part kind in its own `input:` map (`input: {satisfies: content}`, `input: {attribute: content}`;
   `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
-  [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed input shows in
-  `ogy work` as `changed` (the build hash is one hash); `input changed` is a dependency the built line recorded.
+  [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed content input reads
+  `changed` in `ogy work`, as a changed meaning does: the build hash is one hash, and a built line keeps only it (`own`), what
+  the proof covers and the sources it was captured from. Input staleness is never re-stamped automatically: an agent re-proves
+  the entry and stamps its line. A built line that still holds the old `deps` key is `needs-migration`; `ogy migrate` drops it.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
 - A proposal that rests on what the owner said carries a paraphrase: `proposal.heard`, one line, never a quote. The review card reads
@@ -146,19 +148,19 @@ entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`.
 
 ### Kind changes
 
-A kind file may change under a knowledge base that a newer ogy reads. Adding a field changes no fingerprint (an unset field is
-outside it), so nothing goes stale. A rename or a drop is declared in the kind file and kept there until the knowledge bases
+A kind file may change under a knowledge base that a newer ogy reads. Adding a field changes no fingerprint and no build hash
+(an unset field is outside the one, an input that reads nothing outside the other), so nothing goes stale. A rename or a drop is declared in the kind file and kept there until the knowledge bases
 it serves are migrated: `renamed: {old: new}` (the new name is a field of the kind) and `dropped: [old]`; a common field renamed
 in `ontology.yml` says `renamed: {old: new}` there. A renamed kind says what it was, `was: {kind, file, key}` (its old name, and
-its old list file or part key when those changed). A kind that absorbed several kinds lists them, `was: [{kind: view},
-{kind: command, renamed: {invoked_as: form}, defaults: {form: cli}}]` (shape `file` only); `renamed` inside an item names the
+its old list file or part key when those changed). A kind that absorbed several kinds lists them, `was: [{kind: view,
+defaults: {form: web}}, {kind: command, defaults: {form: cli}}]` (shape `file` only; `interface` says so); `renamed` inside an item names the
 fields an entry of that old kind held under another name (also in the `sets` that give it values), and `defaults` fills a field
 the new kind requires that the old kind lacked. A kind renamed earlier and not yet migrated everywhere lists every old name. A value given a new form says `revalued: {field: {old value: {field: new
 value or null}}}`, and a part folded into a field `folded: {field: inner field}`. An entry that still
 holds an old name is the finding `needs-migration`. `ogy migrate` writes the migration in one checked write:
 - every old name becomes the new one, in the entry, in the items of its list parts (answers) and in the fields an option's
   or a proposal's `sets` gives an entry of that kind; a revalued or folded value takes its new form;
-- a pure rename changes no meaning: an agreement or a built line (`own` and `deps`) that was current stays current, its
+- a pure rename changes no meaning: an agreement or a built line (`own`) that was current stays current, its
   hash re-set to the fingerprint (a built line's to the build hash) after the rename, as `ogy move` does;
 - a dropped field that held a value changes the meaning: `migrate` prints the value, and the agreement and the built line of
   the entry (and the built lines whose build hash reads it) are left, so the owner sees it as changed since agreed and it is work;
@@ -193,26 +195,36 @@ command appears without an edit). Every tool describes itself (its description i
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
 - Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution).
-- What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `view` and `command`
-  that serve steps; `handler` that performs them. A refusal is a `case` that leads to a failure end. A `choice` with `when` is offered only while it
+- What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `interface`
+  (ArchiMate's application interface: where an actor reaches the product; its `form` is web, cli, http, mcp, library, file
+  or message) that serves steps; `handler` that performs them. An interface `shows` and `accepts` entities and attributes
+  (content inputs: what it displays changes, it is stale); one that accepts serves a step, one that only shows may serve
+  none. `includes` names the cards inside it (never a cycle, `link-cycle`); `allows` names who may use one that serves no
+  step (authorization harm), else who may use it comes from its steps' actors. A cli interface says `invoked_as`. An actor
+  step that no interface serves is work (`unserved` in `ogy work`), not a finding. A refusal is a `case` that leads to a failure end. A `choice` with `when` is offered only while it
   holds (the same screen offers fewer choices; a `case` when the path differs); an actor step keeps one choice without it.
 - What it keeps: `entity` with `attribute`, `state` and `transition`; `quantity` (a number with a unit), `setting` (its
   `default` a quantity), `enum`. An attribute has a plain `type` or names what it holds in `of`; `many` makes a list. An
   attribute with `derived` is computed from what its expression reads: no `write` effect names it, and it has no `max`
-  and is never `optional`.
+  and is never `optional`. Any other attribute is written: a `write` effect names it or its entity, a `create` effect its
+  entity (owner, 2026-11-20), or an interface `accepts` it or its entity; else `unmet-requirement`
+  (never-written).
 - Conditions (`when` of a case or a choice; `derived`) may name actors.
 - What it depends on: `dependency` and its `workaround`s.
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
 - Held to: any entry names the rules it is held to with `satisfies`; a
-  rule has no `on`. `satisfies` is an input of the rows only (`input: {satisfies: content}`), so adding a rule stales no other
-  holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
+  rule has no `on`. `satisfies` is an input of the rows and interfaces only (`input: {satisfies: content}`), so adding a rule stales
+  no other holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
   proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
-has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
-then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself) an entry of `kinds` that sets
-none of `without`; an unmet one is `unmet-requirement`. So an
-effect's `do` names what its `on` may be. `ogy kinds --map` prints them all.
+has at most one condition (`if_set: <field>`, `if_unset: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one
+value or a list), then needs a field (`needs_field`) or reaches along a link `path` (none: the entry itself), or along any
+of `or_paths`, an entry of `kinds` that sets none of `without`; an unmet one is `unmet-requirement`, or, with `work: true`,
+work left (`unserved`) rather than a finding. A path hop is a link field, `<-field` backward (`<-field?key=a|b`: only links
+whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
+names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
+`links` field holds at least one link: leave it out for none. `ogy kinds --map` prints them all.
 
 An entry has its own evidence (`src`: `code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`; or a `because` chain
 that reaches one; or a decision that settles it; or a person's yes, `agreed`), or `ogy check` says `no-evidence`. `proof` is `<path>.py::<function>`.

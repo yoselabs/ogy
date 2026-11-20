@@ -34,7 +34,7 @@ class Migrated:
     retyped: list[tuple[str, str]] = field(default_factory=list)  # files under a renamed kind: (old path, new path)
 
     def lines(self) -> list[str]:
-        if not self.changes and not self.moved and not self.retyped:
+        if not self.changes and not self.moved and not self.retyped and not self.built:
             return ["nothing to migrate"]
         out = [f"moved {old} to {new} (a kind was renamed)" if old != new else f"renamed the kind names in {new}"
                for old, new in self.retyped]
@@ -56,19 +56,27 @@ def _agreements(snapshot: Snapshot, kept: Kept) -> dict[Address, dict[str, objec
 
 
 def _built(target: Target, snapshot: Snapshot, kept: Kept) -> list[str]:
-    """Re-set the `own` and `deps` hashes of the built lines that only a rename changed."""
+    """Re-set the `own` hash of the built lines that only a rename changed, and write without its old keys a line that holds
+    any (an old `deps` goes: a changed input is read from the build hash, never re-stamped)."""
     root, done = target.repo / target.kb, []
-    for text, line in sorted(built.read_all(root).items()):
-        address = snapshot.resolve(text)
-        if address is None:
-            continue
-        own = kept.hash(address, line.own, build=True) or line.own
-        deps = {dep: (kept.hash(found, given, build=True) if (found := snapshot.resolve(dep)) else None) or given
-                for dep, given in line.deps.items()}
-        if own != line.own or deps != dict(line.deps):
-            built.stamp(root, snapshot.entries[address].path, text, built.Line(own, deps, line.covers, line.sourced))
-            done.append(text)
+    folder = root / built.BUILT
+    for file in sorted(folder.rglob("*.yml")) if folder.is_dir() else ():
+        source, changed = file.relative_to(folder).as_posix(), False
+        lines = built.read(root, source)
+        for text, line in lines.items():
+            address = snapshot.resolve(text)
+            own = (kept.hash(address, line.own, build=True) if address else None) or line.own
+            if own != line.own or line.dropped:
+                lines[text], changed = built.Line(own, line.covers, line.sourced), True
+                done.append(text)
+        if changed:
+            built.write(root, source, lines)
     return done
+
+
+def _old_lines(target: Target) -> bool:
+    """A built line still holds a key built lines no longer have."""
+    return any(line.dropped for line in built.read_all(target.repo / target.kb).values())
 
 
 def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address, Address]) -> list[tuple[Address, Address]]:
@@ -93,16 +101,19 @@ def _rehome(ed: Editor, target: Target, snapshot: Snapshot, table: dict[Address,
     return moved
 
 
-def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], Snapshot | None, list[tuple[str, str]]]:
-    """The files the kind renames change (none collide), the knowledge base as it was under the old kind names (None when no
-    kind was renamed) and each changed file as (old path, new path)."""
+def _retyped(target: Target, raw: dict[str, str]) -> tuple[dict[str, str | None], tuple[Snapshot, Snapshot] | None,
+                                                            list[tuple[str, str]]]:
+    """The files the kind renames change (none collide), the knowledge base as it was under the old kind names, read with
+    every declared rename and with the kind renames only (None when no kind was renamed), and each changed file as (old path,
+    new path)."""
     ontology = target.kinds()
     changed = retype(ontology, raw, stuck={})
     if not changed:
         return {}, None, []
     work, gone = Retype(ontology), [rel for rel, text in changed.items() if text is None]
     pairs = [(rel, work.path(rel)) for rel in gone] + [(rel, rel) for rel in changed if changed[rel] is not None and rel in raw]
-    return changed, build(before(ontology), {rel: raw[rel] for rel in kb_paths(raw)}), sorted(pairs)
+    old = {rel: raw[rel] for rel in kb_paths(raw)}
+    return changed, (build(before(ontology), old), build(before(ontology, fields_too=False), old)), sorted(pairs)
 
 
 def migrate(target: Target) -> Migrated:
@@ -111,7 +122,8 @@ def migrate(target: Target) -> Migrated:
     ontology, work, raw = target.kinds(), Retype(target.kinds()), files(target)
     if stuck := collisions(ontology, raw):
         raise WriteRefused(sorted({f"{Problem.NEEDS_MIGRATION}: {why}" for why in stuck.values()}))
-    retyped, was, pairs = _retyped(target, raw)
+    retyped, olds, pairs = _retyped(target, raw)
+    was, also = olds if olds else (None, None)
     now = applied(ontology, raw, stuck={})
     snapshot = build(ontology, {rel: now[rel] for rel in kb_paths(now)}) if was else Editor(target.repo, target.kb, ontology).snapshot()
     after, found = changes(snapshot)
@@ -119,9 +131,10 @@ def migrate(target: Target) -> Migrated:
     table = {**moved_table(snapshot), **{Address("", old, ()): Address(*new.split("/"), ()) for old, new in homes.items()
                                          if (root / old / removed.FILE).is_file()}}
     tidied = [address for address, entry in after.entries.items() if entry is not snapshot.entries[address]]
-    if not found and not table and not tidied and not retyped:
+    if not found and not table and not tidied and not retyped and not _old_lines(target):
         return Migrated([], [], [], [])
-    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str)
+    kept = Kept(snapshot, was, (lambda text: next((old for old in work.olds(text) if was.resolve(old)), text)) if was else str,
+                also)
     agreed = _agreements(snapshot, kept)
     lines: list[str] = []
     moved: list[tuple[Address, Address]] = []

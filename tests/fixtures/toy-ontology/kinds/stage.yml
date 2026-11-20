@@ -6,6 +6,8 @@ part_of: journey
 key: stages
 needs_proof: true
 fingerprint: {proofs: true}
+requires:
+  - {if_set: who, path: ["<-serves_stages"], kinds: [screen], work: true, error: "a stage a person acts at has a screen"}
 input: {move: content}                              # its moves are what it is built from
 fields:
   tells: {}

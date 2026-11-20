@@ -1,0 +1,8 @@
+says: One entry with its fields, parents, parts, links, status, decision, sources and built line; for a miss, the addresses near it.
+invoked_as: ogy show <address>
+serves:
+- product/capture/workflow/capture-entries/step/search
+- product/inspection/workflow/inspect-kb/step/read
+src:
+- code:src/ogy/cli.py#_reads
+form: cli

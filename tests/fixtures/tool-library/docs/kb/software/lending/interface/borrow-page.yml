@@ -1,0 +1,12 @@
+says: The page where a member borrows a tool.
+serves:
+- product/lending/workflow/borrow/step/ask
+src:
+- code:src/library/pages.py#borrow_page
+satisfies:
+- product/lending/rule/late-fee-is-per-day
+form: web
+shows:
+- product/lending/entity/tool
+includes:
+- software/lending/interface/leave-button

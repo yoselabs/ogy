@@ -103,6 +103,21 @@ def test_check_and_the_glossary_read_the_toy_names(toy: Path) -> None:
     assert "    reasoning: Read once." in lines and "  basket: What a shopper holds before paying." in lines and "    shun: cart" in lines
 
 
+def test_requirements_cycles_and_requirements_that_are_work_follow_the_toy_names(toy: Path) -> None:
+    """A finish reached by a move captioned Buy (`<-next?caption=Buy|Pay`) or of an invoked journey (`^`, `<-invokes`) unless
+    quiet (`if_unset`); a stage a person acts at with no screen is work, not a finding; a screen never nests itself."""
+    buy, page = toy / "docs/kb/business/shop/journey/buy.yml", toy / "docs/kb/tech/shop/screen/page.yml"
+    buy.write_text(buy.read_text().replace("caption: Buy", "caption: Look"))
+    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["unmet-requirement"]
+    buy.write_text(buy.read_text().replace("done: {tells: Bought.}", "done: {tells: Bought., quiet: true}"))
+    assert w(toy, "check")[0] == cli.OK
+    page.write_text(page.read_text() + "nests: [tech/shop/screen/page]\n")
+    assert any(line.startswith("link-cycle: tech/shop/screen/page.yml") for line in w(toy, "check")[1])
+    page.unlink()
+    assert w(toy, "check")[0] == cli.OK
+    assert "unserved: business/shop/journey/buy/stage/pick (now -, built -) a stage a person acts at has a screen" in w(toy, "work")[1]
+
+
 def test_put_adds_and_refuses_by_the_toy_roles(toy: Path) -> None:
     code, lines = w(toy, "put", '{"address": "business/shop/person/clerk", "tells": "Fills a cart.", "sort": "human"}')
     assert code == cli.REFUSED and "avoided-word" in lines[0] and "'cart'" in lines[0]
@@ -180,7 +195,7 @@ def test_the_flow_and_the_kind_printers_follow_the_toy_names(toy: Path) -> None:
     assert code == cli.OK and '  journey_buy_stage_pick -- "Buy" --> journey_buy_finish_done' in lines
     code, lines = w(toy, "kinds", "--readers")
     assert code == cli.OK and "word_entry.spelling: check word-clash, fingerprint, printer glossary" in lines
-    assert "move.caption: check avoided-word, fingerprint, printer diagram, printer review" in lines
+    assert "move.caption: check avoided-word, fingerprint, printer diagram, printer review, requires" in lines
     code, lines = w(toy, "kinds", "--map")
     assert code == cli.OK and lines[0].endswith("every kind also takes heading, source, reason, held_by, tests, accepted")
 
@@ -258,13 +273,14 @@ def _folder(root: Path, kinds: dict[str, str], servers: str) -> Path:
     texts = {item.stem: item.read_text() for item in (TOY / "kinds").iterdir()} | kinds
     for name, text in texts.items():
         if text:
-            (root / "kinds" / f"{name}.yml").write_text(text.replace("servers: [screen]", f"servers: {servers}"))
+            (root / "kinds" / f"{name}.yml").write_text(text.replace("servers: [screen]", f"servers: {servers}").replace(
+                "kinds: [screen]", f"kinds: {servers}"))
     return root
 
 
 def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pytest.TempPathFactory) -> None:
     """A toy kind console beside screen, then both merged into surface (`was` lists them): a console's `typed_as` is `typed`."""
-    screen = (TOY / "kinds/screen.yml").read_text()
+    screen = "".join(line for line in (TOY / "kinds/screen.yml").read_text().splitlines(keepends=True) if "nests" not in line)
     console = screen.replace("kind: screen", "kind: console").replace("  shows_moves:", "  typed_as: {}\n  shows_moves:")
     surface = "was: [{kind: screen}, {kind: console, renamed: {typed_as: typed}}]\n" + screen.replace(
         "kind: screen", "kind: surface").replace("  shows_moves:", "  typed: {}\n  shows_moves:")
@@ -281,7 +297,7 @@ def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pyte
     for text in served:
         at = parse_address(text, old.kinds())
         assert at is not None
-        built.stamp(toy / "docs/kb", old.read()[1].entries[at].path, text, built.Line(old.read()[1].build_hash(at), {}))
+        built.stamp(toy / "docs/kb", old.read()[1].entries[at].path, text, built.Line(old.read()[1].build_hash(at)))
     assert w(toy, "check")[0] == cli.OK
     run_git(toy, *IDENTITY, "add", "-A")
     run_git(toy, *IDENTITY, "commit", "-qm", "a console")

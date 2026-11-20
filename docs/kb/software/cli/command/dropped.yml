@@ -1,6 +1,0 @@
-says: What no person has seen.
-invoked_as: ogy dropped
-serves:
-- product/review/workflow/hand-over/step/list
-src:
-- code:src/ogy/cli.py#_asks

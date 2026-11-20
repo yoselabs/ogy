@@ -1,0 +1,16 @@
+structure: true
+question: How does an interface say what it shows and what it takes in?
+context: "Harmony review finding 10 (D12 b'): a read leaves no trace; a page has no link to what it shows. Bead ogy-yy9.75, the query rule."
+options:
+  links:
+    label: shows and accepts link to entities and attributes (content inputs); one that only shows may serve no step, one that accepts or offers serves a step
+  step-shows:
+    label: A step's shows field
+proposal:
+  chose: links
+  why: A read-only page needs no ceremonial workflow, and a changed entity reaches the pages that show it.
+answers:
+- chose: links
+  said: 'Yes, all: interface (owner 2026-11-19/20)'
+  at: '2026-11-20T01:49:53+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

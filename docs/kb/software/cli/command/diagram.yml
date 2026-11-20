@@ -1,6 +1,0 @@
-says: The flow of a workflow as Mermaid.
-invoked_as: ogy diagram <address>
-serves:
-- product/inspection/workflow/inspect-kb/step/read
-src:
-- code:src/ogy/cli.py#_reads
