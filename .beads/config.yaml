@@ -83,3 +83,5 @@ export:
     git-add: false
 import:
     auto: false
+sync:
+    remote: "git+https://github.com/yoselabs/ogy.git"
