@@ -3,6 +3,8 @@
 import dataclasses
 from collections.abc import Collection
 
+from git_porcelain.errors import MissingRevision
+
 from ogy import removed
 from ogy.base import check_base, read_ledgers
 from ogy.kindchange import before
@@ -12,7 +14,7 @@ from ogy.model import Finding, Problem, home_of, link_values, parse_address
 from ogy.removal import known_addresses, snapshot_problems
 from ogy.retype import Retype
 from ogy.snapshot import Snapshot, load
-from ogy.source import Source
+from ogy.source import GitSource, Source
 
 
 def findings_of(problems: list[removed.Problem], snapshot: Snapshot) -> list[Finding]:
@@ -80,6 +82,20 @@ def check_against_base(snapshot: Snapshot, source: Source, base: Snapshot, base_
     in_base, rename = {item.id for ledger in old.values() for item in ledger.items}, Retype(snapshot.ontology).address
     new = [item for ledger in written.values() for item in ledger.items if rename(item.id) not in in_base]
     then = load(base_source, before(snapshot.ontology)) if any(rename(item.id) != item.id for item in new) else base
-    found += findings_of(removed.check_new_snapshots(
-        new, (), lambda item: snapshot_problems(then if rename(item.id) != item.id else base, item)), snapshot)
+    def problems(item: removed.Item) -> list[str]:
+        found = snapshot_problems(then if rename(item.id) != item.id else base, item)
+        return found if found and _changed_then_removed(snapshot, base_source, item) else []
+    found += findings_of(removed.check_new_snapshots(new, (), problems), snapshot)
     return found
+
+
+def _changed_then_removed(snapshot: Snapshot, base_source: Source, item: removed.Item) -> list[str]:
+    """An entry changed after the base and then removed: its snapshot is the entry at `last_seen`, the commit it was removed
+    from, which the branch reached from the base (its problems there, else none)."""
+    if not isinstance(base_source, GitSource) or not item.last_seen:
+        return ["snapshot differs from the entry in the base"]
+    try:
+        seen = GitSource(base_source.repo, item.last_seen, base_source.kb)
+    except MissingRevision:
+        return [f"last_seen {item.last_seen} is no commit"]
+    return snapshot_problems(load(seen, snapshot.ontology), item)

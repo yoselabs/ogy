@@ -15,9 +15,9 @@ from ogy.kinds import Holds, Kind
 from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
-from ogy.model import Entry, Finding, Problem
+from ogy.model import Entry, Finding, Problem, parse_address
 from ogy.requires import applies, reaching, satisfied, unmet
-from ogy.settle import check_decisions
+from ogy.settle import check_decisions, decisions
 from ogy.snapshot import Snapshot, load
 from ogy.source import Source
 from ogy.terms import check_proposed_terms, check_term_agreement, check_terms
@@ -121,8 +121,21 @@ def check_entries(snapshot: Snapshot, _source: Source) -> list[Finding]:
     return Checker(snapshot).run()
 
 
-CHECKS: tuple[Check, ...] = (check_entries, check_every_area, check_flows, check_evidence, check_decisions, check_terms, check_ledgers,
-                             check_lints)
+def check_sets_direction(snapshot: Snapshot, _source: Source) -> list[Finding]:
+    """`layer-direction` over a decision's `sets` keys: a decision names what it sets, so it lives in that layer or a later one."""
+    declared, found = snapshot.ontology.declared, []
+    for decision in decisions(snapshot):
+        named = sorted({text for sets in decision.sets_all() for text in (sets if isinstance(sets, dict) else {})})
+        for text in named:
+            if (target := parse_address(text, snapshot.ontology)) is not None and declared.reversed_link(decision.address.layer,
+                                                                                                         target.layer):
+                found.append(Finding(Problem.LAYER_DIRECTION, decision.entry.path, f"sets: {text} is in a later layer; a decision "
+                                     f"sets entries of its layer or an earlier one ({', '.join(declared.layers)})", decision.address))
+    return found
+
+
+CHECKS: tuple[Check, ...] = (check_entries, check_sets_direction, check_every_area, check_flows, check_evidence, check_decisions,
+                             check_terms, check_ledgers, check_lints)
 # Errors only when a land is asked for: nobody has agreed yet is waiting for the owner, not a fault (`ogy check` counts it).
 LANDING: tuple[Check, ...] = (check_term_agreement, check_proposed_terms)
 

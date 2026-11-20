@@ -1,3 +1,8 @@
-says: Business actors live in the product layer and technical actors (a scheduler, CI, a system calling us) in the software layer; no field marks the difference.
+says: An actor the business deals with, whatever its nature (a customer, a payment provider, a carrier's notifier), lives in the product layer; an actor that exists only because of how the product is built (a scheduler, CI, a git hook, an MCP client) lives in the software layer; no field marks the difference.
 because:
 - constitution/principle/layers-split-business-from-technical
+agreed:
+  at: '2026-11-20T03:15:34+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  said: 'Yes: an actor the business deals with lives in product whatever its nature; technical actors stay in software'
+  hash: 1a33eda5c4f1

@@ -1,0 +1,35 @@
+structure: true
+question: 'Where does a technical refusal of a product step live: init refusing unreadable settings files, a write refused while another holds the lock?'
+context: "Guards became cases (D3a) and product never names software (D5a), so a product case cannot read the software dependencies git and claude-code. In this stage Fable first made both conditions read the agent and the entry entity only to pass the check; the owner's coordinator turned that down as invented. Until the owner answers, the proposal is built: product/setup/workflow/init-repository/step/write/case/unreadable and its end refused (agreed) and product/capture/workflow/capture-entries/step/check/case/locked are removed; the refusal stays in the code (handler init, handler put)."
+options:
+  build-facts:
+    label: 'They are build facts: the refusal cases leave the product layer; the code keeps them'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+      product/setup/workflow/init-repository/end/refused:
+      product/capture/workflow/capture-entries/step/check/case/locked:
+  business-parties:
+    label: 'Git and Claude Code are parties the business deals with: product program actors the conditions read; the dependencies realize them'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+        when:
+          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
+          reads:
+          - product/setup/actor/claude-code
+      product/setup/workflow/init-repository/end/refused:
+        says: Nothing is written; the refusal names the file or flag at fault.
+        result: failure
+      product/capture/workflow/capture-entries/step/check/case/locked:
+        when:
+          text: another ogy write holds the write lock
+          reads:
+          - product/shared/actor/git
+  software-home:
+    label: 'A software step of the handler refuses: revisit a software refusal of a product step (harmony 3b)'
+    sets:
+      product/setup/workflow/init-repository/step/write/case/unreadable:
+      product/setup/workflow/init-repository/end/refused:
+      product/capture/workflow/capture-entries/step/check/case/locked:
+proposal:
+  chose: build-facts
+  why: Nothing in the product layer reads them, and inventing a read to pass the check is worse.

@@ -186,7 +186,7 @@ class Kept:
         if was is None or was not in self.was.entries:
             return None
         def of(snapshot: Snapshot, at: Address) -> str:
-            return snapshot.build_hash(at) if build else snapshot.fingerprint(at)
+            return snapshot.build_hash(at) if build else snapshot.agreed_print(at)
         then = of(self.was, was)
         thens = {then} | ({of(self.also, was)} if self.also is not None and was in self.also.entries else set())
         return of(self.now, address) if given in thens and of(self.dropped, was) == then else None

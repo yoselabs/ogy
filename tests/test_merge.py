@@ -36,7 +36,8 @@ def _texts(was: str | None = None) -> dict[str, str]:
 
 def unmerged() -> Ontology:
     """The software kinds as they were before view and command merged into interface."""
-    texts = {rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ")
+    texts = {rel: text.replace("[interface]", "[view, command]").replace("[interface, ", "[view, command, ").replace(
+        ", interface]", ", view, command]")
              for rel, text in _texts().items() if rel != "kinds/interface.yml"}
     texts |= {f"kinds/{item.name}": item.read_text() for item in BEFORE.iterdir()}
     return parse_kinds(texts, packaged().declared)
@@ -125,14 +126,13 @@ def test_a_removed_command_is_read_under_the_merged_kind(repo: Path, before: str
     the id. A decision's `sets` gives the command's fields under the interface's names."""
     kb, gone = repo / "docs/kb", "software/app/command/gone"
     (kb / f"{gone}.yml").write_text(f"says: Gone.\ninvoked_as: ogy gone\n{SERVES}")
-    (kb / "product/app/decision").mkdir(parents=True)
-    (kb / "product/app/decision/how.yml").write_text(HOW)
+    (kb / "software/app/decision/how.yml").write_text(HOW)
     early = commit(repo, "a command that goes")
     ops.run_remove(Unmerged(repo), gone, why="not needed")
     commit(repo, "removed")
     ops.run_migrate(Target(repo))
     commit(repo, "merged")
-    how = any_yaml.load((kb / "product/app/decision/how.yml").read_text())
+    how = any_yaml.load((kb / "software/app/decision/how.yml").read_text())
     assert isinstance(how, dict) and how["options"]["lend"]["sets"] == {NEW_CLI: {"invoked_as": "ogy lend"}}
     assert gone in (kb / "software/app/removed.yml").read_text()
     assert not ops.run_check(Target(repo, rev="HEAD"), base=early).value

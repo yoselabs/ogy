@@ -115,7 +115,7 @@ def test_requirements_cycles_and_requirements_that_are_work_follow_the_toy_names
     assert any(line.startswith("link-cycle: tech/shop/screen/page.yml") for line in w(toy, "check")[1])
     page.unlink()
     assert w(toy, "check")[0] == cli.OK
-    assert "unserved: business/shop/journey/buy/stage/pick (now -, built -) a stage a person acts at has a screen" in w(toy, "work")[1]
+    assert "unscreened: business/shop/journey/buy/stage/pick (now -, built -) a stage a person acts at has a screen" in w(toy, "work")[1]
 
 
 def test_put_adds_and_refuses_by_the_toy_roles(toy: Path) -> None:

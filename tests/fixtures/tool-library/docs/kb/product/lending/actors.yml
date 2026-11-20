@@ -22,3 +22,6 @@
     where: ai:claude/9b01#45
     said: Yes to the cards but the borrow step
     hash: c22d1bbb37ad
+- id: mail-relay
+  says: The mail relay a reminder is handed to, whichever mailer runs it.
+  nature: program

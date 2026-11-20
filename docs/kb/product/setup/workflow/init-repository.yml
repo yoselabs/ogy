@@ -18,22 +18,12 @@ steps:
       at: '2026-11-19T18:56:21+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Agreed to the seven review, init and hook sentences, with the reply step reworded to a paraphrase
-      hash: 29f093721057
+      hash: 834dde35a9b0
   write:
     says: ogy writes each missing piece and merges into the files that exist.
     cases:
-      unreadable:
-        order: 1
-        when:
-          text: .mcp.json or .claude/settings.json cannot be read, or the flags contradict ogy.yml
-          reads:
-          - product/shared/actor/agent
-        then: refused
       otherwise:
         then: set-up
-        effects:
-        - do: tell
-          on: product/shared/actor/agent
     agreed:
       at: '2026-11-19T19:50:03+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
@@ -66,11 +56,3 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
       hash: 116f80780dbf
-  refused:
-    result: failure
-    says: Nothing is written; the refusal names the file or flag at fault.
-    agreed:
-      at: '2026-11-19T19:50:03+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: f744cdb88480

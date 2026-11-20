@@ -54,7 +54,7 @@ class Replied:
 def _stale(target: Target, card: Shown) -> str | None:
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     address = snapshot.resolve(card.address)
-    if address is None or snapshot.fingerprint(address) != card.fingerprint:
+    if address is None or snapshot.agreed_print(address) != card.fingerprint:
         return f"{card.address} changed since it was shown; it stays in the queue"
     return None
 

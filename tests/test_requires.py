@@ -96,30 +96,36 @@ steps:
   charge:
     says: The product asks the payment provider to charge the member.
     cases:
-      otherwise: {then: done, effects: [{do: tell, "on": software/app/actor/provider}]}
+      otherwise: {then: done, effects: [{do: tell, "on": product/app/actor/provider}]}
 ends:
   done: {result: success, says: Paid.}
 """
-PAYING = {"software/app/actors.yml": "- {id: provider, says: The payment provider., nature: program}\n",
-          "software/app/workflow/pay.yml": PAY,
-          "software/app/handler/charge.yml": "says: Charges.\nperforms: [software/app/workflow/pay/step/charge/case/otherwise]\n"}
-CARDS = "says: The card network.\nrealizes: software/app/actor/provider\n"
+PAYING = {"product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n"
+                                    "- {id: provider, says: The payment provider., nature: program}\n",
+          "product/app/workflow/pay.yml": PAY,
+          "software/app/handler/charge.yml": "says: Charges.\nperforms: [product/app/workflow/pay/step/charge/case/otherwise]\n"}
+CARDS = "says: The card network.\nrealizes: product/app/actor/provider\n"
 
 
 def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_dependency_realizing_it(kb: Make) -> None:
-    case = "software/app/workflow/pay/step/charge/case/otherwise"
+    """A party the business deals with lives in product whatever its nature (decision actor-layers): a product row tells it,
+    a software handler performing the row uses the dependency that realizes it."""
+    case = "product/app/workflow/pay/step/charge/case/otherwise"
     assert unmet(kb, PAYING) == {case}
     assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS}) == {case}  # nobody uses it for this row
     used = PAYING["software/app/handler/charge.yml"] + "uses: [software/app/dependency/cards]\n"
     assert unmet(kb, {**PAYING, "software/app/dependency/cards.yml": CARDS, "software/app/handler/charge.yml": used}) == set()
-    person = PAYING["software/app/actors.yml"].replace("program", "human")  # only a program actor is realized by a dependency
-    assert unmet(kb, {**PAYING, "software/app/actors.yml": person}) == set()
+    person = PAYING["product/app/actors.yml"].replace("program", "human")  # only a program actor is realized by a dependency
+    assert unmet(kb, {**PAYING, "product/app/actors.yml": person}) == set()
 
 
 def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
     flow = SIGN_IN.replace("actor: product/app/actor/member", "actor: software/app/actor/bot")
     bot = {"software/app/actors.yml": "- {id: bot, says: A scheduler., nature: program}\n", "product/app/workflow/sign-in.yml": flow}
     assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in/step/ask") in kb(bot).findings()
+    told = PAY.replace("product/app/actor/provider", "software/app/dependency/cards")  # a product row never tells a dependency
+    found = kb({**PAYING, "product/app/workflow/pay.yml": told, "software/app/dependency/cards.yml": CARDS}).findings()
+    assert (Problem.LAYER_DIRECTION, "product/app/workflow/pay/step/charge/case/otherwise") in found
 
 
 HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {type: enum, of: [x, y]}\n  b: {}\n"
@@ -137,7 +143,7 @@ HEAD = "kind: thing\nabout: x\nlayers: [product]\nshape: file\nfields:\n  a: {ty
     ("{kinds: [thing], or_paths: [[b]], error: e}", "further paths beside a path"),
     ("{kinds: [thing], same: true, error: e}", "comes back to the entry"),
     ("{if_set: a, if_reaches: [b], kinds: [thing], path: [b], error: e}", "not both"),
-    ("{kinds: [thing], path: [b], status: x, error: e}", "only a requirement that is work names its status"),
+    ("{kinds: [thing], path: [b], status: x, error: e}", "names its status, and only it"),
 ])
 def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, message: str) -> None:
     with pytest.raises(OntologyError, match=message):

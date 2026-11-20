@@ -1,3 +1,0 @@
-- id: mail-relay
-  says: The SMTP relay the reminders are handed to.
-  nature: program

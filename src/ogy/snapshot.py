@@ -86,6 +86,19 @@ class Snapshot:
             self._prints[key] = fingerprint(self.kind_of(address), self.entries[address], self._unkeyed(address), ())
         return self._prints[key]
 
+    def agreed_print(self, address: Address) -> str:
+        """What a person agrees to and a card shows: the fingerprint, with the fingerprints of the rows read with a step and,
+        for a term that names an entry, that entry's sentence. A row or a named sentence that changes sends the entry back to
+        the owner; an entry without either keeps its plain fingerprint."""
+        kind = self.kind_of(address)
+        also: list[object] = [[str(row), self.fingerprint(row)] for name in sorted(self.ontology.rows())
+                              for row in self.links.parts(address, name)]
+        names = kind.glossary.names if kind.glossary is not None else None
+        if names is not None and self.entries[address].fields.get(names) is not None:
+            also.append([names, self.sentence(address)])
+        meaning = self.fingerprint(address)
+        return digest({"meaning": meaning, "with": also}, length=FINGERPRINT_LENGTH) if also else meaning
+
     def build_hash(self, address: Address, *, proofs: bool = True) -> str:
         """What the built record and work left compare: the meaning, the proofs, what the kind's inputs read (`input` of its
         link fields, common fields and parts) and its reverse inputs (`input_from`). Memoised. `proofs=False` is what reaches

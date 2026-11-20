@@ -15,6 +15,6 @@ exactly_one_of: [[says, names]]                      # one sentence per concept:
 fields:
   word: {required: true}                             # the word people say (`land`, `X`, `task tracker`); a term writes no `title`
   says: {}                                           # what it means, one line of under 15 words (`term-too-long`)
-  names: {type: link, to: [actor, entity, attribute, state, enum, quantity, setting, capability, goal, workflow, step, rule, dependency, handler]}                     # the entry that defines the word: the glossary prints its sentence
+  names: {type: link, to: [actor, entity, attribute, state, enum, quantity, setting, capability, goal, workflow, step, rule, dependency, handler, interface]}                     # the entry that defines the word: the glossary prints its sentence
   avoid: {type: texts}                               # words and phrases never used for this concept; retired names live here
 dropped: [of, distinct, example, borrowed, group]    # a term is compressed: what it is not goes into says or avoid first

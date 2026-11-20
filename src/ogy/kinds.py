@@ -123,7 +123,7 @@ class Requirement(BaseModel):
     anything along the path `if_reaches` (every entry, without one), it sets `needs_field`, or it reaches along `path` (none:
     the entry itself), or along any one of `or_paths`, an entry of `kinds` that sets none of `without`; with `same`, the path
     comes back to the entry itself (for an item of a list part, the entry that holds it). Unmet, it is `unmet-requirement`;
-    with `work`, it is work left instead (what is still to be built, not a fault), under `status` (default `unserved`)."""
+    with `work`, it is work left instead (what is still to be built, not a fault), under the `status` it names."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     if_set: str | None = None
@@ -147,8 +147,8 @@ class Requirement(BaseModel):
             raise ValueError("a requirement has one of if_set, if_unset, if_part, if_equals and if_reaches, not both")
         if self.same and not self.path:
             raise ValueError("a requirement that comes back to the entry (same) has a path")
-        if self.status is not None and not self.work:
-            raise ValueError("only a requirement that is work names its status")
+        if (self.status is not None) != self.work:
+            raise ValueError("a requirement that is work names its status, and only it")
         if (self.needs_field is None) == (not self.kinds) or (self.needs_field is not None and (self.path or self.without)):
             raise ValueError("a requirement needs a field (needs_field) or reaches kinds (path, kinds, without), not both")
         if self.or_paths and not (self.path and all(self.or_paths)):

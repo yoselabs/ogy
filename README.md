@@ -74,7 +74,9 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   `dropped` lists answers that have one). Nobody writes a status: it is computed.
 - A person's yes in a review round is kept on the entry it agrees to: `agreed: {at, where, from: human, said, hash}`
   (outside the fingerprint, written only by `reply`; `put` refuses it). Only `from: human` agrees. The entry is "decided by
-  you" while its fingerprint is `hash`, "changed since you agreed" after. A person's yes is evidence of its own.
+  you" while what it was agreed as is `hash`, "changed since you agreed" after: its fingerprint, with the fingerprints of the
+  rows read with a step (a row is never a card of its own) and, for a term that names an entry, that entry's sentence. A
+  person's yes is evidence of its own.
 - Two hashes. The fingerprint is the meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements,
   review cards and removed items hold it. The build hash adds the proofs and the build inputs; only the built record and
   work left compare it. A new proof or a changed dependency is work, never a question for the owner.
@@ -140,11 +142,13 @@ is an area no more.
   not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
 entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. A business actor lives in product, a technical one
-(CI, a scheduler, a program calling us or one we tell) in software.
+(CI, a scheduler, a git hook, an MCP client) in software.
 - The layers are in order and `ontology.yml` says which way a link may cross them (`link_direction: later-to-earlier`): a link
   stays in its layer or names an earlier one, so software names product and product never names software (`layer-direction`,
-  any link field, `delegated` of an answer included; the constitution is outside the layers). In product the outside party is
-  an actor; in software the handler `uses` the dependency.
+  any link field, `delegated` of an answer included, and a decision's `sets` keys: a decision lives in the layer it sets or a
+  later one; the constitution is outside the layers). A party the business deals with is a product actor whatever its nature (a
+  payment provider), named by its role; an actor that exists only because of how the product is built (CI, an MCP client) is
+  a software one. In software the handler `uses` the dependency that `realizes` such an actor.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
@@ -230,7 +234,7 @@ has at most one condition (`if_set: <field>`, `if_unset: <field>`, `if_part: <ki
 value or a list, `if_reaches: <path>`: the path reaches anything), then needs a field (`needs_field`) or reaches along a link
 `path` (none: the entry itself), or along any of `or_paths`, an entry of `kinds` that sets none of `without`; with `same: true`
 the path must come back to the entry itself (for an item of a list part, the entry holding it). An unmet one is
-`unmet-requirement`, or, with `work: true`, work left under its `status` (`unserved` when it names none) rather than a finding.
+`unmet-requirement`, or, with `work: true`, work left under the `status` it names (step: `unserved`) rather than a finding.
 A path hop is a link field (`field?key=a|b`: only targets whose `key` is a or b), `<-field` backward (`<-field?key=a|b`: only
 links whose holder, the entry or the list part item, has `key` a or b), `^` the parent or `/kind` the parts. So an effect's `do`
 names what its `on` may be. A kind lists in `acyclic:` the link fields that never lead back to the entry (`link-cycle`). A
