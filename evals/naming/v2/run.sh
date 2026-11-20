@@ -5,7 +5,7 @@
 # harness result) and one line in runs/models.txt. Exit 0: the run counts. Exit 3: the run is excluded (harness
 # error, no answer file, malformed table, or a main model that is not MODEL); its answer, if any, goes to
 # runs/TAG/excluded/ and one line goes to runs/excluded.txt. Exit 2: wrong call, nothing was run.
-# Flags read from `claude --help` of 2.1.326, to be confirmed by the smoke run of GO.md:
+# Flags read from `claude --help` of 2.1.326 and confirmed by the smoke runs of GO.md (2026-11-20):
 #   --safe-mode               no CLAUDE.md, skills, plugins, hooks, MCP servers, custom agents (auth stays normal;
 #                             --bare would also do it but needs an API key, not a subscription login)
 #   --restricted              no user, project or local settings; file tools confined to the working folder
@@ -49,7 +49,7 @@ try:
     if ranked:
         main, aux = ranked[0], ",".join(ranked[1:]) or "-"
     if result.get("is_error"):
-        reason = "harness error: " + str(result.get("subtype") or result.get("result") or "is_error")[:80]
+        reason = "harness error: " + " ".join(str(result.get("result") or result.get("subtype") or "is_error").split())[:80]
     elif not ranked:
         reason = "no modelUsage in the harness result"
     elif not main.startswith(asked):

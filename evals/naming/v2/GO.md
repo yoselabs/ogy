@@ -62,37 +62,70 @@ No run that counts starts before every line is ticked. Write the date and the ev
       2026-11-20: stages 2 and 3 bring no 1:1 rename (`interface` merges two kinds, the rest is new or narrowed).
       B is scored in batches of its own (`batches-own.txt`), so "a B run and an A run read alike" is no longer
       asked of the blinding.
-- [ ] Smoke: after `blind.py`, an A run and a C0 run of the smoke test read alike apart from the words README
+- [x] Smoke: after `blind.py`, an A run and a C0 run of the smoke test read alike apart from the words README
       step 5 lists; `batches.txt` holds no B run and `batches-own.txt` only B runs.
+      2026-11-20: `scoring/smoke-drive/blind/R431.md` (A) and `R254.md` (C0). Neither holds any stage 1 name
+      (quantity, enum, handler, dependency, setting, attribute, workaround, proposal, `satisfies`, `default` as a
+      field): both read in A's words (attr, value, set, external, config_key, operation, deviation, guess, binds).
+      What still differs is on the README list: `realizes` on the capability and `many` as a mark in the C0 run.
+      The A run also uses "interface", "list" and "many" as plain words in its why text; nothing marks an arm.
+      Batches: the smoke had no B run (`batches-own.txt` empty, `batches.txt` = R431 R254); with 24 synthetic runs
+      `blind.py` put all 6 B runs in `batches-own.txt` (2 lines) and none in `batches.txt` (6 lines).
 
 ## Runner
 
-- [ ] `runs/small/` and `runs/default/` hold no answer file from a pilot (today: `A-1.md`, `A-2.md`, `C0-1.md`,
-      `C0-2.md` and two `old-text-*` files in `runs/small/`, seen in `git show --stat 4f9d3b5`): moved to `pilot/`.
-- [ ] One smoke run per model with `run.sh smoke-<tag> <full id> <effort> A 1`: exit 0, the answer file is in
+- [x] `runs/small/` and `runs/default/` hold no answer file from a pilot.
+      2026-11-20: neither folder exists; the pilot answers are in `pilot/old-runs-small/`. `runs/` holds only
+      `smoke-small`, `smoke-default`, `smoke-drive`, `smoke-fail`, `models.txt`, `excluded.txt`, `README.md`.
+- [x] One smoke run per model with `run.sh smoke-<tag> <full id> <effort> A 1`: exit 0, the answer file is in
       `runs/smoke-<tag>/`, `check-run.py` says ok, `runs/models.txt` has a line with `main=` read from `modelUsage`.
-- [ ] The `main=` strings are written in README.md as the pinned ids; `asked=` equals `main=` in a second smoke run.
-- [ ] The smoke answer shows no trace of this machine: no word of a CLAUDE.md, a skill or another arm.
-- [ ] A forced failure (a wrong model id) ends with exit 3 and a line in `runs/excluded.txt`.
-- [ ] `drive.sh smoke-<tag> <id> <effort> 1 "A C0"` runs two arms in order and writes `drive.log`.
+      2026-11-20, CLI 2.1.326 (coordinator): `smoke-small/A-2.md main=claude-haiku-5-5 aux=-` and
+      `smoke-default/A-1.md main=claude-opus-5-5 aux=-` in `runs/models.txt`; both exit 0, check-run ok.
+      (`smoke-small/A-1` was excluded first, "Not logged in": exit 3, a line in `runs/excluded.txt`.)
+- [x] The `main=` strings are written in README.md as the pinned ids; `asked=` equals `main=` in a second smoke run.
+      2026-11-20: README top list: small `claude-haiku-5-5`, default `claude-opus-5-5`, effort medium. In all four
+      lines of `runs/models.txt` (two more from `smoke-drive`) `asked=` equals `main=`.
+- [x] The smoke answer shows no trace of this machine: no word of a CLAUDE.md, a skill or another arm.
+      2026-11-20 (coordinator): grep of the smoke answer for CLAUDE.md, ogy, task-loop, beads, skill: 0 hits.
+- [x] A forced failure (a wrong model id) ends with exit 3 and a line in `runs/excluded.txt`.
+      2026-11-20 (coordinator): `run.sh smoke-fail claude-nonexistent-0-0`: exit 3, line `smoke-fail/A-1 harness
+      error: ...`. The logged reason read "success" (the harness's subtype); run.sh now logs the harness's result
+      text first, so the line names the cause.
+- [x] `drive.sh smoke-<tag> <id> <effort> 1 "A C0"` runs two arms in order and writes `drive.log`.
+      2026-11-20 (coordinator): `drive.sh smoke-drive claude-haiku-5-5 medium 1 "A C0"`: exit 0, `drive.log`
+      written, `smoke-drive/A-1.md` and `smoke-drive/C0-1.md` in `runs/models.txt`.
 
 ## Scorers
 
-- [ ] The scorer model id and effort are written in README.md.
-- [ ] One smoke scorer session with `score.sh` over a smoke batch: `scores.md` follows the rubric's output,
+- [x] The scorer model id and effort are written in README.md.
+      2026-11-20: `claude-opus-5-5`, effort medium.
+- [x] One smoke scorer session with `score.sh` over a smoke batch: `scores.md` follows the rubric's output,
       `guess.md` exists, and `scoring/<tag>/meta/*.files` lists only the batch, key.md, rubric.md, exercise.md.
-- [ ] Isolation confirmed: the smoke scorer, asked to read `../` or this repository, cannot (`--restricted`).
-- [ ] `--session-id` with `--resume` under `-p` works; if it does not, the guess is asked in a second fresh session
+      2026-11-20 (coordinator): `score.sh smoke-drive claude-opus-5-5 medium 1 1`. The first attempt failed: the
+      scorer may not list its folder and did not find the runs; score.sh now names the batch's files in the
+      prompt. Second attempt exit 0: `scores/b1-s1.md`, `guesses/b1-s1.md`; `meta/b1-s1.files` lists exercise.md,
+      key.md, R254.md, R431.md, rubric.md.
+- [x] Isolation confirmed: the smoke scorer, asked to read `../` or this repository, cannot (`--restricted`).
+      2026-11-20 (coordinator): a `--restricted` session asked to read `../probe` answered DENIED, "outside the
+      working directory".
+- [x] `--session-id` with `--resume` under `-p` works; if it does not, the guess is asked in a second fresh session
       given the scores, and score.sh says so.
-- [ ] `guess-rate.py` runs on the smoke scoring folder and counts A and C0 runs only.
-- [ ] `score.sh ... B1 1` scores a batch of arm B and asks no arm guess.
+      2026-11-20 (coordinator): it works; `guesses/b1-s1.md` was written by the resumed session.
+- [x] `guess-rate.py` runs on the smoke scoring folder and counts A and C0 runs only.
+      2026-11-20 (coordinator): on `scoring/smoke-drive`: 0 of 2, could not tell 2 of 2 (one A run, one C0 run).
+- [x] `score.sh ... B1 1` scores a batch of arm B and asks no arm guess.
+      2026-11-20: tested without a model, with a stub in place of `claude` on a throw-away tag (24 synthetic runs,
+      removed afterwards): `score.sh smoke-stub ... B1 1` exit 0, "no arm guess", scorer folder = three B runs, key,
+      rubric, exercise, one call and no `--resume`; `score.sh smoke-stub ... 1 1` made two calls and a guess file.
+      Not tested with a real scorer on a real B run: the first real B batch is that test.
 
 ## Paper
 
 - [ ] README.md: status, freeze commit, three model ids, B's commit, 6 runs per arm, 51 items, both gates.
       Done 2026-11-20: status, B's commit `43f15fc`, C0 and C on `dd9293d`, the exercise hash, 6 runs per arm, 51
       items (45 for B's second score), ceiling gate and floor gate ("more than 2 excluded runs of A or of C0").
-      Open: the three model ids (from the smoke runs) and the freeze commit.
+      Model ids written 2026-11-20 (haiku 5.5, opus 5.5, scorer opus 5.5, effort medium). Open: the freeze commit
+      only; tick this line together with the last one.
 - [x] The Agent-tool pilot is nowhere used as a number.
       2026-11-20: figures removed from README.md (pilot paragraph) and design.md (names under test); README says
       no pilot number is used for any gate or comparison, on the ground that every pilot answered an older text.
@@ -101,4 +134,6 @@ No run that counts starts before every line is ticked. Write the date and the ev
 - [x] README.md, guess-prompt.md and design.md describe B as the whole final map (the merge and the stage 3
       structure), not as the merge alone.
       2026-11-20: README arms and comparison tables; guess-prompt.md no longer names B at all (B is not guessed).
+- [x] Pilot and smoke folders are marked as not counted.
+      2026-11-20: README.md ("Not counted, ever"), `runs/README.md`, `pilot/RESULT.md`.
 - [ ] v2/ is committed and that commit is the "frozen at" of README.md.

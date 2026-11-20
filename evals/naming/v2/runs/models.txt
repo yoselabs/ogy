@@ -1,0 +1,4 @@
+smoke-small/A-2.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+smoke-default/A-1.md main=claude-opus-5-5 aux=- asked=claude-opus-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+smoke-drive/A-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)
+smoke-drive/C0-1.md main=claude-haiku-5-5 aux=- asked=claude-haiku-5-5 effort=medium 2026-11-20 2.1.326 (Claude Code)

@@ -9,7 +9,8 @@
 # a batch of arm B is not asked (there is nothing to tell apart inside it).
 # Writes scoring/TAG/scores/b<BATCH>-s<SCORER>.md, scoring/TAG/guesses/b<BATCH>-s<SCORER>.md and, in
 # scoring/TAG/meta/, the two harness results and the list of files the scorer's folder held.
-# To be confirmed by the smoke run of GO.md: --session-id with --resume under -p, and Read confined by --restricted.
+# Confirmed by the smoke runs of GO.md (2026-11-20): --session-id with --resume under -p works, and --restricted
+# confines Read to the folder. The scorer may not list its folder, so the prompt names the batch's files.
 set -uo pipefail
 if [ $# -ne 5 ]; then echo "usage: score.sh TAG MODEL EFFORT BATCH SCORER" >&2; exit 2; fi
 tag=$1 model=$2 effort=$3 batch=$4 scorer=$5
@@ -32,7 +33,9 @@ ls "$work" >"$dir/meta/$name.files"
 session=$(python3 -I -c 'import uuid; print(uuid.uuid4())')
 flags=(--model "$model" --effort "$effort" --safe-mode --restricted --disable-slash-commands --strict-mcp-config
   --tools Read,Write --permission-mode acceptEdits --permission-prompts none --output-format json)
-(cd "$work" && claude -p "${flags[@]}" --session-id "$session" <"$here/scorer-prompt.md") >"$dir/meta/$name.json"
+runs=$(for id in $ids; do printf '%s.md ' "$id"; done)  # the scorer may not list its folder: name the runs
+{ cat "$here/scorer-prompt.md"; printf '\nThe runs of this batch: %s\n' "$runs"; } | (cd "$work" && claude -p "${flags[@]}" \
+  --session-id "$session") >"$dir/meta/$name.json"
 if [ ! -s "$work/scores.md" ]; then echo "no scores.md from $name; see $dir/meta/$name.json" >&2; exit 1; fi
 cp "$work/scores.md" "$dir/scores/$name.md"
 case "$batch" in B*) echo "scored batch $batch as scorer $scorer: $dir/scores/$name.md (no arm guess)"; exit 0 ;; esac

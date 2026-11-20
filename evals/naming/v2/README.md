@@ -1,16 +1,16 @@
 # Naming eval v2: old names against mainstream names, made sensitive
 
-Status: **designed, not run; all four arms built; no-go until [GO.md](GO.md) is all ticked** (open there: the
-runner and scorer smoke tests, the model ids, the freeze commit) (2026-11-20, bead ogy-yy9.75). Replaces
+Status: **designed, not run; all four arms built; runner and scorers smoke-tested; no-go until [GO.md](GO.md) is
+all ticked** (open there: the freeze commit) (2026-11-20, bead ogy-yy9.75). Replaces
 [v1](../README.md), whose arm A sat at a ceiling: kind 16.3 of 17, links 13 of 17, 0.67 misplacements, no error
 blamed on a name. v1's files and scores stay as they are; v2 results are not comparable with them.
 
-Fill before the freeze:
+Pinned; the freeze commit is the one field still open:
 
 - frozen at: `<commit of v2/>`
-- `small` model id: `<full id, as the modelUsage key of its smoke run>`, effort `<level>`
-- `default` model id: `<full id, as the modelUsage key of its smoke run>`, effort `<level>`
-- scorer model id: `<full id>`, effort `<level>`
+- `small` model id: `claude-haiku-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
+- `default` model id: `claude-opus-5-5`, effort `medium` (the `modelUsage` key of its smoke run, 2026-11-20)
+- scorer model id: `claude-opus-5-5`, effort `medium`
 - arm B commit: `43f15fc` (main after stage 3 and the clean-up of old words; full hash in `inputs/arms.txt`),
   pinned 2026-11-20
 - arms C0 and C commit: `dd9293d` (branch `eval-stage1-clean`, on origin), pinned 2026-11-20
@@ -86,8 +86,8 @@ Every arm runs on two models, because a strong model reads past a poor name (v1)
 
 | tag | model | why |
 |---|---|---|
-| `small` | the smallest current Claude model the harness offers (the Haiku tier) | most likely to follow a name and not the field list: the sensitive reading |
-| `default` | the model v1's arm A ran on, the harness default | the model that does the real work: the reading that decides adoption |
+| `small` | `claude-haiku-5-5`, the smallest current Claude model the harness offers | most likely to follow a name and not the field list: the sensitive reading |
+| `default` | `claude-opus-5-5`, the model that does the real work here | the model that does the real work: the reading that decides adoption |
 
 Runs: **6 per arm per model** (48 with B). One model per sitting: `drive.sh TAG MODEL EFFORT` runs all arms of
 that model on one day, interleaved (A, C0, C, B, A, ...), and replaces excluded runs. The `default` model is
@@ -99,7 +99,7 @@ arm. `run.sh` starts in an empty temporary folder with `--safe-mode --restricted
 --strict-mcp-config --no-session-persistence --tools Write`, so that no CLAUDE.md, memory, skill, plugin, hook,
 settings file or MCP server of this machine reaches the run, and the one tool is the one the prompt needs.
 (`--bare` isolates as well but accepts only an API key.) The flags were read from the help of Claude Code
-2.1.326; no script here has been executed against a model: the smoke runs of GO.md confirm them.
+2.1.326 and confirmed by the smoke runs of GO.md (2026-11-20).
 
 Models are passed as full ids; `run.sh` refuses an alias. Recording: `run.sh` checks `is_error` in the harness
 result, keeps the result in `runs/<tag>/meta/` and adds one line to `runs/models.txt`:
@@ -143,7 +143,7 @@ like/unlike blocks are in; the hashes must be equal.
    `list` (arm A only). The guess rate of step 7 is read against this list.
 6. Score: `score.sh TAG <scorer id> <effort> BATCH 1` and `... BATCH 2` for every batch (`1` to `6`, then `B1`,
    `B2`): two sessions per batch that never see each other. A scorer's folder holds only its batch, key.md,
-   rubric.md and exercise.md (`scoring/<tag>/meta/*.files` lists what it held); never `map.txt`, `inputs/`,
+   rubric.md and exercise.md; the prompt names the batch's files, since the scorer may not list its folder (`scoring/<tag>/meta/*.files` lists what it held); never `map.txt`, `inputs/`,
    `runs/`, design.md, blame.md or this file. A run's marks are the mean of its two scorers. Scorer disagreement
    is reported two ways: the mean absolute difference in link items hit, of 51, and the mean count of link items
    on which the two differ, per run. An item on which they differ in more than a third of the runs is named, and
@@ -180,14 +180,17 @@ Arm B, absolute, per model, whatever the gates say (also when arm A's ceiling vo
 - the B-only addendum B1 to B6 of [design.md](design.md): six counts of 6, never summed with anything;
 - links a run wrote that the real lint would refuse: listed as findings about the map.
 
-Pilots (under `pilot/` and in `scores-pilot-small-A.md`): **no number from them is used anywhere, for no gate and
-no comparison.** They were made with the Agent tool (`pilot/RESULT.md` says so), where a subagent inherits the
+**Not counted, ever:** the pilots and the smoke runs. Smoke runs stay in `runs/smoke-*/` and `scoring/smoke-*/`
+(see `runs/README.md`); they tested the scripts, were made before the freeze, and are never pooled with, compared
+with or blinded together with the runs of the tags `small` and `default`. The two tags that count start empty.
+
+Pilots (under `pilot/`, their answers in `pilot/old-runs-small/`, and in `scores-pilot-small-A.md`): **no number
+from them is used anywhere, for no gate and no comparison.** They were made with the Agent tool (`pilot/RESULT.md` says so), where a subagent inherits the
 session's context, this repository's CLAUDE.md included, and every one of them answered an earlier wording of the
 exercise: [3], [6], [10], [11], [13], [16], [18], [20] and [23] were reworded after the last of them, [4] and
 more after the first. They
-served to shake out the key and the scripts. Their answer files must leave `runs/small/` before the sitting
-(GO.md): `drive.sh` stops on an existing run number and `blind.py` would take them as runs. A pilot that may
-inform the gates is made with `run.sh` on the frozen text.
+served to shake out the key and the scripts. A pilot that may inform the gates is made with `run.sh` on the frozen
+text.
 
 ## How to read it
 
