@@ -1,12 +1,13 @@
 # Prose rules: which a check could read (2026-11-20)
 
-Status: **proposed**. A sweep of the rules that live in prose in `skills/`, `docs/guidance.md`, the README and the kinds'
-`about`, `guidance` and `unlike` text, against the principle rigid-where-checked ("a fact that a check, work left or
+Status: **proposed**. A sweep of the rules that live in prose in `skills/`, `docs/guidance.md`, `docs/agents/`, the whole README and
+the kinds' `about`, `guidance` and `unlike` text, against the principle rigid-where-checked ("a fact that a check, work left or
 impact reads is a field or a link"). It applies two principles proposed today, `fix-the-class` (a gap found is fixed for
 its whole class) and `one-owner-per-fact` (a rule is a check or prose on its entry, never both). They wait for the
 owner's review on the local branch `proposed-words`, so no entry cites them yet.
 
-The sweep started from misfit M4. The no-answer rule lived only in the capture skill, and is now work (`a983a47`).
+The sweep started from misfit M4. The no-answer rule lived only in the capture skill, and is now work (`a983a47`). The README's command, writing, layout
+and kind-change sections describe checks that exist; read whole, they add no prose-only rule beyond L7 and the actor naming row.
 
 Fates:
 
@@ -20,18 +21,17 @@ Fates:
 
 | Fate | Rules |
 |---|---|
-| checked, built today | 3 (no-answer path; capability with no workflow; goal with no capability) |
+| checked, built today | 2 (no-answer path; capability with no workflow) |
 | checked already | 24 |
-| listed | 9 |
-| prose | 20 |
+| listed | 11 |
+| prose | 21 |
 
 ## Built today
 
 | # | Rule | Was in | Now |
 |---|---|---|---|
 | B1 | A row that tells an outside system owes a no-answer path and a rule on whether a repeat is safe | capture skill, hazard question 3 | work `no-answer-path` on case, choice and timeout (`a983a47`); the question left the skill (`cf4f6c0`) |
-| B2 | A workflow realizes a capability | capability guidance | work `no-workflow` on capability (`cea25d2`); the words left the guidance |
-| B3 | A capability realizes a goal; nothing read that a goal is realized | goal and capability guidance | work `unused` on goal (`cea25d2`) |
+| B2 | A workflow realizes a capability | capability guidance | work `no-workflow` on capability (`cea25d2`); the words left the guidance. Nobody agreed it as a requirement, so the decision `software/ontology/decision/capability-realized-by-workflow` asks the owner (proposal: work). 7 capabilities on ogy's own KB read `no-workflow` |
 
 ## Listed: needs the owner
 
@@ -46,6 +46,8 @@ Fates:
 | L7 | An area's `says` ends `Not here: <what>: <area>` | area guidance | This is a text pattern, and the `unlike` links already carry the same fact | Drop the sentence convention. `unlike` is the one owner; `ogy show` can print "Not here" from it |
 | L8 | A handler performs rows that have an effect | handler `about` and guidance | `requires` can test "holds a part" only as a condition, not as what is needed | Hold until a handler is seen performing an effectless row; then add `needs_part` to the grammar |
 | L9 | Choosing a dependency is a decision | dependency guidance | Work "a dependency with no `because` to a decision" is expressible today, but nobody agreed that every dependency needs one | Ask the owner: work, or prose |
+| L10 | A goal is realized by a capability | the sibling of B2 (`fix-the-class`); no prose says it | Work `unused` on goal is expressible today and was built in `cea25d2`, then taken out, because no guidance or decision says a goal must be realized | Ask the owner with B2's decision; recommend work, as for B2 |
+| L11 | A sentence that names an entry is a link | `docs/guidance.md` ("the guards"); the rule `software/ontology/rule/examples-before-kinds` (answered) | Agreed, but not built. A text scan must decide what counts as naming: an address, an id or a term's word | Build as a lint in `lints.py`; start with full addresses and ids in `says`, which never misfire |
 
 ## Checked already (the prose explains a check)
 
@@ -100,3 +102,6 @@ Fates:
 | Live capture: record the answer at once, with a paraphrase | both skills; AGENTS.md |
 | A principle is one sentence | principle `about` |
 | Every change names its eval in the ledger | AGENTS.md |
+| How this repository is built and gated (test first, never skip a hook, files are truth) | `docs/agents/` (the repo's own gate enforces its parts; no ogy check reads them) |
+
+One prose copy was wrong and is fixed: `docs/guidance.md` said a rule that constrains nothing is an error; the check makes it work (`unused`).

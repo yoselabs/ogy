@@ -268,6 +268,8 @@ def test_a_row_that_tells_an_outside_system_owes_a_no_answer_path_until_it_has_o
     """Misfit M4 is no third result: the outside system may not answer. The row owes a path for that (a timeout, or a case
     ending in failure, on its step or the step it leads to) and a rule it satisfies on whether a repeat is safe."""
     assert len(owed(kb, SHOP)) == 2
+    made = kb(SHOP)  # forward paths only: the row's own layer owes it (ogy.owing)
+    assert {item.owed_by for item in work_left(made.snapshot, {}, _no_file) if item.status == "no-answer-path"} == {""}
     waits = CONFIRM.replace("then: paid, effects", "then: wait, effects").replace("ends:\n", WAIT + "ends:\n") + UNPAID
     pathed = owed(kb, {**SHOP, "software/app/workflow/confirm-order.yml": waits})
     assert len(pathed) == 1 and "repeat" in pathed[0]  # the no-answer path is there; the repeat rule is not
@@ -284,13 +286,11 @@ def test_a_row_that_tells_a_program_actor_owes_a_no_answer_path_and_one_that_tel
     assert left(kb, {**PAYING, "product/app/actors.yml": person}, "no-answer-path") == set()
 
 
-def test_a_capability_no_workflow_realizes_and_a_goal_no_capability_realizes_are_work(kb: Make) -> None:
-    """The kind guidance said it in prose only: a capability is named before its workflows and a workflow realizes it; a
-    capability realizes a goal. Until the later entry is written, the earlier one is work, never a finding."""
+def test_a_capability_no_workflow_realizes_is_work(kb: Make) -> None:
+    """The kind guidance said it in prose only: a capability is named before its workflows and a workflow realizes it.
+    Until the workflow is written, the capability is work, never a finding."""
     goal = {"product/app/goals.yml": "- {id: tools, says: Members get tools.}\n"}
-    assert left(kb, goal, "unused") == {"product/app/goal/tools"}
     lend = {**goal, "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
-    assert left(kb, lend, "unused") == set()
     assert left(kb, lend, "no-workflow") == {"product/app/capability/lend"}
     realized = SIGN_IN.replace("start: ask\n", "start: ask\nrealizes: product/app/capability/lend\n")
     assert left(kb, {**lend, "product/app/workflow/sign-in.yml": realized}, "no-workflow") == set()

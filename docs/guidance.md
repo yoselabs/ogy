@@ -82,7 +82,7 @@ Two ways this fails:
 
 - **All rigid.** The model grows as detailed as the code and lags behind it, like a UML round-trip.
 - **Hybrid.** The text becomes a second, unchecked spec. The guards: text lives only on entries; a sentence that
-  names an entry must be a link; a rule that constrains nothing is an error; a new field comes only when several
+  names an entry must be a link; a rule nothing satisfies and that constrains nothing is work (`unused`); a new field comes only when several
   rules repeat one sentence shape.
 
 Example, a store. Choosing Postgres is a decision plus a dependency. How fields are stored (a JSON column, a compound

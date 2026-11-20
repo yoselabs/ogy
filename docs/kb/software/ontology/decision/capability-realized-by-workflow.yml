@@ -1,0 +1,11 @@
+structure: true
+question: Is a capability that no workflow realizes work left, or does the capability guidance stay prose?
+context: "Prose-rules sweep 2026-11-20 (docs/reviews/2026-11-20-prose-rules.md, B2): the capability guidance said a workflow realizes it, and no check read it. Built as work (no-workflow) in cea25d2; on ogy's own KB 7 capabilities read no-workflow."
+options:
+  work:
+    label: A capability no workflow realizes is work left (no-workflow) until a workflow realizes it
+  prose:
+    label: Drop the requirement; a capability may have no workflow
+proposal:
+  chose: work
+  why: 'A capability is named before its workflows, so until one realizes it the product does not yet do it: work, never a finding, as unrealized is for a missing goal.'
