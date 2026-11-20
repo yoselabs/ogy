@@ -193,8 +193,8 @@ def test_migrate_follows_a_toy_kind_and_common_field_renamed(toy: Path, tmp_path
         text = text.replace("kind: norm\n", "kind: canon\nwas: {kind: norm}\n")
         (folder / "kinds").mkdir(exist_ok=True)
         (folder / "kinds" / f"{name}.yml").write_text(text)
-    declared = (TOY / "ontology.yml").read_text().replace("  held_by: {type: links, to: [norm], note: true}",
-                                                         "  bound_by: {type: links, to: [canon], note: true}")
+    declared = (TOY / "ontology.yml").read_text().replace("  held_by: {type: links, to: [norm], note: true,",
+                                                         "  bound_by: {type: links, to: [canon], note: true,")
     (folder / "ontology.yml").write_text(declared.replace("roles:", "renamed: {held_by: bound_by}\nroles:"))
     journey = toy / "docs/kb/business/shop/journey/buy.yml"
     journey.write_text(journey.read_text() + "held_by: [business/shop/norm/limit]\n")

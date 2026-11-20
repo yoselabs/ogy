@@ -13,8 +13,8 @@ shared:                                              # the reserved area of ever
 common:
   title: {note: true}
   src: {type: texts, note: true}
-  because: {type: links, to: [any]}
-  satisfies: {type: links, to: [rule], note: true}   # the rules it is held to; a note
+  because: {type: links, to: [any], input: none}
+  satisfies: {type: links, to: [rule], note: true, input: none}   # the rules it is held to; a note
   proof: {type: texts}
   agreed: {type: agreed, note: true}
 renamed: {by: satisfies}                             # common fields renamed: `ogy migrate` rewrites the old name

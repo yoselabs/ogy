@@ -79,12 +79,13 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   review cards and removed items hold it. The build hash adds the proofs and the build inputs; only the built record and
   work left compare it. A new proof or a changed dependency is work, never a question for the owner.
 - Build inputs (as in Bazel and Make). A link field says what of its targets enters the build hash with `input:` `none`
-  (the default when unset), `address` (the target's address: a relink is work; only on a note field, as any other field
-  has the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is
+  (the default when unset), `address` (the target's address: a relink is work; only on a note or common field, as a kind's
+  other fields have the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is
   work). It may pick less: `input: {fields: [pin]}` (only those fields of each target) or `input: {parts: [choice]}` (the
-  addresses of those parts of each target). A link field of a kind that needs proof states its input, `none` included. A
-  kind gives the input of a common field or of a part kind in its own `input:` map (`input: {satisfies: content}`,
-  `input: {attribute: content}`), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
+  addresses of those parts of each target). A link field of a kind that needs proof states its input, `none` included,
+  its own and the common ones (`ontology.yml` states `none` for `because` and `satisfies`). A kind gives the input of a
+  common field or of a part kind in its own `input:` map (`input: {satisfies: content}`, `input: {attribute: content}`;
+  `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
   [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed input shows in
   `ogy work` as `changed` (the build hash is one hash); `input changed` is a dependency the built line recorded.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an

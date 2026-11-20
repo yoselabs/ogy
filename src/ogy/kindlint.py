@@ -39,7 +39,7 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         found += _fields(kinds, declared, name, kind)
         found += _rules(kinds, name, kind) + _inputs(kinds, declared, name, kind)
         found += _migration(declared, name, kind) + _moved(name, kind) + _was(kinds, name, kind)
-    found += [problem for field, spec in declared.common.items() for problem in _picked(kinds, f"common {field}", spec, spec.input)]
+    found += [problem for field, spec in declared.common.items() for problem in _picked(kinds, f"common {field}", spec, spec.input, True)]
     found += _files(kinds)
     found += _keys(kinds, declared)
     found += _settling(kinds) + _roles(kinds)
@@ -116,14 +116,14 @@ def _spec(kinds: Mapping[str, Kind], where: str, spec: FieldSpec) -> list[str]:
     return found + _picked(kinds, where, spec, spec.input)
 
 
-def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input | Picked | None) -> list[str]:
-    """An input is declared on a link or expr field; `address` only on a note (any other field has the address in the meaning
-    already); a picked one names fields, or part kinds, of every kind it links to."""
+def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input | Picked | None, common: bool = False) -> list[str]:
+    """An input is declared on a link or expr field; `address` only on a note or a common field (a kind's own field that is not
+    a note has the address in the meaning already); a picked one names fields, or part kinds, of every kind it links to."""
     if given in (None, Input.NONE):
         return []
     if spec.type not in LINKING:
         return [f"{where}: only a link or expr field is an input"]
-    if given is Input.ADDRESS and not spec.note:
+    if given is Input.ADDRESS and not (spec.note or common):
         return [f"{where}: input address on a field that is not a note is the meaning already; say none"]
     if not isinstance(given, Picked):
         return []
@@ -136,16 +136,18 @@ def _picked(kinds: Mapping[str, Kind], where: str, spec: FieldSpec, given: Input
 def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind) -> list[str]:
     """A kind's `input` names a common field or one of its part kinds (not both; a part is read whole or by address);
     `input_from` names a link field that leads here and picks fields of the kinds that hold it; a kind that needs proof
-    states the input of each of its link fields."""
+    states the input of each of its link fields, its own and the common ones (in `ontology.yml` or its `input` map)."""
     found: list[str] = []
     for key, given in kind.input.items():
         where, part = f"{name}.input.{key}", key in kinds and kinds[key].is_part(name)
-        if (key in declared.common) == part:
+        if key in kind.fields:
+            found.append(f"{where}: a field of its own declares its input itself")
+        elif (key in declared.common) == part:
             found.append(f"{where}: names a common field or a part kind, one of them")
         elif part and isinstance(given, Picked):
             found.append(f"{where}: a part is an input whole (content) or by address")
         elif not part:
-            found += _picked(kinds, where, declared.common[key], given)
+            found += _picked(kinds, where, declared.common[key], given, True)
     for key, picked in kind.input_from.items():
         holders = [other for other in kinds.values() if (spec := {**declared.common, **other.fields}.get(key)) is not None
                    and {name, ANY} & set(spec.to)]
@@ -155,7 +157,8 @@ def _inputs(kinds: Mapping[str, Kind], declared: Declared, name: str, kind: Kind
                   if holders and not any(field in other.fields for other in holders)]
     if kind.needs_proof:
         found += [f"{name}.{field}: a link field of a kind that needs proof states its input (none, address or content)"
-                  for field, spec in kind.fields.items() if spec.type in LINKING and spec.input is None]
+                  for field, spec in {**declared.common, **kind.fields}.items()
+                  if spec.type in LINKING and spec.input is None and field not in kind.input]
     return found
 
 

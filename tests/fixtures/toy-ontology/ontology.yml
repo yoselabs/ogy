@@ -7,8 +7,8 @@ shared:
 common:
   heading: {note: true}
   source: {type: texts, note: true}
-  reason: {type: links, to: [any]}
-  held_by: {type: links, to: [norm], note: true}
+  reason: {type: links, to: [any], input: none}
+  held_by: {type: links, to: [norm], note: true, input: none}
   tests: {type: texts}
   accepted: {type: agreed, note: true}
 roles: {title: heading, src: source, because: reason, proof: tests, agreed: accepted}

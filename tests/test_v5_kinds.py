@@ -94,6 +94,8 @@ LINK = ENTITY + "fields:\n  a: {type: link, to: [actor], input: %s}\n"
     ((PARENT + "input: {part: {fields: [a]}}\n", PART), "a part is an input whole"),
     ((ENTITY + "input_from: {satisfies: {fields: [pin]}}\n",), "names a link field that leads here"),
     ((ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor]}\n",), "states its input"),
+    ((LINK % "none" + "input: {a: content}\n",), "a field of its own declares its input itself"),
+    ((PARENT + "fields:\n  part: {type: link, to: [actor], input: none}\ninput: {part: content}\n", PART), "declares its input itself"),
 ])
 def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message: str) -> None:
     with pytest.raises(OntologyError, match=message):
@@ -102,8 +104,18 @@ def test_loader_refuses_inputs_that_read_nothing(texts: tuple[str, ...], message
 
 def test_inputs_that_name_what_their_targets_hold_load() -> None:
     load(ENTITY + "needs_proof: true\nfields:\n  a: {type: link, to: [actor], input: {fields: [nature]}}\n"
-         "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address}\n")
+         "  b: {type: link, to: [actor], input: none}\ninput: {satisfies: address, because: address}\n")
     load(PARENT + "input: {part: content}\n", PART)
+
+
+def test_a_common_link_field_of_a_kind_that_needs_proof_states_its_input() -> None:
+    common = declared(*LAYERS)
+    because = common.common["because"].model_copy(update={"input": None})
+    unstated = common.model_copy(update={"common": {**common.common, "because": because}})
+    kinds = {"kinds/actor.yml": ACTOR, "kinds/thing.yml": ENTITY + "needs_proof: true\n"}
+    with pytest.raises(OntologyError, match="because: a link field of a kind that needs proof states its input"):
+        parse_kinds(kinds, unstated)
+    parse_kinds({**kinds, "kinds/thing.yml": ENTITY + "needs_proof: true\ninput: {because: none}\n"}, unstated)
 
 
 def test_link_has_one_direction() -> None:
