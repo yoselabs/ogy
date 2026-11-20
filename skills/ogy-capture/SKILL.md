@@ -43,15 +43,18 @@ Read the sources:
   already covers is held to it (`satisfies` on behaviour, `constrains` from the rule to the data). Never ask the owner what the words already settle.
 
 ## 3. Hazard pass (untested as a skill step; P16, P17 single runs)
-Take every row with an effect, every read of an outside fact, every dependency, and ask seven questions, in the
+Take every row with an effect, every read of an outside fact, every dependency, and ask six questions, in the
 owner's wording for business rows:
 1. What if it happens twice?
 2. What if it stops halfway?
-3. What if we cannot tell whether it happened?
-4. What if what we read has changed since?
-5. What if two people do it at once?
-6. What if it silently does not happen?
-7. How do we put it right, and by when?
+3. What if what we read has changed since?
+4. What if two people do it at once?
+5. What if it silently does not happen?
+6. How do we put it right, and by when?
+
+No question asks what happens when an outside system does not answer: `ogy work` lists each row that tells a program
+actor or a dependency as `no-answer-path` until it has one (a timeout, or a case ending in failure) and satisfies a rule
+on whether a repeat is safe.
 
 Also ask of every outside fact: who keeps it true? Each cell gets an entry (`ogy kinds` lists the
 kinds that hold it: `workaround`, `case`, `timeout`, `effect`) or a decision that asks it. E9-E10: "no volunteer on shift",
