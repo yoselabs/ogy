@@ -1,6 +1,8 @@
 # Prose rules: which a check could read (2026-11-20)
 
-Status: **proposed**. A sweep of the rules that live in prose in `skills/`, `docs/guidance.md`, `docs/agents/`, the whole README and
+Status: **decided** for every listed item (2026-11-21), by the coordinator under the owner's delegation (decision
+`product/review/decision/judgement-delegation`; each answer is listed by `ogy dropped` for his veto). Fates are in "Listed: decided" below.
+First written as proposed. A sweep of the rules that live in prose in `skills/`, `docs/guidance.md`, `docs/agents/`, the whole README and
 the kinds' `about`, `guidance` and `unlike` text, against the principle rigid-where-checked ("a fact that a check, work left or
 impact reads is a field or a link"). It applies two principles proposed today, `fix-the-class` (a gap found is fixed for
 its whole class) and `one-owner-per-fact` (a rule is a check or prose on its entry, never both). They wait for the
@@ -21,9 +23,10 @@ Fates:
 
 | Fate | Rules |
 |---|---|
-| checked, built today | 2 (no-answer path; capability with no workflow) |
+| checked, built | 3 (no-answer path; capability with no workflow; goal with no capability, L10) |
 | checked already | 24 |
-| listed | 11 |
+| held, with a trigger | 6 (L1, L2, L3 on ogy-yy9.2; L5 ogy-yy9.84; L6 ogy-yy9.85; L11 ogy-yy9.86) |
+| prose, decided | 4 (L4, L7, L8, L9) |
 | prose | 21 |
 
 ## Built today
@@ -33,7 +36,30 @@ Fates:
 | B1 | A row that tells an outside system owes a no-answer path and a rule on whether a repeat is safe | capture skill, hazard question 3 | work `no-answer-path` on case, choice and timeout (`a983a47`); the question left the skill (`cf4f6c0`) |
 | B2 | A workflow realizes a capability | capability guidance | work `no-workflow` on capability (`cea25d2`); the words left the guidance. Nobody agreed it as a requirement, so the decision `software/ontology/decision/capability-realized-by-workflow` asks the owner (proposal: work). 7 capabilities on ogy's own KB read `no-workflow` |
 
-## Listed: needs the owner
+## Listed: decided (2026-11-21)
+
+Four models reviewed the eleven items; the coordinator decided under the owner's delegation.
+
+| # | Fate | How |
+|---|---|---|
+| L1 | held | One root cause with L2 and L3 (the no-answer rule reads that some rule and some failure case exist, not what they say): a note on ogy-yy9.2. Trigger: a row clears `no-answer-path` with an unrelated rule |
+| L2 | held | As L1. Trigger: a "declined" case clears it on a real knowledge base |
+| L3 | held | As L1. Trigger: a capture misses a stale-read path; then the B1 shape (a failure path on the same step) |
+| L4 | prose, superseded | The rule `shared-entries-home` said "ogy check enforces it"; nothing counts the areas that use an entry, and `layout.py` reads only which kinds may live in `shared`. The sentence (and the option in force) now says the placement is guidance. No lint built |
+| L5 | held, ogy-yy9.84 | 0 of 112 decisions have one option; a fill-in answered in review adds the owner's answer as the one option (`reply.py` `_fill`), so a one-option check would misfire |
+| L6 | held, ogy-yy9.85 | A digit lint fires on dates, versions and codes. Trigger: a hidden number changes behaviour |
+| L7 | prose, kept | The "Not here" sentence stays; `unlike` stays the link a check reads |
+| L8 | prose, decided | Decision `software/ontology/decision/handler-performs-rows-without-effect`: may. The handler kind no longer says it performs only rows with an effect (the check handler performs rows with none) |
+| L9 | prose, decided | Decision `software/ontology/decision/dependency-choice-is-a-decision`: prose; a dependency need not link a decision |
+| L10 | checked, built | Decision `software/ontology/decision/goal-realized-by-capability`: work. goal.yml's `unused` requirement is back (`tests/test_requires.py`); 0 goals on ogy's KB read it |
+| L11 | held, ogy-yy9.86 | No live sentence holds a full address today; a bare id misfires; answers are append-only, so a lint skips them |
+
+The fix-the-class scan of every rule's `says` (after L4) also corrected `software/ontology/rule/examples-before-kinds` (it called a
+rule that constrains nothing an error; it is `unused` work) and listed two decided rules that claim a check nothing makes, on bead
+ogy-yy9.87: `product/language/rule/term-use-is-computed` (a term no area uses is an error) and `software/writes/rule/who-may-say-yes`
+(a second human actor is a finding).
+
+## Listed: what was asked (2026-11-20)
 
 | # | Rule | Where | Why not built | Recommendation |
 |---|---|---|---|---|
