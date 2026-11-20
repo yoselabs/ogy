@@ -25,7 +25,8 @@
     line, `ogy reply "yes all" --said "<paraphrase>" --where ... --round <id> --note "<hedge, paraphrased>"`.
   - Search before proposing (`ogy find`, `ogy history`). Deleting a mechanism lists its jobs and where each one goes.
   - Change an entry's area only with `ogy move <address> <area>`; remove-and-put loses its agreements. A move records
-    nothing (Git keeps it) and rewrites every address in the same write; a migration never removes anything.
+    nothing (Git keeps it) and rewrites every address in the same write; a migration never removes an entry
+    (it takes out only a removed item for an entry the base never had, which no removal writes now).
   - Remove only when a requirement changes, with `ogy remove --why <decision or words>`; never edit a `removed.yml`,
     never reuse an id. Bringing something back is a proposal for the owner, not an edit.
   - Never edit an answer or answer for the owner. Questions and answers live in decision entries; a bead only mirrors.

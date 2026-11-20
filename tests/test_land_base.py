@@ -27,22 +27,32 @@ def agreed(repo: Path) -> None:
     commit(repo, "agreed")
 
 
-@pytest.fixture
-def pushed(repo: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
-    """The repository with every entry agreed and pushed to a remote, so main and origin/main hold the same commit."""
+def to_remote(repo: Path, tmp_path_factory: pytest.TempPathFactory, name: str = "origin", *, track: bool = True) -> Path:
+    """The repository with every entry agreed and pushed to the remote `name`, main tracking it when `track`."""
     agreed(repo)
     remote = tmp_path_factory.mktemp("remote") / "kb.git"
     run_git(repo, "clone", "-q", "--bare", str(repo), str(remote))
-    run_git(repo, "remote", "add", "origin", str(remote))
-    run_git(repo, "fetch", "-q", "origin")
-    run_git(repo, "branch", "-q", "--set-upstream-to", "origin/main", "main")
+    run_git(repo, "remote", "add", name, str(remote))
+    run_git(repo, "fetch", "-q", name)
+    if track:
+        run_git(repo, "branch", "-q", "--set-upstream-to", f"{name}/main", "main")
     return repo
 
 
-def test_a_part_born_and_dropped_on_unpushed_main_leaves_no_item_and_lands(pushed: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+@pytest.fixture
+def pushed(repo: Path, tmp_path_factory: pytest.TempPathFactory) -> Path:
+    return to_remote(repo, tmp_path_factory)
+
+
+@pytest.mark.parametrize(("name", "track"), [("origin", True), ("origin", False), ("up", True)])
+def test_a_part_born_and_dropped_on_unpushed_main_leaves_no_item_and_lands(
+    repo: Path, tmp_path_factory: pytest.TempPathFactory, monkeypatch: pytest.MonkeyPatch, name: str, track: bool
+) -> None:
     """The owner's push of main, refused with `bad-snapshot`: a part added in a local commit on main and dropped in the next
-    was recorded, because the removal base was local main; the land check compares with origin's main, which never had it."""
-    old = run_git(pushed, "rev-parse", "origin/main").strip()
+    was recorded, because the removal base was local main; the land check compares with the remote's main, which never had
+    it. What has landed is main's upstream (any remote), else origin/main."""
+    pushed = to_remote(repo, tmp_path_factory, name, track=track)
+    old = run_git(pushed, "rev-parse", f"{name}/main").strip()
     skip = {"label": "Skip", "then": "done"}
     code, lines = w(pushed, "put", json.dumps({"address": CHOICES, "choices": {"go": GO, "skip": skip}}))
     assert code == cli.OK, lines
