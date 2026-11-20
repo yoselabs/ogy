@@ -1,10 +1,11 @@
 """`ogy hook`: the one entry point every Git hook calls; it decides from the ref being updated whether the update is a land."""
 
 import io
+from typing import Any
 lazy from pathlib import Path
 
 import pytest
-from git_porcelain import run_git
+from git_porcelain import RealRepo, run_git
 from tests.conftest import IDENTITY
 
 from ogy import cli
@@ -154,3 +155,65 @@ def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: p
     for name in ("pre-push", "gate"):
         code, lines = hook(tmp_path, monkeypatch, name, f"refs/heads/trunk {sha} refs/heads/trunk {ZERO}\n")
         assert code == cli.USAGE and lines == ["ogy.yml names no land branch (`land:`): run `ogy init`"], lines
+
+
+def _spawned(monkeypatch: pytest.MonkeyPatch) -> list[tuple[str, ...]]:
+    seen: list[tuple[str, ...]] = []
+    real = RealRepo.run
+
+    def counting(self: RealRepo, cwd: Path, *args: str, **kwargs: Any) -> Any:
+        seen.append(args)
+        return real(self, cwd, *args, **kwargs)
+
+    monkeypatch.setattr(RealRepo, "run", counting)
+    return seen
+
+
+@pytest.fixture
+def cited(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """A repository whose first commit holds a knowledge base that cites `lib.py`, with the hook's first run behind it."""
+    (fresh / "lib.py").write_text("def lend() -> None:\n    return None\n")
+    actors = fresh / "docs/kb/product/shared/actors.yml"
+    actors.write_text(actors.read_text().replace("  nature: human\n", "  nature: human\n  src: ['code:lib.py#lend']\n", 1))
+    run_git(fresh, "add", "-A")
+    assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK
+    first_commit(fresh)
+    return fresh
+
+
+def test_affected_selection_a_commit_that_changes_nothing_the_check_reads_does_no_work(
+    cited: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Owner rule: when no file the check reads changed (the knowledge base and the files it cites), the hook runs two Git
+    commands and reads no entry. If this test needs a looser bound, the rule is broken, not the test."""
+    (cited / "notes.txt").write_text("not a cited file\n")
+    run_git(cited, "add", "-A")
+    seen = _spawned(monkeypatch)
+    code, lines = hook(cited, monkeypatch, "pre-commit")
+    assert code == cli.OK, lines
+    assert [args[0] for args in seen] == ["rev-parse", "--literal-pathspecs"], seen
+
+
+def test_a_change_to_a_cited_file_is_checked(cited: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """A code rename that breaks a `code:` source is the case `check-every-commit` was decided for."""
+    (cited / "lib.py").write_text("def borrow() -> None:\n    return None\n")
+    run_git(cited, "add", "-A")
+    code, lines = hook(cited, monkeypatch, "pre-commit")
+    assert code == cli.FINDINGS and any("missing-code" in line for line in lines), lines
+
+
+def test_a_change_under_the_knowledge_base_is_checked(cited: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    kb = cited / "docs/kb/product/shared/actors.yml"
+    kb.write_text(kb.read_text() + "- {id: ghost, nature: robot, says: A ghost.}\n")
+    run_git(cited, "add", "-A")
+    assert hook(cited, monkeypatch, "pre-commit")[0] == cli.FINDINGS
+
+
+def test_with_no_remembered_paths_the_hook_checks(fresh: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """It cannot tell what the commit affects, so it checks (a clone, a new Git directory)."""
+    first_commit(fresh)
+    (fresh / "notes.txt").write_text("x\n")
+    run_git(fresh, "add", "-A")
+    seen = _spawned(monkeypatch)
+    assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK
+    assert len(seen) > 2
