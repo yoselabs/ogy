@@ -44,7 +44,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `work [area]` | what the built record says is still to do |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
-| `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too), then for the whole glossary each kind's like and unlike line; the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours), what it is like and unlike, and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences, then each kind's like and unlike line. `--readers` lists for each field what reads it (the fingerprint, requires, a fingerprint path, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
+| `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too), then for the whole glossary each kind's like and unlike line; the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours), what it is like and unlike, and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences, then each kind's like and unlike line. `--readers` lists for each field what reads it (the fingerprint, requires, a build input, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
 | `remove <address> --why <address or words> [--to]` | delete an entry and record it in its `removed.yml` (always the worktree; one write lock). `--why` is always required: the address of the decision that said so, or plain words (an address stays required for an entry a person agreed to); `dropped` lists the plain-words ones |
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it from a loss: an entry gone with exactly one arrival of the same kind and id has moved, whatever its text (a changed text reads "changed since you agreed"); the fingerprint only breaks ties |
 | `migrate` | rewrite the entries to the field renames, drops and moves out of a fixed folder their kinds declare (see "Kind changes"); one checked write that records nothing |
@@ -76,9 +76,17 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   (outside the fingerprint, written only by `reply`; `put` refuses it). Only `from: human` agrees. The entry is "decided by
   you" while its fingerprint is `hash`, "changed since you agreed" after. A person's yes is evidence of its own.
 - Two hashes. The fingerprint is the meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements,
-  review cards and removed items hold it. The build hash adds the proofs and what the kind's `fingerprint.also` and
-  `fingerprint.reached` paths read; only the built record and work left compare it. A new proof or a changed dependency is
-  work, never a question for the owner.
+  review cards and removed items hold it. The build hash adds the proofs and the build inputs; only the built record and
+  work left compare it. A new proof or a changed dependency is work, never a question for the owner.
+- Build inputs (as in Bazel and Make). A link field says what of its targets enters the build hash with `input:` `none`
+  (the default when unset), `address` (the target's address: a relink is work; only on a note field, as any other field
+  has the address in the meaning already) or `content` (the target's build hash without proofs: a change in the target is
+  work). It may pick less: `input: {fields: [pin]}` (only those fields of each target) or `input: {parts: [choice]}` (the
+  addresses of those parts of each target). A link field of a kind that needs proof states its input, `none` included. A
+  kind gives the input of a common field or of a part kind in its own `input:` map (`input: {satisfies: content}`,
+  `input: {attribute: content}`), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
+  [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed input shows in
+  `ogy work` as `changed` (the build hash is one hash); `input changed` is a dependency the built line recorded.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
 - A proposal that rests on what the owner said carries a paraphrase: `proposal.heard`, one line, never a quote. The review card reads
@@ -188,8 +196,9 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
 - What it depends on: `dependency` and its `workaround`s.
 - What is open and what the owner chose: `decision` with `option`, `proposal` (with its `heard`) and `answer`.
 - Held to: any entry names the rules it is held to with `satisfies`; a
-  rule has no `on`. `satisfies` is outside the build hash of all but the rows, so adding a rule stales no holder; the pin of a
-  dependency held to a rule is part of the rule's build hash (`fingerprint.reached`), so a new pin makes its proofs work again.
+  rule has no `on`. `satisfies` is an input of the rows only (`input: {satisfies: content}`), so adding a rule stales no other
+  holder; the pin of a dependency held to a rule is part of the rule's build hash (`input_from`), so a new pin makes its
+  proofs work again.
 
 A kind declares its graph rules in its file, never in Python: `exactly_one_of`, `one_part` and `requires`. A requirement
 has at most one condition (`if_set: <field>`, `if_part: <kind>`, `if_equals: {field, value}` with one value or a list),
