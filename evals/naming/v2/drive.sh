@@ -3,7 +3,7 @@
 # Usage: evals/naming/v2/drive.sh TAG MODEL EFFORT [RUNS] [ARMS]      default RUNS=6, ARMS="A C0 C B"
 # One model per sitting: call it once per tag, on one day. A run that run.sh excludes is replaced at once by a
 # fresh run with the next free number, at most 2 replacements per arm; after that the arm is left short and the
-# fact is logged (README: more than 2 exclusions in an arm is a finding and a hold). Everything is logged in
+# fact is logged (README: more than 2 excluded runs of A or C0 put the model under the floor gate). Logged in
 # runs/TAG/drive.log; exclusions are in runs/excluded.txt (written by run.sh).
 set -uo pipefail
 if [ $# -lt 3 ]; then echo "usage: drive.sh TAG MODEL EFFORT [RUNS] [ARMS]" >&2; exit 2; fi

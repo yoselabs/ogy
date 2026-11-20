@@ -1,42 +1,43 @@
-"""How often the scorers guessed a run's arm: the test of the blinding.
+"""How often the scorers told old names from new names: the test of the blinding.
 
 Usage: python3 -I guess-rate.py SCORING_DIR      (e.g. evals/naming/v2/scoring/small)
-Reads SCORING_DIR/map.txt ("<arm>-<n> R<id>") and every SCORING_DIR/guesses/*.md ("R<id> <label>"). Prints the
-share of exact hits, the share of "?" and the share of hits on old against not old, each next to what blind
-guessing would give. A "?" counts as a miss.
+Reads SCORING_DIR/map.txt ("<arm>-<n> R<id>") and every SCORING_DIR/guesses/*.md ("R<id> <label>"). Only the runs
+of arms A and C0 are counted: they are the comparison that decides, and they differ in names alone. A guess is a
+hit when it says `old` for an A run, or `new` or `new+lines` for a C0 run. A "?" counts as a miss. Blind guessing
+gives 50%. Arm C is given beside it, never pooled in; arm B is scored in batches of its own and is not asked.
 """
 
 import sys
 from pathlib import Path
-
-LABEL = {"A": "old", "C0": "new", "C": "new+lines", "B": "latest"}
 
 
 def main(scoring: Path) -> None:
     arm_of = {}
     for line in (scoring / "map.txt").read_text().splitlines():
         run, blind = line.split()
-        arm_of[blind] = LABEL[run.rsplit("-", 1)[0]]
-    total = exact = unsure = coarse = 0
+        arm_of[blind] = run.rsplit("-", 1)[0]
+    counts = {"A": [0, 0, 0], "C0": [0, 0, 0], "C": [0, 0, 0]}  # guesses, hits, could not tell
     for path in sorted((scoring / "guesses").glob("*.md")):
         for line in path.read_text().splitlines():
             parts = line.split()
-            if len(parts) != 2 or parts[0] not in arm_of:
+            if len(parts) != 2 or arm_of.get(parts[0]) not in counts:
                 continue
-            truth, guess = arm_of[parts[0]], parts[1]
-            total += 1
-            unsure += guess == "?"
-            exact += guess == truth
-            coarse += guess != "?" and (guess == "old") == (truth == "old")
+            arm, guess = arm_of[parts[0]], parts[1]
+            row = counts[arm]
+            row[0] += 1
+            row[1] += guess != "?" and (guess == "old") == (arm == "A")
+            row[2] += guess == "?"
+    total = counts["A"][0] + counts["C0"][0]
     if not total:
-        print("no guesses read")
+        print("no guesses on A or C0 runs read")
         return
-    arms = len(set(arm_of.values()))
-    old_share = sum(1 for label in arm_of.values() if label == "old") / len(arm_of)
-    print(f"guesses: {total}; arms: {arms}")
-    print(f"exact arm: {exact / total:.0%} (blind guessing: {1 / arms:.0%})")
-    print(f"old against not old: {coarse / total:.0%} (always saying 'not old': {1 - old_share:.0%})")
-    print(f"could not tell: {unsure / total:.0%}")
+    hits = counts["A"][1] + counts["C0"][1]
+    unsure = counts["A"][2] + counts["C0"][2]
+    print(f"old against new, arms A and C0: {hits} of {total} guesses, {hits / total:.0%} (blind guessing: 50%)")
+    print(f"could not tell: {unsure} of {total}")
+    for arm, (n, hit, _) in counts.items():
+        if n:
+            print(f"  arm {arm}: {hit} of {n} on the right side")
 
 
 if __name__ == "__main__":

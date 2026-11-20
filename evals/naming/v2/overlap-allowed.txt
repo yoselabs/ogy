@@ -1,2 +1,3 @@
-# Words of arm-only lines that the facts may still use, one per line, the reason after it.
-# check-neutral.py reads the first word of each line.
+# Words that the facts may still use although only some arms' map or glossary print them, one per line, the
+# reason after it. check-neutral.py reads the first word of each line.
+one      a member of arm A's `type` (one|list). In the facts it is only the number word ("one tile, not two", "one bike only", "no one"); the one place where it meant a single choice from a closed list, [6], was reworded.

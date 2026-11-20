@@ -1,6 +1,8 @@
-# Pilot, 2026-11-20: arm A vs C0, small model (Haiku tier via the Agent tool), 2 runs each, frozen v2 text
+# Pilot, 2026-11-20: arm A vs C0, small model (Haiku tier via the Agent tool), 2 runs each, an earlier v2 text (not frozen)
 
-Not a result under the pre-registered rule (2 runs per arm, below the 5-run minimum). Information only.
+Not a result under the pre-registered rule: 2 runs per arm where the rule asks 6, made with the Agent tool and not
+with `run.sh`, on a wording of the exercise that was changed afterwards ([3], [6], [10], [11], [13], [16], [18],
+[20], [23]). Information only; no number below is used for a gate or a comparison.
 
 | arm | runs (blind id) | link items of 51 (scorer 1 / scorer 2) | misplacements of 27 |
 |---|---|---|---|

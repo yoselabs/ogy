@@ -1,15 +1,4 @@
 # Kind and field names of stages that are not merged yet, one per line. check-neutral.py bans them in the facts
-# together with every name it reads from the maps in inputs/. Remove a line once a built input carries the name.
-# Stage 2: interface and its fields. Stage 3: unlike as a link, names, constrains, the narrowed satisfies,
-# realizes on a dependency (the last three are already in a built map under another kind; listed to be sure).
-interface
-shows
-accepts
-includes
-allows
-form
-constrains
-names
-unlike
-satisfies
-realizes
+# together with every name it reads from the maps in inputs/.
+# Empty since 2026-11-20: arm B (511a27e) is built and its map carries every name that stood here (interface,
+# shows, accepts, includes, allows, form, constrains, names, unlike, satisfies, realizes).
