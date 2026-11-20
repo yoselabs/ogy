@@ -146,12 +146,38 @@ def _hook(repo: Path, written: list[str]) -> None:
         written.append("git config core.hooksPath")
 
 
-def _json(repo: Path, rel: str) -> dict[str, object]:
+def _text(repo: Path, rel: str) -> str:
+    """The text of `rel`, empty when it is missing; refuses (InitRefusedError) a file that is not UTF-8 or cannot be read."""
     path = repo / rel
     if not path.exists():
+        return ""
+    try:
+        return path.read_text(encoding="utf-8")
+    except UnicodeDecodeError as error:
+        msg = f"{rel} is not UTF-8 text ({error.reason} at byte {error.start}); fix it and run again"
+        raise InitRefusedError(msg) from error
+    except OSError as error:
+        msg = f"{rel} cannot be read ({error.strerror}); fix it and run again"
+        raise InitRefusedError(msg) from error
+
+
+def _room(repo: Path, rels: list[str]) -> None:
+    """Refuses (InitRefusedError) when a file stands where init needs a folder, or a folder where it writes a file."""
+    for rel in rels:
+        for folder in reversed(Path(rel).parents[:-1]):
+            if (repo / folder).exists() and not (repo / folder).is_dir():
+                msg = f"{folder} is a file, not a folder; move it and run again"
+                raise InitRefusedError(msg)
+        if (repo / rel).is_dir():
+            msg = f"{rel} is a folder, not a file; move it and run again"
+            raise InitRefusedError(msg)
+
+
+def _json(repo: Path, rel: str) -> dict[str, object]:
+    if not (repo / rel).exists():
         return {}
     try:
-        data = json.loads(path.read_text())
+        data = json.loads(_text(repo, rel))
     except json.JSONDecodeError as error:
         msg = f"{rel} is not JSON ({error}); fix it and run again"
         raise InitRefusedError(msg) from error
@@ -201,9 +227,7 @@ def _merged(repo: Path, ontology: Ontology) -> dict[str, str]:
     """Every file init merges into, as it will write it: AGENTS.md (and CLAUDE.md when it exists), `.mcp.json` and
     `.claude/settings.json`. All of them are read and checked here, so a refusal comes before anything is written."""
     found = {
-        rel: block(repo, ontology, (repo / rel).read_text() if (repo / rel).exists() else "")
-        for rel in ("AGENTS.md", "CLAUDE.md")
-        if rel == "AGENTS.md" or (repo / rel).exists()
+        rel: block(repo, ontology, _text(repo, rel)) for rel in ("AGENTS.md", "CLAUDE.md") if rel == "AGENTS.md" or (repo / rel).exists()
     }
     return {**found, ".mcp.json": _mcp(repo), ".claude/settings.json": _deny(repo)}
 
@@ -215,6 +239,7 @@ def init(repo: Path, ontology: str | None = None, land: str | None = None) -> In
     kinds = named(name, repo)
     merged = _merged(repo, kinds)  # every read and every check refuses before anything is written
     adding = missing_starts(repo, kinds)
+    _room(repo, [config.CONFIG_FILE, *(f"{KB_DIR}/{rel}" for rel in starts(kinds)), *merged, *(f"{HOOKS_DIR}/{n}" for n in HOOKS)])
     written: list[str] = []
     _config(repo, name, landing, written)
     for rel, text in starts(kinds).items():
@@ -244,6 +269,21 @@ def missing_starts(repo: Path, ontology: Ontology) -> list[tuple[Address, dict[s
     return found
 
 
+def _stale_blocks(repo: Path, ontology: Ontology) -> list[str]:
+    """The doctor's lines for AGENTS.md (and CLAUDE.md when it exists): no current ogy block, or a file it cannot read."""
+    lines: list[str] = []
+    for rel in ("AGENTS.md", "CLAUDE.md"):
+        if rel == "AGENTS.md" or (repo / rel).exists():
+            try:
+                have = _text(repo, rel)
+            except InitRefusedError as error:
+                lines.append(str(error))
+                continue
+            if block(repo, ontology, have) != have:
+                lines.append(f"{rel} has no current ogy block: run `ogy init`")
+    return lines
+
+
 def doctor(repo: Path) -> list[str]:
     """`init --check`: what is not set up in this repository, one line each, and how to mend it; empty when it is all in place.
     Writes nothing and refuses nothing: a file it cannot read is a line too."""
@@ -258,12 +298,7 @@ def doctor(repo: Path) -> list[str]:
     ontology = named(config.read(repo).ontology or DEFAULT_ONTOLOGY, repo)
     lines.extend(f"missing {KB_DIR}/{rel}: run `ogy init`" for rel in starts(ontology) if not (repo / KB_DIR / rel).is_file())
     lines.extend(f"missing {address}: run `ogy init`" for address, _ in missing_starts(repo, ontology))
-    for rel in ("AGENTS.md", "CLAUDE.md"):
-        path = repo / rel
-        if rel == "AGENTS.md" or path.exists():
-            have = path.read_text() if path.exists() else ""
-            if block(repo, ontology, have) != have:
-                lines.append(f"{rel} has no current ogy block: run `ogy init`")
+    lines.extend(_stale_blocks(repo, ontology))
     lines.extend(
         f"missing {HOOKS_DIR}/{name} (runs `ogy hook {name}`): run `ogy init`" for name in HOOKS if not (repo / HOOKS_DIR / name).is_file()
     )
