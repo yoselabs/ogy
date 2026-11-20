@@ -110,7 +110,7 @@ def check_terms(snapshot: Snapshot, source: Source | None = None) -> list[Findin
 
 
 def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
-    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or guess
+    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or proposal
     gives it fields: its words have one home, the term and its agreement."""
     agreed, kind = agreed_hashes(snapshot), snapshot.ontology.glossary_kind()
     found: list[Finding] = []

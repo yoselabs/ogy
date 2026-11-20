@@ -47,11 +47,11 @@ class Card:
     harm: str | None  # the worst harm tag
     dependants: int
     text: str = ""  # the question, or the sentence asked about
-    guess: str = ""  # the option the AI guessed, for a question; the option in force, for a delegated decision
+    proposal: str = ""  # the option the AI proposed, for a question; the option in force, for a delegated decision
     fingerprint: str = ""  # of the entry or decision as shown: a reply that finds another one is refused
-    options: tuple[tuple[str, str], ...] = ()  # (key, label) of a question's options, the AI's guess first
-    heard: str = ""  # what the owner said that the guess rests on, paraphrased: one yes answers the question with the guess
-    evidence: str = ""  # what stands behind it: "From docs: ...", the guess's reason
+    options: tuple[tuple[str, str], ...] = ()  # (key, label) of a question's options, the AI's proposal first
+    heard: str = ""  # what the owner said that the proposal rests on, paraphrased: one yes answers the question with the proposal
+    evidence: str = ""  # what stands behind it: "From docs: ...", the proposal's reason
     word: str = ""  # a term card: the word (the sentence is its meaning)
     avoid: tuple[str, ...] = ()  # a term card: the words it is not
     context: str = ""  # a decision card: why the question comes up, so the card reads on its own
@@ -171,16 +171,16 @@ def dependants(snapshot: Snapshot) -> dict[Address, int]:
 
 
 def delegated(decision: Decision) -> bool:
-    """The answer in force is an agent's, under the owner's delegation: once a decision has an answer its guess is inert."""
+    """The answer in force is an agent's, under the owner's delegation: once a decision has an answer its proposal is inert."""
     force = decision.in_force
     return bool(force and force.by_answer and force.delegated)
 
 
 def _reason(decision: Decision) -> str:
-    """The line under a question: why the AI guessed it, unless the guess rests on the owner's words (the card's `heard` line)."""
+    """The line under a question: why the AI proposed it, unless the proposal rests on the owner's words (the card's `heard` line)."""
     if decision.answers:
         return ""
-    fields = decision.guess.fields if decision.guess and not decision.heard else {}
+    fields = decision.proposal.fields if decision.proposal and not decision.heard else {}
     value = fields.get(decision.names.why)
     return f"AI proposal because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
@@ -189,13 +189,13 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
     tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=snapshot.ontology.declared.rank)
     force, names = decision.in_force, decision.names
-    guess = force.option if decision.answers and force else decision.guess.fields.get(names.chose) if decision.guess else None
-    keys = sorted(decision.options, key=lambda key: (key != guess, key))  # the guess (or the option in force) first: letter A
+    proposal = force.option if decision.answers and force else decision.proposal.fields.get(names.chose) if decision.proposal else None
+    keys = sorted(decision.options, key=lambda key: (key != proposal, key))  # the proposal (or the option in force) first: letter A
     said = decision.heard if not decision.answers else None
     addresses = [decision.address.part(names.option, key) for key in keys]
     options = tuple((key, snapshot.sentence(address) or key) for key, address in zip(keys, addresses, strict=True))
     return Card(kind, decision.address, tags[0] if tags else None, sum(count.get(found, 0) for found in settled),
-                snapshot.sentence(decision.address) or "", guess if isinstance(guess, str) else "",
+                snapshot.sentence(decision.address) or "", proposal if isinstance(proposal, str) else "",
                 snapshot.agreed_print(decision.address), options, said if isinstance(said, str) else "", _reason(decision),
                 context=decision.entry.text(names.context) or "",
                 then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),

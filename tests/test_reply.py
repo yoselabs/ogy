@@ -90,7 +90,7 @@ def test_reply_no_turns_a_sentence_into_a_question(asked: Path) -> None:
 
 
 def test_reply_chooses_an_option_by_letter_or_key(asked: Path) -> None:
-    code, lines = r(asked, "Q1 b")  # the guess ("two") is A, the other option B
+    code, lines = r(asked, "Q1 b")  # the proposal ("two") is A, the other option B
     assert code == cli.OK and lines == ["Q1 b: product/app/decision/fee-amount answered: one"], lines
     assert "is: 1" in (asked / "docs/kb/product/app/quantities.yml").read_text()
     assert w(asked, "check") == (cli.OK, ["ok"])
@@ -188,19 +188,19 @@ def test_review_help_says_it_saves_a_round(capsys: pytest.CaptureFixture[str]) -
 
 @pytest.fixture
 def heard(repo: Path) -> Path:
-    """One question whose guess rests on what the owner said, paraphrased."""
+    """One question whose proposal rests on what the owner said, paraphrased."""
     cited = {"chose": "two", "why": "the owner leaned to two", "heard": "Two euros seem plenty"}
     code, lines = put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), proposal=cited)
     assert code == cli.OK, lines
     return repo
 
 
-def test_the_card_of_a_guess_that_rests_on_the_owner_reads_you_said(heard: Path) -> None:
+def test_the_card_of_a_proposal_that_rests_on_the_owner_reads_you_said(heard: Path) -> None:
     text = "\n".join(w(heard, "review")[1])
     assert "You said (paraphrased): Two euros seem plenty. Read as A." in text and "AI guess" not in text
 
 
-def test_one_yes_records_the_answer_a_guess_that_rests_on_the_owner_read(heard: Path) -> None:
+def test_one_yes_records_the_answer_a_proposal_that_rests_on_the_owner_read(heard: Path) -> None:
     assert w(heard, "review")[0] == cli.OK
     code, lines = r(heard, "yes")
     assert code == cli.OK and "product/app/decision/fee-amount answered: two" in lines[0], lines

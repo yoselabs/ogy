@@ -1,7 +1,7 @@
 """`ogy move`: an entry changes area, or its id (a rename), and keeps its kind, its agreements and its answers.
 
 One checked write (`writes.commit`: made whole or put back): the file or list item and every part go to the new area, and
-every address that names the old one is rewritten in the same write, wherever it is: links, `sets` keys, guesses, the
+every address that names the old one is rewritten in the same write, wherever it is: links, `sets` keys, proposals, the
 answers, and the `why` of a removed item. An agreement that was current stays current. A move writes no removed.yml item:
 Git keeps the record, and `ogy check --base` tells the move from a loss (`ogy.moves.detect`)."""
 

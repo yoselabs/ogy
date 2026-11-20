@@ -127,7 +127,7 @@ class Problem(StrEnum):
     EQUAL_AT = "equal-at"
     NOT_IN_FORCE = "not-in-force"
     BAD_DELEGATION = "bad-delegation"
-    NO_GUESS = "no-proposal"
+    NO_PROPOSAL = "no-proposal"
     WORD_CLASH = "word-clash"
     AVOIDED_WORD = "avoided-word"
     TERM_TOO_LONG = "term-too-long"

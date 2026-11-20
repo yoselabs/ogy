@@ -10,11 +10,10 @@ layers: [product, software]
 settling:                                            # makes it the kind that settles entries: the keys of its options' `sets` and of the proposal's `sets` (kinds.Settling)
   option: option
   answer: answer
-  guess: proposal                                   # the part: what is built while no answer is given
+  proposal: proposal                                 # the part: what is built while no answer is given
   heard: heard                                       # field of the proposal: what the owner said that it rests on, paraphrased
   sets: sets                                         # field of the option
   chose: chose                                       # field of an answer and of the proposal
-  value: sets                                        # field of the proposal: the values it gives when it chooses no option
   said: said                                         # field of an answer: a short paraphrase
   at: at
   where: where

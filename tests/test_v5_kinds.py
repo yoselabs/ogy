@@ -16,7 +16,7 @@ FIXED = "kind: principle\nabout: x\nshape: list\nfile: principles.yml\narea: glo
 HEAD = "kind: thing\nabout: x\nlayers: [product]\n"
 ENTITY = HEAD + "shape: file\n"
 PARENT = "kind: parent\nabout: x\nshape: file\nlayers: [product]\n"
-SETTLING = ("settling: {option: option, answer: answer, guess: guess, heard: heard, sets: sets, chose: chose, value: sets, "
+SETTLING = ("settling: {option: option, answer: answer, proposal: proposal, heard: heard, sets: sets, chose: chose, "
             "said: said, at: at, where: where, note: note, delegated: delegated, context: context, why: why}\n")
 PART = "kind: part\nabout: x\nshape: inline\nkey: parts\npart_of: parent\n"
 

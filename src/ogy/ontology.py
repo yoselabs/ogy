@@ -137,7 +137,7 @@ class Ontology:
 
     def texts(self) -> frozenset[str]:
         """The fields an agent writes words in, read for avoided words: every sentence, the title, a question's context, a
-        guess's reason and what is printed under a printed-first sentence."""
+        proposal's reason and what is printed under a printed-first sentence."""
         settler, printed = self.settling_kind(), self.printed_kind()
         names = settler.settling if settler else None
         found = {kind.sentence for kind in self.kinds.values() if kind.sentence} | {self.roles.title}

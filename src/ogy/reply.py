@@ -4,7 +4,7 @@ reading of the owner's natural words), and `--said` is one short line, the agent
 with `at` and `where` on each answer and each agreement it writes (`from: human`: only a person replies to a round). When no
 item applies, nothing is written.
 
-    yes all | decide  accept every recommendation of the round: each question gets its recommended option (the guess), each card is
+    yes all | decide  accept every recommendation of the round: each question gets its recommended option (the proposal), each card is
                       agreed to, except a structural decision (harm `structure`), which needs its own letter (`Q1 a`);
                       a card that changed since shown stays in the queue and is reported. Allowed in an --all round
     yes | yes 1 3     agree to the sentences as shown (all of them, or those cards); a bare yes is refused for a round shown with --all.
@@ -112,12 +112,12 @@ def _unique(target: Target, kind: str, layer: str, area: str, stem: str) -> Addr
 
 
 def _question(snapshot: Snapshot, words: Said, card: Shown, field: str) -> tuple[str, dict[str, object]]:
-    """A question whether the card's sentence still holds, in the settling kind's names: keep it (the guess) or drop it."""
+    """A question whether the card's sentence still holds, in the settling kind's names: keep it (the proposal) or drop it."""
     ontology = snapshot.ontology
     kind = ontology.settling_kind()
     names = kind.settling if kind else None
-    option, guess = (ontology.get(names.option), ontology.get(names.guess)) if names else (None, None)
-    if kind is None or names is None or option is None or guess is None or not (kind.sentence and option.sentence):
+    option, proposal = (ontology.get(names.option), ontology.get(names.proposal)) if names else (None, None)
+    if kind is None or names is None or option is None or proposal is None or not (kind.sentence and option.sentence):
         raise WriteRefused(["the ontology has no settling kind with a question and options: nothing can ask"])
 
     def choice(label: str, sets: object) -> dict[str, object]:
@@ -127,7 +127,7 @@ def _question(snapshot: Snapshot, words: Said, card: Shown, field: str) -> tuple
         kind.sentence: f"Is this still right: {card.shown}",
         names.context: f"The owner said no on {words.at[:10]} ({words.where}): {words.said}. Built as it is until answered.",
         option.key or "": {"keep": choice("Keep it as it is", {field: card.shown}), "drop": choice("Drop it", None)},
-        guess.key or "": {names.chose: "keep", names.why: "Built as it is until the owner answers."}}
+        proposal.key or "": {names.chose: "keep", names.why: "Built as it is until the owner answers."}}
 
 
 def _reconsider(target: Target, words: Said, card: Shown) -> Address:
@@ -150,10 +150,10 @@ def _option(card: Shown, token: str) -> str:
 
 
 def _heard(target: Target, card: Shown) -> tuple[str, str] | None:
-    """(option guessed, what the owner was heard to say) of a question whose guess rests on the owner's words, else None."""
+    """(option proposed, what the owner was heard to say) of a question whose proposal rests on the owner's words, else None."""
     snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     found = next((d for d in decisions(snapshot) if str(d.address) == card.address and not d.answers), None)
-    chose = found.guess.fields.get(found.names.chose) if found and found.guess else None
+    chose = found.proposal.fields.get(found.names.chose) if found and found.proposal else None
     heard = found.heard if found else None
     return (chose, heard) if isinstance(chose, str) and isinstance(heard, str) else None
 
@@ -195,12 +195,12 @@ def _agree(target: Target, words: Said, cards: list[Shown]) -> int:
 
 
 def _recommended(decision: Decision | None) -> object:
-    """What `yes all` answers: the guess of a question, the option in force of a decision an agent answered under delegation."""
+    """What `yes all` answers: the proposal of a question, the option in force of a decision an agent answered under delegation."""
     if decision is None:
         return None
     if decision.answers:
         return decision.in_force.option if delegated(decision) and decision.in_force else None
-    return decision.guess.fields.get(decision.names.chose) if decision.guess else None
+    return decision.proposal.fields.get(decision.names.chose) if decision.proposal else None
 
 
 def _accept_all(target: Target, found: Round, words: Said) -> str:

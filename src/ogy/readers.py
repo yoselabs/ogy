@@ -29,7 +29,7 @@ def named(ontology: Ontology) -> dict[str, set[str]]:
         if kind.flow is not None and (row := ontology.get(kind.flow.choice)) is not None and row.sentence:
             add(f"{row.kind}.{row.sentence}", "printer diagram")
         if (names := kind.settling) is not None:
-            add(f"{names.guess}.{names.why}", AVOIDED, REVIEW)
+            add(f"{names.proposal}.{names.why}", AVOIDED, REVIEW)
         if (printed := kind.printed_first) is not None and printed.also:
             add(f"{kind.kind}.{printed.also}", AVOIDED, GLOSSARY)
         if (glossary := kind.glossary) is not None:
@@ -103,7 +103,7 @@ def _flow(found: Reads, kinds: dict[str, Kind], container: str, flow: Flow) -> N
 def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
     for kind in kinds.values():
         if (names := kind.settling) is not None:
-            wanted = [(names.option, names.sets), (names.guess, names.chose), (names.guess, names.value), (names.guess, names.heard),
+            wanted = [(names.option, names.sets), *((names.proposal, f) for f in (names.chose, names.sets, names.heard)),
                       *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note,
                                                     names.delegated))]
             for part, field in wanted:

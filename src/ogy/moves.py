@@ -68,7 +68,7 @@ def _value(ontology: Ontology, spec: FieldSpec, value: object, rename: Rename) -
 
 def rewrite_fields(ontology: Ontology, kind: Kind, fields: Mapping[str, object], rename: Rename) -> Data:
     """The fields with every address in them renamed: link fields, `reads`, the keys of `sets`, and the items of the
-    `holds: list` parts (answers and guesses too). Words are never touched."""
+    `holds: list` parts (answers and proposals too). Words are never touched."""
     specs = ontology.specs(kind)
     found: Data = {name: _value(ontology, spec, value, rename) if (spec := specs.get(name)) else value for name, value in fields.items()}
     for part in ontology.parts_of(kind.kind):

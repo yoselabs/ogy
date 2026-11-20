@@ -199,18 +199,17 @@ class Settling(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     option: str
     answer: str
-    guess: str
-    sets: str  # field of the option
-    chose: str  # field of an answer and of a guess
-    value: str  # field of the guess: the values it gives when it chooses no option
+    proposal: str
+    sets: str  # field of an option and of the proposal: the values it gives (the proposal's when it chooses no option)
+    chose: str  # field of an answer and of a proposal
     said: str  # field of an answer: a short paraphrase of what the person said, never a quote
     at: str
     where: str
     note: str
     delegated: str
-    heard: str  # field of the guess: what the owner said that it rests on, a short paraphrase, never a quote
+    heard: str  # field of the proposal: what the owner said that it rests on, a short paraphrase, never a quote
     context: str  # field of the settling kind: why the question comes up, so its card reads on its own
-    why: str  # field of the guess: the reason for it
+    why: str  # field of the proposal: the reason for it
 
 
 class Glossary(BaseModel):

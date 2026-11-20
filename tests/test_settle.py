@@ -14,13 +14,13 @@ V5 = Path(__file__).parent / "fixtures"
 ONTOLOGY = packaged()
 VALUES = "- {id: fee, says: The fee., is: 2, unit: EUR}\n- {id: wait, says: The wait., is: 3, unit: days}\n"
 OPTIONS = "  one: {label: One, sets: {product/app/quantity/fee: {is: 1}}}\n  two: {label: Two, sets: {product/app/quantity/fee: {is: 2}}}\n"
-GUESS = "proposal: {chose: two, why: because}\n"
+PROPOSAL = "proposal: {chose: two, why: because}\n"
 FEE = "product/app/quantity/fee"
 ACTORS = "- {id: member, says: A person who borrows., nature: human}\n"
 
 
-def decision(options: str = OPTIONS, guess: str = GUESS, answers: str = "", name: str = "fee") -> dict[str, str]:
-    body = f"question: How much?\noptions:\n{options}{guess}"
+def decision(options: str = OPTIONS, proposal: str = PROPOSAL, answers: str = "", name: str = "fee") -> dict[str, str]:
+    body = f"question: How much?\noptions:\n{options}{proposal}"
     return {f"product/app/decision/{name}.yml": body + (f"answers:\n{answers}" if answers else "")}
 
 
@@ -84,8 +84,8 @@ def test_newest_answer_by_its_time() -> None:
     swapped = answer("2026-11-14T10:00:00+01:00", "two") + answer("2026-11-13T10:00:00+01:00", "one")
     found = decisions(snap(decision(answers=swapped)))[0].in_force
     assert found is not None and found.option == "two"
-    guessed = decisions(snap(decision()))[0].in_force
-    assert guessed is not None and guessed.option == "two" and not guessed.by_answer
+    proposed = decisions(snap(decision()))[0].in_force
+    assert proposed is not None and proposed.option == "two" and not proposed.by_answer
 
 
 def test_equal_at_is_an_error() -> None:
@@ -106,8 +106,8 @@ def test_absent_in_force_means_no_entry() -> None:
                                                                                                         "product/app/decision/fee")}
 
 
-def test_unanswered_decision_needs_a_guess() -> None:
-    assert problems(snap(decision(guess=""))) == {("no-proposal", "product/app/decision/fee")}
+def test_unanswered_decision_needs_a_proposal() -> None:
+    assert problems(snap(decision(proposal=""))) == {("no-proposal", "product/app/decision/fee")}
 
 
 def test_an_answer_chooses_the_option_and_agrees_to_no_sentence() -> None:
@@ -215,10 +215,10 @@ def test_an_answer_note_and_paraphrase_are_outside_the_fingerprint() -> None:
     assert decisions(two)[0].answers[0].note == "for now" and decisions(two)[0].in_force.note == "for now"  # type: ignore[union-attr]
 
 
-def test_a_guess_that_rests_on_the_owner_keeps_a_paraphrase() -> None:
-    heard = decision(guess="proposal: {chose: two, why: because, heard: Two seems right}\n")
+def test_a_proposal_that_rests_on_the_owner_keeps_a_paraphrase() -> None:
+    heard = decision(proposal="proposal: {chose: two, why: because, heard: Two seems right}\n")
     assert problems(snap(heard)) == set() and decisions(snap(heard))[0].heard is not None
-    quoted = decision(guess="proposal: {chose: two, why: because, heard: {message: product/app/message/a, quote: Two}}\n")
+    quoted = decision(proposal="proposal: {chose: two, why: because, heard: {message: product/app/message/a, quote: Two}}\n")
     found = {(str(i.problem), str(i.address)) for i in check(snap(quoted), WorktreeSource(V5, ""))}
     assert ("wrong-type", "product/app/decision/fee/proposal") in found  # a paraphrase is one line of text, never a quote
 

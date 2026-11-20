@@ -112,7 +112,7 @@ def test_sets_may_say_absent_and_name_entries_that_do_not_exist_yet(kb: Make) ->
     assert kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": unborn}).findings() == set()
 
 
-def test_guess_has_one_of_chose_or_sets(kb: Make) -> None:
+def test_proposal_has_one_of_chose_or_sets(kb: Make) -> None:
     both = DECISION.replace("proposal: {chose: one,", "proposal: {chose: one, sets: {product/app/quantity/fee: {is: 2}},")
     assert only(kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": both}).findings(),
                 Problem.ONE_OF) == {"product/app/decision/fee/proposal"}

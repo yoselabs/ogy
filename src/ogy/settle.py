@@ -1,6 +1,6 @@
 """Decisions settle entries: which entries and fields, the option in force, and the fixed checks D2, D4 to D6 and D10.
 
-Pure functions over a snapshot. The names read (option, answer, guess, sets, chose, value, said, at, where, note, delegated,
+Pure functions over a snapshot. The names read (option, answer, proposal, sets, chose, said, at, where, note, delegated,
 heard) come from the settling kind's `Settling`; the key its answers are kept under is the answer kind's `key`.
 """
 
@@ -31,7 +31,8 @@ class Answer:
 
 @dataclass(frozen=True)
 class Force:
-    """What is in force: its `sets`, whether an answer or the guess put it there, and the option chosen (None for a value guess)."""
+    """What is in force: its `sets`, whether an answer or the proposal put it there, and the option chosen (None for a
+    proposal that gives its own `sets`)."""
 
     sets: Sets
     by_answer: bool
@@ -47,30 +48,30 @@ class Decision:
     names: Settling
     options: dict[str, Sets] = field(default_factory=dict)
     answers: list[Answer] = field(default_factory=list)
-    guess: Entry | None = None
+    proposal: Entry | None = None
 
     @property
     def heard(self) -> str | None:
-        """What the owner said that the guess rests on, paraphrased: the guess's `heard` field."""
-        value = self.guess.fields.get(self.names.heard) if self.guess else None
+        """What the owner said that the proposal rests on, paraphrased: the proposal's `heard` field."""
+        value = self.proposal.fields.get(self.names.heard) if self.proposal else None
         return value if isinstance(value, str) and value.strip() else None
 
     @property
     def in_force(self) -> Force | None:
-        """The answer with the newest `at`; with no answer, the guess."""
+        """The answer with the newest `at`; with no answer, the proposal."""
         dated = [(answer.at, answer) for answer in self.answers if answer.at is not None]
         if dated and (newest := max(dated, key=lambda item: item[0])[1]) and newest.chose in self.options:
             return Force(self.options[newest.chose], True, newest.chose, newest.note, newest.who != "human")
-        if self.guess is None:
+        if self.proposal is None:
             return None
-        chose, value = self.guess.fields.get(self.names.chose), self.guess.fields.get(self.names.value)
+        chose, value = self.proposal.fields.get(self.names.chose), self.proposal.fields.get(self.names.sets)
         if isinstance(chose, str):
             return Force(self.options.get(chose, {}), False, chose)
         return Force(value, False, None) if isinstance(value, dict) else None
 
     def sets_all(self) -> list[Sets]:
-        """Every `sets` of the decision: its options' and the guess's."""
-        value = self.guess.fields.get(self.names.value) if self.guess else None
+        """Every `sets` of the decision: its options' and the proposal's."""
+        value = self.proposal.fields.get(self.names.sets) if self.proposal else None
         return [*self.options.values(), *([value] if isinstance(value, dict) else [])]
 
 
@@ -113,7 +114,7 @@ def decisions(snapshot: Snapshot) -> list[Decision]:
     for address, entry in sorted(snapshot.entries.items()):
         if address.kind != kind.kind:
             continue
-        decision = Decision(address, entry, names, guess=snapshot.entries.get(address.part(names.guess)))
+        decision = Decision(address, entry, names, proposal=snapshot.entries.get(address.part(names.proposal)))
         for part in snapshot.links.parts(address, names.option):
             sets = snapshot.entries[part].fields.get(names.sets)
             decision.options[part.key] = sets if isinstance(sets, dict) else {}
@@ -136,7 +137,7 @@ def _answer(snapshot: Snapshot, decision: Address, names: Settling, item: Mappin
 
 
 def settles(decision: Decision) -> tuple[dict[str, set[str]], set[str]]:
-    """The fields each address of the decision is given under some option or the guess, and the addresses some option sets absent."""
+    """The fields each address of the decision is given under some option or the proposal, and the addresses some option sets absent."""
     fields: dict[str, set[str]] = {}
     absent: set[str] = set()
     for sets in decision.sets_all():
@@ -242,6 +243,6 @@ def check_decisions(snapshot: Snapshot, _source: Source) -> list[Finding]:
     for decision in found:
         problems += [*_uneven(decision), *_times(decision), *_in_force(snapshot, decision),
                      *(item for answer in decision.answers for item in _delegation(found, decision, answer))]
-        if not decision.answers and decision.guess is None:
-            problems.append(_finding(decision, Problem.NO_GUESS, "a decision with no answer needs a proposal"))
+        if not decision.answers and decision.proposal is None:
+            problems.append(_finding(decision, Problem.NO_PROPOSAL, "a decision with no answer needs a proposal"))
     return problems

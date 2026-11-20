@@ -91,7 +91,7 @@ def test_review_from_code_pages_by_area_and_filters_by_area(repo: Path) -> None:
     assert "nothing from docs is waiting for you" in "\n".join(w(repo, "review", "app", "--from", "docs")[1])
 
 
-def test_review_screen_puts_the_guess_first_and_counts_decisions_apart(repo: Path) -> None:
+def test_review_screen_puts_the_proposal_first_and_counts_decisions_apart(repo: Path) -> None:
     decision = "question: How much?\noptions:\n  low: {label: Low, sets: {product/app/quantity/fee: {is: 1}}}\n"
     (repo / "docs/kb/product/app/decision").mkdir()
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(

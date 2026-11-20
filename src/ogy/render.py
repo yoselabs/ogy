@@ -132,7 +132,7 @@ def _card(label: str, card: Card) -> list[str]:
                   for address, text, _ in card.members]
     for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
         mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
-        lines.append(f"   {letter}. {text}" + (mark if key == card.guess else ""))
+        lines.append(f"   {letter}. {text}" + (mark if key == card.proposal else ""))
         lines += [f"      then {line}" for line in (card.then[index] if index < len(card.then) else ())]
     if card.earlier:
         lines.append(f"   {card.earlier}")
@@ -141,8 +141,8 @@ def _card(label: str, card: Card) -> list[str]:
     if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")
     keys = [key for key, _ in card.options]
-    if card.heard and card.guess in keys:
-        lines.append(f"   You said (paraphrased): {card.heard}. Read as {string.ascii_uppercase[keys.index(card.guess)]}.")
+    if card.heard and card.proposal in keys:
+        lines.append(f"   You said (paraphrased): {card.heard}. Read as {string.ascii_uppercase[keys.index(card.proposal)]}.")
     return lines + ([f"   {card.evidence}"] if card.evidence else [])
 
 
@@ -160,8 +160,8 @@ def _from(found: Review) -> list[str]:
 def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
     """What a bare `yes` will change, and what it leaves for a letter of its own: the same rule as `reply`."""
     keys = {label: [key for key, _ in card.options] for label, card in cards}
-    confirms = [f"{label} as {string.ascii_uppercase[keys[label].index(card.guess)]}" for label, card in cards
-                if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.guess in keys[label]]
+    confirms = [f"{label} as {string.ascii_uppercase[keys[label].index(card.proposal)]}" for label, card in cards
+                if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.proposal in keys[label]]
     agrees = [label for label, card in cards if card.kind in rounds.ENTRY_CARDS]
     will = [*([f"confirm {', '.join(confirms)}"] if confirms else []),
             *([f"agree to {len(agrees)} sentence(s) ({', '.join(agrees)})"] if agrees else [])]
@@ -201,7 +201,7 @@ def render_review_md(found: Review) -> list[str]:
 
 
 def render_dropped(found: Dropped) -> list[str]:
-    lines = [f"proposal says no, nobody has seen it: {address}" for address in found.guessed_no]
+    lines = [f"proposal says no, nobody has seen it: {address}" for address in found.proposed_no]
     lines += [f"removed with no why: {item}" for item in found.unexplained]
     lines += [f"removed with plain words, not a decision: {item}" for item in found.plain_why]
     lines += [f"answer with a note (the owner's hedge or condition): {address}" for address in found.noted]

@@ -45,7 +45,7 @@ def test_decisions_terms_and_ledgers_are_registered(kb: MakeKb) -> None:
                       "product/app/decision/q.yml": decision,
                       "product/shared/glossary.yml": "- {id: land, word: land, says: To finish., avoid: [merge]}\n",
                       "product/app/removed.yml": "format: 1\n"}), landing=True)
-    assert {Problem.NO_GUESS, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
+    assert {Problem.NO_PROPOSAL, Problem.TERM_NOT_AGREED, Problem.BAD_REMOVED} <= found
 
 
 def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
@@ -54,7 +54,7 @@ def test_review_asks_at_most_seven_and_counts(kb: MakeKb) -> None:
     short, everything = review(snapshot), review(snapshot, everything=True)
     assert len(short.cards) == 7 and short.waiting == len(everything.cards) - 7 and len(everything.cards) >= 9
     assert short.headers[0].ai >= 9 and str(short.headers[0]).startswith("product/app   0 questions open · ")
-    assert dropped(snapshot, []).guessed_no == ()
+    assert dropped(snapshot, []).proposed_no == ()
 
 
 def test_harm_is_read_from_the_kind_files(kb: MakeKb, ontology: Ontology) -> None:
