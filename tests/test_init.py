@@ -242,3 +242,22 @@ def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -
     assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
     assert "id: agent" not in read(tmp_path, "docs/kb/product/shared/actors.yml")
     assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
+
+
+@pytest.mark.parametrize(
+    ("rel", "text", "fault"),
+    [
+        (".mcp.json", '{"mcpServers": []}', ".mcp.json: mcpServers is not an object"),
+        (".claude/settings.json", '{"permissions": []}', ".claude/settings.json: permissions is not an object"),
+        (".claude/settings.json", '{"permissions": {"deny": {}}}', ".claude/settings.json: permissions.deny is not a list"),
+    ],
+)
+def test_a_refusal_on_the_shape_of_a_file_writes_nothing(tmp_path: Path, rel: str, text: str, fault: str) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main")
+    (tmp_path / rel).parent.mkdir(exist_ok=True)
+    (tmp_path / rel).write_text(text)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and lines == [f"not set up: {fault}"], lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == sorted({".git", rel.split("/", 1)[0]})  # no ogy.yml, AGENTS.md or docs/
+    assert read(tmp_path, rel) == text
+    assert run_git(tmp_path, "config", "--default", "", "core.hooksPath").strip() == ""

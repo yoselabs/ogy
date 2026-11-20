@@ -134,11 +134,6 @@ def block(repo: Path, ontology: Ontology, body: str) -> str:
     return replace_region(body, ontology.agents.format(ogy=invocation(repo)), start_marker=START, end_marker=END)
 
 
-def _block(repo: Path, ontology: Ontology, rel: str, written: list[str]) -> None:
-    path = repo / rel
-    _put(repo, rel, block(repo, ontology, path.read_text() if path.exists() else ""), written)
-
-
 def _hook(repo: Path, written: list[str]) -> None:
     """The tracked hooks that run `ogy hook` (`ogy.hooks`), and `core.hooksPath` pointing at them."""
     for name in HOOKS:
@@ -177,15 +172,17 @@ def _mapping(data: dict[str, object], key: str, rel: str) -> dict[str, object]:
     return found
 
 
-def _mcp(repo: Path, written: list[str]) -> None:
+def _mcp(repo: Path) -> str:
+    """`.mcp.json` with the ogy server merged in; refuses (InitRefusedError) a file of the wrong shape."""
     data = _json(repo, ".mcp.json")
     servers = _mapping(data, "mcpServers", ".mcp.json")
     if servers.get("ogy") in (None, SERVER):  # an entry the person wrote is theirs; the published default is not
         servers["ogy"] = _server(repo)
-    _put(repo, ".mcp.json", _dump(data), written)
+    return _dump(data)
 
 
-def _deny(repo: Path, written: list[str]) -> None:
+def _deny(repo: Path) -> str:
+    """`.claude/settings.json` with the deny rules merged in; refuses (InitRefusedError) a file of the wrong shape."""
     rel = ".claude/settings.json"
     data = _json(repo, rel)
     deny = _mapping(data, "permissions", rel).setdefault("deny", [])
@@ -196,7 +193,18 @@ def _deny(repo: Path, written: list[str]) -> None:
     folder = f"/{KB_DIR}/**/*.yml"  # the YAML only: a README beside it is for people to edit
     deny[:] = [rule for rule in deny if rule not in (f"Edit({wide})", f"Write({wide})")]  # what an earlier init wrote
     deny.extend(rule for rule in (f"Edit({folder})", f"Write({folder})") if rule not in deny)
-    _put(repo, rel, _dump(data), written)
+    return _dump(data)
+
+
+def _merged(repo: Path, ontology: Ontology) -> dict[str, str]:
+    """Every file init merges into, as it will write it: AGENTS.md (and CLAUDE.md when it exists), `.mcp.json` and
+    `.claude/settings.json`. All of them are read and checked here, so a refusal comes before anything is written."""
+    found = {
+        rel: block(repo, ontology, (repo / rel).read_text() if (repo / rel).exists() else "")
+        for rel in ("AGENTS.md", "CLAUDE.md")
+        if rel == "AGENTS.md" or (repo / rel).exists()
+    }
+    return {**found, ".mcp.json": _mcp(repo), ".claude/settings.json": _deny(repo)}
 
 
 def init(repo: Path, ontology: str | None = None, land: str | None = None) -> Initialised:
@@ -204,22 +212,19 @@ def init(repo: Path, ontology: str | None = None, land: str | None = None) -> In
     name = _settings(repo, ontology)
     landing = _land(repo, land)
     kinds = named(name, repo)
+    merged = _merged(repo, kinds)  # every read and every check refuses before anything is written
+    adding = missing_starts(repo, kinds)
     written: list[str] = []
-    for rel in (".mcp.json", ".claude/settings.json"):
-        _json(repo, rel)  # an unreadable file refuses before anything is written
     _config(repo, name, landing, written)
     for rel, text in starts(kinds).items():
         if not (repo / KB_DIR / rel).exists():
             atomic_write_text(repo / KB_DIR / rel, text)
             written.append(f"{KB_DIR}/{rel}")
-    for address, fields in missing_starts(repo, kinds):
+    for address, fields in adding:
         Editor(repo, KB_DIR, kinds).put(address, fields)
         written.append(str(address))
-    _block(repo, kinds, "AGENTS.md", written)
-    if (repo / "CLAUDE.md").exists():
-        _block(repo, kinds, "CLAUDE.md", written)
-    _mcp(repo, written)
-    _deny(repo, written)
+    for rel, text in merged.items():
+        _put(repo, rel, text, written)
     _hook(repo, written)
     return Initialised(name, KB_DIR, written)
 
