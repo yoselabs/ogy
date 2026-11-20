@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Stand-in for the claude CLI: logs its arguments, writes the files a session would, prints a canned harness result.
+set -euo pipefail
 printf 'claude %s\n' "$*" >>"$STUB_LOG"
 if [ "${1:-}" = "--version" ]; then
   echo "9.9.9 (stub)"
