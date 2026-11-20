@@ -9,10 +9,11 @@ import pytest
 from git_porcelain import run_git
 from tests.conftest import IDENTITY, ogy
 
-from ogy import cli
+from ogy import built, cli, ops, writes
 from ogy.model import Address, parse_address
 from ogy.ontology import Ontology, named, packaged
 from ogy.snapshot import Snapshot, build
+from ogy.target import Target
 
 TOY = Path(__file__).parent / "fixtures" / "toy-ontology"
 LIMIT = "business/shop/ruling/limit"
@@ -248,3 +249,56 @@ def test_a_reverse_input_reads_what_links_here_only_where_set() -> None:
     norm = _at(before, NORM)
     assert ranked.fingerprint(norm) == before.fingerprint(norm)
     assert ranked.build_hash(norm) != before.build_hash(norm)  # `input_from: {held_by: {fields: [rank]}}`
+
+
+def _folder(root: Path, kinds: dict[str, str], servers: str) -> Path:
+    """The toy ontology with its kinds `{name: text}` added or replaced (an empty text leaves one out), served by `servers`."""
+    (root / "kinds").mkdir(parents=True)
+    (root / "ontology.yml").write_text((TOY / "ontology.yml").read_text())
+    texts = {item.stem: item.read_text() for item in (TOY / "kinds").iterdir()} | kinds
+    for name, text in texts.items():
+        if text:
+            (root / "kinds" / f"{name}.yml").write_text(text.replace("servers: [screen]", f"servers: {servers}"))
+    return root
+
+
+def test_migrate_merges_two_toy_kinds_into_one(toy: Path, tmp_path_factory: pytest.TempPathFactory) -> None:
+    """A toy kind console beside screen, then both merged into surface (`was` lists them): a console's `typed_as` is `typed`."""
+    screen = (TOY / "kinds/screen.yml").read_text()
+    console = screen.replace("kind: screen", "kind: console").replace("  shows_moves:", "  typed_as: {}\n  shows_moves:")
+    surface = "was: [{kind: screen}, {kind: console, renamed: {typed_as: typed}}]\n" + screen.replace(
+        "kind: screen", "kind: surface").replace("  shows_moves:", "  typed: {}\n  shows_moves:")
+    two = _folder(tmp_path_factory.mktemp("toy-console"), {"console": console}, "[screen, console]")
+    one = _folder(tmp_path_factory.mktemp("toy-merged"), {"screen": "", "surface": surface}, "[surface]")
+    (toy / "ogy.yml").write_text(f"ontology: {two}\n")
+    (toy / "docs/kb/tech/shop/console/till.yml").parent.mkdir(parents=True)
+    (toy / "docs/kb/tech/shop/console/till.yml").write_text(
+        "tells: The till.\nserves_stages: [business/shop/journey/buy/stage/pick]\ntyped_as: buy\nsource: ['py:app.py#buy']\n")
+    (toy / "docs/kb/tech/shop/norm").mkdir()
+    (toy / "docs/kb/tech/shop/norm/quick.yml").write_text("tells: Paying takes a minute.\nreason: [tech/shop/console/till]\n")
+    old, served = Target(toy, ontology=str(two)), ("tech/shop/screen/page", "tech/shop/console/till")
+    writes.agree(old, writes.said("Yes", "ai:test/1", None), list(served))
+    for text in served:
+        at = parse_address(text, old.kinds())
+        assert at is not None
+        built.stamp(toy / "docs/kb", old.read()[1].entries[at].path, text, built.Line(old.read()[1].build_hash(at), {}))
+    assert w(toy, "check")[0] == cli.OK
+    run_git(toy, *IDENTITY, "add", "-A")
+    run_git(toy, *IDENTITY, "commit", "-qm", "a console")
+    base = run_git(toy, "rev-parse", "HEAD").strip()
+    (toy / "ogy.yml").write_text(f"ontology: {one}\n")
+    assert any(line.startswith("needs-migration: tech/shop/console/till.yml") for line in w(toy, "check")[1])
+    assert w(toy, "migrate")[0] == cli.OK and w(toy, "check")[1][0] == "ok"
+    till = read(toy, "tech/shop/surface/till.yml")
+    assert isinstance(till, dict) and till["typed"] == "buy" and "typed_as" not in till
+    assert (toy / "docs/kb/tech/shop/surface/page.yml").is_file() and not (toy / "docs/kb/tech/shop/screen").exists()
+    norm = read(toy, "tech/shop/norm/quick.yml")
+    assert isinstance(norm, dict) and norm["reason"] == ["tech/shop/surface/till"]
+    now = Target(toy, ontology=str(one))
+    snapshot, work = now.read()[1], {item.address for item in ops.run_work(now).value}
+    for text in ("tech/shop/surface/page", "tech/shop/surface/till"):
+        at = parse_address(text, now.kinds())
+        assert at is not None and snapshot.entries[at].fields["accepted"]["hash"] == snapshot.fingerprint(at) and at not in work
+    run_git(toy, *IDENTITY, "add", "-A")
+    run_git(toy, *IDENTITY, "commit", "-qm", "merged")
+    assert not ops.run_check(Target(toy, rev="HEAD", ontology=str(one)), base=base).value

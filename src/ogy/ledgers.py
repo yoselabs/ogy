@@ -1,14 +1,17 @@
 """The removed ledgers in `ogy check`: R2 and R4 to R8 on one commit, and the checks against the base commit (C1 to C3, R1, R3, R7)."""
 
+import dataclasses
 from collections.abc import Collection
 
 from ogy import removed
 from ogy.base import check_base, read_ledgers
+from ogy.kindchange import before
 from ogy.layout import REMOVED_FILE
 from ogy.links import link_items, resolve
 from ogy.model import Finding, Problem, home_of, link_values, parse_address
 from ogy.removal import known_addresses, snapshot_problems
-from ogy.snapshot import Snapshot
+from ogy.retype import Retype
+from ogy.snapshot import Snapshot, load
 from ogy.source import Source
 
 
@@ -39,8 +42,17 @@ def _citers(snapshot: Snapshot, ids: Collection[str]) -> list[tuple[str, str]]:
     return pairs
 
 
+def named_now(ledgers: dict[str, removed.Ledger], snapshot: Snapshot) -> dict[str, removed.Ledger]:
+    """The ledgers read under the kind names now (`ogy.retype`): a ledger file keeps the names its items had, so an item of a
+    renamed or merged kind is compared by the address its entry would have now. Nothing is written."""
+    rename = Retype(snapshot.ontology).address
+    return {home: dataclasses.replace(ledger, items=tuple(removed.moved_item(item, rename) for item in ledger.items))
+            for home, ledger in ledgers.items()}
+
+
 def check_ledgers(snapshot: Snapshot, source: Source) -> list[Finding]:
     ledgers, problems = read_ledgers(source)
+    ledgers = named_now(ledgers, snapshot)
     items = [item for ledger in ledgers.values() for item in ledger.items]
     live = [str(address) for address in snapshot.entries]
     problems += removed.find_reuse(items, live) + removed.check_why(items, known_addresses(snapshot), snapshot.ontology.roles.agreed)
@@ -59,11 +71,15 @@ def migrated_ledgers(ledgers: dict[str, removed.Ledger], snapshot: Snapshot) -> 
 
 
 def check_against_base(snapshot: Snapshot, source: Source, base: Snapshot, base_source: Source) -> list[Finding]:
-    """C1 to C3 and R1, R3, and R7: an item that is not in the base ledger has a snapshot equal to the entry in the base."""
-    ledgers, _ = read_ledgers(source)
-    old = migrated_ledgers(read_ledgers(base_source)[0], snapshot)  # the base as `ogy migrate` would write it
+    """C1 to C3 and R1, R3, and R7: an item that is not in the base ledger has a snapshot equal to the entry in the base (an
+    item written under an old kind name, to the entry in the base read under the kinds as they were)."""
+    written = read_ledgers(source)[0]
+    ledgers = named_now(written, snapshot)
+    old = named_now(migrated_ledgers(read_ledgers(base_source)[0], snapshot), snapshot)  # the base as `ogy migrate` would write it
     found = check_base(snapshot, base, ledgers, old)
-    in_base = {item.id for ledger in old.values() for item in ledger.items}
-    new = [item for ledger in ledgers.values() for item in ledger.items]
-    found += findings_of(removed.check_new_snapshots(new, in_base, lambda item: snapshot_problems(base, item)), snapshot)
+    in_base, rename = {item.id for ledger in old.values() for item in ledger.items}, Retype(snapshot.ontology).address
+    new = [item for ledger in written.values() for item in ledger.items if rename(item.id) not in in_base]
+    then = load(base_source, before(snapshot.ontology)) if any(rename(item.id) != item.id for item in new) else base
+    found += findings_of(removed.check_new_snapshots(
+        new, (), lambda item: snapshot_problems(then if rename(item.id) != item.id else base, item)), snapshot)
     return found

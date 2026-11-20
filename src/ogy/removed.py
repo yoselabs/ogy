@@ -34,6 +34,7 @@ __all__ = [
     "find_reuse",
     "follow",
     "from_raw",
+    "moved_item",
     "parse",
     "read_all",
     "rehome",
@@ -258,7 +259,7 @@ def _prefixed(old: str, new: str) -> Callable[[str], str]:
     return lambda text: new + text[len(old):] if text.startswith(old + "/") else text
 
 
-def _moved_item(item: Item, rename: Callable[[str], str]) -> Item:
+def moved_item(item: Item, rename: Callable[[str], str]) -> Item:
     parent = item.parent and Parent(rename(item.parent.address), item.parent.key, item.parent.position)
     return dataclasses.replace(item, id=rename(item.id), parent=parent, why=item.why and rename(item.why),
                                replaced_by=item.replaced_by and rename(item.replaced_by))
@@ -272,7 +273,7 @@ def rehomed(ledgers: Mapping[str, Ledger], old: str, new: str) -> dict[str, Ledg
     if moved is None:
         return found
     held = found[new].items if new in found else ()
-    found[new] = Ledger(new, FORMAT, (*held, *(_moved_item(item, _prefixed(old, new)) for item in moved.items)))
+    found[new] = Ledger(new, FORMAT, (*held, *(moved_item(item, _prefixed(old, new)) for item in moved.items)))
     return found
 
 
