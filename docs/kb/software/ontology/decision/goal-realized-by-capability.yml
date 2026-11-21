@@ -15,3 +15,7 @@ answers:
   at: '2026-11-21T00:07:50+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: product/review/decision/judgement-delegation
+- chose: work
+  said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+  at: '2026-11-21T01:43:08+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157

@@ -13,10 +13,10 @@
   word: proof
   says: A test, path.py::function, that shows in code what its entry says; not evidence.
   agreed:
-    at: '2026-11-19T20:33:03+01:00'
+    at: '2026-11-21T01:42:56+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: 5928cd128489
+    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+    hash: 34a4c069b9fe
 - id: software-ontology
   word: software ontology
   says: ogy's shipped ontology for software, named in ogy.yml; never copied, no plugin, not requirements-only.

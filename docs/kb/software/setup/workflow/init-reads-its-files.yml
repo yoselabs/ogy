@@ -10,6 +10,11 @@ steps:
       init:
         label: Set up
         then: read
+    agreed:
+      at: '2026-11-21T01:42:56+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: b3bc836f5042
   read:
     says: ogy init reads ogy.yml, AGENTS.md, CLAUDE.md, .mcp.json, .claude/settings.json, the prek config, core.hooksPath and the flags.
     cases:
@@ -23,10 +28,25 @@ steps:
         then: refused
       otherwise:
         then: all-read
+    agreed:
+      at: '2026-11-21T01:42:56+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: e044f277c0f8
 ends:
   refused:
     result: failure
     says: Nothing is written; the refusal says what is at fault.
+    agreed:
+      at: '2026-11-21T01:42:56+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 0d71b28f3a36
   all-read:
     result: success
     says: Every file it merges into was read.
+    agreed:
+      at: '2026-11-21T01:42:56+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: 1e958a7ae5f6
