@@ -276,6 +276,16 @@ def test_a_file_that_is_not_utf8_is_refused_by_name_and_nothing_is_written(tmp_p
     assert code == cli.FINDINGS and any(line.startswith(f"{rel} ") and "UTF-8" in line for line in lines), lines
 
 
+def test_an_ogy_yml_that_is_not_utf8_is_refused_like_the_other_files(tmp_path: Path) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    (tmp_path / "ogy.yml").write_bytes(b"\xff\xfe not utf-8")
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and len(lines) == 1 and lines[0].startswith("not set up: ogy.yml ") and "UTF-8" in lines[0], lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == [".git", "ogy.yml"]
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--check"])
+    assert code == cli.FINDINGS and any(line.startswith("ogy.yml ") and "UTF-8" in line for line in lines), lines
+
+
 @pytest.mark.parametrize("rel", [".githooks", ".claude"])
 def test_a_file_where_init_needs_a_folder_is_refused_before_any_write(tmp_path: Path, rel: str) -> None:
     run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
@@ -284,6 +294,15 @@ def test_a_file_where_init_needs_a_folder_is_refused_before_any_write(tmp_path: 
     assert code == cli.REFUSED and lines == [f"not set up: {rel} is a file, not a folder; move it and run again"], lines
     assert sorted(p.name for p in tmp_path.iterdir()) == sorted([".git", rel]) and read(tmp_path, rel) == "mine\n"
     assert run_git(tmp_path, "config", "--default", "", "core.hooksPath", ambient=os.environ).strip() == ""
+
+
+@pytest.mark.parametrize("rel", ["AGENTS.md", ".mcp.json", ".githooks/pre-commit"])
+def test_a_folder_where_init_writes_a_file_is_refused_before_any_write(tmp_path: Path, rel: str) -> None:
+    run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
+    (tmp_path / rel).mkdir(parents=True)
+    code, lines = cli.run(["--repo", str(tmp_path), "init", "--land", "main"])
+    assert code == cli.REFUSED and len(lines) == 1 and lines[0].startswith(f"not set up: {rel} "), lines
+    assert sorted(p.name for p in tmp_path.iterdir()) == sorted([".git", rel.split("/", 1)[0]])
 
 
 PREK = (

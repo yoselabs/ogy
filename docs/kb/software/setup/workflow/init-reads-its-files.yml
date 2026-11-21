@@ -21,7 +21,7 @@ steps:
       unreadable:
         order: 1
         when:
-          text: a file it reads is not UTF-8 or not of the shape it merges into, a file stands where it needs a folder, another tool owns core.hooksPath, no land branch is given or named by the remote, or the flags contradict ogy.yml
+          text: a file it reads is not UTF-8, cannot be read or is not of the shape it merges into, a file stands where it needs a folder or a folder where it writes a file, another tool owns core.hooksPath, no land branch is given or named by the remote, the flags contradict ogy.yml, or the ontology named is unknown (a usage error)
           reads:
           - software/setup/dependency/claude-code
           - software/storage/dependency/git

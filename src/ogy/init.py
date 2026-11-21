@@ -54,6 +54,7 @@ class Initialised:
 
 
 def _settings(repo: Path, ontology: str | None) -> str:
+    _settings_text(repo)
     held = config.read(repo).ontology
     if ontology is not None and held is not None and ontology != held:
         msg = f"{config.CONFIG_FILE} already says ontology: {held}, not {ontology}"
@@ -184,6 +185,12 @@ def _text(repo: Path, rel: str) -> str:
     except OSError as error:
         msg = f"{rel} cannot be read ({error.strerror}); fix it and run again"
         raise InitRefusedError(msg) from error
+
+
+def _settings_text(repo: Path) -> None:
+    """Refuses (InitRefusedError) a settings file that is not UTF-8 or cannot be read, as the files init merges into."""
+    if (path := config.path_of(repo)) is not None:
+        _text(path.parent, path.name)
 
 
 def _room(repo: Path, rels: list[str]) -> None:
@@ -335,6 +342,10 @@ def _hook_lines(repo: Path) -> list[str]:
 def doctor(repo: Path) -> list[str]:
     """`init --check`: what is not set up in this repository, one line each, and how to mend it; empty when it is all in place.
     Writes nothing and refuses nothing: a file it cannot read is a line too."""
+    try:
+        _settings_text(repo)
+    except InitRefusedError as error:
+        return [str(error)]
     lines: list[str] = []
     if not (repo / config.CONFIG_FILE).is_file():
         lines.append(f"missing {config.CONFIG_FILE}: run `ogy init`")
