@@ -43,14 +43,21 @@ steps:
       single-part:
         order: 3
         when:
-          text: the entry is the single part of its parent
+          text: the entry is of a kind its parent holds only one of
           reads:
           - product/capture/entity/entry
         then: refused
       bad-why:
         order: 4
         when:
-          text: the reason looks like an address but names no live decision or removed item, or the replacement chain ends at no live entry
+          text: the reason looks like an address but names no live decision, or the replacement chain ends at no live entry
+          reads:
+          - product/removal/entity/removed-item
+        then: refused
+      blank-why:
+        order: 0
+        when:
+          text: the reason is blank
           reads:
           - product/removal/entity/removed-item
         then: refused
