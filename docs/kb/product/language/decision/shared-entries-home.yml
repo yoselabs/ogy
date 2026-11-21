@@ -19,6 +19,11 @@ options:
     label: A reserved area `shared` in each layer holds the terms, actors and sets two areas use; every address keeps its area
     sets:
       product/language/rule/shared-entries-home:
+        says: A term, an actor or a set that one area uses lives in that area; one that two areas use lives in the reserved area `shared` of its layer (product/shared/actors.yml, product/shared/glossary.yml), so every address keeps its area; an entry with behaviour or a decision stays in its owning area and others link to it; ogy check enforces it.
+  guidance:
+    label: Placement is guidance, not enforced; ogy check reads only that the area `shared` holds the kinds marked shared
+    sets:
+      product/language/rule/shared-entries-home:
         says: 'A term, an actor or a set that one area uses lives in that area; one that two areas use lives in the reserved area `shared` of its layer (product/shared/actors.yml, product/shared/glossary.yml), so every address keeps its area; an entry with behaviour or a decision stays in its owning area and others link to it. Where an entry lives is guidance: ogy check reads only that `shared` holds the kinds marked shared, not how many areas use an entry.'
 proposal:
   chose: c
@@ -42,3 +47,8 @@ answers:
   said: Confirmed Fable's five structural answers
   at: '2026-11-19T00:52:39+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: guidance
+  said: "Owner delegated to the coordinator: 'I rely on your judgment finally'"
+  at: '2026-11-21T01:48:28+01:00'
+  where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+  delegated: product/review/decision/judgement-delegation
