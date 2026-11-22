@@ -1,0 +1,18 @@
+title: Which third-party code the board front end may carry
+question: May the board's static front end include a graph layout library and a small rendering helper as vendored files, or must it be hand-written?
+context: Hand-written layout and hand-written DOM updates are where four generations of the board went wrong. Both libraries are single files served as static assets, so they work with or without a bundler. AGENTS asks the owner before a new dependency.
+options:
+  none:
+    label: No third-party code in the front end; everything hand-written
+  layout-only:
+    label: Vendor a graph layout library (elkjs) only
+  layout-and-render:
+    label: Vendor elkjs and a 7 KB template-rendering helper (lit-html), each pinned and checked in with its licence
+proposal:
+  chose: layout-and-render
+  why: Layout is the one thing that must not be home-made again, and the helper removes the hand-written update code that caused the jumps.
+answers:
+- chose: layout-and-render
+  said: Vendor elkjs and the small rendering helper, pinned with their licences.
+  at: '2026-11-22T17:11:44+01:00'
+  where: ai:claude/f6fcc5ed

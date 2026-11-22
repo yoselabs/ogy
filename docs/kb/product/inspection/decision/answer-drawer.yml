@@ -1,0 +1,20 @@
+title: How the owner answers on the board
+question: On the board, how does the owner see and answer what waits for him?
+context: 'Owner, 2026-11-22: what ogy review does in the command line (yes, an option, a note) should be what the board does: maybe a drawer or menu that always lists what waits, aggregated by area; click an item and it shows the question with its context and the answer options around it.'
+options:
+  drawer-by-area:
+    label: A drawer, opened from anywhere on the board, lists what waits for the owner grouped by area; an item shows its question, context and options on the board, with the entries around it highlighted; the answer is recorded with a paraphrase he can read back
+  one-at-a-time:
+    label: The board shows one waiting item at a time, in the order of the review round
+  review-only:
+    label: The board only links to the command line review
+proposal:
+  chose: drawer-by-area
+  why: It is what the owner described, and grouping by area shows how much waits where.
+  heard: A drawer or menu always at hand, aggregated by area; click an item to see its question and context around it; the same as the yes and option replies of the command line.
+answers:
+- chose: drawer-by-area
+  said: 'What the command line review does should be on the board: a drawer or menu listing what waits, grouped by area; click an item to see its question, context and answers around it.'
+  at: '2026-11-22T15:16:49+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Said as "maybe a drawer or menu"; the form is his sketch, not a final design.

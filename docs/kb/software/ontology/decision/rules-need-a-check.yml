@@ -1,0 +1,16 @@
+title: Which rules the knowledge base keeps
+question: Of the 74 rules in the knowledge base, 66 are linked to nothing and none carries a proof. Does the knowledge base keep only rules a check or a test could catch, and turn the rest into plain decisions, or keep every rule as it is?
+context: Found 2026-11-22 by the ontology review. Most rules restate an answered decision or an agent habit; they make 140 of the 254 rows of work left.
+options:
+  keep-checkable:
+    label: A rule stays only when a handler, interface, test or check can satisfy it; the others become plain decisions or are removed with a reason
+  keep-all:
+    label: Every rule stays as it is, and the work list explains the unlinked ones
+proposal:
+  chose: keep-checkable
+  why: A rule nothing can follow is a decision in prose, and it floods the work list with rows that are not work.
+answers:
+- chose: keep-checkable
+  said: "Follow Fable's recommendation: rules stay only when a check can catch them."
+  at: '2026-11-22T15:44:52+01:00'
+  where: ai:claude/f6fcc5ed

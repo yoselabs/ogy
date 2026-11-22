@@ -1,0 +1,21 @@
+title: What a context is
+question: The owner answered that areas group into contexts. Is a context a field of an area, its own kind, or only something the viewer computes?
+context: The answer contexts-above-areas created nothing. The word context is already avoided for area, used for a decision's field and for an enum in the viewing area.
+options:
+  area-field:
+    label: A field of area naming its context, with a new word that is not context
+  own-kind:
+    label: A kind of its own that areas link to
+  viewer-only:
+    label: Nothing in the ontology; the board lets the owner group areas and keeps that outside the knowledge base
+  defer:
+    label: Nothing for now; decide when the board filters by it
+proposal:
+  chose: defer
+  why: No build needs it yet, and the word must be chosen first.
+answers:
+- chose: area-field
+  said: "Follow Fable's recommendation: a field of area, with a new word that is not context."
+  at: '2026-11-22T15:44:57+01:00'
+  where: ai:claude/f6fcc5ed
+  note: The word is still to be chosen.

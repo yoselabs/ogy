@@ -15,3 +15,8 @@ answers:
   at: '2026-11-22T03:12:58+01:00'
   where: ai:claude/f6fcc5ed
   note: Wants the MCP server and the API in one process like a2kay; recorded as a separate decision to settle.
+- chose: per-write-lock
+  said: The per-write lock stands; the server holds nothing that cannot be rebuilt from the files.
+  at: '2026-11-22T15:45:11+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Replaces the word stateless; see view-state-store.

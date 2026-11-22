@@ -1,0 +1,16 @@
+title: Whether inspection is modelled as real steps
+question: Are the board's inspection workflows modelled as real steps with refusal cases, or left as one step each?
+context: The three inspection workflows have one step, one choice and one success end; tooltip, pin, search and walk live only in prose and two enums. Levels of detail derived from the ontology need steps to derive from.
+options:
+  model-steps:
+    label: Model the real steps (look, pin, search, walk, preview), each with its refusal cases such as an unknown address or invalid proposed records
+  outside-workflows:
+    label: Inspection stays outside workflows; the board is described by its interfaces and rules only
+proposal:
+  chose: model-steps
+  why: Detail levels, parity coverage and the work list all read steps; prose gives them nothing to read.
+answers:
+- chose: model-steps
+  said: 'Yes: model the inspection as real steps.'
+  at: '2026-11-22T15:16:54+01:00'
+  where: ai:claude/f6fcc5ed

@@ -12,3 +12,9 @@ proposal:
   chose: focus-request
   why: A stored request survives the chat, can be answered from the board, and lets the board move to the target by itself.
   heard: Wants the agent to be able to point him at something, such as asking him to assess a decision or zooming to a workflow or entity.
+answers:
+- chose: focus-request
+  said: The agent points over MCP; the board follows it when he is idle and shows a request he can accept when he is typing or reading a decision.
+  at: '2026-11-22T17:11:58+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Follows the critic: being moved while answering is how wrong answers get recorded. The option text says a card and a move; the idle versus busy rule is his condition.'

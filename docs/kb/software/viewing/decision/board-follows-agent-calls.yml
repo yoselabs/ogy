@@ -12,3 +12,8 @@ proposal:
   chose: push
   why: The one process already sees every agent call, so it can tell the board at once; polling adds delay and load for nothing.
   heard: Wants every agent call to show on the board immediately, with no refresh.
+answers:
+- chose: push
+  said: The server pushes changes to the board at once; the page shows the connection state.
+  at: '2026-11-22T17:12:03+01:00'
+  where: ai:claude/f6fcc5ed

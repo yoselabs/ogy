@@ -1,0 +1,19 @@
+title: Where the server keeps its state
+question: Does the server keep any state of its own, and if it does, are the YAML files still the truth?
+context: 'Owner, 2026-11-22: MCP and the board are one process now, and the earlier answer that the server is stateless is changing. He said if needed the state could live in SQLite with the YAML files as projections, moving towards a2kay, where files are the truth and a graph index is derived.'
+options:
+  files-only:
+    label: No state; every request reads the files, as today
+  derived-index:
+    label: The YAML files stay the truth; the server keeps a SQLite index rebuilt from them for speed and for what the board needs between requests
+  database-truth:
+    label: SQLite is the truth and the YAML files are written out from it as projections
+proposal:
+  chose: derived-index
+  why: It gives the speed and the live state the board needs and keeps Git as the truth, as a2kay does; a database as the truth would break reading and reviewing the knowledge base in Git.
+answers:
+- chose: derived-index
+  said: "Follow Fable's recommendation: the YAML files in Git stay the truth; the server keeps an index rebuilt from them."
+  at: '2026-11-22T15:45:02+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Start with an in-memory snapshot behind one read interface; SQLite when a cold start is measured slow or state must survive a restart.

@@ -21,10 +21,15 @@ options:
     sets:
       product/inspection/capability/see-the-product-map:
         says: 'ogy shows the product as a canvas to zoom, expand and follow: areas far out, workflows and entities in the middle, steps up close, every link drawn, and a click lights what a thing reaches and what reaches it.'
+  pages:
+    label: 'Pages to dive through: a map of areas, an area page that tells why-chains and lists, and a drawn graph for one workflow or one entity at a time, with search and the waiting list always at hand; no free-form canvas'
+    sets:
+      product/inspection/capability/see-the-product-map:
+        says: 'ogy shows the product as pages to dive through: a map of areas, an area page, and one drawn flow or lifecycle at a time, with every link a click away and the entries that wait for the owner in sight.'
 proposal:
-  chose: canvas
-  why: The owner found the sitemap page too primitive; feeling how things connect needs the links drawn and a zoom from area to step, which a list cannot give.
-  heard: The page is too primitive; wants to zoom out and in, expand and dive, see how things connect, a mirror-like picture of the product, maybe served from a server instead of a file. Read here as a Miro-like board.
+  chose: pages
+  why: Four generations of the canvas gave overlapping blocks, struck-through labels and merged arrows; position on a free canvas carries no meaning in this data, and the two real graphs are small enough to draw one at a time without crossings.
+  heard: Wants the whole thing reviewed harshly and made right, and the cost of everything is nothing, even if it means starting anew.
 answers:
 - chose: sitemap-mocks
   said: 'Wants both the sitemap and the mocks: start simple, build it, and judge by how it looks.'
@@ -36,3 +41,8 @@ answers:
   at: '2026-11-21T22:31:52+01:00'
   where: ai:claude/f6fcc5ed
   note: 'Hedged: "Yes, I guess." Revises a prior answer.'
+- chose: pages
+  said: 'Follows the critic: the board is pages to dive through (map, area, one flow or lifecycle at a time), not a free canvas.'
+  at: '2026-11-22T17:11:37+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Revises his earlier canvas answer; said as "follow Fable on all, go ahead".

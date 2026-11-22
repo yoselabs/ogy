@@ -5,12 +5,12 @@
   realizes:
   - product/inspection/goal/understand-recorded-product
 - id: see-the-product-map
-  says: 'ogy shows the product as a canvas to zoom, expand and follow: areas far out, workflows and entities in the middle, steps up close, every link drawn, and a click lights what a thing reaches and what reaches it.'
+  says: 'ogy shows the product as pages to dive through: a map of areas, an area page, and one drawn flow or lifecycle at a time, with every link a click away and the entries that wait for the owner in sight.'
   agreed:
-    at: '2026-11-21T22:31:52+01:00'
+    at: '2026-11-22T17:11:37+01:00'
     where: ai:claude/f6fcc5ed
-    said: Approved the verdict table, which revises the earlier sitemap-mocks choice to a canvas.
-    hash: a423c3f8a238
+    said: 'Follows the critic: the board is pages to dive through (map, area, one flow or lifecycle at a time), not a free canvas.'
+    hash: 90b36bb1edf9
   realizes:
   - product/inspection/goal/understand-recorded-product
 - id: preview-a-new-requirement

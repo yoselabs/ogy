@@ -1,0 +1,18 @@
+title: Whether a click on the board is the owner speaking
+question: When the owner clicks an option on the board, what is recorded as his answer?
+context: ogy stores no messages; every answer carries a short paraphrase of what the person said, and only a person agrees. The decision human-decision-mode says a deliberate choose click can count.
+options:
+  click-and-paraphrase:
+    label: The click chooses the option and a one-line paraphrase is filled in with the option's label, editable by him, and shown back to him after it is recorded
+  click-only:
+    label: The click alone is recorded, with the option's label as the paraphrase
+  typed-paraphrase:
+    label: He must type his own paraphrase before the answer is recorded
+proposal:
+  chose: click-and-paraphrase
+  why: One Enter records the plain case, his own words replace the label when he has any, and the read-back keeps every answer visible to him.
+answers:
+- chose: click-and-paraphrase
+  said: A click chooses the option; the paraphrase is pre-filled with the option's label, editable, and shown back after it is recorded.
+  at: '2026-11-22T17:11:49+01:00'
+  where: ai:claude/f6fcc5ed

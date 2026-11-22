@@ -12,3 +12,9 @@ proposal:
   chose: both
   why: A throwaway sketch must not pollute the knowledge base, and a sketch that matters must become a real entry in one call; the existing unagreed state already says what is not settled.
   heard: Wants to show how a new workflow would look as a preview, and later tell the agent to commit it, or see what is still only modelled.
+answers:
+- chose: both
+  said: A sketch is only shown and writes nothing; keeping it is his explicit act, and it goes through the same answer path with a read-back.
+  at: '2026-11-22T17:11:54+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Followed the critic's recommendation on all open items.
