@@ -8,11 +8,11 @@ import { createRouter } from "./shell/router.js";
 import { followSystemTheme } from "./shell/theme.js";
 import { mountStatusStrip } from "./shell/status-strip.js";
 import { words } from "./ui/words.js";
-import { mountCanvas } from "./views/canvas.js";
 import { areaRoute } from "./views/area.js";
 import { decisionRoute } from "./views/decision.js";
 import { mountNotFound } from "./views/not-found.js";
 import { waitingRoute } from "./views/waiting.js";
+import { mapRoutes } from "./views/map.js";
 import { mountSearch } from "./views/search.js";
 
 export const store = createStore();
@@ -20,12 +20,7 @@ const inspection = { error: null };
 const live = createLive(standingClient(), versionClient());
 const board = [{ text: words.board, href: "#/" }];
 // Every page of the board is one entry here; a route no entry claims is the not-found page.
-const routes = [
-  { test: (path) => path === "" || path === "board", layer: "product", mount: mountCanvas, crumbs: () => [{ text: words.board }] },
-  decisionRoute,
-  waitingRoute,
-  areaRoute,
-];
+const routes = [...mapRoutes, decisionRoute, waitingRoute, areaRoute];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);
 

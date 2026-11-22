@@ -127,13 +127,24 @@ is claimed by this stage.
 
 `index.html` is a shell: header, standing strip, breadcrumb, main column, right rail. Hash routes are the whole view state
 (`#/<path>?level=&sel=&rail=`; `js/shell/router.js`): a route no entry in `main.js` claims is the not-found page, and the
-canvas stays at `#/` and `#/board` until the Map replaces it. The header names the repository and revision (`repository`
+Map is the home at `#/` (product) and `#/software`; the old canvas and `#/board` are gone. The header names the repository and revision (`repository`
 and `revision` of `/api/standing`: the repository folder, and `worktree` or the commit) and when the page last saw the
 standing change; the strip shows `totals` and links a fact only once its list route exists. `js/ui/mention.js` is the one
 function that draws an entry's name (`data-renderer="mention"`); `js/ui/authored.js` marks KB text with `data-authored`;
 `js/ui/words.js` is the viewer's own fixed list. `assets/board/tokens.css` holds the five type sizes (11/13/15/18/24), the
 8px grid, the lab28 neutrals and the status colours for light and dark; `js/model/icons.js` gives every kind, effect
 operation and mark one glyph (`tests/test_web_shell.py` keeps them apart).
+## The Map (stage 7 of the rebuild)
+
+`js/views/map.js` mounts at `#/` (product) and `#/software`: one tile per area that has at least one top-level entry in that
+layer (`js/views/map/data.js`, one pass over the inspection model). A tile is the area's name (a link to `#/<layer>/<area>`, the
+Area page), its sentence, its goals as lines (its own `goal` entries and the goals its capabilities realize; three shown, then
+"+N more"; "No goal recorded" in amber where the layer has goals and the area has none; `shared` is exempt), the standing
+marks of that area from `/api/standing` (waiting, owed, unagreed, changed; drawn only where the count is above zero, and only
+while the standing is for the snapshot on screen) and one count link per kind, `#/<layer>/<area>?kind=<kind>`. A count is the
+area's top-level entries of that kind; parts are counted by their owner. The page times its own render with
+`performance.measure("map-render")`. The deleted canvas, its card renderers and the `#/board` route are not kept.
+
 ## The waiting list (stage 3 of the rebuild)
 
 `js/views/waiting.js` draws the decisions whose `status` in `/api/standing` is `waiting`, grouped by layer and area; titles and

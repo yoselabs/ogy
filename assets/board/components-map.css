@@ -1,0 +1,42 @@
+@layer components {
+  /* The Map: a grid of area tiles, one column on a phone. Colour only for status: owed in amber, the waiting mark in amber. */
+  .map { max-width: 1280px; }
+  .map h1 { margin: 0 0 16px; }
+  .map .loading, .map .empty { margin: 0; color: var(--mute); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+  .tile { display: grid; gap: 12px; align-content: start; min-width: 0; padding: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  .tile h2 { margin: 0; font-size: var(--text-m); font-weight: 600; min-width: 0; }
+  .tile .mention { display: inline-flex; align-items: center; gap: 8px; min-width: 0; color: var(--fg); text-decoration: none; overflow-wrap: anywhere; }
+  .tile .mention svg { width: 16px; height: 16px; flex: none; }
+  .tile a.mention:hover { text-decoration: underline; }
+  .tile > .says { margin: 0; color: var(--mute); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .tile .goal-line .says { margin: 0; color: var(--mute); overflow-wrap: anywhere; }
+  .tile .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tile .stat { min-height: 24px; padding: 0 8px; gap: 6px; }
+  .tile .stat .ic { width: 14px; height: 14px; }
+  .tile .mark b, .tile .stat b { font-weight: 600; }
+
+  .goal-lines { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .goal-line { display: grid; gap: 2px; min-width: 0; padding-left: 12px; border-left: 2px solid var(--line-strong); }
+  .goal-line .mention { font-size: var(--text-s); font-weight: 600; }
+  .goal-line .mention svg { width: 14px; height: 14px; }
+  .goal-line .says { font-size: var(--text-s); }
+  .goal-lines .more { color: var(--mute); }
+
+  .counts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .count { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; color: var(--fg); text-decoration: none; background: var(--bg); border: 1px solid var(--line); border-radius: 16px; }
+  .count:hover { box-shadow: inset 0 0 0 1px currentColor; }
+  .count .ic { width: 14px; height: 14px; flex: none; }
+  .count .kind-name { font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+  .count b { font-weight: 600; }
+
+  @media (max-width: 720px) {
+    .count { min-height: 44px; }
+    .tile .card-header { align-items: center; }
+    .tile h2 .mention { min-height: 44px; }
+    .goal-line .mention, .goal-lines .more { min-height: 28px; }
+    .goal-lines .more { display: inline-flex; align-items: center; }
+    .tile { padding: 12px; }
+    .tile .stat { min-height: 28px; }
+  }
+}

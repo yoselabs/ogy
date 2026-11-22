@@ -1,4 +1,4 @@
-// Old canvas rules select on data-theme; the tokens follow the system setting on their own.
+// The tokens follow the system setting; data-theme lets a check force one.
 export function followSystemTheme() {
   const query = matchMedia("(prefers-color-scheme: dark)");
   const apply = () => {

@@ -1,11 +1,11 @@
 [
   {"set":"tool","name":"nowhere","url":"/#/nowhere","wait":2500},
-  {"set":"tool","name":"board","url":"/#/board?sel=product/lending/workflow/borrow","wait":3000,"scope":"#header, #strip, #crumb, #rail"},
+  {"set":"tool","name":"map","url":"/#/?sel=product/lending/workflow/borrow","wait":3000,"scope":"#header, #strip, #crumb, #rail"},
   {"set":"ogy","name":"nowhere","url":"/#/nowhere","wait":30000},
-  {"set":"ogy","name":"board","url":"/#/board?sel=product/review/workflow/review-and-reply","wait":30000,"scope":"#header, #strip, #crumb, #rail"},
+  {"set":"ogy","name":"map","url":"/#/?sel=product/review/workflow/review-and-reply","wait":30000,"scope":"#header, #strip, #crumb, #rail"},
   {"set":"tool","name":"waiting","url":"/#/waiting","wait":3000,"scope":"#header, #strip, #crumb, #main, #rail"},
   {"set":"ogy","name":"waiting","url":"/#/waiting","wait":30000,"scope":"#header, #strip, #crumb, #main, #rail"},
   {"set":"synthetic","name":"waiting","url":"/#/waiting","wait":30000,"scope":"#header, #strip, #crumb, #main, #rail"},
   {"set":"synthetic","name":"nowhere","url":"/#/nowhere","wait":8000},
-  {"set":"synthetic","name":"board","url":"/#/board?sel=product/lending-30/workflow/borrow","wait":8000,"scope":"#header, #strip, #crumb, #rail"}
+  {"set":"synthetic","name":"map","url":"/#/?sel=product/lending-30/workflow/borrow","wait":8000,"scope":"#header, #strip, #crumb, #rail"}
 ]
