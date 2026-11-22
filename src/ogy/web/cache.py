@@ -18,6 +18,7 @@ from ogy.web.standing import standing
 from ogy.writes import reading
 
 if TYPE_CHECKING:
+    from ogy import ops
     from ogy.target import Target
 
 
@@ -30,8 +31,11 @@ class InspectionCache:
         self.key: str | None = None
         self.document: Document = {}
         self.encoded = b""
-        self.reached: dict[str, dict[str, dict[str, object]]] = {}
-        self.reached_key: str | None = None
+        self.loaded: ops.Loaded | None = None  # the read the cached inspection came from, its files held in memory
+        self.flight = threading.Lock()  # one standing computation at a time; the repository lock is not held through it
+        self.standing_key: str | None = None
+        self.standing_document: Document = {}
+        self.standing_encoded = b""
 
     def current(self) -> Document:
         with self.guard, reading(self.target):
@@ -43,12 +47,25 @@ class InspectionCache:
             return self._current(), self.encoded
 
     def standing(self) -> Document:
-        """Read standing and its snapshot version under one repository lock."""
+        """Standing with its snapshot version: cached per input identity, computed once for concurrent requests."""
+        return self.standing_response()[0]
+
+    def standing_response(self) -> tuple[Document, bytes]:
+        """The standing document and its encoded bytes. The repository lock is held only to read the files into a snapshot;
+        the computation runs on that snapshot after it is released, so a trial write never waits for it."""
         with self.guard, reading(self.target):
-            document = self._current()
-            if self.reached_key != self.key:
-                self.reached, self.reached_key = reach(self.target.read()[1]), self.key
-            return {**standing(self.target, self.reached), "version": document["snapshot"]["version"]}
+            version = str(self._current()["snapshot"]["version"])
+            key, loaded = self.key, self.loaded
+            assert loaded is not None  # noqa: S101  # _current filled it
+            if self.standing_key == key:
+                return self.standing_document, self.standing_encoded
+        with self.flight:
+            if self.standing_key == key:  # another request computed it while this one waited
+                return self.standing_document, self.standing_encoded
+            document = {**standing(self.target, reach(loaded[1]), loaded), "version": version}
+            encoded = json.dumps(document, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode("utf-8")
+            self.standing_document, self.standing_encoded, self.standing_key = document, encoded, key
+            return document, encoded
 
     def version_in_write(self) -> str:
         """The inspection version while the caller already holds the repository's write lock."""
@@ -71,7 +88,9 @@ class InspectionCache:
         key = digest(signature, length=64)
         if key != self.key:
             source = open_source(target.repo, ".", target.kb)
-            document = inspect(load(source, target.kinds()))
+            source.read(source.listing())  # hold every file's text now: later reads, after the lock is released, see this state
+            snapshot = load(source, target.kinds())
+            document = inspect(snapshot)
             config = target.repo / "ogy.yml"
             identity = digest(
                 {
@@ -83,5 +102,5 @@ class InspectionCache:
             )
             document["snapshot"]["version"] = digest({"inputs": identity, "snapshot": document["snapshot"]}, length=64)
             encoded = json.dumps(document, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode("utf-8")
-            self.document, self.encoded, self.key = document, encoded, key
+            self.document, self.encoded, self.key, self.loaded = document, encoded, key, (source, snapshot)
         return self.document

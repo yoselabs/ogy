@@ -42,8 +42,8 @@ def routes(target: Target) -> list[Route | Mount]:
         return response(request, document["snapshot"], document["snapshot"]["version"])
 
     def standing(request: Request) -> Response:
-        data = cache.standing()
-        return response(request, data, data["version"])
+        data, encoded = cache.standing_response()
+        return response(request, data, data["version"], encoded=encoded)
 
     def entry(request: Request) -> Response:
         document = cache.current()

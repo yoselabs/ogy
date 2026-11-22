@@ -27,8 +27,12 @@ if TYPE_CHECKING:
 
 def read_ledgers(source: Source) -> tuple[dict[str, Ledger], list[removed.Problem]]:
     """The `removed.yml` of every home in one source: the ledgers by home and the R4 problems of the ones that do not read."""
-    paths = [path for path in source.listing() if path.count("/") in (1, 2) and path.endswith("/" + REMOVED_FILE)]
-    return removed.parse(source.read(paths))
+    cached = getattr(source, "_ledgers", None)  # a source is one frozen read: parse its ledgers once
+    if cached is None:
+        paths = [path for path in source.listing() if path.count("/") in (1, 2) and path.endswith("/" + REMOVED_FILE)]
+        cached = removed.parse(source.read(paths))
+        source._ledgers = cached  # type: ignore[attr-defined]  # noqa: SLF001
+    return cached
 
 
 def check_base(

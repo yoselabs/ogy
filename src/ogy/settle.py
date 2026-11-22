@@ -112,6 +112,13 @@ def answers_key(snapshot: Snapshot) -> str:
 
 
 def decisions(snapshot: Snapshot) -> list[Decision]:
+    """Every decision, in address order; built once per snapshot (a snapshot never changes), so `status` stays linear."""
+    if snapshot._decisions is None:  # noqa: SLF001
+        snapshot._decisions = _decisions(snapshot)  # noqa: SLF001
+    return list(snapshot._decisions)  # noqa: SLF001
+
+
+def _decisions(snapshot: Snapshot) -> list[Decision]:
     kind = snapshot.ontology.settling_kind()
     if kind is None or kind.settling is None:
         return []

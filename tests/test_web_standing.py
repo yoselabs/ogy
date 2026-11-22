@@ -2,6 +2,7 @@
 
 import shutil
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from starlette.testclient import TestClient
@@ -9,6 +10,8 @@ from starlette.testclient import TestClient
 from ogy import ops, wire
 from ogy.target import Target
 from ogy.web import reach as reach_module
+from ogy.web import standing as standing_module
+from ogy.web.cache import InspectionCache
 from ogy.web.serve import application
 from ogy.writes import locked
 
@@ -159,3 +162,47 @@ def test_reach_is_fast_and_standing_small_on_this_repository():
         response = client.get("/api/standing")
     assert response.status_code == 200
     assert len(response.content) < 1_000_000
+
+
+def _counting(monkeypatch):
+    calls = []
+    real = standing_module.standing
+    monkeypatch.setattr("ogy.web.cache.standing", lambda *args: calls.append(1) or real(*args))
+    return calls
+
+
+def test_standing_is_served_from_cache_until_a_file_changes(repo, monkeypatch):
+    """Given an unchanged KB, a second request does not compute; an edit does, and the result equals the uncached function."""
+    shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
+    target = Target(repo)
+    calls = _counting(monkeypatch)
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+        first = client.get("/api/standing")
+        assert client.get("/api/standing").content == first.content
+        assert client.get("/api/standing", headers={"If-None-Match": first.headers["etag"]}).status_code == 304
+        assert len(calls) == 1
+        ops.run_answer(target, "product/lending/decision/fee-rounding", "up", "Round up", "ai:test/cache", at="2099-11-23T12:00:00+00:00")
+        second = client.get("/api/standing").json()
+        assert len(calls) == 2
+        assert second["version"] != first.json()["version"]
+    expected = standing_module.standing(target, reach_module.reach(target.read()[1]))
+    assert {k: v for k, v in second.items() if k != "version"} == expected
+
+
+def test_concurrent_standing_requests_compute_once(repo, monkeypatch):
+    """Given requests arriving together, one computation serves them all."""
+    shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
+    cache = InspectionCache(Target(repo))
+    calls = []
+    real = standing_module.standing
+
+    def slow(*args):
+        calls.append(1)
+        time.sleep(0.2)
+        return real(*args)
+
+    monkeypatch.setattr("ogy.web.cache.standing", slow)
+    with ThreadPoolExecutor(8) as pool:
+        results = list(pool.map(lambda _: cache.standing_response()[1], range(8)))
+    assert len(calls) == 1
+    assert len(set(results)) == 1

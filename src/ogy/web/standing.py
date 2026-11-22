@@ -15,12 +15,14 @@ if TYPE_CHECKING:
     from ogy.target import Target
 
 
-def standing(target: Target, options: Mapping[str, Mapping[str, object]]) -> Document:
-    """Return computed standing; `options` is the cached reach of every option, the locked API read attaches the version."""
-    overview = ops.run_status(target, None, with_coverage=False).value
-    work = ops.run_work(target, None).value
-    dropped = ops.run_dropped(target).value
-    snapshot = target.read()[1]
+def standing(target: Target, options: Mapping[str, Mapping[str, object]], loaded: ops.Loaded | None = None) -> Document:
+    """Return computed standing; `options` is the cached reach of every option, the caller attaches the version. `loaded` is the
+    one read of the knowledge base all four operations share (a read of its own when none is given)."""
+    loaded = loaded or target.read()
+    overview = ops.run_status(target, None, with_coverage=False, loaded=loaded).value
+    work = ops.run_work(target, None, loaded).value
+    dropped = ops.run_dropped(target, loaded).value
+    snapshot = loaded[1]
     rows = {}
     for decision in decisions(snapshot):
         newest = decision.newest

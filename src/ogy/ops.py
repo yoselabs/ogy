@@ -88,6 +88,9 @@ def _resolve(snapshot: Snapshot, text: str) -> Address:
     return address
 
 
+type Loaded = tuple[Source, Snapshot]  # one read of the knowledge base that several operations share
+
+
 def _scope(snapshot: Snapshot, scope: str | None) -> str | None:
     """The scope asked for: a layer `layers:` declares (with entries or not yet), or a `<layer>/<area>` or an area that has
     entries; NotFoundError with the scopes that are near it otherwise."""
@@ -104,10 +107,12 @@ def _in_scope(finding: Finding, scope: str, ontology: Ontology) -> bool:
     return in_scope(home_of("/".join(parts[1:] if parts[0] == "built" else parts), ontology), scope)
 
 
-def run_check(target: Target, base: str | None = None, *, landing: bool = False, area: str | None = None) -> Run[list[Finding]]:
+def run_check(
+    target: Target, base: str | None = None, *, landing: bool = False, area: str | None = None, loaded: Loaded | None = None
+) -> Run[list[Finding]]:
     """Every check (of one scope when given: a layer, `<layer>/<area>` or an area); against `base` (a commit), else the merge
-    base with the land branch (refused when `ogy.yml` names none, in a Git repository)."""
-    source, snapshot = target.read()
+    base with the land branch (refused when `ogy.yml` names none, in a Git repository). `loaded` is a read the caller shares."""
+    source, snapshot = loaded or target.read()
     only = _scope(snapshot, area)
     found = base or merge_base(target)
     older = open_source(target.repo, found, target.kb, required=False) if found else None
@@ -174,10 +179,10 @@ def _owes(item: Work, scope: str | None, ontology: Ontology) -> bool:
     return scope in (None, item.owed_by, area, f"{item.owed_by}/{area}")
 
 
-def run_work(target: Target, scope: str | None = None) -> Run[list[Work]]:
+def run_work(target: Target, scope: str | None = None, loaded: Loaded | None = None) -> Run[list[Work]]:
     """What the built record says is still to do; given a scope, only in one layer (`product`: what the business still
     has to say, without the build behind it), one `<layer>/<area>`, or one area in every layer."""
-    source, snapshot = target.read()
+    source, snapshot = loaded or target.read()
     _scope(snapshot, scope)
     work = [
         item for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source)) if _owes(item, scope, snapshot.ontology)
@@ -236,8 +241,8 @@ def run_review(
     return Run(replace(found, round_id=kept.id if kept else ""), source.reads)
 
 
-def run_dropped(target: Target) -> Run[Dropped]:
-    source, snapshot = target.read()
+def run_dropped(target: Target, loaded: Loaded | None = None) -> Run[Dropped]:
+    source, snapshot = loaded or target.read()
     return Run(dropped(snapshot, list(_ledger(source).values())), source.reads)
 
 
@@ -277,12 +282,13 @@ def run_find(
     )
 
 
-def run_status(target: Target, area: str | None = None, *, with_coverage: bool = False) -> Run[Overview]:
+def run_status(target: Target, area: str | None = None, *, with_coverage: bool = False, loaded: Loaded | None = None) -> Run[Overview]:
     """Counts per area, and how many findings, pieces of work and dropped things there are. Saves nothing.
-    With `with_coverage`, also the kinds each layer has no entry of."""
-    source, snapshot = target.read()
+    With `with_coverage`, also the kinds each layer has no entry of. `loaded` is a read the caller shares: one read serves all four."""
+    loaded = loaded or target.read()
+    source, snapshot = loaded
     only = _scope(snapshot, area)
-    found, work, lost = run_check(target, area=only), run_work(target, only), run_dropped(target)
+    found, work, lost = run_check(target, area=only, loaded=loaded), run_work(target, only, loaded), run_dropped(target, loaded)
     standing = review(snapshot, everything=True, area=only).headers
     return Run(
         Overview(

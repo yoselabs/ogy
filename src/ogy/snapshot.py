@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from content_digest import digest
 
@@ -64,6 +64,7 @@ class Snapshot:
     _prints: dict[tuple[Address, str], str] = field(default_factory=dict, repr=False)
     _visiting: set[Address] = field(default_factory=set, repr=False)
     _inputs: dict[str, list[tuple[str, ...]]] = field(default_factory=dict, repr=False)
+    _decisions: list[Any] | None = field(default=None, repr=False)  # settle.decisions, built once: a snapshot never changes
 
     @property
     def links(self) -> LinkIndex:

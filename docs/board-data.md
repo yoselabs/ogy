@@ -70,12 +70,18 @@ the existing show status function supplies decision status, and the status,
 work and dropped operations supply the remaining facts. CLI formatting is unchanged.
 Waiting counts questions, not the separate count of terms awaiting agreement.
 
-Standing is computed per request, under the same repository lock as inspection;
-it is not memoized because built records and evidence files also affect work.
+Standing is computed once per input identity: the same stat signature as the
+inspection cache, which covers the KB files (built records included), `ogy.yml` and
+the ontology. A request with an unchanged signature is served from memory; concurrent
+requests share one computation (single flight). The repository lock is held only
+to read the KB files into a snapshot; the four operations (status, work, dropped,
+option reach) then run on that one snapshot with the lock released, so a trial
+write never waits for them. Evidence files outside the KB (code, documents a proof
+names) are not in the signature: a change to one shows after the next KB change.
 `computed: true` distinguishes these facts from authored fields. `version` is
 the inspection snapshot version captured in that same locked read; conditional
-requests use the usual private, per-route ETag. It identifies KB/configuration/
-ontology input changes, not independent built-record or evidence-file changes.
+requests use the usual private, per-route ETag (a 304 needs no recomputation). It
+identifies KB/configuration/ontology input changes, not evidence-file changes.
 The browser checks for this stage leave the current board unchanged.
 
 ## Inspection cache and state
