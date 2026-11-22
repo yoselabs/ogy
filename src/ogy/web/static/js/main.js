@@ -6,6 +6,7 @@ import { createLive } from "./shell/live.js";
 import { mountRail } from "./shell/rail.js";
 import { createRouter } from "./shell/router.js";
 import { followSystemTheme } from "./shell/theme.js";
+import { createSpotlight } from "./spotlight/controller.js";
 import { mountStatusStrip } from "./shell/status-strip.js";
 import { words } from "./ui/words.js";
 import { areaRoute } from "./views/area.js";
@@ -29,7 +30,8 @@ const router = createRouter(routes, fallback);
 
 followSystemTheme();
 const part = (id) => document.getElementById(id);
-const context = { router, live, store, inspection };
+const spotlight = createSpotlight({ router, main: part("main") });
+const context = { router, live, store, inspection, spotlight };
 mountHeader(part("header"), context);
 mountStatusStrip(part("strip"), context);
 mountBreadcrumb(part("crumb"), context);

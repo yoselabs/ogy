@@ -30,6 +30,7 @@ for(const sc of JSON.parse(fs.readFileSync(process.argv[2]))){
     else if(a.wheel){await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:a.at[0],y:a.at[1],deltaX:0,deltaY:a.wheel,modifiers:a.mod||0})}
     else if(a.key){const k=a.key;await send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0,...(a.text?{text:a.text}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0})}
     else if(a.type){await send('Input.insertText',{text:a.type})}
+    else if(a.call){const t0=Date.now();const r=await fetch(a.call.url,{method:'POST',headers:a.call.headers,body:JSON.stringify(a.call.body)});out.push('CALL '+JSON.stringify({t0,t1:Date.now(),status:r.status,text:(await r.text()).slice(0,300)}))}
     else if(a.eval){out.push(String(await ev(a.eval)))}
     else if(a.shot){const r=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(S+'/'+a.shot+'.png',Buffer.from(r.data,'base64'))}
     await sleep(a.wait||500);

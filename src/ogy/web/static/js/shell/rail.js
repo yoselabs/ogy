@@ -2,6 +2,7 @@ import { marksFor, cardHeader } from "../ui/card-header.js";
 import { h } from "../ui/dom.js";
 import { words } from "../ui/words.js";
 import { walkPanel } from "../views/flow/rail.js";
+import { bindAgent } from "../spotlight/agent-tab.js";
 import { bindWaiting } from "../views/waiting.js";
 
 const TABS = [
@@ -11,9 +12,10 @@ const TABS = [
 ];
 
 // The one right rail: three tabs, one panel. Below 720px it sits under the page and a tab opens it in place.
-export function mountRail(root, { router, live, store }) {
+export function mountRail(root, { router, live, store, spotlight }) {
   let open = false;
   let unbind = null;
+  let bound = null;
   const buttons = TABS.map(([name, label]) =>
     h(
       "button",
@@ -35,7 +37,7 @@ export function mountRail(root, { router, live, store }) {
   const counts = new Map(buttons.map((button) => [button.dataset.tab, h("span", { class: "tab-count" })]));
   const panel = h("div", { role: "tabpanel", id: "rail-panel", class: "rail-panel" });
   root.append(h("div", { role: "tablist", class: "rail-tabs", "aria-label": words.tabs }, buttons), panel);
-  buttons.find((button) => button.dataset.tab === "waiting").append(counts.get("waiting"));
+  for (const name of ["waiting", "agent"]) buttons.find((button) => button.dataset.tab === name).append(counts.get(name));
   const paint = (route = router.current()) => {
     const active = ["details", "waiting", "agent"].includes(route.query.rail) ? route.query.rail : "details";
     for (const button of buttons) {
@@ -44,13 +46,16 @@ export function mountRail(root, { router, live, store }) {
     }
     root.dataset.open = String(open);
     panel.setAttribute("aria-labelledby", `tab-${active}`);
-    if (active === "waiting") {
-      if (unbind) return;
-      const host = h("div", { class: "rail-waiting" });
+    if (active === "waiting" || active === "agent") {
+      if (unbind && bound === active) return;
+      unbind?.();
+      bound = active;
+      const host = h("div", { class: `rail-${active}` });
       panel.replaceChildren(host);
-      unbind = bindWaiting(host, { live, store }, { compact: true });
+      unbind = active === "agent" ? bindAgent(host, { spotlight, store }) : bindWaiting(host, { live, store }, { compact: true });
       return;
     }
+    bound = null;
     unbind?.();
     unbind = null;
     const node = active === "details" && route.query.sel ? store.getState().model?.byId.get(route.query.sel) : null;
@@ -65,6 +70,17 @@ export function mountRail(root, { router, live, store }) {
   live.subscribe(({ data }) => {
     counts.get("waiting").textContent = data ? ` ${data.totals.waiting}` : "";
     paint();
+  });
+  // A new spotlight opens the panel under the page on a phone; the tab itself carries its target count on every size.
+  let shown = 0;
+  spotlight.subscribe(({ fresh, spotlight: active, request }) => {
+    counts.get("agent").textContent = active ? ` ${active.targets.length}` : "";
+    buttons.find((button) => button.dataset.tab === "agent").toggleAttribute("data-request", Boolean(request));
+    if (fresh !== shown) {
+      shown = fresh;
+      open = !request;
+      paint();
+    }
   });
   root.addEventListener("keydown", (event) => {
     const keys = { ArrowRight: 1, ArrowLeft: -1 };
