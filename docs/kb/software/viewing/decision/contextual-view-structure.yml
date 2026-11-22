@@ -1,0 +1,24 @@
+structure: true
+question: How are situation-specific representations of entries built?
+context: The earlier design dispatches by kind, context, detail and mode. A complete set of independent renderers would repeat fact selection and identity logic.
+because:
+- constitution/principle/one-owner-per-fact
+- software/ontology/decision/style-book-home
+options:
+  projection:
+    label: Derive shared inspection data, then compose kind recipes in context adapters
+  matrix:
+    label: Maintain an independent renderer for every supported kind and context
+  generic:
+    label: Use a generic card with kind-driven slots everywhere
+  no:
+    label: Keep the current rendering structure for now
+proposal:
+  chose: projection
+  why: Typed fact selection has one owner and is reusable by agents; kind recipes preserve distinct meanings while context adapters share layout and interaction.
+  heard: Wants each entry to have a suitable representation for its situation and asks whether a separate view for each is the right structure.
+answers:
+- chose: projection
+  said: 'Derive shared inspection data and compose views by recipe: yes.'
+  at: '2026-11-22T03:12:52+01:00'
+  where: ai:claude/f6fcc5ed

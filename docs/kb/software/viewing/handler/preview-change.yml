@@ -1,0 +1,8 @@
+says: Validate proposed records in memory and derive prospective differences and impact using the shared change planner, keeping advice separate.
+performs:
+- product/inspection/workflow/preview-requirement/step/preview/choice/preview
+satisfies:
+- product/inspection/rule/inspection-preserves-declarations
+- software/viewing/rule/agent-inspection-parity
+because:
+- product/inspection/decision/preview-a-new-requirement

@@ -1,0 +1,18 @@
+title: Command placeholders and accepted inputs
+question: A command line interface says how it is invoked in `invoked_as` (for example `library borrow <tool> <member>`) and may link the data it takes in with `accepts`. Must every placeholder in `invoked_as` be matched by an accepted entity or attribute, with ogy check reporting one that is not?
+context: 'Owner, 2026-11-21, looking at the board: the sketch of a command shows `<tool>` and `<member>` as plain text, while a field linked by `accepts` is drawn as an input. Today nothing connects the two, so the picture cannot say which data a command needs. Not built.'
+options:
+  text-only:
+    label: 'No: invoked_as is documentation; accepts says the data on its own'
+  checked:
+    label: 'Yes: each placeholder must be matched by an accepted entity or attribute, and check reports one that is not'
+proposal:
+  chose: checked
+  why: A command whose placeholders are not linked to data cannot be drawn as inputs, impact-checked or compared with the entities it changes; the match is cheap to check.
+  heard: Asked whether tool and member in a command are only text, or data the ontology defines and the board could draw as inputs.
+answers:
+- chose: checked
+  said: 'Approved the verdict table: command inputs are checked against the interface.'
+  at: '2026-11-21T22:32:13+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

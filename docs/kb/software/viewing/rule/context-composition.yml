@@ -1,0 +1,5 @@
+says: Each supported kind and context resolves deterministically through a kind recipe, a shared composition family and a context adapter; omission consumes identified facts, detached details restore context, and unsupported kinds remain identifiable and openable.
+constrains:
+- software/viewing/enum/inspection-context
+because:
+- software/viewing/decision/contextual-view-structure

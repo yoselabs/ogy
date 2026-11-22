@@ -1,0 +1,17 @@
+title: Whether ogy serve also speaks MCP
+question: Does ogy serve run the MCP server and the board API in the same process, so an agent changes and shows the topology through the process the browser reads?
+context: 'Owner, 2026-11-22: the MCP server we run should have this API, so changes made over MCP and the board go through the same process, as in a2kay. Earlier proposals said agents read through show and the board is not an MCP tool.'
+options:
+  one-process:
+    label: ogy serve serves the board, its API and the MCP tools over HTTP from one process; the stdio MCP server stays for clients that need it
+  two-processes:
+    label: The board server and the MCP server stay separate processes that read the same files
+proposal:
+  chose: one-process
+  why: One process can tell the board a person is looking at to refresh when an agent changes something, which the session-tab idea needs.
+  heard: The MCP server and the API should be the same process, like a2kay.
+answers:
+- chose: one-process
+  said: 'Derive the exact strategy from a2kay: one server process with MCP and the API; whatever is common and not yet in shelf moves into shelf.'
+  at: '2026-11-22T03:27:57+01:00'
+  where: ai:claude/f6fcc5ed

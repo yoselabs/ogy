@@ -1,0 +1,17 @@
+title: What the view server is built on
+question: Is the view server built on a web library new to ogy plus shelf's asgi packages with a front end of plain static JavaScript, or on something heavier?
+context: a2kay, the model for the topology, has no web front end or REST API yet (only plans), so ogy view is the first web UI in either project. a2kay's own library, a2kit, no longer exists, and a2kay cannot be a dependency (it requires Python below 3.15, ogy at least 3.15).
+options:
+  mirror-on-shelf:
+    label: Mirror a2kay's shape (loopback server, token, health check) on shelf packages and a web library confined to one package; plain static JavaScript with no build step; missing pieces are promoted to shelf so a2kay can reuse them
+  front-end-toolchain:
+    label: The same server with a front end built by a JavaScript toolchain
+proposal:
+  chose: mirror-on-shelf
+  why: Both apps meet later on the same substrate and URL layout; no build step keeps the front end one folder of files.
+answers:
+- chose: mirror-on-shelf
+  said: Clone a2kay's shape and move everything reusable into shelf; front end styled with Tailwind CSS; the API on shelf's verb system like a2kay.
+  at: '2026-11-22T03:12:40+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Tailwind CSS in the front end conflicts with the option's no-build-step wording; the front end form needs a follow-up decision.

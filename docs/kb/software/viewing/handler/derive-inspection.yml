@@ -1,0 +1,9 @@
+says: Resolve the requested snapshot and derive typed inspection models for command and board adapters.
+performs:
+- product/inspection/workflow/inspect-kb/step/read/choice/read
+- product/inspection/workflow/inspect-map/step/inspect/choice/inspect
+satisfies:
+- software/viewing/rule/projection-contract
+- software/viewing/rule/typed-reasons
+because:
+- software/viewing/decision/contextual-view-structure

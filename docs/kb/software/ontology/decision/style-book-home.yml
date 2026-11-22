@@ -1,0 +1,21 @@
+title: Where the UI style rules live in ogy
+structure: true
+question: 'Where do the many small UI decisions made while building the board (arrows hop over arrows, colour carries meaning, anything named is a link, icons per kind, hover then pin) live: as principles, rules and decisions in the knowledge base, as viewer configuration only, or in a new kind?'
+context: "Owner, 2026-11-21: the micro decisions together are a brand or style book and need a home; areas group topics but are not a style book. Candidates: constitution principles for the few big rules; rule entries satisfied by the viewer's interfaces; one decision per micro decision; design tokens as viewer data; a new kind only if none fits."
+options:
+  entries-and-viewer-tokens:
+    label: Principles for the big rules, rule entries for the small ones, decisions for the reasons; colours, icon names and spacing stay viewer data
+  viewer-only:
+    label: Everything stays in the viewer's own configuration and documentation
+  new-kind:
+    label: A new kind (style or token) holds the style rules and values
+proposal:
+  chose: entries-and-viewer-tokens
+  why: Rules and reasons are requirements the knowledge base already knows how to hold and check; values are viewer data.
+  heard: Many micro decisions together make a style book; it should live somewhere in ogy if ogy allows it.
+answers:
+- chose: entries-and-viewer-tokens
+  said: 'Approved the verdict table: style lives in entries, concrete tokens in the viewer.'
+  at: '2026-11-21T22:31:42+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

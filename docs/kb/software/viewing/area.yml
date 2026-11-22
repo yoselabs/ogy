@@ -1,0 +1,5 @@
+says: 'The derived inspection data, rendering and interaction of the board and its details. Not here: command invocation: cli; MCP transport: mcp; kind definitions: ontology.'
+unlike:
+- software/cli/area/cli
+- software/mcp/area/mcp
+- software/ontology/area/ontology

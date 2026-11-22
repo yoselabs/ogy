@@ -1,0 +1,20 @@
+title: How the board front end is built
+question: Is the board front end styled with Tailwind CSS built by a tool at release time, or written as plain CSS and JavaScript files with no build step?
+context: "Owner, 2026-11-22: a proper front end rendered with Tailwind CSS and an API like a2kay's. The answered substrate decision said plain static JavaScript with no build step; Tailwind normally needs a build, or its standalone tool, or a script loaded from a network address."
+options:
+  tailwind-built:
+    label: Tailwind CSS compiled by its standalone tool at release time; the built files ship inside the ogy package and the served page needs no network
+  tailwind-script:
+    label: Tailwind loaded in the browser from a network address on each start
+  plain:
+    label: Plain CSS and JavaScript files, no Tailwind and no build step
+proposal:
+  chose: tailwind-built
+  why: It gives the Tailwind look the owner asked for, works offline on a local server, and the built files are package data, not a running toolchain.
+  heard: Wants a proper front end rendered with Tailwind CSS.
+answers:
+- chose: tailwind-built
+  said: 'Reuse the exact front-end setup he already has in a2kay: it builds Tailwind CSS, bundles, and ships the static files.'
+  at: '2026-11-22T03:27:53+01:00'
+  where: ai:claude/f6fcc5ed
+  note: I found no Tailwind or package build in the a2kay or shelf checkouts; the setup's location is to be confirmed before it is copied. Anything common goes into shelf at the same time.

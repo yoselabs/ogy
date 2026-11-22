@@ -1,0 +1,18 @@
+title: Whether --all of ogy review is an accepted input that fills the everything field of the round
+question: Is the --all option of ogy review an accepted input of that command that fills the field everything of the review round it saves (the field a bare yes is refused on), or does the field stay unlinked in the ontology while --all is only text in the command line?
+context: 'Owner, 2026-11-21, reading the board: hovering everything shows a field only the case bare-yes-on-all looks at; the code sets it (rounds.make, reply.py refuses a bare yes), the ontology never says where --all fills it. Codex read of the code: a round shown with --all records everything=true even with --from; yes all is still allowed; renderers print what a bare yes will do without checking the flag. See also command-inputs-are-accepted.'
+options:
+  accepted:
+    label: '--all is an accepted input of ogy review: the interface accepts the field everything, which --all fills'
+  text-only:
+    label: --all stays text in the command line; the field everything is not linked to it
+proposal:
+  chose: accepted
+  why: A bare yes is refused because of this field; the board and the checks can only show what fills it if the interface says so.
+  heard: Looking at the field everything, wants to see where --all appears and what happens with the field.
+answers:
+- chose: accepted
+  said: Approved Codex's verdict table, which has this one as accepted.
+  at: '2026-11-21T22:31:38+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

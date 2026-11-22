@@ -1,0 +1,18 @@
+title: Whether the board is declared as another interface of the same engine
+question: Is the board declared in the knowledge base as web interfaces serving the same steps as the CLI and MCP interfaces, so that a step served by the CLI or MCP and by no web interface shows up as work (parity), or is the board outside the knowledge base?
+context: 'Owner, 2026-11-21: the board should reflect the experience an agent has; if ogy has a decisions mode the board has one too, as alternative interfaces to one engine. The interface kind already allows several interfaces per step (borrow-cli, borrow-page in the tool library). The board must read and write through the same operations the MCP tools use.'
+options:
+  declared:
+    label: Declare the board as web interface entries serving the same steps; a step with no web interface is work
+  outside:
+    label: The board stays outside the knowledge base
+proposal:
+  chose: declared
+  why: Parity becomes visible and checkable with the vocabulary the ontology already has.
+  heard: The UI should reflect the experience the agent has; alternative interfaces with parity.
+answers:
+- chose: declared
+  said: 'Approved the verdict table: the viewer is a declared interface.'
+  at: '2026-11-21T22:31:45+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

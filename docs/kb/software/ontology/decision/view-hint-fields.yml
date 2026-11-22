@@ -1,0 +1,23 @@
+structure: true
+question: Which exact optional presentation hints may kind and link definitions publish?
+context: The answered view-contract selects shared hints but the current kind loader forbids unknown keys. Proposed kind hints are view.icon, view.tone, view.attention, view.compact_fields and view.family; link hints are view.labels.forward, view.labels.inverse and view.explanation. Symbolic names and existing field paths are validated; renderers, executable actions, pixels and layout remain in the viewer. A descriptor envelope carries the contract version. This proposal is not an ontology edit.
+because:
+- software/ontology/decision/view-contract
+- software/ontology/decision/style-book-home
+- constitution/principle/rigid-where-checked
+options:
+  symbolic:
+    label: Add only validated optional symbolic hints in a separately evaluated ontology change
+  viewer-only-for-now:
+    label: No ontology fields now; keep the descriptor adapter and revisit when a second consumer needs them
+  binding:
+    label: Define a binding presentation language instead
+proposal:
+  chose: symbolic
+  why: Follows the answered shared-hints direction while leaving structural metadata authoritative and every hint optional; absent hints use the viewer adapter. Exact implementation remains untested until the separate ontology evaluation.
+answers:
+- chose: viewer-only-for-now
+  said: No ontology fields now, but come back to it right after a stable web version, not much later.
+  at: '2026-11-22T03:30:27+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Revisit once a stable web version exists; not a long deferral.

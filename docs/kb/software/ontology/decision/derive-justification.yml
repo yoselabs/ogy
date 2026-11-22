@@ -1,0 +1,21 @@
+title: How the ontology answers why something exists
+structure: true
+question: When someone asks why a status, a transition or a field exists, does ogy answer by deriving a chain from links it already has (transition, case, workflow, capability, goal, principle or decision) and report an item with no chain as unjustified work, or by an explicit reason stored on each item, or not at all?
+context: 'Owner, 2026-11-21: everything should be justified, but not by keeping an answer on every connection and field; maybe by inferring or deriving it. Existing links: realizes, because, decisions that settle fields. Related: the problem statement decision why-chain-on-board.'
+options:
+  derived-chain:
+    label: Derive the chain from existing links; an item with no chain is unjustified work, never an error
+  explicit-reason:
+    label: Every item stores its own reason
+  not-at-all:
+    label: Justification is not modelled
+proposal:
+  chose: derived-chain
+  why: No duplicated reasons; gaps show as work, like unused and unrealized do today; the board can draw the chain on hover.
+  heard: Someone could ask why we have this status or transition; the ontology should answer without a stored answer everywhere.
+answers:
+- chose: derived-chain
+  said: 'Approved the verdict table: justification is derived, not stored.'
+  at: '2026-11-21T22:32:10+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

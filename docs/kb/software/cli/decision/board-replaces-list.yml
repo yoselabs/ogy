@@ -1,0 +1,16 @@
+title: Whether the board replaces the first list page
+question: When the board is ready, does it replace the list page that ogy view prints now, or do both stay?
+context: The list page tells each area as a narrative with folds. The owner answered product-map as canvas, with a hedge.
+options:
+  replace:
+    label: The board is the one page of ogy view; the list code is removed
+  keep-both:
+    label: Both pages stay; each is kept in the ontology's words
+proposal:
+  chose: replace
+  why: Two pages are two things to keep consistent, and consistency is the problem the board is built to end.
+answers:
+- chose: replace
+  said: There is one board and that is the future; the old list page goes.
+  at: '2026-11-22T03:12:43+01:00'
+  where: ai:claude/f6fcc5ed

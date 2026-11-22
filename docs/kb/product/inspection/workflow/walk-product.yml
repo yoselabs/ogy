@@ -1,0 +1,19 @@
+says: The owner follows a selected path through a recorded workflow, its calls and ends.
+realizes: product/inspection/capability/walk-the-product
+satisfies:
+- product/inspection/rule/inspection-preserves-declarations
+because:
+- product/inspection/decision/map-modes
+start: walk
+steps:
+  walk:
+    says: The owner selects the workflow and its choices or cases, following calls and the ends they cover as an inspection.
+    actor: product/shared/actor/owner
+    choices:
+      walk:
+        label: Walk the workflow
+        then: done
+ends:
+  done:
+    says: The owner has inspected the selected path and its declared effects.
+    result: success

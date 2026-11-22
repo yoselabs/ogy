@@ -1,0 +1,3 @@
+says: Every structured entry mention, including a heading, uses the same identity token with its canonical icon, title, full address and navigation action; context adds the field name beside it and cannot replace its identity with raw text.
+because:
+- software/ontology/decision/style-book-home

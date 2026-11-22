@@ -1,0 +1,18 @@
+title: A decision mode for humans on the board
+question: "Does the board let the owner decide in a decision mode: it zooms to the object a pending decision is about, highlights what it touches and what is already handled, shows each option's difference and potential impact, and records the owner's deliberate choice through the existing answer path with a displayed paraphrase?"
+context: 'Owner, 2026-11-21: humans should decide in the board, not through pasted review text; the CLI and MCP stay the agent interface. Codex read: most semantics exist in settle, status, review and graph; missing a pure read model with per option deltas and a version token checked inside the write lock; browsing never answers; a deliberate Choose click can count as the owner speaking; no click transcript is stored; impact is reachability and must be labelled potentially affected.'
+options:
+  board-mode:
+    label: 'Yes: a decision mode in the board over a JSON read model, answering through the existing write path'
+  review-only:
+    label: 'No: decisions stay in ogy review for humans and agents alike'
+proposal:
+  chose: board-mode
+  why: Humans decide faster seeing the object and the difference; the engine's rules stay in Python.
+  heard: Wants a decisions mode in the UI for humans, zooming to the object, highlighting what is handled and what impacts.
+answers:
+- chose: board-mode
+  said: 'Approved the verdict table: human decisions get a board mode.'
+  at: '2026-11-21T22:31:57+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

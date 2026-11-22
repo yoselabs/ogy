@@ -1,0 +1,26 @@
+title: How the product view reaches the owner
+question: Does ogy view only write a page file, or also serve the view from a local server that reads the knowledge base again on each reload?
+context: 'Owner, 2026-11-21: maybe a server rather than a page. A served view is a screen, an interface of form web, which software/cli/decision/no-views kept out for the printed commands only. The server must not become an MCP tool and `--help` must start nothing.'
+options:
+  file:
+    label: A page file only; nothing runs after ogy view
+    sets:
+      software/cli/interface/view-server:
+  server:
+    label: 'A local server as well: ogy view --serve prints its address; the page and its data are read from the knowledge base on each reload; --out still writes a file'
+    sets:
+      software/cli/interface/view-server:
+        says: Serve the product view from a local server the owner opens in a browser; each reload reads the knowledge base again.
+        form: web
+        serves:
+        - product/inspection/workflow/inspect-kb/step/read
+proposal:
+  chose: server
+  why: A canvas that follows the knowledge base is something to leave up beside the work; a file is out of date as soon as an entry changes.
+  heard: Maybe it is not just a page but a server the owner clicks and sees.
+answers:
+- chose: server
+  said: 'Approved the verdict table: delivery by a local server.'
+  at: '2026-11-21T22:31:48+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

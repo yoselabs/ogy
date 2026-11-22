@@ -1,0 +1,14 @@
+title: Whether the agent shows its work on the board
+question: When the owner asks the agent for a change, does the agent create a tab of the board for that session, put the staged change in it for the owner to see and refresh it as the work goes on?
+context: 'Owner, 2026-11-22: tell the agent to add a requirement; the agent decides, confirms the structure and gives a link to the board, to a tab it made for this session, maybe named after the session. What is staged is what is shown, awaiting confirmation. The owner mostly watches, goes back to the chat to say what he likes, and the board updates live. Some decisions are easier to discuss visually, where the new entry would appear.'
+options:
+  session-tab:
+    label: The agent creates a named board tab per session over MCP, shows the staged change in it, refreshes it on each update; the owner reacts in the chat first, on the board later
+  chat-only:
+    label: The agent describes changes in the chat; the board only shows what is already recorded
+  one-board-session-log:
+    label: 'One shared board at a time: the agent shows its staged change on it through MCP and a log says which session wrote each update; a second session waits or replaces it'
+proposal:
+  chose: one-board-session-log
+  why: The owner works one tree in one session at a time, so one shared board with a session log is enough to start, and a tab per session can follow when sessions run in parallel.
+  heard: 'Wants shared interaction: the agent shows things through MCP and he sees them in the UI; one big canvas for all sessions in parallel does not work; start with one session and a log, or several.'
