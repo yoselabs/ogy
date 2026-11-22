@@ -8,6 +8,7 @@
 @import "./components-layout.css";
 @import "./components-shell.css";
 @import "./components-decision.css";
+@import "./components-area.css";
 @import "./components-scene.css";
 @source "../../src/ogy/web/static/index.html";
 @source "../../src/ogy/web/static/js";
