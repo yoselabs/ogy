@@ -21,6 +21,7 @@ from ogy.web.token import resolve_token
 
 LIBRARY = Path(__file__).parent / "fixtures/tool-library"
 HEADERS = {"X-Ogy-Token": "test-secret"}
+VENDORED = ("vendor/elk.bundled.js", "vendor/lit-html.js")
 STATIC = Path(__file__).resolve().parents[1] / "src/ogy/web/static"
 BOARD_ROUTES = ("/", "/board.css", "/view-contract.json", *("/" + path.relative_to(STATIC).as_posix() for path in STATIC.rglob("*.js")))
 
@@ -96,17 +97,19 @@ def test_browser_exchanges_url_token_for_a_cookie_and_redirects_without_the_secr
         assert client.get("/api/inspection", headers={"Origin": "http://evil.example"}).status_code == 403
 
 
-def test_board_assets_resolve_locally_and_keep_colours_in_the_stylesheet():
+def test_board_assets_resolve_locally_and_keep_colours_in_the_stylesheet(tmp_path):
     """Given the shipped shell, its imports and page references resolve within the package."""
-    assert import_problems(STATIC) == []
+    assert import_problems(STATIC, vendored=VENDORED) == []
     assert page_problems(STATIC) == []
-    assert colour_problems(STATIC, "board.css") == []
-    assert budget_problems(STATIC, 100 * 1024) == []
+    assert colour_problems(STATIC, "board.css", vendored=VENDORED) == []
+    authored = tmp_path / "static"
+    shutil.copytree(STATIC, authored, ignore=shutil.ignore_patterns("vendor"))
+    assert budget_problems(authored, 100 * 1024) == []
 
 
 def test_board_modules_stay_within_the_source_file_cap():
     """Given every shipped ES module, none exceeds the repository's 400-line cap."""
-    modules = sorted(STATIC.rglob("*.js"))
+    modules = sorted(path for path in STATIC.rglob("*.js") if "vendor" not in path.parts)
     assert modules
     assert [str(path) for path in modules if len(path.read_text(encoding="utf-8").splitlines()) > 400] == []
 

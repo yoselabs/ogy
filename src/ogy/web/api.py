@@ -74,6 +74,7 @@ def routes(target: Target) -> list[Route | Mount]:
         Route("/board.css", asset),
         Route("/view-contract.json", asset),
         Mount("/js", app=StaticFiles(directory=static / "js")),
+        Mount("/vendor", app=StaticFiles(directory=static / "vendor")),
     ]
 
 

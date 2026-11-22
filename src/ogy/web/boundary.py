@@ -13,6 +13,9 @@ if TYPE_CHECKING:
     from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 
+BOARD_PREFIXES = ("/api/", "/static/", "/js/", "/vendor/")
+
+
 class BoardBoundary:
     """Separate browser sessions from MCP authority before shelf's header gate."""
 
@@ -56,7 +59,7 @@ class BoardBoundary:
             await self._exchange(request)(scope, receive, secured)
             return
         header = bool(credentials) and secrets.compare_digest(credentials[0].encode(), self.token)
-        board = scope["path"] in {"/", "/board.css", "/view-contract.json"} or scope["path"].startswith(("/api/", "/static/", "/js/"))
+        board = scope["path"] in {"/", "/board.css", "/view-contract.json"} or scope["path"].startswith(BOARD_PREFIXES)
         cookie = request.cookies.get("ogy_session", "")
         session = board and cookie.isascii() and secrets.compare_digest(cookie, self.session)
         if not header and session and request.method not in {"GET", "HEAD", "OPTIONS"}:
