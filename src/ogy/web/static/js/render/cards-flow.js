@@ -17,20 +17,28 @@ export function effectGroups(view, row) {
 }
 export function effectBadge(view, row, group) {
   if (!group.effects.length) return `<div class="local-role role-chip">${mention(view.byId.get(group.id))}<span>reads</span></div>`;
-  const ops = [...new Set(group.effects.map(item => item.effect.do))];
-  const created = ops.includes("create") || group.effects.some(item => item.effect.do === "transition"
-    && !view.targets(item.target?.id, "from").length);
+  const ops = [...new Set(group.effects.map((item) => item.effect.do))];
+  const created =
+    ops.includes("create") ||
+    group.effects.some((item) => item.effect.do === "transition" && !view.targets(item.target?.id, "from").length);
   const deleted = ops.includes("delete");
-  const right = group.effects.map(({ effect, target, index }) => {
-    if (effect.do === "transition") return `<div class="slice-transition">${mention(target)}<span class="slice-notch">›</span>
-      ${view.targets(target?.id, "to").map(n => `<span class="state-pill">${mention(n)}</span>`).join("")}</div>`;
-    if (effect.do === "write") return `<div class="write-line" data-write-index="${index}">
+  const right = group.effects
+    .map(({ effect, target, index }) => {
+      if (effect.do === "transition")
+        return `<div class="slice-transition">${mention(target)}<span class="slice-notch">›</span>
+      ${view
+        .targets(target?.id, "to")
+        .map((n) => `<span class="state-pill">${mention(n)}</span>`)
+        .join("")}</div>`;
+      if (effect.do === "write")
+        return `<div class="write-line" data-write-index="${index}">
       ${target?.id !== group.id ? mention(target) : ""}${Object.hasOwn(effect, "value") ? literal(effect.value) : ""}</div>`;
-    return "";
-  }).join("");
+      return "";
+    })
+    .join("");
   const operation = deleted ? "delete" : created ? "create" : ops[0];
   return `<div class="effect-badge${created ? " effect-create" : ""}${deleted ? " effect-delete" : ""}"
-    data-effect-row="${esc(row.id)}" data-effect-indices="${group.effects.map(item => item.index).join(" ")}"
+    data-effect-row="${esc(row.id)}" data-effect-indices="${group.effects.map((item) => item.index).join(" ")}"
     data-operations="${esc(ops.join(" "))}" role="group" aria-label="effects · ${esc(ops.join(" · "))}">
     <div class="effect-left">${icon(operation, true)}${mention(view.byId.get(group.id))}</div>
     ${right ? `<div class="effect-right">${right}</div>` : ""}
@@ -39,7 +47,9 @@ export function effectBadge(view, row, group) {
 export function rowHTML(view, row) {
   return `<section class="local-row flow-row" data-row-id="${esc(row.id)}">${header(row)}${prose(row)}
     ${row.when && row.when !== row.says ? `<p>when: ${esc(row.when)}</p>` : ""}
-    ${effectGroups(view, row).map(group => effectBadge(view, row, group)).join("")}
+    ${effectGroups(view, row)
+      .map((group) => effectBadge(view, row, group))
+      .join("")}
     ${facts(view, row, ["after", "covers_ends", "then"])}${openButton(row)}</section>`;
 }
 export function interfaceHTML(view, node) {
@@ -51,11 +61,14 @@ export function interfaceHTML(view, node) {
 export function stepHTML(view, node, detail) {
   if (node.kind === "end") return card(node, prose(node) + `<p>result: ${literal(node.result)}</p>`);
   let body = prose(node) + facts(view, node, ["actor"]);
-  body += (view.incoming.get(node.id) || []).filter(e => e.f === "serves").map(e => interfaceHTML(view, view.byId.get(e.s))).join("");
+  body += (view.incoming.get(node.id) || [])
+    .filter((e) => e.f === "serves")
+    .map((e) => interfaceHTML(view, view.byId.get(e.s)))
+    .join("");
   const calls = view.targets(node.id, "calls");
-  if (calls.length) body += `<section class="calls-region"><label>Calls</label>${calls.map(n => mention(n)).join("")}</section>`;
+  if (calls.length) body += `<section class="calls-region"><label>Calls</label>${calls.map((n) => mention(n)).join("")}</section>`;
   const rows = view.parts(node.id, ["case", "choice", "timeout"]);
-  body += detail ? `<section class="cases-region">${rows.map(row => rowHTML(view, row)).join("")}</section>` : summary(view, node);
+  body += detail ? `<section class="cases-region">${rows.map((row) => rowHTML(view, row)).join("")}</section>` : summary(view, node);
   return card(node, body + facts(view, node, ["then"]));
 }
 export function workflowHTML(view, node) {

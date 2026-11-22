@@ -85,7 +85,7 @@ board-css-check:
 board-js:
     #!/usr/bin/env bash
     set -euo pipefail
-    command -v biome >/dev/null || { echo "board-js: not installed -- run just tools" >&2; exit 2; }
+    command -v biome >/dev/null || { echo "board-js: not installed -- run mise install" >&2; exit 2; }
     biome format src/ogy/web/static/js
 
 # The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).

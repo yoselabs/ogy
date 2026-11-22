@@ -6,6 +6,7 @@ export function referenceScale(level) {
   return level === "summary" ? 0.35 : 0.65;
 }
 export function visible(rect, camera, width, height) {
-  const x = rect.x * camera.scale + camera.x, y = rect.y * camera.scale + camera.y;
+  const x = rect.x * camera.scale + camera.x,
+    y = rect.y * camera.scale + camera.y;
   return x + rect.w * camera.scale > 0 && y + rect.h * camera.scale > 0 && x < width && y < height;
 }

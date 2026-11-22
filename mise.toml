@@ -7,5 +7,5 @@ bats = "1.14.0"
 gitleaks = "8.30.1"
 prek = "0.5.5"
 "github:tailwindlabs/tailwindcss" = "4.1.11"
-"github:biomejs/biome" = { version = "2.6.8", bin = "biome" }
+"github:biomejs/biome" = { version = "2.6.8", bin = "biome", version_prefix = "@biomejs/biome@" }
 "github:gastownhall/beads" = { version = "1.3.1", bin = "bd" }

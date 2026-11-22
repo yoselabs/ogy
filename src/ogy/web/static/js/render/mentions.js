@@ -2,7 +2,7 @@ import { identity } from "../model/descriptor.js";
 import { icon } from "../model/icons.js";
 
 export function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
 }
 export function literal(value) {
   return `<code data-renderer="literal">${esc(typeof value === "object" ? JSON.stringify(value) : value)}</code>`;
@@ -10,7 +10,8 @@ export function literal(value) {
 // Every structured name in every context passes through the same identity.
 export function mention(node, self = null) {
   if (!node) return "";
-  const token = identity(node), linked = node.id !== self;
+  const token = identity(node),
+    linked = node.id !== self;
   return `<span class="mention kind-${esc(node.kind)}${linked ? " lk" : ""}" data-entry-id="${esc(node.id)}"
     data-renderer="${linked ? "mention" : "title-token"}" aria-label="${esc(token.accessibleName)}"
     ${linked ? `role="link" tabindex="0" data-goto="${esc(node.id)}"` : ""}>
@@ -33,7 +34,7 @@ export function prose(node) {
 }
 export function count(label, nodes) {
   if (!nodes.length) return "";
-  return `<span class="local-count" data-count="${nodes.length}" data-count-ids="${esc(JSON.stringify(nodes.map(n => n.id)))}">
+  return `<span class="local-count" data-count="${nodes.length}" data-count-ids="${esc(JSON.stringify(nodes.map((n) => n.id)))}">
     ${esc(label)}: ${nodes.length}</span>`;
 }
 export function summary(view, node) {
@@ -49,5 +50,9 @@ export function fact(view, edge) {
     ${view.byId.has(edge.t) ? mention(view.byId.get(edge.t)) : literal(edge.value)}</div>`;
 }
 export function facts(view, node, fields = null) {
-  return view.links(node.id).filter(e => !fields || fields.includes(e.f)).map(e => fact(view, e)).join("");
+  return view
+    .links(node.id)
+    .filter((e) => !fields || fields.includes(e.f))
+    .map((e) => fact(view, e))
+    .join("");
 }
