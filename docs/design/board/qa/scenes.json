@@ -1,0 +1,5 @@
+[
+  {"set":"tool","name":"home","url":"/#/board","wait":3000},
+  {"set":"ogy","name":"home","url":"/#/board","wait":3000},
+  {"set":"synthetic","name":"home","url":"/#/board","wait":3000}
+]
