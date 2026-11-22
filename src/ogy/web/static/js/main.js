@@ -13,6 +13,7 @@ import { areaRoute } from "./views/area.js";
 import { decisionRoute } from "./views/decision.js";
 import { lifecycleRoute } from "./views/lifecycle.js";
 import { owedRoute } from "./views/owed.js";
+import { flowRoute } from "./views/flow.js";
 import { mountNotFound } from "./views/not-found.js";
 import { waitingRoute } from "./views/waiting.js";
 import { mountSearch } from "./views/search.js";
@@ -29,6 +30,7 @@ const routes = [
   areaRoute,
   lifecycleRoute,
   owedRoute,
+  flowRoute,
 ];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);
