@@ -12,3 +12,9 @@ proposal:
   chose: one-board-session-log
   why: The owner works one tree in one session at a time, so one shared board with a session log is enough to start, and a tab per session can follow when sessions run in parallel.
   heard: 'Wants shared interaction: the agent shows things through MCP and he sees them in the UI; one big canvas for all sessions in parallel does not work; start with one session and a log, or several.'
+answers:
+- chose: one-board-session-log
+  said: One shared board with a session log for now.
+  at: '2026-11-22T04:28:42+01:00'
+  where: ai:claude/f6fcc5ed
+  note: '"For now": a tab per session can come later.'

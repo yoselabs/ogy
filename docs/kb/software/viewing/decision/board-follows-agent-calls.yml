@@ -1,0 +1,14 @@
+title: How fast the board follows what the agent does
+question: When the agent calls the server's tools, how does the board on the owner's screen update?
+context: 'Owner, 2026-11-22: with the agent calling MCP tools, the interface should reflect the changes immediately, with no refresh and no delay. The server runs the board, the API and MCP in one process.'
+options:
+  push:
+    label: The server pushes each change to the board over a live connection as soon as the call completes, and a change made by a file edit or the command line reaches it by the server's own file watch
+  poll:
+    label: The board asks the server for the version every second or two and reloads what changed
+  manual:
+    label: The owner refreshes the page
+proposal:
+  chose: push
+  why: The one process already sees every agent call, so it can tell the board at once; polling adds delay and load for nothing.
+  heard: Wants every agent call to show on the board immediately, with no refresh.

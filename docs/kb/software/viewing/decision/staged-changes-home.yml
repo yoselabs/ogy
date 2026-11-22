@@ -1,0 +1,19 @@
+title: Where a staged change lives
+question: Until the owner accepts a change the agent has prepared, where is it kept?
+context: 'Owner, 2026-11-22: the agent adds a requirement, the owner sees it on the board and answers later. The rule already is that a proposal becomes a decision entry before anything is acted on.'
+options:
+  kb-proposals:
+    label: In the knowledge base itself, as proposals on decisions; the board shows pending proposals as the preview and what waits for the owner is computed from them
+  staging-file:
+    label: In a staging file beside the knowledge base that the board reads and an accept step writes into it
+  memory-only:
+    label: In the memory of the running server only
+proposal:
+  chose: kb-proposals
+  why: It uses the existing proposal rule, adds no second store of facts, and survives a restart.
+  heard: Wants to see the staged requirement on the board and answer later.
+answers:
+- chose: kb-proposals
+  said: 'Agrees: a staged change lives in the knowledge base as a proposal on a decision.'
+  at: '2026-11-22T04:28:37+01:00'
+  where: ai:claude/f6fcc5ed
