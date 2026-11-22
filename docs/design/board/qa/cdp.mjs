@@ -28,7 +28,7 @@ for(const sc of JSON.parse(fs.readFileSync(process.argv[2]))){
     else if(a.hover){const p=await center(a.hover);if(!p){out.push('MISSING '+a.hover);continue}await mouse('mouseMoved',p[0]-3,p[1]-1,{button:'none'});await mouse('mouseMoved',p[0],p[1],{button:'none'})}
     else if(a.drag){const p=await center(a.drag);await mouse('mouseMoved',p[0],p[1],{button:'none'});await mouse('mousePressed',p[0],p[1]);for(let i=1;i<=6;i++)await mouse('mouseMoved',p[0]+a.by[0]*i/6,p[1]+a.by[1]*i/6,{buttons:1});if(!a.hold)await mouse('mouseReleased',p[0]+a.by[0],p[1]+a.by[1])}
     else if(a.wheel){await send('Input.dispatchMouseEvent',{type:'mouseWheel',x:a.at[0],y:a.at[1],deltaX:0,deltaY:a.wheel,modifiers:a.mod||0})}
-    else if(a.key){const k=a.key;await send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0});await send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0})}
+    else if(a.key){const k=a.key;await send('Input.dispatchKeyEvent',{type:'keyDown',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0,...(a.text?{text:a.text}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key:k,code:a.code||k,windowsVirtualKeyCode:a.vk||0,modifiers:a.mod||0})}
     else if(a.type){await send('Input.insertText',{text:a.type})}
     else if(a.eval){out.push(String(await ev(a.eval)))}
     else if(a.shot){const r=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(S+'/'+a.shot+'.png',Buffer.from(r.data,'base64'))}
