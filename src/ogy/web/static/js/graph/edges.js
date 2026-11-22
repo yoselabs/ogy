@@ -41,7 +41,21 @@ export function edgeLayer(width, height, edges, routes) {
     orient: "auto",
   });
   head.append(svg("path", { d: "M0 1 L10 5 L0 9 z", class: "edge-head" }));
-  defs.append(head);
+  // After a failure the head carries a cross mark just before the node it reaches.
+  const cross = svg("marker", {
+    id: "edge-cross",
+    viewBox: "0 0 16 10",
+    refX: "16",
+    refY: "5",
+    markerWidth: "13",
+    markerHeight: "8",
+    orient: "auto",
+  });
+  cross.append(
+    svg("path", { d: "M0 1 L9 5 L0 9 z", class: "edge-head" }),
+    svg("path", { d: "M10.5 2 L15.5 8 M15.5 2 L10.5 8", class: "edge-cross" }),
+  );
+  defs.append(head, cross);
   layer.append(defs);
   for (const edge of edges) {
     const route = routes.get(edge.id);
@@ -50,7 +64,7 @@ export function edgeLayer(width, height, edges, routes) {
       svg("path", {
         class: `edge ${edge.class || ""}`.trim(),
         d: pathOf(route.points),
-        "marker-end": "url(#edge-head)",
+        "marker-end": edge.class?.includes("after-failure") ? "url(#edge-cross)" : "url(#edge-head)",
         "data-edge": edge.id,
         "data-from": edge.from,
         "data-to": edge.to,

@@ -1,4 +1,5 @@
 import { identity } from "../../model/descriptor.js";
+import { stepFacts, touchedBy } from "./facts.js";
 
 // The workflow page's graph as plain data, from the inspection document's own links:
 // a workflow `start`s at a step, and every case, choice and timeout of a step says `then`.
@@ -19,6 +20,13 @@ function thenOf(model) {
 function labelOf(row) {
   const title = row.kind === "timeout" ? row.kind : identity(row).title;
   return { text: title, title: row.when || null };
+}
+
+// A case that covers an end of the called workflow with result failure takes its edge after that failure.
+function failureOf(model, row, callee) {
+  if (!callee) return null;
+  const covered = model.edges.filter((edge) => edge.s === row.id && edge.f === "covers_ends" && edge.t);
+  return covered.some((edge) => model.byId.get(edge.t)?.result === "failure") ? callee : null;
 }
 
 export function flowView(model, address) {
@@ -44,13 +52,43 @@ export function flowView(model, address) {
     nodes.push({ id: START, node: null, external: false, stub: true });
     edges.push({ id: `${START}>${start}`, from: START, to: start, label: null, row: null });
   }
+  const facts = new Map();
   for (const step of inside.filter((node) => node.kind === "step")) {
-    for (const row of parts.filter((part) => part.parent === step.address && ROWS.has(part.kind))) {
+    const here = stepFacts(model, step);
+    facts.set(step.id, here);
+    nodes.find((item) => item.id === step.id).facts = here;
+    for (const row of here.rows) {
       for (const [index, to] of (then.get(row.id) || []).entries()) {
         const id = target(to);
-        if (id) edges.push({ id: `${row.id}>${index}`, from: step.id, to: id, label: labelOf(row), row });
+        if (!id) continue;
+        const failed = failureOf(model, row, here.call?.callee);
+        edges.push({
+          id: `${row.id}>${index}`,
+          from: step.id,
+          to: id,
+          label: labelOf(row),
+          row,
+          class: failed ? "after-failure" : "",
+          failed,
+        });
       }
     }
   }
-  return { workflow, nodes: [...nodes, ...outside.values()], edges };
+  // An end reached after a called workflow failed says so: the callees of the edges that arrive there.
+  for (const item of nodes)
+    item.after = [...new Set(edges.filter((edge) => edge.to === item.id && edge.failed).map((edge) => edge.failed))];
+  return { workflow, nodes: [...nodes, ...outside.values()], edges, touched: touchedBy([...facts.values()]) };
+}
+
+// Level 1 draws one edge where several rows of a step lead to the same place the same way: the first row's label and a count
+// of the others, which opens the step's rows.
+export function rolledUp(edges) {
+  const groups = new Map();
+  for (const edge of edges) {
+    const key = edge.label ? `${edge.from}|${edge.to}|${edge.class}` : edge.id;
+    groups.set(key, [...(groups.get(key) || []), edge]);
+  }
+  return [...groups.values()].map(([first, ...rest]) =>
+    rest.length ? { ...first, label: { ...first.label, more: rest.map((edge) => edge.row), step: first.from } } : first,
+  );
 }

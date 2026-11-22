@@ -6,6 +6,7 @@ import { CONTRAST, OVERLAP, TEXT, VIEWER_WORDS } from './measures.js';
 import { browse, here, run, startServer, toolCopy } from './decision-lib.mjs';
 
 const mode = process.argv[2] || 'tool';
+const level = Number(process.env.LEVEL || 1); // 1 is the default level; 2 and 3 run the same overlap rules over the fuller nodes
 const widths = process.argv[3] ? [Number(process.argv[3])] : [1440, 390];
 const forbidden = readFileSync(join(here, 'forbidden.txt'), 'utf8').trim().split('\n');
 const failures = [];
@@ -76,7 +77,7 @@ const WHOLE = String.raw`(() => {
 const PROBE = String.raw`(async () => {
   const q = s => document.querySelector(s), all = s => [...document.querySelectorAll(s)];
   const doc = await (await fetch('/api/inspection', { credentials: 'same-origin' })).json();
-  const address = location.hash.replace(/^#\/?/, '');
+  const address = location.hash.replace(/^#\/?/, '').split('?')[0];
   const inWf = e => (e.parent || '') === address;
   const recs = [...doc.entries, ...doc.parts];
   const steps = recs.filter(p => inWf(p) && p.kind === 'step'), ends = recs.filter(p => inWf(p) && p.kind === 'end');
@@ -90,9 +91,10 @@ const PROBE = String.raw`(async () => {
   return JSON.stringify({
     address, ready: q('.flow')?.dataset.state, direction: canvas?.dataset.direction ?? null,
     expectNodes: steps.length + ends.length + (wf?.fields?.start ? 1 : 0) + external.size,
-    expectEdges: thens.length + (wf?.fields?.start ? 1 : 0),
+    rolled: all('.route-more').reduce((sum, e) => sum + Number(e.dataset.count), 0),
+    expectEdges: thens.length + (wf?.fields?.start ? 1 : 0) - all('.route-more').reduce((sum, e) => sum + Number(e.dataset.count), 0),
     steps: steps.length, ends: ends.length, whole,
-    labelled: all('.route-label').length, expectLabels: thens.length,
+    labelled: all('.route-label').length, expectLabels: thens.length - all('.route-more').reduce((sum, e) => sum + Number(e.dataset.count), 0),
     scroll: scroll ? [scroll.scrollWidth, scroll.clientWidth, scroll.scrollHeight, scroll.clientHeight] : null,
     docScroll: [document.documentElement.scrollWidth, innerWidth],
     canvasSize: canvas ? [parseFloat(canvas.style.width), parseFloat(canvas.style.height)] : null,
@@ -123,10 +125,10 @@ function judge(name, measured, wide) {
   }
   if (w.loose.length) fail(name + ' end points off a border: ' + w.loose.slice(0, 3).join('; '));
   if (probe.bare) fail(name + ' ' + probe.bare + ' names not drawn by mention()');
-  if (probe.inlineText) fail(name + ' ' + probe.inlineText + ' nodes carry more than the header');
+  if (level === 1 && probe.inlineText) fail(name + ' ' + probe.inlineText + ' nodes carry more than the header');
   if (probe.failureEndsGreen) fail(name + ' a failure end is drawn green');
   if (probe.docScroll[0] > probe.docScroll[1]) fail(name + ' horizontal document scroll ' + probe.docScroll);
-  if (wide && probe.steps <= 3 && probe.scroll && probe.scroll[0] > probe.scroll[1]) fail(name + ' a ' + probe.steps + '-step workflow scrolls ' + probe.scroll);
+  if (level === 1 && wide && probe.steps <= 3 && probe.scroll && probe.scroll[0] > probe.scroll[1]) fail(name + ' a ' + probe.steps + '-step workflow scrolls ' + probe.scroll);
   if (text.min < 11 || text.max > 24 || text.distinct > 5) fail(name + ' type ' + JSON.stringify(text));
   if (contrast.min < 4.5) fail(name + ' contrast ' + contrast.min + ' ' + contrast.fails.join('; '));
   for (const pattern of forbidden) { const hit = words.match(new RegExp(pattern, 'i')); if (hit) fail(name + ' forbidden word ' + hit[0]); }
@@ -154,7 +156,7 @@ async function runs(label, repo, wait, pick = list => list) {
     console.log(label, workflows.length, 'workflows');
     const scenes = [];
     for (const width of widths) for (const theme of themes) for (const route of workflows)
-      scenes.push({ name: `flow-${label}-${width}-${theme}-${route.replace(/\//g, '-')}`, route, ...sizeOf(width), wait, actions: [{ media: theme }, { eval: MEASURE }] });
+      scenes.push({ name: `flow-${label}-L${level}-${width}-${theme}-${route.replace(/\//g, '-')}`, route: `${route}?level=${level}`, ...sizeOf(width), wait, actions: [{ media: theme }, { eval: MEASURE }] });
     const results = await browse('flow-' + label, scenes, started);
     results.forEach((row, index) => {
       const values = row.values.find(value => value.startsWith('{'));

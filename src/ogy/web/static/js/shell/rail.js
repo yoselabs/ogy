@@ -1,6 +1,7 @@
 import { marksFor, cardHeader } from "../ui/card-header.js";
 import { h } from "../ui/dom.js";
 import { words } from "../ui/words.js";
+import { walkPanel } from "../views/flow/rail.js";
 import { bindWaiting } from "../views/waiting.js";
 
 const TABS = [
@@ -54,7 +55,9 @@ export function mountRail(root, { router, live, store }) {
     unbind = null;
     const node = active === "details" && route.query.sel ? store.getState().model?.byId.get(route.query.sel) : null;
     const entry = node && live.state.data?.entries[node.address];
-    panel.replaceChildren(node ? cardHeader(node, marksFor(entry)) : h("p", { class: "empty" }, words.emptyRail));
+    const marks = marksFor(entry);
+    const walk = node && walkPanel(node, { model: store.getState().model, router, marks });
+    panel.replaceChildren(walk || (node ? cardHeader(node, marks) : h("p", { class: "empty" }, words.emptyRail)));
   };
   router.subscribe(paint);
   let seen = null;
