@@ -1,6 +1,7 @@
 import { marksFor, cardHeader } from "../ui/card-header.js";
 import { h } from "../ui/dom.js";
 import { words } from "../ui/words.js";
+import { bindWaiting } from "../views/waiting.js";
 
 const TABS = [
   ["details", words.details],
@@ -11,6 +12,7 @@ const TABS = [
 // The one right rail: three tabs, one panel. Below 720px it sits under the page and a tab opens it in place.
 export function mountRail(root, { router, live, store }) {
   let open = false;
+  let unbind = null;
   const buttons = TABS.map(([name, label]) =>
     h(
       "button",
@@ -41,6 +43,15 @@ export function mountRail(root, { router, live, store }) {
     }
     root.dataset.open = String(open);
     panel.setAttribute("aria-labelledby", `tab-${active}`);
+    if (active === "waiting") {
+      if (unbind) return;
+      const host = h("div", { class: "rail-waiting" });
+      panel.replaceChildren(host);
+      unbind = bindWaiting(host, { live, store }, { compact: true });
+      return;
+    }
+    unbind?.();
+    unbind = null;
     const node = active === "details" && route.query.sel ? store.getState().model?.byId.get(route.query.sel) : null;
     const entry = node && live.state.data?.entries[node.address];
     panel.replaceChildren(node ? cardHeader(node, marksFor(entry)) : h("p", { class: "empty" }, words.emptyRail));

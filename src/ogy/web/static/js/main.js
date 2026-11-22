@@ -11,6 +11,7 @@ import { words } from "./ui/words.js";
 import { mountCanvas } from "./views/canvas.js";
 import { decisionRoute } from "./views/decision.js";
 import { mountNotFound } from "./views/not-found.js";
+import { waitingRoute } from "./views/waiting.js";
 
 export const store = createStore();
 const inspection = { error: null };
@@ -20,6 +21,7 @@ const board = [{ text: words.board, href: "#/" }];
 const routes = [
   { test: (path) => path === "" || path === "board", layer: "product", mount: mountCanvas, crumbs: () => [{ text: words.board }] },
   decisionRoute,
+  waitingRoute,
 ];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);

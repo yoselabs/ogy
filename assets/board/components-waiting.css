@@ -1,0 +1,27 @@
+@layer components {
+  /* The waiting list: the page at #/waiting and the rail's Waiting tab share it. One column at every width. */
+  .waiting-page { max-width: 72ch; }
+  .waiting-page h1 .count { color: var(--mute); font-weight: 400; }
+  .waiting-note { margin: 0 0 8px; color: var(--mute); }
+  .waiting-note p { margin: 0 0 8px; }
+  .waiting-note.is-loading::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 8px; vertical-align: -2px; border: 2px solid var(--line-strong); border-top-color: var(--fg); border-radius: 50%; animation: waiting-spin 1s linear infinite; }
+  @keyframes waiting-spin { to { transform: rotate(360deg); } }
+  .waiting-layer { margin: 0 0 16px; }
+  .waiting-layer-name { margin: 16px 0 8px; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+  .waiting-area-name { margin: 8px 0; font-size: var(--text-m); font-weight: 600; overflow-wrap: anywhere; }
+  .waiting-rows { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .waiting-row { padding: 8px 12px; background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--warn-line); border-radius: 8px; cursor: pointer; }
+  .waiting-row:hover { border-color: var(--line-strong); border-left-color: var(--warn-line); }
+  .waiting-row:has(a:focus-visible) { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .waiting-row a:focus-visible { outline: 0; }
+  .waiting-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .waiting-head .mention { display: inline-flex; align-items: center; gap: 8px; min-width: 0; font-size: var(--text-m); font-weight: 600; color: var(--fg); text-decoration: none; }
+  .waiting-head .mention svg { width: 16px; height: 16px; flex: none; }
+  .waiting-head a.mention:hover { text-decoration: underline; }
+  .waiting-question { margin: 4px 0 0; color: var(--fg); overflow-wrap: anywhere; }
+  .waiting-age { margin: 4px 0 0; font-size: var(--text-xs); color: var(--mute); }
+  .is-compact .waiting-layer { margin-bottom: 8px; }
+  .is-compact .waiting-layer:first-child .waiting-layer-name { margin-top: 0; }
+  .is-compact .waiting-question { font-size: var(--text-s); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .is-compact .waiting-head .mention { font-size: var(--text-s); }
+}
