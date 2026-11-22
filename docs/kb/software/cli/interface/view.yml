@@ -1,13 +1,13 @@
-says: "Render the product's areas as one web page: a sitemap to dive into, a narrative per area, later a mock per workflow."
-invoked_as: ogy view
+says: "Run the local board server: the product canvas, its entry details and the owner's answer page, over one API."
+invoked_as: ogy serve
 form: cli
 serves:
 - product/inspection/workflow/inspect-kb/step/read
 agreed:
-  at: '2026-11-21T03:17:21+01:00'
-  where: ai:claude/f6fcc5ed-ca7f-47d9-9222-688756982c4e
-  said: Chose the name ogy view for the product map command.
-  hash: 73e0d7c76bbf
+  at: '2026-11-22T15:05:25+01:00'
+  where: ai:claude/f6fcc5ed
+  said: The command should be named ogy serve; it runs a server, it does not render a page.
+  hash: 0171df5de38a
 proof:
 - tests/test_view.py::test_view_writes_the_page_where_asked_and_changes_no_entry
 shows:

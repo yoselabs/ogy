@@ -42,3 +42,8 @@ answers:
   said: Chose the name ogy view for the product map command.
   at: '2026-11-21T03:17:21+01:00'
   where: ai:claude/f6fcc5ed-ca7f-47d9-9222-688756982c4e
+- chose: serve
+  said: The command should be named ogy serve; it runs a server, it does not render a page.
+  at: '2026-11-22T15:05:25+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Said as "we probably need to rename it to ogy serve"; he also answered view-command-contract with the same note.
