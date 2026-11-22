@@ -239,8 +239,10 @@ DEP002 = ["asgi-token-gate"]
 # approximation — the precise defect dom-schema exists to prevent — so the
 # fixture is authoritative and the linter yields to it, never the reverse.
 #
+# src/ogy/web/static/vendor holds third-party files copied unmodified (see its VENDORED.txt), not authored content.
+#
 # docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
-skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*,src/ogy/web/static/board.css"
+skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*,src/ogy/web/static/board.css,src/ogy/web/static/vendor/*"
 # doctrine/glossary coinages the dictionary flags but we mean on purpose.
 ignore-words-list = "mis,createable,wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
 # A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
