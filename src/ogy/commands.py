@@ -66,6 +66,11 @@ def _diagram(target: Target, args: argparse.Namespace, **_: object) -> Result:
     return done.verdict, done.value
 
 
+def _view(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    done = ops.run_view(target, args.out)
+    return done.verdict, [f"wrote {done.value}", f"open {done.value.resolve().as_uri()}"]
+
+
 def _diff(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_diff(target, args.before, args.after)
     return done.verdict, wire.diff(done.value) if agent else render.render_diff(done.value)
@@ -154,6 +159,7 @@ HANDLERS: dict[str, Handler] = {
     "find": _find,
     "impact": _impact,
     "diagram": _diagram,
+    "view": _view,
     "diff": _diff,
     "work": _work,
     "review": _review,

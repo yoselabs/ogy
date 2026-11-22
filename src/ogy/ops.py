@@ -40,6 +40,7 @@ from ogy.source import Source, open_source
 from ogy.target import Target, last_seen, merge_base, removal_base
 from ogy.terms import waiting
 from ogy.verdict import NotFoundError, RefusalError, Verdict
+from ogy.view import render as render_view
 from ogy.writes import Answered, WriteRefusedError
 lazy from ogy.ontology import Ontology
 lazy from ogy.snapshot import Snapshot
@@ -211,6 +212,16 @@ def run_diagram(target: Target, text: str) -> Run[list[str]]:
     if flow is None:
         raise NotAFlowError(text)
     return Run(mermaid(snapshot, flow, address), source.reads)
+
+
+def run_view(target: Target, out: str | None = None) -> Run[Path]:
+    """Write the product map page: to `out`, else into the Git directory (never committed)."""
+    source, snapshot = target.read()
+    git = git_dir(target.repo)
+    path = Path(out) if out else (git / "ogy" / "view.html" if git else target.repo / "ogy-view.html")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(render_view(snapshot), encoding="utf-8")
+    return Run(path, source.reads)
 
 
 def run_review(

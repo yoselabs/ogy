@@ -1910,6 +1910,91 @@
       "openWorldHint": false,
       "readOnlyHint": true
     },
+    "description": "the product as one web page: a map of its areas to dive into, with a narrative. Writes one self-contained HTML file computed from the entries (default: in the Git directory, never committed) and prints where. Changes no entry.",
+    "inputSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "ontology": {
+          "anyOf": [
+            {
+              "description": "the ontology folder in ogy/ontologies, or a folder path holding a / (relative to the repository; default: ogy.yml, else software)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "out": {
+          "anyOf": [
+            {
+              "description": "write the page here instead",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "repo": {
+          "anyOf": [
+            {
+              "description": "the Git repository (default: the current folder)",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rev": {
+          "anyOf": [
+            {
+              "description": "a commit, or . for the worktree (default: ogy.yml, else . so a read sees what was just written). Writes always change the worktree",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    },
+    "name": "view",
+    "outputSchema": {
+      "description": "What a command printed, and how it ended (the caller's exit code; usage errors use `usage`).",
+      "properties": {
+        "exit_code": {
+          "type": "integer"
+        },
+        "output": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "exit_code",
+        "output"
+      ],
+      "type": "object"
+    }
+  },
+  {
+    "_meta": {
+      "fastmcp": {
+        "tags": []
+      }
+    },
+    "annotations": {
+      "destructiveHint": false,
+      "idempotentHint": true,
+      "openWorldHint": false,
+      "readOnlyHint": true
+    },
     "description": "what is built against the entries and what is left. Exit 1 when work is left. Takes a layer or an area.",
     "inputSchema": {
       "additionalProperties": false,

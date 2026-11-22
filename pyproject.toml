@@ -203,6 +203,8 @@ runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 # evals/: pre-registered protocol scripts, run as `python3 -I <script>`, never imported. Their hyphenated names are cited by the
 # protocol's own documents, so the files stay as named (INP001: not a package). The two blind.py shuffle with a seeded
 # random.Random so a blinding is reproducible (S311: not cryptography).
+# viewpage.py is the page `ogy view` fills: CSS and script read best one rule to a line (E501).
+"src/ogy/viewpage.py" = ["E501"]
 "evals/blind.py" = ["INP001", "S311"]
 "evals/naming/v2/blind.py" = ["INP001", "S311"]
 "evals/naming/v2/check-neutral.py" = ["INP001"]

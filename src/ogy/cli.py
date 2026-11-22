@@ -91,6 +91,13 @@ def _reads(commands: Adder) -> None:
     ).add_argument("file", help="a Markdown file of the repository")
     for name, about in (("impact", "what a change reaches and what reaches it"), ("diagram", "the flow of a workflow as Mermaid")):
         _verb(commands, name, about).add_argument("address", help=ADDRESS)
+    _verb(
+        commands,
+        "view",
+        "the product as one web page: a map of its areas to dive into, with a narrative",
+        "Writes one self-contained HTML file computed from the entries (default: in the Git directory, never committed) and "
+        "prints where. Changes no entry.",
+    ).add_argument("--out", help="write the page here instead")
     between = _verb(commands, "diff", "the entries changed between two commits or the worktree")
     between.add_argument("before", help="a commit, or . for the worktree")
     between.add_argument("after", help="a commit, or . for the worktree")
