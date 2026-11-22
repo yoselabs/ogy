@@ -36,6 +36,8 @@ def standing(target: Target) -> Document:
         ("answer given under a delegation", dropped.delegated),
     )
     return {
+        "repository": target.repo.resolve().name,
+        "revision": "worktree" if target.rev == "." else target.rev,
         "totals": {
             "waiting": sum(h.questions for h in overview.areas),
             "owed": len(work),

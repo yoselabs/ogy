@@ -1,5 +1,5 @@
 import { identity } from "../model/descriptor.js";
-import { icon } from "../model/icons.js";
+import { mention as makeMention } from "../ui/mention.js";
 
 export function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -7,15 +7,10 @@ export function esc(value) {
 export function literal(value) {
   return `<code data-renderer="literal">${esc(typeof value === "object" ? JSON.stringify(value) : value)}</code>`;
 }
-// Every structured name in every context passes through the same identity.
+// Every structured name in every context passes through the one mention function.
 export function mention(node, self = null) {
   if (!node) return "";
-  const token = identity(node),
-    linked = node.id !== self;
-  return `<span class="mention kind-${esc(node.kind)}${linked ? " lk" : ""}" data-entry-id="${esc(node.id)}"
-    data-renderer="${linked ? "mention" : "title-token"}" aria-label="${esc(token.accessibleName)}"
-    ${linked ? `role="link" tabindex="0" data-goto="${esc(node.id)}"` : ""}>
-    ${icon(node.kind)}<span data-identity-text>${esc(token.title)}</span></span>`;
+  return makeMention(node, { self: node.id === self, scene: true }).outerHTML;
 }
 export function header(node) {
   return `<header>${mention(node, node.id)}<small>${esc(node.kind)}</small></header>`;

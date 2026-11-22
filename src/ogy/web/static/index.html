@@ -7,15 +7,12 @@
   <link rel="stylesheet" href="board.css">
 </head>
 <body>
-  <div class="board-shell">
-    <header class="board-header flex items-center justify-between gap-4">
-      <h1>ogy board</h1>
-      <p id="status" role="status">Loading…</p>
-    </header>
-    <main id="stage" class="board-canvas" aria-label="Ontology board">
-      <svg id="board" aria-label="Entries" xmlns="http://www.w3.org/2000/svg"><g id="vp"></g></svg>
-      <div id="overview" hidden></div>
-    </main>
+  <div class="shell">
+    <header id="header" class="hdr"></header>
+    <nav id="strip" class="strip" aria-label="What needs attention"></nav>
+    <nav id="crumb" class="crumb"></nav>
+    <main id="main" tabindex="0" aria-label="Board"></main>
+    <aside id="rail" class="rail" aria-label="Side panel"></aside>
   </div>
   <script type="module" src="js/main.js"></script>
 </body>

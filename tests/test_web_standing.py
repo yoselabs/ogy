@@ -27,6 +27,7 @@ def test_standing_matches_cli_and_includes_every_decision(repo):
         assert response.status_code == 200
         data = response.json()
         assert data["computed"] is True
+        assert (data["repository"], data["revision"]) == (repo.resolve().name, "worktree")
         assert data["version"] == client.get("/api/version").json()["version"]
         assert data["totals"] == {
             "waiting": sum(h.questions for h in overview.areas),

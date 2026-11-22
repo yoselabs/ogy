@@ -1,0 +1,98 @@
+/* Design tokens: five type sizes, an 8px grid, lab28 neutrals, status colours. Light by default, dark by the system setting. */
+@layer tokens {
+  :root {
+    color-scheme: light;
+    --font: system-ui, sans-serif;
+    --mono: ui-monospace, monospace;
+    --text-xs: 11px;
+    --text-s: 13px;
+    --text-m: 15px;
+    --text-l: 18px;
+    --text-xl: 24px;
+    --u: 8px;
+    --bg: #f4f5f7;
+    --fg: #1d1f27;
+    --mute: #596175;
+    --card: #fff;
+    --line: #d3d6df;
+    --line-strong: #7d869b;
+    --chip: #eef1f7;
+    --focus: #2b5fd9;
+    --ok: #1b6b34;
+    --ok-bg: #e8f7ee;
+    --ok-line: #5bbb83;
+    --fail: #b42318;
+    --fail-bg: #fdeceb;
+    --fail-line: #e0736b;
+    --warn: #8a4b00;
+    --warn-bg: #fff4e0;
+    --warn-line: #e08a00;
+    --agent: #5b3fc4;
+    --agent-bg: #f1ecff;
+    --workflow: #e8590c;
+    --workflow-tint: #fff4e0;
+    --goal: #fff08a;
+    --capability: #ffd27a;
+    --entity: #eaf4fd;
+    --entity-line: #8ecbf5;
+    --board-dot: #9aa0b355;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #1d1f27;
+      --fg: #e7e9ef;
+      --mute: #aeb7c8;
+      --card: #292d38;
+      --line: #4d5567;
+      --line-strong: #8590a6;
+      --chip: #353b49;
+      --focus: #8fb0ff;
+      --ok: #7dd89a;
+      --ok-bg: #1a3324;
+      --ok-line: #3f8f5a;
+      --fail: #ff9a90;
+      --fail-bg: #3a2020;
+      --fail-line: #b8584f;
+      --warn: #ffc266;
+      --warn-bg: #3a2c12;
+      --warn-line: #b87a14;
+      --agent: #c3b3ff;
+      --agent-bg: #2c2548;
+      --workflow: #b86400;
+      --workflow-tint: #332a20;
+      --goal: #5c511e;
+      --capability: #63431c;
+      --entity: #223a50;
+      --entity-line: #487ba4;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #1d1f27;
+    --fg: #e7e9ef;
+    --mute: #aeb7c8;
+    --card: #292d38;
+    --line: #4d5567;
+    --line-strong: #8590a6;
+    --chip: #353b49;
+    --focus: #8fb0ff;
+    --ok: #7dd89a;
+    --ok-bg: #1a3324;
+    --ok-line: #3f8f5a;
+    --fail: #ff9a90;
+    --fail-bg: #3a2020;
+    --fail-line: #b8584f;
+    --warn: #ffc266;
+    --warn-bg: #3a2c12;
+    --warn-line: #b87a14;
+    --agent: #c3b3ff;
+    --agent-bg: #2c2548;
+    --workflow: #b86400;
+    --workflow-tint: #332a20;
+    --goal: #5c511e;
+    --capability: #63431c;
+    --entity: #223a50;
+    --entity-line: #487ba4;
+  }
+}

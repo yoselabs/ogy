@@ -116,3 +116,15 @@ tokens: orange workflow frames, sticky goal/capability notes, blue entities, E1
 effect badges and one mention identity path. The inherited CSS is unchanged apart
 from the temporary area inventory's shell rules. No draw/interaction acceptance
 is claimed by this stage.
+
+## Shell (stage 2 of the rebuild)
+
+`index.html` is a shell: header, standing strip, breadcrumb, main column, right rail. Hash routes are the whole view state
+(`#/<path>?level=&sel=&rail=`; `js/shell/router.js`): a route no entry in `main.js` claims is the not-found page, and the
+canvas stays at `#/` and `#/board` until the Map replaces it. The header names the repository and revision (`repository`
+and `revision` of `/api/standing`: the repository folder, and `worktree` or the commit) and when the page last saw the
+standing change; the strip shows `totals` and links a fact only once its list route exists. `js/ui/mention.js` is the one
+function that draws an entry's name (`data-renderer="mention"`); `js/ui/authored.js` marks KB text with `data-authored`;
+`js/ui/words.js` is the viewer's own fixed list. `assets/board/tokens.css` holds the five type sizes (11/13/15/18/24), the
+8px grid, the lab28 neutrals and the status colours for light and dark; `js/model/icons.js` gives every kind, effect
+operation and mark one glyph (`tests/test_web_shell.py` keeps them apart).

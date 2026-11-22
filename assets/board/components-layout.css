@@ -1,7 +1,5 @@
 @layer components {
 /* lab28 palette and typography, layered over lab29's semantic contracts. */
-:root{color-scheme:light;--bg:#f4f5f7;--fg:#1d1f27;--mute:#6b7285;--card:#fff;--line:#d3d6df;--workflow:#e8590c;--workflow-tint:#fff4e0;--goal:#fff08a;--capability:#ffd27a;--entity:#eaf4fd;--entity-line:#8ecbf5;--chip:#eef1f7}
-html,body{font:14px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
 #stage{top:68px;bottom:60px;overflow:hidden}
 body:has(#pal[style*="display: block"]) #stage{visibility:hidden}
 #top{top:10px;left:12px;right:12px;max-width:none;height:46px;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;white-space:nowrap;gap:6px}
@@ -47,7 +45,6 @@ body:has(#pal[style*="display: block"]) #stage{visibility:hidden}
 #edge-inspector{top:78px;bottom:72px}.route-label rect{fill:var(--card)}.route-label text{fill:var(--mute)}
 .display-row,.pi{flex-wrap:wrap}.display-row .row-sentence,.pi span{white-space:normal;overflow:visible;text-overflow:clip}
 @media(max-width:600px){#stage{top:76px;bottom:72px}#top{height:56px}.local-card,.compact-card{padding-bottom:60px}.flow-row{padding-bottom:56px}.local-card>.explicit-pin,.compact-card>.explicit-pin{right:56px;width:44px;min-width:44px;min-height:44px}.local-card .open-affordance,.compact-card .open-card,.flow-row .open-affordance{width:44px;min-width:44px;min-height:44px}#local-back{position:static}#hc.pinned{width:calc(100vw - 24px);top:84px!important;max-height:calc(100vh - 168px)}#edge-ledger{bottom:14px;width:225px}#edge-inspector{left:12px;right:12px;width:auto;top:84px;bottom:80px}}
-:root[data-theme=dark]{color-scheme:dark;--bg:#1d1f27;--fg:#e7e9ef;--mute:#aeb7c8;--card:#292d38;--line:#4d5567;--workflow:#b86400;--workflow-tint:#332a20;--goal:#5c511e;--capability:#63431c;--entity:#223a50;--entity-line:#487ba4;--chip:#353b49}
 :root[data-theme=dark] .mention.kind-goal{--kind:#ffe479!important}:root[data-theme=dark] .mention.kind-capability{--kind:#ffd08b!important}:root[data-theme=dark] .mention.kind-entity{--kind:#9ed5ff!important}:root[data-theme=dark] .mention.kind-workflow{--kind:#c8b2ff!important}:root[data-theme=dark] .mention.kind-actor{--kind:#f1add7!important}
 :root[data-theme=dark] #top .seg button{color:var(--fg)}:root[data-theme=dark] #top .seg button.on{background:var(--card);color:var(--fg)}
 :root[data-theme=dark] .mention:not(.kind-goal):not(.kind-capability):not(.kind-entity):not(.kind-workflow):not(.kind-actor){--kind:#bdcbe2!important}

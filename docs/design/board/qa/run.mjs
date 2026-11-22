@@ -3,13 +3,16 @@ import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { OVERLAP, TEXT, VIEWER_WORDS } from './measures.js';
+import { CONTRAST, OVERLAP, TEXT, VIEWER_WORDS } from './measures.js';
+import { cpSync, rmSync, writeFileSync as put } from 'node:fs';
+import { tmpdir } from 'node:os';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const scratch = dirname(here);
 const out = process.env.OUT || here;
 const blank = process.argv.includes('--blank');
-const scenes = JSON.parse(readFileSync(join(here, 'scenes.json'), 'utf8'));
+// ONLY=<set> runs one data set; the full gate runs all three.
+const scenes = JSON.parse(readFileSync(join(here, 'scenes.json'), 'utf8')).filter(scene => !process.env.ONLY || scene.set === process.env.ONLY);
 const forbidden = readFileSync(join(here, 'forbidden.txt'), 'utf8').trim().split('\n');
 const results = [];
 const lines = [];
@@ -53,6 +56,7 @@ function failures(measures) {
   if (measures.text.min === null || measures.text.min < 11) failed.push('font min=' + measures.text.min);
   if (measures.text.max > 24) failed.push('font max=' + measures.text.max);
   if (measures.text.distinct > 5) failed.push('font sizes=' + measures.text.distinct);
+  if (measures.contrast.min < 4.5) failed.push('contrast ' + measures.contrast.min + ' ' + measures.contrast.fails.join('; '));
   for (const pattern of forbidden) {
     const match = measures.viewerWords.match(new RegExp(pattern, 'i'));
     if (match) failed.push('forbidden ' + JSON.stringify(match[0]) + ' (' + pattern + ')');
@@ -73,8 +77,8 @@ async function capture(scene, repo, width, height, theme) {
       if (!home.search) home.search = new URL(started.url).search;
       url = home.href;
     }
-    const expression = 'JSON.stringify({overlap:(' + OVERLAP + '),text:(' + TEXT
-      + '),viewerWords:(' + VIEWER_WORDS + ')})';
+    const expression = 'window.__scope=' + JSON.stringify(blank ? 'body' : scene.scope || 'body') + ';JSON.stringify({overlap:(' + OVERLAP + '),text:(' + TEXT
+      + '),contrast:(' + CONTRAST + '),viewerWords:(' + VIEWER_WORDS + ')})';
     const spec = [{ ...scene, name, url, size: [width, height], mobile: width === 390,
       actions: [{ media: theme }, { key: 'Tab', code: 'Tab', vk: 9 },
         { eval: expression }] }];
@@ -99,7 +103,14 @@ async function capture(scene, repo, width, height, theme) {
 
 async function main() {
   for (const scene of scenes) {
-    let repo = scene.set === 'tool' ? 'tests/fixtures/tool-library' : '.';
+    let repo = '.';
+    if (scene.set === 'tool') {
+      // Standing needs a land branch, so the fixture is run from a copy that names one (settings, not knowledge base).
+      repo = join(tmpdir(), 'board-qa-tool');
+      rmSync(repo, { recursive: true, force: true });
+      cpSync('tests/fixtures/tool-library', repo, { recursive: true });
+      put(join(repo, 'ogy.yml'), 'land: main\n');
+    }
     if (scene.set === 'synthetic' && !blank && process.env.SYNTHETIC_REPO) {
       repo = process.env.SYNTHETIC_REPO; // a copy made by synthetic.py earlier; skips minutes of generation
     } else if (scene.set === 'synthetic' && !blank) {

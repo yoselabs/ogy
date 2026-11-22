@@ -1,6 +1,6 @@
 @layer components {
-  .board-header { height: 56px; box-sizing: border-box; }
   #stage.board-canvas { position: relative; inset: auto; padding: 0; min-height: 0; overflow: hidden; }
+  #stage.board-canvas { font-size: 14px; }
   #board { display: block; width: 100%; height: 100%; }
   #board[hidden], #overview[hidden] { display: none; }
   #overview { height: 100%; overflow: auto; padding: 20px; box-sizing: border-box; }

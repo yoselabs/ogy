@@ -16,8 +16,12 @@ const labels=[...document.querySelectorAll(".route-label")].map(R).filter(vis);
 let lb=0;for(const l of labels)if(blocks.some(b=>hit(l,b[1])))lb++;
 return "blocks="+blocks.length+" edges="+edges.length+" blockOverlaps="+bb+" textRunsCrossedByEdge="+rt+"/"+texts.length+" blocksEnteredByEdge="+rb+"/"+blocks.length+" labelsOnBlocks="+lb+"/"+labels.length})()`;
 
+// Text measures read `window.__scope`: a CSS selector for the roots to measure (default: the whole body).
+const ROOTS = "[...document.querySelectorAll(window.__scope || 'body')]";
+
 export const TEXT = `(() => {
-  const sizes = [...document.querySelectorAll('body, body *')]
+  const roots = ${ROOTS};
+  const sizes = roots.flatMap(root => [root, ...root.querySelectorAll('*')])
     .filter(e => [...e.childNodes].some(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim()))
     .filter(e => !e.closest('script, style, template'))
     .map(e => parseFloat(getComputedStyle(e).fontSize));
@@ -26,7 +30,32 @@ export const TEXT = `(() => {
 })()`;
 
 export const VIEWER_WORDS = `(() => {
-  const clone = document.body.cloneNode(true);
-  clone.querySelectorAll('[data-authored]').forEach(e => e.remove());
-  return clone.innerText;
+  return ${ROOTS}.map(root => {
+    const clone = root.cloneNode(true);
+    clone.querySelectorAll('[data-authored]').forEach(e => e.remove());
+    return clone.innerText || clone.textContent;
+  }).join('\\n');
+})()`;
+
+// Contrast of every text element against its effective background; fails under 4.5:1.
+export const CONTRAST = `(() => {
+  const parse = c => { const m = c.match(/rgba?\\(([^)]+)\\)/); if (!m) return null;
+    const p = m[1].split(/[ ,\\/]+/).map(Number); return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 }; };
+  const over = (top, under) => ({ r: top.r * top.a + under.r * (1 - top.a), g: top.g * top.a + under.g * (1 - top.a),
+    b: top.b * top.a + under.b * (1 - top.a), a: 1 });
+  const lin = v => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+  const lum = c => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+  const backdrop = el => { const layers = []; for (let e = el; e; e = e.parentElement) { const c = parse(getComputedStyle(e).backgroundColor);
+      if (c && c.a > 0) { layers.push(c); if (c.a === 1) break; } }
+    return layers.reduceRight((under, top) => over(top, under), { r: 255, g: 255, b: 255, a: 1 }); };
+  const roots = ${ROOTS};
+  const found = []; let min = 21;
+  for (const el of roots.flatMap(root => [root, ...root.querySelectorAll('*')])) {
+    if (![...el.childNodes].some(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim())) continue;
+    const r = el.getBoundingClientRect(); if (r.width < 1 || r.height < 1) continue;
+    const bg = backdrop(el); const fg = over(parse(getComputedStyle(el).color), bg);
+    const a = lum(fg) + 0.05, b = lum(bg) + 0.05; const ratio = Math.max(a, b) / Math.min(a, b);
+    min = Math.min(min, ratio); if (ratio < 4.5) found.push(el.tagName.toLowerCase() + '.' + el.className + ' ' + ratio.toFixed(2) + ' "' + el.textContent.trim().slice(0, 24) + '"');
+  }
+  return { min: Math.round(min * 100) / 100, fails: found.slice(0, 8) };
 })()`;
