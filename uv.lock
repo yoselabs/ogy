@@ -103,6 +103,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "asgi-token-gate"
+version = "0.1.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fasgi-token-gate&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+
+[[package]]
+name = "async-scope"
+version = "0.3.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fasync-scope&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
+
+[package.optional-dependencies]
+asgi = [
+    { name = "uvicorn" },
+]
+
+[[package]]
 name = "atomic-io"
 version = "0.3.0"
 source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.9.1#bfb17bd22cb4eeb8744fbd6edd47015739458d6a" }
@@ -815,6 +830,8 @@ dependencies = [
     { name = "any-markdown" },
     { name = "any-yaml" },
     { name = "argparse-mcp" },
+    { name = "asgi-token-gate" },
+    { name = "async-scope", extra = ["asgi"] },
     { name = "atomic-io" },
     { name = "content-digest" },
     { name = "fastmcp" },
@@ -825,6 +842,7 @@ dependencies = [
     { name = "py-symbols" },
     { name = "pydantic" },
     { name = "settings-base" },
+    { name = "verb-cli" },
 ]
 
 [package.dev-dependencies]
@@ -841,7 +859,6 @@ dev = [
     { name = "ruff" },
     { name = "rust-just" },
     { name = "test-reach" },
-    { name = "verb-cli" },
 ]
 
 [package.metadata]
@@ -849,6 +866,8 @@ requires-dist = [
     { name = "any-markdown", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-markdown&tag=blueprint-v0.9.1" },
     { name = "any-yaml", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-yaml&tag=blueprint-v0.9.1" },
     { name = "argparse-mcp", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fargparse-mcp&tag=blueprint-v0.9.1" },
+    { name = "asgi-token-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fasgi-token-gate&tag=blueprint-v0.9.1" },
+    { name = "async-scope", extras = ["asgi"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fasync-scope&tag=blueprint-v0.9.1" },
     { name = "atomic-io", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fatomic-io&tag=blueprint-v0.9.1" },
     { name = "content-digest", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fcontent-digest&tag=blueprint-v0.9.1" },
     { name = "fastmcp", specifier = ">=3.4,<4" },
@@ -859,6 +878,7 @@ requires-dist = [
     { name = "py-symbols", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fpy-symbols&tag=blueprint-v0.9.1" },
     { name = "pydantic", specifier = "==2.14.3" },
     { name = "settings-base", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fsettings-base&tag=blueprint-v0.9.1" },
+    { name = "verb-cli", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.9.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -875,7 +895,6 @@ dev = [
     { name = "ruff", specifier = "==0.17.0" },
     { name = "rust-just", specifier = "==1.59.0" },
     { name = "test-reach", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Ftest-reach&tag=blueprint-v0.9.1" },
-    { name = "verb-cli", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fverb-cli&tag=blueprint-v0.9.1" },
 ]
 
 [[package]]

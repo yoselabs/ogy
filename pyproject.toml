@@ -12,6 +12,8 @@ dependencies = [
     "any-markdown==0.4.0",
     "any-yaml",
     "argparse-mcp==0.1.0",
+    "asgi-token-gate==0.1.0",
+    "async-scope[asgi]==0.3.0",
     "content-digest",
     "py-symbols==0.1.0",
     "fastmcp>=3.4,<4",
@@ -22,6 +24,7 @@ dependencies = [
     "pydantic==2.14.3",
     "process-lock",
     "settings-base==0.1.0",
+    "verb-cli==0.3.0",
 ]
 
 [project.scripts]
@@ -34,7 +37,6 @@ dev = [
     "any-gate",
     "pytest==9.2.0",
     "test-reach==0.1.0",
-    "verb-cli==0.2.0",
     "rust-just==1.59.0",
     "pytest-cov==7.1.0",
     "ruff==0.17.0",
@@ -45,6 +47,8 @@ dev = [
 ]
 
 [tool.uv.sources]
+asgi-token-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/asgi-token-gate", tag = "blueprint-v0.9.1" }
+async-scope = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/async-scope", tag = "blueprint-v0.9.1" }
 blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.9.1" }
 any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "blueprint-v0.9.1" }
 stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "blueprint-v0.9.1" }
@@ -216,6 +220,10 @@ runtime-evaluated-base-classes = ["pydantic.BaseModel"]
 [tool.deptry]
 known_first_party = ["ogy"]
 
+[tool.deptry.per_rule_ignores]
+# HTTP adapters use FastMCP's supplied server stack; no additional distributions are needed.
+DEP003 = ["starlette", "uvicorn"]
+
 [tool.codespell]
 # bench/corpus (source PDFs, binary) + bench/outputs (raw engine output, incl.
 # scanned-page OCR text) are generated/fixture data, not authored content —
@@ -294,11 +302,20 @@ type = "forbidden"
 source_modules = ["ogy"]
 forbidden_modules = ["fastmcp", "mcp", "argparse_mcp"]
 ignore_imports = ["ogy.mcp_server -> fastmcp", "ogy.mcp_server -> argparse_mcp"]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "Only web adapters import the HTTP libraries"
+type = "forbidden"
+source_modules = ["ogy"]
+forbidden_modules = ["starlette", "uvicorn"]
+ignore_imports = ["ogy.web.* -> starlette", "ogy.web.* -> uvicorn"]
+allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]
 name = "Entry points sit above the command layer, which sits above the operations"
 type = "layers"
-layers = ["ogy.__main__", "ogy.entry", "ogy.mcp_server", "ogy.cli", "ogy.commands", "ogy.ops"]
+layers = ["ogy.__main__", "ogy.entry", "ogy.web", "ogy.mcp_server", "ogy.cli", "ogy.commands", "ogy.ops"]
 
 [[tool.importlinter.contracts]]
 name = "No import cycles between the modules of ogy"

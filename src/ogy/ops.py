@@ -214,7 +214,7 @@ def run_diagram(target: Target, text: str) -> Run[list[str]]:
     return Run(mermaid(snapshot, flow, address), source.reads)
 
 
-def run_view(target: Target, out: str | None = None) -> Run[Path]:
+def run_export(target: Target, out: str | None = None) -> Run[Path]:
     """Write the product map page: to `out`, else into the Git directory (never committed)."""
     source, snapshot = target.read()
     git = git_dir(target.repo)

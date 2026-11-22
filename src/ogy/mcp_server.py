@@ -1,8 +1,9 @@
 """`ogy mcp`: the `ogy` commands as MCP tools over stdio, one tool per subcommand.
 
 The tools are built from the argparse structure of `ogy.cli.parser()` by shelf's `argparse-mcp`, so a new subcommand appears
-here without an edit; its description is the command's own (`init`, `mcp` and `hook` are no tools). Each tool calls `ogy.cli.run` in this
-process, the same operation the CLI uses. The global options (`--repo`, `--rev`, ...) are inputs of every tool. The result is
+here without an edit; its description is the command's own (`init`, `mcp`, `serve` and `hook` are no tools).
+Each tool calls `ogy.cli.run` in this process, the same operation the CLI uses.
+The global options (`--repo`, `--rev`, ...) are inputs of every tool. The result is
 the exit code and the output: a table or a record for an agent.
 
 Configure it per repository in `.mcp.json` at the repository root (the server starts in that folder, so `--repo`
@@ -18,6 +19,7 @@ defaults to it):
 import contextlib
 import io
 lazy from collections.abc import Sequence
+lazy from pathlib import Path
 
 from argparse_mcp import tools_from_parser
 from fastmcp import FastMCP
@@ -26,7 +28,7 @@ from fastmcp.tools.tool_transform import ToolAnnotations
 
 from ogy import cli
 
-NO_TOOL = ("mcp", "init", "hook")  # the subcommand that starts this server, the one a person runs once, the one Git runs
+NO_TOOL = ("mcp", "init", "hook", "serve")  # server starters, setup and the Git hook are not tools
 
 # Annotations are hints to the client, all four set: the read tools change nothing; `review` saves a round; `answer` and `reply`
 # add agreements; `put`, `remove`, `move` and `migrate` overwrite or rewrite entries. Every tool works on one local repository.
@@ -58,11 +60,15 @@ def _run(argv: Sequence[str]) -> cli.Result:
     return code, lines
 
 
-def build() -> FastMCP:
+def build(repo: Path | None = None) -> FastMCP:
     """The server: one tool per subcommand of the CLI parser (`argparse-mcp`), each running `ogy.cli.run` in this process."""
     top = cli.parser()
     server = FastMCP("ogy", instructions=top.description)
-    for tool in tools_from_parser(top, _run, usage=cli.USAGE):
+
+    def run(argv: Sequence[str]) -> cli.Result:
+        return _run(argv if repo is None else ["--repo", str(repo), *argv])
+
+    for tool in tools_from_parser(top, run, usage=cli.USAGE):
         if tool.name == "reply":  # the round is named over MCP: a bare reply would resolve against whichever round is newest
             tool.parameters["required"] = [*tool.parameters.get("required", []), "round"]
         if tool.name not in NO_TOOL:

@@ -9,8 +9,9 @@ import pytest
 from git_porcelain import RealRepo, run_git
 from tests.conftest import IDENTITY
 
-from ogy import cli
+from ogy import affected, cli
 from ogy.mcp_server import NO_TOOL
+from ogy.target import Target
 
 ZERO = "0" * 40
 
@@ -218,3 +219,18 @@ def test_with_no_remembered_paths_the_hook_checks(fresh: Path, monkeypatch: pyte
     seen = _spawned(monkeypatch)
     assert hook(fresh, monkeypatch, "pre-commit")[0] == cli.OK
     assert len(seen) > 2
+
+
+def test_a_failed_cache_replace_keeps_the_previous_cited_paths(cited: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Given an interrupted cache replacement, the hook's previous record remains intact."""
+    path = cited / ".git" / affected.CACHE
+    before = path.read_bytes()
+
+    def fail_replace(self: Path, target: Path) -> None:
+        message = "interrupted replacement"
+        raise OSError(message)
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+    with pytest.raises(OSError, match="interrupted replacement"):
+        affected.remember(cited, "docs/kb", "HEAD", Target(cited).read()[1])
+    assert path.read_bytes() == before

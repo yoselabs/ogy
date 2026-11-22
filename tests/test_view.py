@@ -24,6 +24,6 @@ def test_a_sentence_is_escaped(kb: Callable[..., Kb]) -> None:
 
 def test_view_writes_the_page_where_asked_and_changes_no_entry(kb: Callable[..., Kb], tmp_path: Path) -> None:
     repo, out = kb().repo(), tmp_path / "map.html"
-    code, lines = cli.run(["view", "--repo", str(repo), "--out", str(out)])
+    code, lines = cli.run(["serve", "--repo", str(repo), "--out", str(out)])
     assert code == 0 and lines[0] == f"wrote {out}"
     assert out.read_text(encoding="utf-8").startswith("<!doctype html>")

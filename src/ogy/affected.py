@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 
+from atomic_io import atomic_write_text
 from git_porcelain import RealRepo
 
 from ogy.evidence import Link, parse_link
@@ -62,4 +63,4 @@ def remember(repo: Path, kb: str, rev: str, snapshot: Snapshot) -> None:
     if tree.rc != 0 or where.rc != 0:
         return
     path = repo / where.out.strip()
-    path.write_text(json.dumps({"tree": tree.out.strip(), "paths": cited_paths(snapshot)}))
+    atomic_write_text(path, json.dumps({"tree": tree.out.strip(), "paths": cited_paths(snapshot)}))

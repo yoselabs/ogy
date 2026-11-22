@@ -50,7 +50,8 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `move <address> <area \| layer/area>` | move an entry and what it owns to another area, keeping its kind, id and agreements; in the same write the new address replaces the old one everywhere (links, decisions, answers, removed items' `why`), and an agreement that was current stays current. It records nothing: Git keeps the move, and `check --base` tells it from a loss: an entry gone with exactly one arrival of the same kind and id has moved, whatever its text (a changed text reads "changed since you agreed"); the fingerprint only breaks ties |
 | `migrate` | rewrite the entries to the field renames, drops and moves out of a fixed folder their kinds declare (see "Kind changes"); one checked write that records nothing. It also takes out, and prints, a removed item no removal writes now: its entry was never in the base (Git keeps the item) |
 | `history <address \| layer/area>` | what changed, who said so, what is in force, when it was built; computed from Git |
-| `mcp` | serve all of the above as MCP tools over stdio |
+| `serve [--port <number>] [--out <path>]` | board API and MCP in one loopback process (default port 8765); `--out` exports the legacy list page instead. Always reads the worktree. No MCP tool |
+| `mcp` | serve the knowledge-base commands as MCP tools over stdio |
 | `init` | set the repository up (see "Init") |
 | `hook pre-commit \| pre-push \| gate` | what a Git hook or the gate runs (no MCP tool). The one place that decides "is this a land": a push whose remote ref is the land branch (`land` in `ogy.yml`), or the gate with it checked out, gets `check --landing`; anything else, the plain check. `pre-commit` checks the staged tree and is never a land (a merge runs no pre-commit hook; a fresh repository's starters are agreed before its first land, not its first commit). The hooks `ogy init` writes (the pre-commit entry in a prek config, else `.githooks/pre-commit` and `.githooks/pre-push`) and ogy's own gate (`just kb`) call it |
 | `put [records ...] [--file <path>]` | the one way to add and change entries: one or many records (JSON or YAML, a mapping or an array, as arguments, a file, or `--file -` for standard input; over MCP an array of such texts). A record is `address` (or `kind`, `layer`, `area`, `id`) and the entry's fields; an address that exists is changed (`field: null` removes a field), a new one is added. The batch is validated together (a decision and the entries its options set may arrive in one call) and written under the lock whole, or not at all |
@@ -209,12 +210,20 @@ change: it needs a one-off migration on the write path.
 ### MCP
 
 `ogy mcp` starts a stdio MCP server with one tool per command above (the tools are generated from the CLI, so a new
-command appears without an edit). Every tool describes itself (its description is the command's own; `init` and `mcp` are no tools). Agents get tables (`check`, `work`, `find`, `dropped`, `impact`, `diff`) as lean-wire TSV with their header even when empty, and records (`show`, `status`) as YAML; no Python reprs. Add it to
+command appears without an edit). Every tool describes itself (its description is the command's own; `init`, `mcp`, `serve` and `hook` are no tools). Agents get tables (`check`, `work`, `find`, `dropped`, `impact`, `diff`) as lean-wire TSV with their header even when empty, and records (`show`, `status`) as YAML; no Python reprs. Add it to
 `.mcp.json` at the repository root; the server starts there, so `--repo` defaults to it:
 
 ```json
 {"mcpServers": {"ogy": {"command": "uvx", "args": ["--from", "git+https://github.com/yoselabs/ogy", "ogy", "mcp"]}}}
 ```
+
+`ogy serve` binds `127.0.0.1` and prints a browser URL. Opening it exchanges the URL token for an HttpOnly,
+SameSite=Strict cookie and redirects to `/` without the token. The board front end is a placeholder until S3.
+HTTP clients send `X-Ogy-Token`; the stable token is stored privately (0600) in the repository's Git directory under
+`ogy/server.token`. `/healthz` needs no token. The authenticated read endpoints are `/api/inspection` (the inspection
+library's JSON), `/api/entry/<address>` (one inspection entry), and `/api/version` (content and ontology identities).
+Every request reloads current files. `/mcp/` offers the same tools as `ogy mcp`, with `--repo` defaulting to the served
+repository. All routes validate Host and Origin. Ctrl-C stops the server and its MCP lifespan.
 
 ## The software ontology
 

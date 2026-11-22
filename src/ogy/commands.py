@@ -66,8 +66,8 @@ def _diagram(target: Target, args: argparse.Namespace, **_: object) -> Result:
     return done.verdict, done.value
 
 
-def _view(target: Target, args: argparse.Namespace, **_: object) -> Result:
-    done = ops.run_view(target, args.out)
+def _export(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    done = ops.run_export(target, args.out)
     return done.verdict, [f"wrote {done.value}", f"open {done.value.resolve().as_uri()}"]
 
 
@@ -159,7 +159,7 @@ HANDLERS: dict[str, Handler] = {
     "find": _find,
     "impact": _impact,
     "diagram": _diagram,
-    "view": _view,
+    "serve": _export,
     "diff": _diff,
     "work": _work,
     "review": _review,

@@ -5,11 +5,14 @@ import sys
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
+import verb_cli as vc
+
 from ogy import config, ops
 from ogy.commands import HANDLERS, Result
 from ogy.find import STATES
 from ogy.init import doctor
 from ogy.ontology import DEFAULT_ONTOLOGY
+from ogy.serve_options import ServeOptions
 from ogy.target import Target
 from ogy.verdict import RefusalError, Verdict
 
@@ -91,13 +94,13 @@ def _reads(commands: Adder) -> None:
     ).add_argument("file", help="a Markdown file of the repository")
     for name, about in (("impact", "what a change reaches and what reaches it"), ("diagram", "the flow of a workflow as Mermaid")):
         _verb(commands, name, about).add_argument("address", help=ADDRESS)
-    _verb(
+    board = _verb(
         commands,
-        "view",
-        "the product as one web page: a map of its areas to dive into, with a narrative",
-        "Writes one self-contained HTML file computed from the entries (default: in the Git directory, never committed) and "
-        "prints where. Changes no entry.",
-    ).add_argument("--out", help="write the page here instead")
+        "serve",
+        "serve the board API and MCP on loopback",
+        "Requires a token except for /healthz. Reads current files per request. --out exports the legacy list page instead.",
+    )
+    vc.to_argparse(board, vc.flags_of(ServeOptions))
     between = _verb(commands, "diff", "the entries changed between two commits or the worktree")
     between.add_argument("before", help="a commit, or . for the worktree")
     between.add_argument("after", help="a commit, or . for the worktree")
@@ -303,12 +306,27 @@ def target_of(args: argparse.Namespace) -> Target:
     return Target(args.repo, rev=_first(args.rev, settings.rev, "."), ontology=_first(args.ontology, settings.ontology, DEFAULT_ONTOLOGY))
 
 
-def dispatch(args: argparse.Namespace, *, agent: bool, serve: Callable[[], None] | None = None) -> Result:
+def _server(args: argparse.Namespace, serve: Callable[..., None] | None, mcp: Callable[[], None] | None) -> Result:
+    if args.command == "serve" and args.out is not None:
+        return HANDLERS["serve"](target_of(args).at("."), args, agent=False)
+    starter = mcp if args.command == "mcp" else serve
+    if starter is None:
+        return USAGE, [f"the server starts from the console entry: run `ogy {args.command}`"]
     if args.command == "mcp":
+        starter()
+    else:
         if serve is None:
-            return USAGE, ["the MCP server starts from the console entry: run `ogy mcp`"]
-        serve()
-        return OK, []
+            return USAGE, ["the board server starts from the console entry: run `ogy serve`"]
+        options = ServeOptions(**vc.kwargs_of(args, vc.flags_of(ServeOptions)))
+        serve(target_of(args).at("."), port=options.port)
+    return OK, []
+
+
+def dispatch(
+    args: argparse.Namespace, *, agent: bool, serve: Callable[..., None] | None = None, mcp: Callable[[], None] | None = None
+) -> Result:
+    if args.command in {"mcp", "serve"}:
+        return _server(args, serve, mcp)
     if args.command == "init" and args.check:
         problems = doctor(args.repo)
         return (FINDINGS if problems else OK), problems or ["ogy is set up here"]
@@ -321,18 +339,20 @@ def dispatch(args: argparse.Namespace, *, agent: bool, serve: Callable[[], None]
     return HANDLERS[args.command](target_of(args), args, agent=agent)
 
 
-def run(argv: Sequence[str], *, agent: bool = False, serve: Callable[[], None] | None = None) -> Result:
+def run(
+    argv: Sequence[str], *, agent: bool = False, serve: Callable[..., None] | None = None, mcp: Callable[[], None] | None = None
+) -> Result:
     """Run one command; `agent` prints tables and records (over MCP) instead of lines for a person.
 
-    `serve` starts the MCP server for `ogy mcp`: the entry point above this module passes it, so this module never imports the server."""
+    The entry point injects the board and MCP starters so this module never imports either server."""
     try:
-        return dispatch(parser().parse_args(argv), agent=agent, serve=serve)
+        return dispatch(parser().parse_args(argv), agent=agent, serve=serve, mcp=mcp)
     except RefusalError as error:
         return error.verdict, error.lines()
 
 
-def main(argv: Sequence[str] | None = None, *, serve: Callable[[], None] | None = None) -> int:
-    code, lines = run(sys.argv[1:] if argv is None else argv, serve=serve)
+def main(argv: Sequence[str] | None = None, *, serve: Callable[..., None] | None = None, mcp: Callable[[], None] | None = None) -> int:
+    code, lines = run(sys.argv[1:] if argv is None else argv, serve=serve, mcp=mcp)
     if lines:
         print("\n".join(lines), file=sys.stderr if code >= USAGE else sys.stdout)
     return code
