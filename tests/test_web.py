@@ -2,16 +2,10 @@
 
 import asyncio
 import shutil
-import signal
-import threading
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import override
-lazy from socket import socket
 
-import httpx
 import pytest
-from async_scope.asgi import serve_asgi
+from any_local_service import LocalService
 from fastmcp import Client
 from fastmcp.client.transports import StreamableHttpTransport
 from starlette.testclient import TestClient
@@ -33,8 +27,8 @@ def test_health_is_public_but_every_board_and_mcp_route_requires_auth(tmp_path, 
     """Given the fixture, health precedes auth and API inspection equals the library document."""
     shutil.copytree(source / "docs/kb", tmp_path / "docs/kb")
     target = Target(tmp_path)
-    with TestClient(application(target, "test-secret", port=8123), base_url="http://127.0.0.1:8123") as client:
-        assert client.get("/healthz").json() == {"status": "ok"}
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123") as client:
+        assert client.get("/healthz").json()["ready"] is True
         for route in ("/", "/api/inspection", "/api/version", "/api/entry/product/app/actor/member", "/mcp/"):
             assert client.get(route).status_code == 401
             assert client.get(route, headers={"X-Ogy-Token": "wrong"}).status_code == 401
@@ -50,7 +44,7 @@ def test_an_ogy_write_changes_the_next_version_and_inspection(repo):
     """Given a running board, a per-write operation is visible without restarting it."""
     shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
     target = Target(repo)
-    with TestClient(application(target, "test-secret", port=8123), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
         before = client.get("/api/version").json()
         record = '{"address":"product/lending/actor/member","says":"A person borrowing tools."}'
         code, lines = cli.run(["--repo", str(repo), "put", record])
@@ -63,13 +57,13 @@ def test_an_ogy_write_changes_the_next_version_and_inspection(repo):
 @pytest.mark.parametrize("headers", [{"Host": "evil.example"}, {"Origin": "http://evil.example"}, {"Origin": "null"}])
 def test_host_and_origin_are_checked_even_with_a_valid_token(path, headers):
     """Given a rebound Host or cross-site Origin, all HTTP routes refuse the request."""
-    with TestClient(application(Target(LIBRARY), "test-secret", port=8123), base_url="http://127.0.0.1:8123") as client:
+    with TestClient(application(Target(LIBRARY), "test-secret"), base_url="http://127.0.0.1:8123") as client:
         assert client.get(path, headers={**HEADERS, **headers}).status_code == 403
 
 
 def test_browser_exchanges_url_token_for_a_cookie_and_redirects_without_the_secret():
     """Given the printed URL, navigation establishes a private cookie then removes the URL token."""
-    with TestClient(application(Target(LIBRARY), "test-secret", port=8123), base_url="http://127.0.0.1:8123") as client:
+    with TestClient(application(Target(LIBRARY), "test-secret"), base_url="http://127.0.0.1:8123") as client:
         assert client.get("/?t=wrong", follow_redirects=False).status_code == 401
         response = client.get("/?t=test-secret", follow_redirects=False)
         assert response.status_code == 303 and response.headers["location"] == "/"
@@ -108,7 +102,7 @@ def test_http_mcp_lists_the_stdio_tools_and_stops_with_its_process_scope():
     """Given one ephemeral loopback server, authenticated MCP lists exactly the stdio tool set."""
 
     async def session():
-        async with serve_asgi(application(Target(LIBRARY), "test-secret", port=None)) as url:
+        async with application(Target(LIBRARY), "test-secret").serving() as url:
             transport = StreamableHttpTransport(url + "/mcp/", headers=HEADERS)
             async with Client(transport) as client:
                 names = {tool.name for tool in await client.list_tools()}
@@ -128,29 +122,25 @@ def test_the_token_is_private_and_survives_a_server_restart(repo):
     assert resolve_token(repo) == first
 
 
-def test_the_console_server_stops_on_its_interrupt_path(monkeypatch):
-    """Given the console runner on port zero, its SIGINT handler stops the server and releases its socket."""
-    ready = threading.Event()
-    running = []
+@pytest.mark.parametrize("options, expected", [({}, 8765), ({"port": 0}, 0)])
+def test_console_uses_the_service_port_and_prints_its_bound_browser_url(monkeypatch, capsys, options, expected):
+    """Given default or ephemeral serving, the browser URL uses the actual bound address and ogy's token."""
+    calls = []
 
-    class ObservedServer(serve.uvicorn.Server):
-        @override
-        async def startup(self, sockets: list[socket] | None = None):
-            await super().startup(sockets)
-            assert sockets is not None
-            running.append((self, sockets[0].getsockname()[1]))
-            ready.set()
+    def run(self, *, port, on_bound):
+        calls.append((self, port))
+        on_bound("http://127.0.0.1:43210")
 
-    monkeypatch.setattr(serve.uvicorn, "Server", ObservedServer)
+    monkeypatch.setattr(LocalService, "run", run)
     monkeypatch.setattr(serve, "resolve_token", lambda _: "test-secret")
-    with ThreadPoolExecutor(max_workers=1) as pool:
-        task = pool.submit(serve.main, Target(LIBRARY), port=0)
-        try:
-            assert ready.wait(timeout=5), "the console server did not start"
-            server, port = running[0]
-            assert httpx.get(f"http://127.0.0.1:{port}/healthz").status_code == 200
-        finally:
-            if running:
-                running[0][0].handle_exit(signal.SIGINT, None)
-        task.result(timeout=5)
-        assert not server.servers[0].is_serving()
+    serve.main(Target(LIBRARY), **options)
+    assert len(calls) == 1 and isinstance(calls[0][0], LocalService) and calls[0][1] == expected
+    assert capsys.readouterr().err == "ogy board: http://127.0.0.1:43210/?t=test-secret\n"
+
+
+@pytest.mark.parametrize("port", [-1, 65536])
+def test_console_reports_service_port_validation_as_an_ogy_refusal(monkeypatch, port):
+    """Given an invalid port, the CLI reports the shelf refusal through ogy's normal error result."""
+    monkeypatch.setattr(serve, "resolve_token", lambda _: "test-secret")
+    code, lines = cli.run(["serve", "--port", str(port)], serve=serve.main)
+    assert code == cli.REFUSED and lines == ["refused: port must be between 0 and 65535"]

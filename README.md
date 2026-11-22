@@ -220,7 +220,8 @@ command appears without an edit). Every tool describes itself (its description i
 `ogy serve` binds `127.0.0.1` and prints a browser URL. Opening it exchanges the URL token for an HttpOnly,
 SameSite=Strict cookie and redirects to `/` without the token. The board front end is a placeholder until S3.
 HTTP clients send `X-Ogy-Token`; the stable token is stored privately (0600) in the repository's Git directory under
-`ogy/server.token`. `/healthz` needs no token. The authenticated read endpoints are `/api/inspection` (the inspection
+`ogy/server.token`. Shelf's `any-local-service` owns browser access, loopback serving and shutdown.
+`/healthz` needs no token and reports readiness, stage and version. The authenticated read endpoints are `/api/inspection` (the inspection
 library's JSON), `/api/entry/<address>` (one inspection entry), and `/api/version` (content and ontology identities).
 Every request reloads current files. `/mcp/` offers the same tools as `ogy mcp`, with `--repo` defaulting to the served
 repository. All routes validate Host and Origin. Ctrl-C stops the server and its MCP lifespan.

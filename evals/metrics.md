@@ -23,6 +23,8 @@ Status: **record**, kept current by every eval. One row per metric. "Moved" = th
 
 | Hazard holes surfaced | of the key's hazard holes (environment, timing, outside failure), how many are open, asked, read back or answered with a mark | E11 | 6.25 vs 8.9 of 12, ranges 5-7 vs 7-11 | **discriminating** | the hazard pass needs its own step; product capture alone stops near half |
 
+Shelf snapshot adoption (2026-11-22, ogy-whb) has regression and gate validation only; no agent eval ran and no agent metric changed.
+
 ## Exploration and hazards (system behaviour)
 
 | Metric | Definition | Evals | What happened | Status | Lesson |

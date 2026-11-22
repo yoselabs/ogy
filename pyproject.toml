@@ -13,7 +13,7 @@ dependencies = [
     "any-yaml",
     "argparse-mcp==0.1.0",
     "asgi-token-gate==0.1.0",
-    "async-scope[asgi]==0.3.0",
+    "any-local-service>=0.1,<1",
     "content-digest",
     "py-symbols==0.1.0",
     "fastmcp>=3.4,<4",
@@ -47,27 +47,28 @@ dev = [
 ]
 
 [tool.uv.sources]
-asgi-token-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/asgi-token-gate", tag = "blueprint-v0.9.1" }
-async-scope = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/async-scope", tag = "blueprint-v0.9.1" }
-blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.9.1" }
-any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "blueprint-v0.9.1" }
-stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "blueprint-v0.9.1" }
-any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "blueprint-v0.9.1" }
-any-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate", tag = "blueprint-v0.9.1" }
-test-reach = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/test-reach", tag = "blueprint-v0.9.1" }
-verb-cli = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/verb-cli", tag = "blueprint-v0.9.1" }
-atomic-io = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/atomic-io", tag = "blueprint-v0.9.1" }
-lean-wire = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/lean-wire", tag = "blueprint-v0.9.1" }
-managed-region = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/managed-region", tag = "blueprint-v0.9.1" }
-settings-base = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/settings-base", tag = "blueprint-v0.9.1" }
-process-lock = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/process-lock", tag = "blueprint-v0.9.1" }
-git-porcelain = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/git-porcelain", tag = "blueprint-v0.9.1" }
-any-markdown = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-markdown", tag = "blueprint-v0.9.1" }
-any-yaml = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-yaml", tag = "blueprint-v0.9.1" }
-argparse-mcp = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/argparse-mcp", tag = "blueprint-v0.9.1" }
-content-digest = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/content-digest", tag = "blueprint-v0.9.1" }
-py-symbols = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/py-symbols", tag = "blueprint-v0.9.1" }
-yaml-merge = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/yaml-merge", tag = "blueprint-v0.9.1" }
+asgi-token-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/asgi-token-gate", tag = "blueprint-v0.12.1" }
+any-local-service = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-local-service", tag = "blueprint-v0.12.1" }
+async-scope = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/async-scope", tag = "blueprint-v0.12.1" }
+blueprint = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/blueprint", tag = "blueprint-v0.12.1" }
+any-gate-python = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate-python", tag = "blueprint-v0.12.1" }
+stream-proc = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/stream-proc", tag = "blueprint-v0.12.1" }
+any-lease = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-lease", tag = "blueprint-v0.12.1" }
+any-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-gate", tag = "blueprint-v0.12.1" }
+test-reach = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/test-reach", tag = "blueprint-v0.12.1" }
+verb-cli = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/verb-cli", tag = "blueprint-v0.12.1" }
+atomic-io = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/atomic-io", tag = "blueprint-v0.12.1" }
+lean-wire = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/lean-wire", tag = "blueprint-v0.12.1" }
+managed-region = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/managed-region", tag = "blueprint-v0.12.1" }
+settings-base = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/settings-base", tag = "blueprint-v0.12.1" }
+process-lock = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/process-lock", tag = "blueprint-v0.12.1" }
+git-porcelain = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/git-porcelain", tag = "blueprint-v0.12.1" }
+any-markdown = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-markdown", tag = "blueprint-v0.12.1" }
+any-yaml = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-yaml", tag = "blueprint-v0.12.1" }
+argparse-mcp = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/argparse-mcp", tag = "blueprint-v0.12.1" }
+content-digest = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/content-digest", tag = "blueprint-v0.12.1" }
+py-symbols = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/py-symbols", tag = "blueprint-v0.12.1" }
+yaml-merge = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/yaml-merge", tag = "blueprint-v0.12.1" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ogy"]
@@ -308,8 +309,8 @@ allow_indirect_imports = true
 name = "Only web adapters import the HTTP libraries"
 type = "forbidden"
 source_modules = ["ogy"]
-forbidden_modules = ["starlette", "uvicorn"]
-ignore_imports = ["ogy.web.* -> starlette", "ogy.web.* -> uvicorn"]
+forbidden_modules = ["starlette", "uvicorn", "any_local_service"]
+ignore_imports = ["ogy.web.* -> starlette", "ogy.web.serve -> any_local_service"]
 allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]

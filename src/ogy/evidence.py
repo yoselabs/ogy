@@ -9,7 +9,7 @@ from typing import Protocol
 lazy from collections.abc import Mapping
 
 import py_symbols
-from any_markdown import find, outline
+from any_markdown import find, github_outline
 from content_digest import digest_text
 
 from ogy.declared import Reader, Scheme
@@ -124,10 +124,10 @@ def symbol_hash(source: str, symbol: str) -> str | None:
 
 def section_hash(markdown: str, anchor: str) -> str | None:
     """Hash of the section under the heading with this GitHub anchor (to the next heading of the same or higher level)."""
-    section = find(markdown, anchor, anchors="github")
+    section = find(markdown, anchor, rows=github_outline(markdown))
     return None if section is None or section.level == 0 else digest_text(markdown[section.start : section.end].strip(), length=HASH_LENGTH)
 
 
 def anchors(markdown: str) -> list[tuple[str, str, int]]:
     """(GitHub anchor, heading text, level) of every heading of a Markdown file, in order: what `doc:<commit>:<path>#<anchor>` may name."""
-    return [(row.id, row.heading, row.level) for row in outline(markdown, anchors="github") if row.level > 0]
+    return [(row.id, row.heading, row.level) for row in github_outline(markdown) if row.level > 0]
