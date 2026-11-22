@@ -19,7 +19,7 @@ BROWSER = {"Origin": BASE, "Content-Type": "application/json"}
 
 
 def _waiting(target):
-    rows = standing(target)["decisions"].items()
+    rows = standing(target, {})["decisions"].items()
     return sorted(address for address, row in rows if row["status"] == "waiting" and address.rsplit("/", 1)[1] in {"first", "second"})
 
 
