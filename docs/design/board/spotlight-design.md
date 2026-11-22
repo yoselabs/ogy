@@ -43,7 +43,7 @@ Before ending a brainstorm, the agent promotes surviving alternatives into a KB 
 
 Add sequenced SSE `/api/events` for **every MCP completion**, including reads and refusals. Publish status and changed inspection/spotlight/illustration data or versions before returning the MCP result. Reads update the log without moving the camera. External file changes enter the same stream. Paint acknowledgement distinguishes “sent” from “seen”.
 
-Connect using a versioned state snapshot and subscription cursor; reconnect gaps trigger resynchronization. Existing `/api/version` polling is a visibly degraded fallback, not fulfilment of immediacy. Extend its KB-only version with attention/illustration versions. Show disconnection.
+Connect using a versioned state snapshot and subscription cursor; reconnect gaps trigger resynchronization. Existing `/api/version` polling is a visibly degraded fallback, not fulfillment of immediacy. Extend its KB-only version with attention/illustration versions. Show disconnection.
 
 Two sessions replace attention using compare-and-swap: one succeeds; the other receives current session/title/version and must explicitly replace it. One board, bounded session/time log; Back/Next stays local. KB changes rederive the active targets against the new version. Removed targets retain address/commentary as unavailable; skip camera movement, never substitute by title. Restart clears attention and illustrations.
 
