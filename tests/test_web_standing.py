@@ -1,12 +1,14 @@
 """Standing facts share the CLI's classifications and the board's conditional reads."""
 
 import shutil
+import time
 from pathlib import Path
 
 from starlette.testclient import TestClient
 
 from ogy import ops, wire
 from ogy.target import Target
+from ogy.web import reach as reach_module
 from ogy.web.serve import application
 from ogy.writes import locked
 
@@ -78,3 +80,82 @@ def test_answer_invalidates_standing_version(repo):
         assert after.status_code == 200
         assert after.json()["version"] != before.json()["version"]
         assert after.json()["decisions"]["product/lending/decision/fee-rounding"]["delegated"] is None
+
+
+def _put_unset_decision(target):
+    ops.run_put(
+        target,
+        [
+            {
+                "address": "product/lending/decision/reach-probe",
+                "question": "Does the probe set anything?",
+                "options": {"yes": {"label": "Yes, but it names nothing"}, "later": {"label": "Not yet", "sets": {}}},
+                "proposal": {"chose": "yes", "why": "The probe only reads."},
+            }
+        ],
+    )
+
+
+def _option(data, decision, key):
+    address = decision if "/" in decision else f"product/lending/decision/{decision}"
+    return data["decisions"][address]["options"][f"{address}/option/{key}"]
+
+
+def test_option_reach_equals_impact_and_differs_between_decisions(repo):
+    """Given decisions that set different entries, each reach equals what `ops` impact returns for what is set."""
+    shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
+    target = Target(repo)
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+        data = client.get("/api/standing").json()
+    rule, fee = _option(data, "late-fee", "two"), _option(data, "software/lending/decision/mailer", "smtp")
+    assert rule["sets"] == ["product/lending/quantity/late-fee"]
+    assert fee["sets"] == ["software/lending/dependency/mailer"]
+    for option in (rule, fee):
+        done = ops.run_impact(target, option["sets"][0]).value
+        assert option["reach"] == sorted(str(a) for a in done.reaches | done.reached_by)
+        assert option["count"] == len(option["reach"]) > 0
+        assert option["truncated"] is False
+    assert rule["reach"] != fee["reach"]
+    assert _option(data, "late-fee", "one")["reach"] == rule["reach"]
+
+
+def test_option_that_sets_nothing_says_so(repo):
+    """Given options with no sets, each says an explicit empty reach and no guess."""
+    shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
+    target = Target(repo)
+    _put_unset_decision(target)
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+        data = client.get("/api/standing").json()
+    for key in ("yes", "later"):
+        assert _option(data, "reach-probe", key) == {"sets": [], "reach": [], "count": 0, "truncated": False}
+
+
+def test_option_reach_is_truncated_past_the_limit_and_cached(repo, monkeypatch):
+    """Given a long reach, the list stops at the limit with the full count; an unchanged read does not compute it again."""
+    shutil.copytree(LIBRARY, repo, dirs_exist_ok=True)
+    target = Target(repo)
+    monkeypatch.setattr(reach_module, "LIMIT", 1)
+    calls = []
+    real = reach_module.reach
+    monkeypatch.setattr("ogy.web.cache.reach", lambda snapshot: calls.append(1) or real(snapshot))
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+        first = client.get("/api/standing").json()
+        client.get("/api/standing")
+        assert len(calls) == 1
+    rule = _option(first, "late-fee", "two")
+    assert rule["truncated"] is True
+    assert len(rule["reach"]) == 1 < rule["count"]
+
+
+def test_reach_is_fast_and_standing_small_on_this_repository():
+    """Given this repository's own knowledge base, the whole-KB reach takes well under 3 s and standing stays under 1 MB."""
+    target = Target(Path(__file__).parent.parent)
+    snapshot = target.read()[1]
+    started = time.perf_counter()
+    found = reach_module.reach(snapshot)
+    assert time.perf_counter() - started < 3
+    assert found
+    with TestClient(application(target, "test-secret"), base_url="http://127.0.0.1:8123", headers=HEADERS) as client:
+        response = client.get("/api/standing")
+    assert response.status_code == 200
+    assert len(response.content) < 1_000_000

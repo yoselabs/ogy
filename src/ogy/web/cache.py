@@ -13,6 +13,7 @@ from content_digest import digest
 from ogy.inspect import Document, inspect
 from ogy.snapshot import load
 from ogy.source import open_source
+from ogy.web.reach import reach
 from ogy.web.standing import standing
 from ogy.writes import reading
 
@@ -29,6 +30,8 @@ class InspectionCache:
         self.key: str | None = None
         self.document: Document = {}
         self.encoded = b""
+        self.reached: dict[str, dict[str, dict[str, object]]] = {}
+        self.reached_key: str | None = None
 
     def current(self) -> Document:
         with self.guard, reading(self.target):
@@ -43,7 +46,9 @@ class InspectionCache:
         """Read standing and its snapshot version under one repository lock."""
         with self.guard, reading(self.target):
             document = self._current()
-            return {**standing(self.target), "version": document["snapshot"]["version"]}
+            if self.reached_key != self.key:
+                self.reached, self.reached_key = reach(self.target.read()[1]), self.key
+            return {**standing(self.target, self.reached), "version": document["snapshot"]["version"]}
 
     def version_in_write(self) -> str:
         """The inspection version while the caller already holds the repository's write lock."""

@@ -128,3 +128,12 @@ function that draws an entry's name (`data-renderer="mention"`); `js/ui/authored
 `js/ui/words.js` is the viewer's own fixed list. `assets/board/tokens.css` holds the five type sizes (11/13/15/18/24), the
 8px grid, the lab28 neutrals and the status colours for light and dark; `js/model/icons.js` gives every kind, effect
 operation and mark one glyph (`tests/test_web_shell.py` keeps them apart).
+### Option reach
+
+Each decision row also holds `options`: option address -> `{sets, reach, count, truncated}`.
+`sets` are the existing entries the option sets (an option that sets nothing, or only entries
+not written yet, has `sets: []`). `reach` is what `ogy impact` returns for them: the union of what
+each set entry reaches and what reaches it, the set entries left out, sorted, at most 50;
+`count` is the full number and `truncated` says the list was cut. It is computed on the current
+knowledge base and cached with the inspection input identity. It never says what the new value
+would link to. Options of one decision must name the same addresses, so their lists are equal.
