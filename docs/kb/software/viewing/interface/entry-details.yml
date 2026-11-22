@@ -1,0 +1,13 @@
+says: Show the same selected entry details in tooltip and pinned contexts, with exact facts and openable mentions.
+form: web
+allows:
+- product/shared/actor/owner
+- product/shared/actor/agent
+shows:
+- software/viewing/entity/inspection-projection/attribute/models
+satisfies:
+- software/viewing/rule/one-mention-path
+- software/viewing/rule/context-composition
+- software/viewing/rule/typed-reasons
+because:
+- software/viewing/decision/contextual-view-structure

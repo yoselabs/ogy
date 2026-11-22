@@ -1,3 +1,5 @@
-says: ogy init and ogy mcp are no MCP tools; every other command is one, generated from the CLI, so a new command needs no edit.
+says: ogy init, ogy mcp, hook and ogy view are no MCP tools; the other commands become tools generated from the CLI and return the same operation results.
 src:
 - code:src/ogy/mcp_server.py#NO_TOOL
+because:
+- software/cli/decision/view-command-contract

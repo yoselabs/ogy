@@ -1,0 +1,8 @@
+says: Derive inspection events from selected rows using the declared flow, call and covered-end relationships without executing effects.
+performs:
+- product/inspection/workflow/walk-product/step/walk/choice/walk
+satisfies:
+- product/inspection/rule/inspection-preserves-declarations
+- software/viewing/rule/projection-contract
+because:
+- product/inspection/decision/map-modes

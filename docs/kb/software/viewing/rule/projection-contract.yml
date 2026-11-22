@@ -1,0 +1,6 @@
+says: Every inspection model is derived deterministically from the resolved snapshot, ontology and request, preserves exact field names and authored text, and identifies each selected or summarized fact by its source and ordered witnesses.
+constrains:
+- software/viewing/entity/inspection-projection
+because:
+- software/viewing/decision/contextual-view-structure
+- constitution/principle/one-owner-per-fact

@@ -1,0 +1,26 @@
+question: Does inspection have one goal shared by reading, the canvas, walking and previews?
+context: The existing inspection capabilities have no recorded goal. This proposal adds their common result without replacing their agreed sentences.
+because:
+- constitution/principle/layers-split-business-from-technical
+options:
+  understand:
+    label: Record the common inspection result
+    sets:
+      product/inspection/goal/understand-recorded-product:
+        says: The owner and agent understand the recorded product, its reasons and the consequences of a proposed change before changing it.
+        for:
+        - product/shared/actor/owner
+        - product/shared/actor/agent
+  no:
+    label: No common inspection goal for now
+    sets:
+      product/inspection/goal/understand-recorded-product:
+proposal:
+  chose: understand
+  why: One result connects the existing inspection capabilities without making canvas mechanics a product goal.
+answers:
+- chose: understand
+  said: Fine with recording one common inspection goal.
+  at: '2026-11-22T03:12:47+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Answered with a bare "Okay".

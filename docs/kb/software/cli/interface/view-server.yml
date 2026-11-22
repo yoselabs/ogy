@@ -1,0 +1,18 @@
+says: Serve the product view from a local server the owner opens in a browser; each reload reads the knowledge base again.
+form: web
+serves:
+- product/inspection/workflow/inspect-kb/step/read
+agreed:
+  at: '2026-11-21T22:31:48+01:00'
+  where: ai:claude/f6fcc5ed
+  said: 'Approved the verdict table: delivery by a local server.'
+  hash: e7d6566f721d
+includes:
+- software/viewing/interface/board
+shows:
+- software/viewing/entity/inspection-projection
+satisfies:
+- software/viewing/rule/agent-inspection-parity
+because:
+- software/cli/decision/view-delivery
+- software/cli/decision/viewer-is-an-interface

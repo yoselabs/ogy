@@ -1,0 +1,21 @@
+question: How does an agent request the same semantic inspection data as the board?
+context: The existing show, find, diagram and impact operations expose the underlying facts but no shared contextual inspection envelope. The board delivery command remains outside MCP.
+because:
+- software/cli/decision/view-command-contract
+- constitution/principle/one-owner-per-fact
+options:
+  show-mode:
+    label: Add a machine-readable inspection mode to show and its existing MCP tool
+  new-read-command:
+    label: Add a dedicated read-only inspection command and MCP tool
+  no:
+    label: Keep existing reads without a contextual inspection envelope
+proposal:
+  chose: show-mode
+  why: Reuses entry selection and an existing agent tool while keeping process and file delivery out of read-only MCP.
+answers:
+- chose: no
+  said: 'The agent needs no separate view data: the one server shows and changes the ontology for both, and the board only projects the same entries for him.'
+  at: '2026-11-22T03:30:24+01:00'
+  where: ai:claude/f6fcc5ed
+  note: What is still needed is a way for the agent to point him at something (zoom to a workflow, ask him to assess a decision); filed as its own decision.

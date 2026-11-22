@@ -1,0 +1,29 @@
+title: Whether the map keeps the product and the software apart
+question: Does the map show the product (what people do and see) and the software (how it is built and what limits it) as two views of one board, with the product view warning where the software cannot carry a step, and the software view showing which product steps each limit holds back?
+context: 'Owner, 2026-11-21: product people know no technology but are limited by it; technical people need to see what constrains them. Product people should stay free to design yet be warned when something cannot work. The layers already exist (product, software) and ogy work <layer> lists what a layer still owes the next. Not built.'
+options:
+  one-picture:
+    label: 'One picture for everyone: no split, no warnings'
+    sets:
+      product/inspection/capability/see-what-limits-the-product:
+        says: ogy shows the product and the software as one picture.
+  two-views:
+    label: Two views, product and software, switched on the same board; each shows only its own layer
+    sets:
+      product/inspection/capability/see-what-limits-the-product:
+        says: ogy shows the product and the software as two views of one map.
+  two-views-with-limits:
+    label: Two views as above, the product view warns on a step the software cannot yet carry, and the software view shows on each limit the product steps it holds back
+    sets:
+      product/inspection/capability/see-what-limits-the-product:
+        says: ogy shows each product step the software cannot yet carry, and for each software limit the product steps it holds back.
+proposal:
+  chose: two-views-with-limits
+  why: Product people stay free of technology yet are told when a step has no way to run; technical people see what each limit costs the product. Both read links ogy already keeps.
+  heard: Product people should work on the product and be warned when something does not work; technical people should see how things are constrained.
+answers:
+- chose: two-views-with-limits
+  said: 'Approved the verdict table: two layer views with stated limits.'
+  at: '2026-11-21T22:32:16+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

@@ -1,0 +1,12 @@
+- id: understand-recorded-product
+  says: The owner and agent understand the recorded product, its reasons and the consequences of a proposed change before changing it.
+  for:
+  - product/shared/actor/owner
+  - product/shared/actor/agent
+  because:
+  - product/inspection/decision/inspection-outcome
+  agreed:
+    at: '2026-11-22T03:12:47+01:00'
+    where: ai:claude/f6fcc5ed
+    said: Fine with recording one common inspection goal.
+    hash: 46ee8424c70d

@@ -1,0 +1,17 @@
+title: How the ogy view command behaves
+question: Does ogy view serve the board on a loopback address by default, or write a file by default?
+context: Stage 1 writes to any --out and the contract snapshot lists it as a read-only MCP tool. view-delivery was answered as server; agents already have show, find and diagram.
+options:
+  serve-default:
+    label: ogy view serves on loopback and prints the address; --out writes the file; it is not an MCP tool
+  file-default:
+    label: ogy view writes a file; --serve is opt-in; it is not an MCP tool
+proposal:
+  chose: serve-default
+  why: It matches the answered delivery by server, and a served board follows the knowledge base on each reload.
+answers:
+- chose: serve-default
+  said: The command serves the board; he wants it named ogy serve rather than ogy view.
+  at: '2026-11-22T03:12:37+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Rename to ogy serve; the rename itself is not yet recorded in the command-name decision. He also wants an agent to be able to create and refresh a view over MCP, which goes against the option's no-MCP-tool clause; to be settled in a separate decision.

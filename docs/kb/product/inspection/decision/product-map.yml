@@ -1,0 +1,38 @@
+title: A map of the product as a web page
+question: 'Does ogy show a product built with it as a map: a sitemap of every area, each one going down to its goals, workflows and entities, with a plain narrative of how it should work, rendered as a web page?'
+context: 'Owner, 2026-11-21: wants a command (name not chosen: ogy map, view, ui or graph) that renders a web page of the product itself, not of the ontology: a picture of all the areas you can dive into, with narrative on what happens and how, maybe with simple fake screens drawn from workflows. Today ogy diagram prints one workflow as Mermaid; software/cli/decision/no-views says ogy has no screens, which this would change for a generated file only. The map reads the knowledge base and changes nothing.'
+options:
+  none:
+    label: 'No: the text commands (find, show, diagram, glossary) are enough'
+    sets:
+      product/inspection/capability/see-the-product-map:
+  sitemap:
+    label: 'A generated web page: a sitemap of areas that dives into goals, workflows, entities and states, each with a narrative line written from the entries'
+    sets:
+      product/inspection/capability/see-the-product-map:
+        says: ogy renders the product's areas as one web page to dive into, each area told as a short narrative from its goals, workflows and entities.
+  sitemap-mocks:
+    label: The sitemap, and for each workflow a clickable mock of its screens (steps and choices as plain boxes and buttons), marked as an assumption
+    sets:
+      product/inspection/capability/see-the-product-map:
+        says: ogy renders the product's areas as one web page with a narrative per area and, per workflow, a clickable mock of its steps and choices that shows how it could work.
+  canvas:
+    label: 'A zoomable canvas of the whole product, like a Miro board: areas far out, workflows, entities and capabilities as cards in the middle, steps and choices up close; every typed link drawn; a click lights what a thing reaches and what reaches it; a workflow can be stepped through'
+    sets:
+      product/inspection/capability/see-the-product-map:
+        says: 'ogy shows the product as a canvas to zoom, expand and follow: areas far out, workflows and entities in the middle, steps up close, every link drawn, and a click lights what a thing reaches and what reaches it.'
+proposal:
+  chose: canvas
+  why: The owner found the sitemap page too primitive; feeling how things connect needs the links drawn and a zoom from area to step, which a list cannot give.
+  heard: The page is too primitive; wants to zoom out and in, expand and dive, see how things connect, a mirror-like picture of the product, maybe served from a server instead of a file. Read here as a Miro-like board.
+answers:
+- chose: sitemap-mocks
+  said: 'Wants both the sitemap and the mocks: start simple, build it, and judge by how it looks.'
+  at: '2026-11-21T03:16:48+01:00'
+  where: ai:claude/f6fcc5ed-ca7f-47d9-9222-688756982c4e
+  note: Sitemap first; mocks follow once the owner has seen how it looks.
+- chose: canvas
+  said: Approved the verdict table, which revises the earlier sitemap-mocks choice to a canvas.
+  at: '2026-11-21T22:31:52+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess." Revises a prior answer.'

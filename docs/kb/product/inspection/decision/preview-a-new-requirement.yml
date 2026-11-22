@@ -1,0 +1,28 @@
+title: Seeing a new requirement on the map before it is written
+question: While an agent and the owner brainstorm a new requirement, does the map show it as a ghost where it would go, with the links it would make to existing entries?
+context: "Owner, 2026-11-21: in the future the owner chats with an AI about what to build, and the board shows the idea as a new potential workflow or requirement: where it connects, what it impacts, and what else the AI would recommend linking it to. A decision's options already say which entries they set, so a ghost can come from a proposal before any entry exists; ogy impact already says what a change reaches. Not built; this records the direction."
+options:
+  none:
+    label: 'No: the map shows only entries that exist'
+    sets:
+      product/inspection/capability/preview-a-new-requirement:
+  ghost:
+    label: A proposal or draft shows on the map as dashed cards with dashed links to the entries they would join; accepting it makes them real
+    sets:
+      product/inspection/capability/preview-a-new-requirement:
+        says: ogy shows a proposed requirement on the map as ghosts with the links they would make, before any entry exists.
+  ghost-impact-advice:
+    label: 'The ghost as a chat with the AI goes on: the map shows where the idea connects, lights what it impacts (what it reaches and what reaches it), and shows what else the AI recommends linking it to, each recommendation as a dashed card the owner can take or leave'
+    sets:
+      product/inspection/capability/preview-a-new-requirement:
+        says: ogy shows a proposed requirement on the map as ghosts while the owner chats, lights what it would impact and shows what else it recommends linking it to, before any entry exists.
+proposal:
+  chose: ghost-impact-advice
+  why: A requirement is judged by what it touches and by what it forgot to touch; the map already draws links and ogy impact already computes reach, so the chat only has to supply the draft records.
+  heard: 'Wants to chat with the AI about what to build and see the idea on the board as a new potential workflow or requirement: where it connects, what it impacts, and what else the AI would recommend connecting it to.'
+answers:
+- chose: ghost-impact-advice
+  said: 'Approved the verdict table: preview a new requirement as a ghost with impact advice.'
+  at: '2026-11-21T22:32:21+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

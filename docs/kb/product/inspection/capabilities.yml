@@ -2,3 +2,39 @@
   says: An agent reads one entry, what a change reaches, the flow of a workflow, what changed between two commits, the work left and the anchors of a document.
   src:
   - code:src/ogy/ops.py#run_impact
+  realizes:
+  - product/inspection/goal/understand-recorded-product
+- id: see-the-product-map
+  says: 'ogy shows the product as a canvas to zoom, expand and follow: areas far out, workflows and entities in the middle, steps up close, every link drawn, and a click lights what a thing reaches and what reaches it.'
+  agreed:
+    at: '2026-11-21T22:31:52+01:00'
+    where: ai:claude/f6fcc5ed
+    said: Approved the verdict table, which revises the earlier sitemap-mocks choice to a canvas.
+    hash: a423c3f8a238
+  realizes:
+  - product/inspection/goal/understand-recorded-product
+- id: preview-a-new-requirement
+  says: ogy shows a proposed requirement on the map as ghosts while the owner chats, lights what it would impact and shows what else it recommends linking it to, before any entry exists.
+  agreed:
+    at: '2026-11-21T22:32:21+01:00'
+    where: ai:claude/f6fcc5ed
+    said: 'Approved the verdict table: preview a new requirement as a ghost with impact advice.'
+    hash: 8f8b0aaabe0f
+  realizes:
+  - product/inspection/goal/understand-recorded-product
+- id: walk-the-product
+  says: 'ogy lets the owner walk a workflow as a person would: the words of each step, the buttons of its choices, the hop into the workflow it calls and what it changes.'
+  agreed:
+    at: '2026-11-21T22:32:25+01:00'
+    where: ai:claude/f6fcc5ed
+    said: 'Approved the verdict table: walk-through mode, history replay deferred.'
+    hash: 572dabea49e2
+  realizes:
+  - product/inspection/goal/understand-recorded-product
+- id: see-what-limits-the-product
+  says: ogy shows each product step the software cannot yet carry, and for each software limit the product steps it holds back.
+  agreed:
+    at: '2026-11-21T22:32:16+01:00'
+    where: ai:claude/f6fcc5ed
+    said: 'Approved the verdict table: two layer views with stated limits.'
+    hash: 5a05817bd8f0

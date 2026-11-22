@@ -1,0 +1,14 @@
+title: How the agent points the owner at something on the board
+question: When the agent needs the owner to look at an entry or assess a decision, how does it show him where?
+context: 'Owner, 2026-11-22: the board is a projection of the same entries the agent sees through the same server. The agent still needs a way to ask the owner for something: assess this decision, look at this workflow or entity, zoom there. Possibly new entities for such requests.'
+options:
+  focus-request:
+    label: 'The agent posts a request over MCP: a target entry, what it asks (look, assess a decision, confirm a structure) and one sentence; the board shows it as a card and moves to the target'
+  link-in-chat:
+    label: The agent sends a link in the chat that opens the board focused on the entry; no request is stored
+  no:
+    label: The agent describes it in the chat; the owner finds it himself
+proposal:
+  chose: focus-request
+  why: A stored request survives the chat, can be answered from the board, and lets the board move to the target by itself.
+  heard: Wants the agent to be able to point him at something, such as asking him to assess a decision or zooming to a workflow or entity.

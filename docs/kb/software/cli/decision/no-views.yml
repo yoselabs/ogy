@@ -16,9 +16,13 @@ options:
         src:
         - code:src/ogy/render.py#render_review
         form: web
+  one-board:
+    label: 'One screen: the board served by ogy view; the printed review round and other printed cards are still not screens'
+    sets:
+      software/cli/interface/review-cards:
 proposal:
-  chose: none
-  why: A view is a screen; the printed round is the output of the command review, which already serves the step.
+  chose: one-board
+  why: The owner answered a served board as the canvas; the earlier none was about printed commands and says nothing against one web interface.
 answers:
 - chose: none
   delegated: software/writes/decision/capture-judgement
@@ -29,3 +33,7 @@ answers:
   said: Kept no-views and YAML-only glossary; agreed to the five sentences
   at: '2026-11-19T17:58:26+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: one-board
+  said: 'ogy needs a browser view: the board is the one screen, so the old no-screens answer no longer holds.'
+  at: '2026-11-22T03:12:33+01:00'
+  where: ai:claude/f6fcc5ed

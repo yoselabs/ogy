@@ -1,0 +1,22 @@
+- id: inspection-context
+  says: The supported situations in which inspection data is presented.
+  members:
+  - board
+  - tooltip
+  - pinned
+  - search
+  - relation
+  - walk
+  - legend
+  because:
+  - software/viewing/decision/contextual-view-structure
+- id: inspection-detail
+  says: The local detail profiles selected over ontology structure, independently of layer and context.
+  members:
+  - area
+  - purpose
+  - work
+  - parts
+  - contract
+  because:
+  - software/viewing/decision/contextual-view-structure

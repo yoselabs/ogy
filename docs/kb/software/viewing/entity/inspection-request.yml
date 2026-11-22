@@ -1,0 +1,24 @@
+says: The transient input selecting a snapshot, entry, context, local detail and optional proposed change for inspection.
+because:
+- software/viewing/decision/contextual-view-structure
+attributes:
+  target:
+    type: text
+    says: The full entry address, or an area address for an overview.
+  revision:
+    type: text
+    says: The revision selector resolved before deriving inspection data.
+  context:
+    of: software/viewing/enum/inspection-context
+    says: The requested presentation situation.
+  detail:
+    of: software/viewing/enum/inspection-detail
+    says: The requested local detail profile.
+  layer:
+    type: text
+    optional: true
+    says: A layer name validated against the ontology rather than copied into another enum.
+  change:
+    type: text
+    optional: true
+    says: Serialized proposed records, kept apart from the live entries and validated before preview.

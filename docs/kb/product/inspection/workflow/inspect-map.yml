@@ -1,0 +1,20 @@
+says: The owner inspects the recorded product and follows its parts, links and reasons.
+realizes: product/inspection/capability/see-the-product-map
+satisfies:
+- product/inspection/rule/inspection-preserves-declarations
+because:
+- product/inspection/decision/product-map
+- product/inspection/decision/why-chain-on-board
+start: inspect
+steps:
+  inspect:
+    says: The owner selects an entry and follows its recorded parts, typed links and reasons.
+    actor: product/shared/actor/owner
+    choices:
+      inspect:
+        label: Inspect the product
+        then: done
+ends:
+  done:
+    says: The owner has inspected the requested declarations and their gaps.
+    result: success

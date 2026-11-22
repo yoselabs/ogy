@@ -1,0 +1,28 @@
+title: What the map lets the owner do besides look
+question: Besides the picture of areas, flows and links, does the map let the owner walk a workflow as a person would (a window with the step's words and the buttons of its choices, hopping into the workflows it calls), and watch the product grow along its Git history?
+context: 'Owner, 2026-11-21: wants to feel the product, see how it develops, and see how flows connect to other flows; asked for creativity. Prototype of the walk-through in the session scratchpad on the real knowledge base: lines are workflows, stations are steps, a call is a transfer onto the other line, the window is the mock the earlier decision product-map asked for, drawn from the step, its actor, the interface that serves it and its choices. History would replay `ogy history` commit by commit.'
+options:
+  picture:
+    label: 'The picture only: areas, flows and links to zoom and follow'
+    sets:
+      product/inspection/capability/walk-the-product:
+  walk:
+    label: 'The picture and a walk-through: pick a workflow, press its choices, hop into the workflows it calls, see what changes'
+    sets:
+      product/inspection/capability/walk-the-product:
+        says: 'ogy lets the owner walk a workflow as a person would: the words of each step, the buttons of its choices, the hop into the workflow it calls and what it changes.'
+  walk-and-history:
+    label: The picture, the walk-through, and a time slider that replays how the product grew commit by commit
+    sets:
+      product/inspection/capability/walk-the-product:
+        says: ogy lets the owner walk a workflow as a person would, and replay how the product grew commit by commit.
+proposal:
+  chose: walk-and-history
+  why: Feeling a product comes from walking it and seeing it grow; both read only entries and Git history that ogy already keeps.
+  heard: Wants to feel the product, see how it develops over time, and see how flows lead into other flows; asked for creative ways to show it.
+answers:
+- chose: walk
+  said: 'Approved the verdict table: walk-through mode, history replay deferred.'
+  at: '2026-11-21T22:32:25+01:00'
+  where: ai:claude/f6fcc5ed
+  note: 'Hedged: "Yes, I guess."'

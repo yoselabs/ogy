@@ -1,0 +1,17 @@
+title: Whether the first board lets a person answer decisions
+question: Does the first version of the board only inspect and walk the product, or can a person also answer a decision on it?
+context: 'Owner, 2026-11-21: a human decision mode on the board was approved as board-mode. It needs write endpoints on the server and a check that the preview still matches. The view design keeps writes out of the first stages.'
+options:
+  read-only:
+    label: The board only inspects and walks; answers stay in ogy review and ogy answer
+  with-answers:
+    label: 'The board also takes an answer: the server gets write endpoints and checks the preview is still current'
+proposal:
+  chose: read-only
+  why: Halves the server work and keeps one place where an owner's agreement is recorded; answering on the board is the next stage.
+answers:
+- chose: with-answers
+  said: Wants to open a web page and give the answers there; he does not want to run commands himself, I run them.
+  at: '2026-11-22T02:57:52+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Said as a requirement for how the owner works, not as a hedge; the first version must take answers in the browser.

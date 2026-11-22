@@ -1,0 +1,27 @@
+says: Inspect the shared inspection data on a canvas and in entry details, walk declared paths and preview proposed changes.
+form: web
+serves:
+- product/inspection/workflow/inspect-kb/step/read
+- product/inspection/workflow/inspect-map/step/inspect
+- product/inspection/workflow/walk-product/step/walk
+- product/inspection/workflow/preview-requirement/step/preview
+offers:
+- product/inspection/workflow/inspect-kb/step/read/choice/read
+- product/inspection/workflow/inspect-map/step/inspect/choice/inspect
+- product/inspection/workflow/walk-product/step/walk/choice/walk
+- product/inspection/workflow/preview-requirement/step/preview/choice/preview
+accepts:
+- software/viewing/entity/inspection-request
+shows:
+- software/viewing/entity/inspection-projection
+includes:
+- software/viewing/interface/entry-details
+satisfies:
+- software/viewing/rule/one-mention-path
+- software/viewing/rule/ontology-derived-detail
+- software/viewing/rule/typed-relation-conservation
+- software/viewing/rule/context-composition
+- software/viewing/rule/agent-inspection-parity
+because:
+- software/cli/decision/viewer-is-an-interface
+- product/inspection/decision/product-map

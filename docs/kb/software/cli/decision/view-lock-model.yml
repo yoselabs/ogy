@@ -1,0 +1,17 @@
+title: Who may write while the view server runs
+question: While the view server runs, does every write still take the per-write lock of the repository, or does the server become the single owner that everyone writes through?
+context: a2kay holds one owner lock and routes everything through its server because it keeps derived state. ogy keeps none and already locks per write. The decisions view-server and human-decision-mode assume a server that reads the knowledge base again on each request and checks a version token inside the write lock.
+options:
+  per-write-lock:
+    label: A stateless server; each write takes the repository lock as today; agents and the command line keep writing directly
+  single-owner:
+    label: The server is the one owner; every write from an agent session goes through it
+proposal:
+  chose: per-write-lock
+  why: ogy has no derived state to protect, and the single owner would force every agent session through a running server.
+answers:
+- chose: per-write-lock
+  said: The server stays stateless but follows changes to the files and shows the newest version; MCP and the API run in the same process.
+  at: '2026-11-22T03:12:58+01:00'
+  where: ai:claude/f6fcc5ed
+  note: Wants the MCP server and the API in one process like a2kay; recorded as a separate decision to settle.

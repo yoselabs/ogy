@@ -1,0 +1,19 @@
+says: The owner inspects the prospective differences and impact of a proposed requirement before it is written.
+realizes: product/inspection/capability/preview-a-new-requirement
+satisfies:
+- product/inspection/rule/inspection-preserves-declarations
+because:
+- product/inspection/decision/preview-a-new-requirement
+start: preview
+steps:
+  preview:
+    says: The owner supplies a proposed change and inspects its prospective differences, impact and separately identified advice.
+    actor: product/shared/actor/owner
+    choices:
+      preview:
+        label: Preview the requirement
+        then: done
+ends:
+  done:
+    says: The owner has inspected the proposed change and no entry has changed.
+    result: success

@@ -1,0 +1,17 @@
+title: How the view server is built
+question: Is ogy view a running server with a data API and a separate browser frontend, or a server that renders each page as HTML itself?
+context: 'Owner, 2026-11-22: ogy view is not a thing that renders HTML; it is a server that runs, and he opens its page in a browser. Later the owner answers decisions on that page. The topology is left to the assistant, like an API server and a frontend.'
+options:
+  api-and-frontend:
+    label: A server with a JSON API over the inspection data and a static frontend that calls it; the CLI and the agent read the same API's data through show
+  server-rendered:
+    label: A server that builds each page as HTML on the request; the browser holds no logic of its own
+proposal:
+  chose: api-and-frontend
+  why: One data contract serves the board, the answer page and the agent, so the board is never a second source of truth; the frontend can change without touching the data.
+  heard: The owner wants a server he opens in a browser, not a renderer of HTML pages; the split between API and frontend is the assistant's choice.
+answers:
+- chose: api-and-frontend
+  said: 'A server with an API and a separate front end: yes.'
+  at: '2026-11-22T03:12:55+01:00'
+  where: ai:claude/f6fcc5ed
