@@ -4,8 +4,6 @@
 @import "tailwindcss/utilities.css" layer(utilities) source(none);
 @import "./tokens.css";
 @import "./components-base.css";
-@import "./components-cards.css";
-@import "./components-layout.css";
 @import "./components-shell.css";
 @import "./components-decision.css";
 @import "./components-waiting.css";
@@ -13,7 +11,7 @@
 @import "./components-flow.css";
 @import "./components-search.css";
 @import "./components-lifecycle.css";
-@import "./components-scene.css";
+@import "./components-map.css";
 @source "../../src/ogy/web/static/index.html";
 @source "../../src/ogy/web/static/js";
 

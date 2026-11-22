@@ -39,7 +39,7 @@ const FOCUS = `JSON.stringify((() => { const e = document.activeElement; const s
 const SCROLL = `JSON.stringify([document.documentElement.scrollWidth, innerWidth, document.body.scrollWidth])`;
 const RESET = `(() => { document.body.setAttribute('tabindex', '-1'); document.body.focus(); document.body.removeAttribute('tabindex'); return 'reset'; })()`;
 const tab = { key: 'Tab', code: 'Tab', vk: 9 };
-const routes = ['#/board', '#/nowhere', '#/board?rail=waiting', '#/board?sel=product/lending/workflow/borrow'];
+const routes = ['#/', '#/nowhere', '#/?rail=waiting', '#/?sel=product/lending/workflow/borrow'];
 const scenes = routes.map((hash, index) => ({
   name: 'shell-' + width + '-' + index, size: [width, height], mobile: width === 390, wait: index === 0 ? Number(process.env.WAIT || 3000) : 3000,
   url: (index === 0 ? first.replace(/\/\?/, '/?') + hash : base + '/' + hash),
