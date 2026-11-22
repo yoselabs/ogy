@@ -143,3 +143,17 @@ each set entry reaches and what reaches it, the set entries left out, sorted, at
 `count` is the full number and `truncated` says the list was cut. It is computed on the current
 knowledge base and cached with the inspection input identity. It never says what the new value
 would link to. Options of one decision must name the same addresses, so their lists are equal.
+
+### Decision page and answering
+
+`#/<layer>/<area>/decision/<id>` is `js/views/decision.js` (parts under `js/views/decision/`). It reads the authored fields
+(question, context, options, proposal, answers) from the inspection document and status, the chosen option and option reach
+from `/api/standing`; until standing arrives its status line and reach say "Loading…". Options are one radio group; the answer
+form below owns them through the `form` attribute. A click is an answer: choosing an option fills the paraphrase with the
+option's label, the owner edits it, and the form shows the exact record before it is written. `Record` posts
+`{decision, option, said, note?, version}` to `/api/answer` (version: the inspection snapshot the page shows); a refusal (stale
+version, blank `said`) is shown as the server wrote it and nothing is written. After a write the page reads inspection and
+standing again (the header count drops without a reload) and the read-back links the next waiting decision. Options of one
+decision currently reach the same entries, so "Potentially affects" is shown once, as "same for every option", and per option
+only when the lists differ. The page's own fixed words live in `js/views/decision/words.js`; every KB text is `data-authored`.
+`docs/design/board/qa/decision-check.mjs` is its real-mouse check (answering only on a temporary copy of the tool library).
