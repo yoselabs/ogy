@@ -9,6 +9,7 @@ import { followSystemTheme } from "./shell/theme.js";
 import { mountStatusStrip } from "./shell/status-strip.js";
 import { words } from "./ui/words.js";
 import { mountCanvas } from "./views/canvas.js";
+import { areaRoute } from "./views/area.js";
 import { decisionRoute } from "./views/decision.js";
 import { mountNotFound } from "./views/not-found.js";
 import { waitingRoute } from "./views/waiting.js";
@@ -22,6 +23,7 @@ const routes = [
   { test: (path) => path === "" || path === "board", layer: "product", mount: mountCanvas, crumbs: () => [{ text: words.board }] },
   decisionRoute,
   waitingRoute,
+  areaRoute,
 ];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);

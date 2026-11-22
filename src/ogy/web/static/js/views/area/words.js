@@ -1,0 +1,19 @@
+// The area page's own fixed words; everything else on it is an ontology word or authored KB text.
+export const words = {
+  why: "Why each workflow exists",
+  workflows: "Workflows",
+  entities: "Entities",
+  others: "Everything else",
+  noGoal: "No goal recorded",
+  noCapability: "No capability realizes this goal",
+  noWorkflow: "No workflow realizes this capability",
+  looseWorkflow: "This workflow realizes no capability",
+  elsewhere: "Realized in",
+  shownUnder: "Workflows are listed under",
+  waiting: "waiting",
+  owed: "owed",
+  loading: "Loading the area…",
+  noArea: "There is no area at",
+  couldNotRead: "The board could not read the knowledge base.",
+  nothing: "Nothing is recorded here yet.",
+};
