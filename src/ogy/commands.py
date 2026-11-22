@@ -1,7 +1,6 @@
 """What each command runs and prints: one `ogy.ops` call, then lines for a person or, with `wire`, a table or record for an agent."""
 
 import sys
-from pathlib import Path
 from typing import Protocol
 lazy import argparse
 
@@ -129,7 +128,11 @@ def _migrate(target: Target, _: argparse.Namespace, **__: object) -> Result:
 def _put(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     if args.file == "-" and agent:  # over MCP stdin is the protocol, not the caller's text
         raise ops.WriteRefusedError(["--file - reads standard input, which an MCP tool cannot: pass the records"])
-    texts = [*args.records, *([sys.stdin.read() if args.file == "-" else Path(args.file).read_text(encoding="utf-8")] if args.file else [])]
+    path = (target.repo / args.file).resolve() if args.file else target.repo
+    if args.file and args.file != "-" and not path.is_relative_to(target.repo.resolve()):
+        message = "file must stay inside the repository (including symlink targets)"
+        raise ops.WriteRefusedError(message)
+    texts = [*args.records, *([sys.stdin.read() if args.file == "-" else path.read_text(encoding="utf-8")] if args.file else [])]
     done = ops.run_put(target, put.read_records(texts), args.why)
     return done.verdict, [str(item) for item in done.value]
 

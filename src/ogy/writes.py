@@ -51,6 +51,21 @@ def locked(target: Target, label: str) -> Generator[None]:
         raise WriteRefusedError([f"another ogy write holds {error.path}"]) from error
 
 
+@contextmanager
+def reading(target: Target) -> Generator[None]:
+    """Exclude trial writes, including another thread in this process; a busy read refuses."""
+    git = git_dir(target.repo)
+    if git is None:
+        yield
+        return
+    try:
+        with ProcessLock.acquire_exclusive(git / "ogy.lock", label="ogy read"):
+            yield
+    except LockHeldError as error:
+        message = "another ogy operation holds the repository lock; retry after it finishes"
+        raise RefusalError(message) from error
+
+
 def files(target: Target) -> dict[str, str]:
     base = target.repo / target.kb
     found = {path.relative_to(base).as_posix(): path for path in sorted(base.rglob("*.yml")) if path.is_file()}

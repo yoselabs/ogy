@@ -47,7 +47,7 @@ def _globals(command: argparse.ArgumentParser, default: object) -> None:
 
 def _verb(commands: Adder, name: str, about: str, detail: str = "") -> argparse.ArgumentParser:
     """A command: `about` is its line in the list; with `detail` it is the command's description (the MCP tool's)."""
-    command = commands(name, help=about, description=f"{about}. {detail}" if detail else about)
+    command = commands(name, help=about, description=f"{about}. {detail}" if detail else about, allow_abbrev=False)
     _globals(command, UNSET)
     return command
 
@@ -285,6 +285,7 @@ def _answers(commands: Adder) -> None:
 def parser() -> argparse.ArgumentParser:
     top = argparse.ArgumentParser(
         prog="ogy",
+        allow_abbrev=False,
         description="A requirements knowledge base kept in Git. The flags --repo --rev --ontology go before or after the command.",
     )
     _globals(top, None)
@@ -307,6 +308,8 @@ def target_of(args: argparse.Namespace) -> Target:
 
 
 def _server(args: argparse.Namespace, serve: Callable[..., None] | None, mcp: Callable[[], None] | None) -> Result:
+    if args.command == "serve" and args.rev is not None:
+        return REFUSED, ["refused: serve reads the worktree; --rev is not supported"]
     if args.command == "serve" and args.out is not None:
         return HANDLERS["serve"](target_of(args).at("."), args, agent=False)
     starter = mcp if args.command == "mcp" else serve

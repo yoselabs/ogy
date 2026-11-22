@@ -32,6 +32,7 @@ ogy = "ogy.entry:main"
 
 [dependency-groups]
 dev = [
+    "static-page-check",
     "blueprint",
     "any-gate-python[pytest]",
     "any-gate",
@@ -47,6 +48,7 @@ dev = [
 ]
 
 [tool.uv.sources]
+static-page-check = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/static-page-check", tag = "blueprint-v0.12.1" }
 asgi-token-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/asgi-token-gate", tag = "blueprint-v0.12.1" }
 any-local-service = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-local-service", tag = "blueprint-v0.12.1" }
 async-scope = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/async-scope", tag = "blueprint-v0.12.1" }
@@ -223,7 +225,9 @@ known_first_party = ["ogy"]
 
 [tool.deptry.per_rule_ignores]
 # HTTP adapters use FastMCP's supplied server stack; no additional distributions are needed.
-DEP003 = ["starlette", "uvicorn"]
+DEP003 = ["starlette", "uvicorn", "async_scope"]
+# LocalService owns the token gate; it remains a direct pin until the shelf boundary release.
+DEP002 = ["asgi-token-gate"]
 
 [tool.codespell]
 # bench/corpus (source PDFs, binary) + bench/outputs (raw engine output, incl.
@@ -236,7 +240,7 @@ DEP003 = ["starlette", "uvicorn"]
 # fixture is authoritative and the linter yields to it, never the reverse.
 #
 # docs/thoughts and docs/research are raw evidence (quoted owner words, tool output, notes written in passing), kept as written.
-skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*"
+skip = "*/runs/*,uv.lock,.venv,.git,*.pyc,.ruff_cache,.pytest_cache,docs/thoughts/*,docs/research/*,src/ogy/web/static/board.css"
 # doctrine/glossary coinages the dictionary flags but we mean on purpose.
 ignore-words-list = "mis,createable,wins,ontology,noqa,crate,ba,te,alls,errorprone,haa,statics,uptodate"
 # A glob's case class (`[Ll]ibrary/` in a .gitignore) is not a word.
@@ -310,7 +314,7 @@ name = "Only web adapters import the HTTP libraries"
 type = "forbidden"
 source_modules = ["ogy"]
 forbidden_modules = ["starlette", "uvicorn", "any_local_service"]
-ignore_imports = ["ogy.web.* -> starlette", "ogy.web.serve -> any_local_service"]
+ignore_imports = ["ogy.web.* -> starlette", "ogy.web.serve -> any_local_service", "ogy.web.serve -> uvicorn"]
 allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]

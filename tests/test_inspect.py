@@ -2,7 +2,6 @@
 
 import json
 from collections import Counter
-from dataclasses import replace
 from datetime import date, datetime
 from pathlib import Path
 
@@ -21,12 +20,16 @@ LIBRARY = ROOT / "tests/fixtures/tool-library/docs/kb"
 
 def plain(value):
     if isinstance(value, (datetime, date)):
-        return value.isoformat()
+        return {"\x00ogy": {"type": type(value).__name__, "value": value.isoformat()}}
     if isinstance(value, dict):
         return {key: plain(item) for key, item in value.items()}
     if isinstance(value, list):
         return [plain(item) for item in value]
     return value
+
+
+def absent(reason):
+    return {"\x00ogy": {"type": "absent", "value": reason}}
 
 
 def read(root):
@@ -75,7 +78,7 @@ def test_every_entry_part_link_and_authored_value_survives(root):
             address.area,
         )
         kind = snapshot.kind_of(address)
-        assert record["sentence_field"] == (kind.sentence or {"absent": "not-declared"})
+        assert record["sentence_field"] == (kind.sentence or absent("not-declared"))
         if kind.sentence in entry.fields:
             assert record["sentence"] == plain(entry.fields[kind.sentence])
         descriptor = document["ontology"]["kinds"][kind.kind]
@@ -103,23 +106,17 @@ def test_every_entry_part_link_and_authored_value_survives(root):
             assert isinstance(value, (dict, list))
             value = value[hop]
         assert plain(value) == relation["value"]
-    assert all(part["address"] == {"absent": "unaddressable-part"} for part in document["parts"])
+    assert all(part["address"] == absent("unaddressable-part") for part in document["parts"])
     assert not snapshot.findings
 
 
 @pytest.mark.parametrize("root", [LIBRARY, ROOT / "docs/kb"], ids=["tool-library", "ogy"])
 def test_same_content_has_byte_identical_inspection(root):
-    """Given independent snapshots of identical content, inspection serializes byte identically regardless of map order."""
+    """Given identical authored content, inspection is independent of file and entry enumeration order."""
     first, files = read(root)
     second = build(packaged(), dict(reversed(list(files.items()))))
-    second.entries = {
-        address: replace(entry, fields=dict(reversed(list(entry.fields.items()))))
-        for address, entry in reversed(list(second.entries.items()))
-    }
-    second.ontology.kinds = {
-        name: kind.model_copy(update={"fields": dict(reversed(list(kind.fields.items())))})
-        for name, kind in reversed(list(second.ontology.kinds.items()))
-    }
+    second.entries = dict(reversed(list(second.entries.items())))
+    second.ontology.kinds = dict(reversed(list(second.ontology.kinds.items())))
     assert (
         json.dumps(inspect(first), ensure_ascii=False, allow_nan=False).encode()
         == json.dumps(
@@ -134,11 +131,11 @@ def test_absence_identity_and_version_are_explicit_and_content_sensitive():
     """Unknown source identities stay absent; all authored facts and ontology declarations affect the version."""
     snapshot = build(packaged(), {"product/app/quantities.yml": "- {id: fee, says: Fee., is: 2, unit: EUR}\n"})
     original = inspect(snapshot)
-    assert original["snapshot"]["revision"] == {"absent": "not-in-snapshot"}
-    assert original["snapshot"]["tree"] == {"absent": "not-in-snapshot"}
+    assert original["snapshot"]["revision"] == absent("not-in-snapshot")
+    assert original["snapshot"]["tree"] == absent("not-in-snapshot")
     record = original["entries"][0]
-    assert record["title"] == {"absent": "unset"}
-    assert record["source"]["line"] == {"absent": "not-in-snapshot"}
+    assert record["title"] == absent("unset")
+    assert record["source"]["line"] == absent("not-in-snapshot")
     assert "title" not in record["fields"]
     assert original["snapshot"]["version"] == inspect(snapshot)["snapshot"]["version"]
     changed = build(packaged(), {"product/app/quantities.yml": "- {id: fee, says: Fee., is: 3, unit: EUR}\n"})
@@ -170,7 +167,7 @@ def test_relations_keep_expression_effect_row_and_duplicate_occurrence_identity(
     expression = next(rel for rel in document["relations"] if rel["field"] == "when")
     assert expression["path"] == ["when", "reads", 0]
     missing = next(rel for rel in document["relations"] if rel["value"] == "missing")
-    assert missing["target"] == {"absent": "dangling-link"}
+    assert missing["target"] == absent("dangling-link")
     assert len({json.dumps(rel["witness"], sort_keys=True) for rel in document["relations"]}) == len(document["relations"])
 
 
@@ -204,10 +201,29 @@ def test_authored_null_unknown_fields_and_yaml_timestamps_are_not_guessed():
     decision = next(entry for entry in document["entries"] if entry["kind"] == "decision")
     assert decision["title"] is None
     assert "title" not in decision["absent_fields"]
-    assert decision["fields"]["extra"] == {"day": "2026-11-22", "enabled": False, "count": 0}
+    assert decision["fields"]["extra"] == {"day": plain(date(2026, 11, 22)), "enabled": False, "count": 0}
     answer = next(part for part in document["parts"] if part["kind"] == "answer")
-    assert answer["fields"]["at"] == "2026-11-22T10:00:00+01:00"
-    assert answer["absent_fields"]["delegated"] == {"absent": "unset"}
+    assert answer["fields"]["at"] == plain(datetime.fromisoformat("2026-11-22T10:00:00+01:00"))
+    assert answer["absent_fields"]["delegated"] == absent("unset")
     assert document["findings"][0]["problem"] == "bad-path"
     document["entries"][0]["fields"].clear()
     assert any(entry.fields for entry in snapshot.entries.values())
+
+
+def test_authored_order_dates_and_marker_shaped_data_remain_distinguishable():
+    """Given dates, strings and metadata-shaped authored maps, inspection never conflates them."""
+    snapshot = build(
+        packaged(),
+        {
+            "product/app/area.yml": 'says: App.\nextra: {z: 1, a: 2}\nday: 2026-11-22\ntext: "2026-11-22"\n'
+            'title: {absent: unset}\nreserved: {"\\0ogy": {type: absent, value: unset}}\n'
+        },
+    )
+    document = inspect(snapshot)
+    fields = document["entries"][0]["fields"]
+    assert list(fields["extra"]) == ["z", "a"]
+    assert fields["day"] != fields["text"]
+    assert fields["title"] == {"absent": "unset"}
+    assert fields["title"] != document["entries"][0]["source"]["line"]
+    assert fields["reserved"]["\x00ogy"]["type"] == "mapping"
+    assert document["schema"] == 2

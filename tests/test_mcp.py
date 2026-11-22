@@ -2,11 +2,15 @@
 
 import argparse
 import asyncio
+import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
 lazy from pathlib import Path
 
 import pytest
 from fastmcp import Client
 from fastmcp.exceptions import ToolError
+from fastmcp.tools import FunctionTool
 from tests.conftest import GOOD
 lazy from fastmcp import FastMCP
 
@@ -113,3 +117,46 @@ def test_a_wrong_or_unknown_argument_is_an_error_result_naming_it(tmp_path: Path
     unknown = asyncio.run(bad({**where, "address": "product/app/actor/member", "colour": "red"}))
     assert wrong_type[0] and "address" in wrong_type[1]
     assert unknown[0] and "colour" in unknown[1]
+
+
+def test_file_inputs_cannot_escape_the_repository(repo, tmp_path_factory):
+    """Given a file argument or symlink outside the repo, even stdio refuses before reading it."""
+    write_kb(repo)
+    outside = tmp_path_factory.mktemp("outside") / "records.yml"
+    outside.write_text("this is synthetic outside data\n")
+    link = repo / "link.yml"
+    link.symlink_to(outside)
+    for file in (str(outside), "link.yml", str(Path("..") / outside.relative_to(repo.parent))):
+        assert "inside the repository" in call("put", {"repo": str(repo), "file": file})
+
+
+def test_overlapping_tool_calls_do_not_overlap_stderr_capture(monkeypatch):
+    """Given overlapping tool requests, parser capture is serialized and stderr is restored."""
+    entered = threading.Event()
+    second = threading.Event()
+    release = threading.Event()
+    original = sys.stderr
+
+    def run(argv, *, agent):
+        if "--removed" in argv:
+            second.set()
+        else:
+            entered.set()
+            assert release.wait(5)
+        return cli.OK, []
+
+    monkeypatch.setattr(cli, "run", run)
+    server = build()
+    tool = next(item for item in asyncio.run(server.list_tools()) if item.name == "find")
+    assert isinstance(tool, FunctionTool)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(tool.fn)
+        assert entered.wait(5)
+        later = pool.submit(tool.fn, removed=True)
+        try:
+            assert not second.wait(0.1)
+        finally:
+            release.set()
+        first.result(timeout=5)
+        later.result(timeout=5)
+    assert sys.stderr is original

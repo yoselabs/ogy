@@ -62,7 +62,31 @@ kb:
 
 # The gate's one extension point (see .blueprint/base.just).
 [private]
-check-extra: arch shfmt shell-test kb
+check-extra: arch shfmt shell-test kb board-css-check board-js
+
+# Standalone Tailwind; the built stylesheet ships in the Python package.
+board-css:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v tailwindcss >/dev/null || { echo "board-css: not installed -- run just tools" >&2; exit 2; }
+    tailwindcss -i assets/board/board.css -o src/ogy/web/static/board.css --minify
+
+# Rebuild without touching the shipped stylesheet; stale output is a gate failure.
+[group('gate')]
+board-css-check:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v tailwindcss >/dev/null || { echo "board-css-check: not installed -- run just tools" >&2; exit 2; }
+    built=$(mktemp); trap 'rm -f "$built"' EXIT
+    tailwindcss -i assets/board/board.css -o "$built" --minify
+    cmp "$built" src/ogy/web/static/board.css || { echo "board-css-check: stale CSS -- run just board-css" >&2; exit 1; }
+
+[group('gate')]
+board-js:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    command -v biome >/dev/null || { echo "board-js: not installed -- run just tools" >&2; exit 2; }
+    biome format src/ogy/web/static/js
 
 # The release gate: `check`, then every test with the coverage floor (`fail_under` in pyproject.toml).
 [group('gate')]

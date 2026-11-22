@@ -1,0 +1,15 @@
+/* No preflight: preserve the prototype's measured card geometry. */
+@layer theme, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./components-base.css";
+@import "./components-cards.css";
+@import "./components-layout.css";
+@import "./components-shell.css";
+@import "./components-scene.css";
+@source "../../src/ogy/web/static/index.html";
+@source "../../src/ogy/web/static/js";
+
+@theme {
+  --font-sans: system-ui, sans-serif;
+}

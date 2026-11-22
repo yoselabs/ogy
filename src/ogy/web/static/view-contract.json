@@ -1,0 +1,3336 @@
+{
+  "view_contract_version": 1,
+  "source": "lab29-vocabulary.json",
+  "status": "Stage 1 adapter; renderer migration is stages 3–8",
+  "kinds": {
+    "area": {
+      "label": "area",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/area.yml:1"
+      },
+      "icon": "list",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "unlike"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.area.section.0",
+          "query": "unlike"
+        }
+      ]
+    },
+    "goal": {
+      "label": "goal",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/goal.yml:1"
+      },
+      "icon": "goal",
+      "color": "#806900",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "for"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.goal.section.0",
+          "query": "realizers"
+        }
+      ]
+    },
+    "capability": {
+      "label": "capability",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/capability.yml:1"
+      },
+      "icon": "cap",
+      "color": "#a65300",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "realizes"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.capability.section.0",
+          "query": "realizes"
+        },
+        {
+          "id": "semantic.capability.section.1",
+          "query": "realizers"
+        }
+      ]
+    },
+    "workflow": {
+      "label": "workflow",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/workflow.yml:1"
+      },
+      "icon": "call",
+      "color": "#7048b8",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "start",
+        "schedule",
+        "event",
+        "realizes"
+      ],
+      "parts": [
+        {
+          "path": "steps",
+          "kind": "step",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "ends",
+          "kind": "end",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.workflow.section.0",
+          "query": "realizes"
+        },
+        {
+          "id": "semantic.workflow.section.1",
+          "query": "startActors"
+        },
+        {
+          "id": "semantic.workflow.section.2",
+          "query": "schedule"
+        },
+        {
+          "id": "semantic.workflow.section.3",
+          "query": "event"
+        },
+        {
+          "id": "semantic.workflow.section.4",
+          "query": "callers"
+        },
+        {
+          "id": "semantic.workflow.section.5",
+          "query": "predecessors"
+        },
+        {
+          "id": "semantic.workflow.section.6",
+          "query": "calls"
+        },
+        {
+          "id": "semantic.workflow.section.7",
+          "query": "endings"
+        }
+      ]
+    },
+    "step": {
+      "label": "step",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/step.yml:1"
+      },
+      "icon": "gear",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "actor",
+        "calls"
+      ],
+      "parts": [
+        {
+          "path": "cases",
+          "kind": "case",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "choices",
+          "kind": "choice",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "timeout",
+          "kind": "timeout",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.step.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.step.section.1",
+          "query": "actor"
+        },
+        {
+          "id": "semantic.step.section.2",
+          "query": "stepCalls"
+        },
+        {
+          "id": "semantic.step.section.3",
+          "query": "interfaces"
+        },
+        {
+          "id": "semantic.step.section.4",
+          "query": "cases"
+        },
+        {
+          "id": "semantic.step.section.5",
+          "query": "choices"
+        },
+        {
+          "id": "semantic.step.section.6",
+          "query": "timeouts"
+        }
+      ]
+    },
+    "case": {
+      "label": "case",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/case.yml:1"
+      },
+      "icon": "branch",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "when",
+        "order",
+        "covers_ends",
+        "then"
+      ],
+      "parts": [
+        {
+          "path": "effects",
+          "kind": "effect",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.case.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.case.section.1",
+          "query": "reads"
+        },
+        {
+          "id": "semantic.case.section.2",
+          "query": "covers_ends"
+        },
+        {
+          "id": "semantic.case.section.3",
+          "query": "then"
+        }
+      ]
+    },
+    "choice": {
+      "label": "choice",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/choice.yml:1"
+      },
+      "icon": "choice",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "label",
+        "then"
+      ],
+      "parts": [
+        {
+          "path": "effects",
+          "kind": "effect",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.choice.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.choice.section.1",
+          "query": "then"
+        }
+      ]
+    },
+    "timeout": {
+      "label": "timeout",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/timeout.yml:1"
+      },
+      "icon": "timer",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "after",
+        "then"
+      ],
+      "parts": [
+        {
+          "path": "effects",
+          "kind": "effect",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.timeout.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.timeout.section.1",
+          "query": "after"
+        },
+        {
+          "id": "semantic.timeout.section.2",
+          "query": "then"
+        }
+      ]
+    },
+    "end": {
+      "label": "end",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/end.yml:1"
+      },
+      "icon": "ok",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "result"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.end.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.end.section.1",
+          "query": "predecessors"
+        }
+      ]
+    },
+    "effect": {
+      "label": "effect",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/effect.yml:1"
+      },
+      "icon": "write",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "do",
+        "on"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.effect.section.0",
+          "query": "on"
+        }
+      ]
+    },
+    "entity": {
+      "label": "entity",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/entity.yml:1"
+      },
+      "icon": "doc",
+      "color": "#1d4f7a",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says"
+      ],
+      "parts": [
+        {
+          "path": "attributes",
+          "kind": "attribute",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "states",
+          "kind": "state",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "transitions",
+          "kind": "transition",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.entity.section.0",
+          "query": "fields"
+        },
+        {
+          "id": "semantic.entity.section.1",
+          "query": "states"
+        },
+        {
+          "id": "semantic.entity.section.2",
+          "query": "transitions"
+        },
+        {
+          "id": "semantic.entity.section.3",
+          "query": "changers"
+        }
+      ]
+    },
+    "attribute": {
+      "label": "attribute",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/attribute.yml:1"
+      },
+      "icon": "attribute",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "type",
+        "of",
+        "max",
+        "optional",
+        "many",
+        "derived"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.attribute.section.0",
+          "query": "type"
+        },
+        {
+          "id": "semantic.attribute.section.1",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.attribute.section.2",
+          "query": "max"
+        },
+        {
+          "id": "semantic.attribute.section.3",
+          "query": "readers"
+        },
+        {
+          "id": "semantic.attribute.section.4",
+          "query": "writers"
+        }
+      ]
+    },
+    "state": {
+      "label": "state",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/state.yml:1"
+      },
+      "icon": "state",
+      "color": "#1d4f7a",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.state.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.state.section.1",
+          "query": "incoming"
+        },
+        {
+          "id": "semantic.state.section.2",
+          "query": "outgoing"
+        }
+      ]
+    },
+    "transition": {
+      "label": "transition",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/transition.yml:1"
+      },
+      "icon": "swap",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "from",
+        "to"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.transition.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.transition.section.1",
+          "query": "from"
+        },
+        {
+          "id": "semantic.transition.section.2",
+          "query": "to"
+        },
+        {
+          "id": "semantic.transition.section.3",
+          "query": "writers"
+        }
+      ]
+    },
+    "actor": {
+      "label": "actor",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/actor.yml:1"
+      },
+      "icon": "person",
+      "color": "#9c3675",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "nature"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.actor.section.0",
+          "query": "starts"
+        },
+        {
+          "id": "semantic.actor.section.1",
+          "query": "tellers"
+        },
+        {
+          "id": "semantic.actor.section.2",
+          "query": "readers"
+        }
+      ]
+    },
+    "interface": {
+      "label": "interface",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/interface.yml:1"
+      },
+      "icon": "web",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "form",
+        "invoked_as",
+        "serves",
+        "offers",
+        "accepts",
+        "shows",
+        "includes",
+        "allows",
+        "satisfies"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.interface.section.0",
+          "query": "serves"
+        },
+        {
+          "id": "semantic.interface.section.1",
+          "query": "offers"
+        },
+        {
+          "id": "semantic.interface.section.2",
+          "query": "accepts"
+        },
+        {
+          "id": "semantic.interface.section.3",
+          "query": "shows"
+        },
+        {
+          "id": "semantic.interface.section.4",
+          "query": "includes"
+        },
+        {
+          "id": "semantic.interface.section.5",
+          "query": "allows"
+        },
+        {
+          "id": "semantic.interface.section.6",
+          "query": "satisfies"
+        }
+      ]
+    },
+    "handler": {
+      "label": "handler",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/handler.yml:1"
+      },
+      "icon": "handler",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "performs",
+        "uses",
+        "satisfies"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.handler.section.0",
+          "query": "performs"
+        },
+        {
+          "id": "semantic.handler.section.1",
+          "query": "uses"
+        },
+        {
+          "id": "semantic.handler.section.2",
+          "query": "satisfies"
+        }
+      ]
+    },
+    "rule": {
+      "label": "rule",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/rule.yml:1"
+      },
+      "icon": "list",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "constrains"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.rule.section.0",
+          "query": "constrains"
+        },
+        {
+          "id": "semantic.rule.section.1",
+          "query": "satisfiers"
+        },
+        {
+          "id": "semantic.rule.section.2",
+          "query": "because"
+        }
+      ]
+    },
+    "decision": {
+      "label": "decision",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/decision.yml:1"
+      },
+      "icon": "gate",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "question",
+        "context"
+      ],
+      "parts": [
+        {
+          "path": "options",
+          "kind": "option",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "proposal",
+          "kind": "proposal",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        },
+        {
+          "path": "answers",
+          "kind": "answer",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.decision.section.0",
+          "query": "options"
+        },
+        {
+          "id": "semantic.decision.section.1",
+          "query": "proposals"
+        },
+        {
+          "id": "semantic.decision.section.2",
+          "query": "answers"
+        },
+        {
+          "id": "semantic.decision.section.3",
+          "query": "because"
+        }
+      ]
+    },
+    "option": {
+      "label": "option",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/option.yml:1"
+      },
+      "icon": "option",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "label",
+        "sets"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.option.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.option.section.1",
+          "query": "sets"
+        },
+        {
+          "id": "semantic.option.section.2",
+          "query": "because"
+        }
+      ]
+    },
+    "proposal": {
+      "label": "proposal",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/proposal.yml:1"
+      },
+      "icon": "bolt",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "chose",
+        "sets",
+        "why",
+        "heard"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.proposal.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.proposal.section.1",
+          "query": "chose"
+        },
+        {
+          "id": "semantic.proposal.section.2",
+          "query": "sets"
+        }
+      ]
+    },
+    "answer": {
+      "label": "answer",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/answer.yml:1"
+      },
+      "icon": "answer",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "chose",
+        "said",
+        "at",
+        "note",
+        "where",
+        "delegated"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.answer.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.answer.section.1",
+          "query": "chose"
+        },
+        {
+          "id": "semantic.answer.section.2",
+          "query": "said"
+        },
+        {
+          "id": "semantic.answer.section.3",
+          "query": "delegated"
+        }
+      ]
+    },
+    "quantity": {
+      "label": "quantity",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/quantity.yml:1"
+      },
+      "icon": "hash",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "is",
+        "unit"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.quantity.section.0",
+          "query": "readers"
+        },
+        {
+          "id": "semantic.quantity.section.1",
+          "query": "writers"
+        }
+      ]
+    },
+    "setting": {
+      "label": "setting",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/setting.yml:1"
+      },
+      "icon": "gear",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "name",
+        "default"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.setting.section.0",
+          "query": "default"
+        },
+        {
+          "id": "semantic.setting.section.1",
+          "query": "readers"
+        },
+        {
+          "id": "semantic.setting.section.2",
+          "query": "writers"
+        }
+      ]
+    },
+    "enum": {
+      "label": "enum",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/enum.yml:1"
+      },
+      "icon": "list",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "members"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.enum.section.0",
+          "query": "members"
+        },
+        {
+          "id": "semantic.enum.section.1",
+          "query": "typedBy"
+        },
+        {
+          "id": "semantic.enum.section.2",
+          "query": "defaultedBy"
+        }
+      ]
+    },
+    "dependency": {
+      "label": "dependency",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/dependency.yml:1"
+      },
+      "icon": "plug",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "pin",
+        "realizes",
+        "satisfies"
+      ],
+      "parts": [
+        {
+          "path": "workarounds",
+          "kind": "workaround",
+          "source": {
+            "type": "ontology.part",
+            "reference": "design-views.md §2.1/§3.2"
+          }
+        }
+      ],
+      "sections": [
+        {
+          "id": "semantic.dependency.section.0",
+          "query": "realizes"
+        },
+        {
+          "id": "semantic.dependency.section.1",
+          "query": "users"
+        },
+        {
+          "id": "semantic.dependency.section.2",
+          "query": "workarounds"
+        }
+      ]
+    },
+    "workaround": {
+      "label": "workaround",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/workaround.yml:1"
+      },
+      "icon": "plug",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "when",
+        "says"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.workaround.section.0",
+          "query": "parent"
+        },
+        {
+          "id": "semantic.workaround.section.1",
+          "query": "reads"
+        }
+      ]
+    },
+    "term": {
+      "label": "term",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/term.yml:1"
+      },
+      "icon": "tag",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "word",
+        "says",
+        "names"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.term.section.0",
+          "query": "names"
+        }
+      ]
+    },
+    "principle": {
+      "label": "principle",
+      "labelSource": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/principle.yml:1"
+      },
+      "icon": "principle",
+      "color": "#526783",
+      "styleSource": "viewer.hint.default",
+      "fields": [
+        "says",
+        "why"
+      ],
+      "parts": [],
+      "sections": [
+        {
+          "id": "semantic.principle.section.0",
+          "query": "because"
+        }
+      ]
+    }
+  },
+  "labels": {
+    "semantic.area.section.0": {
+      "label": "unlike",
+      "kind": "area",
+      "path": "unlike",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "unlike"
+      },
+      "filter": null
+    },
+    "semantic.goal.section.0": {
+      "label": "← realizes",
+      "kind": "goal",
+      "path": "realizes",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "realizers"
+      },
+      "filter": null
+    },
+    "semantic.capability.section.0": {
+      "label": "realizes",
+      "kind": "capability",
+      "path": "realizes",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "realizes"
+      },
+      "filter": null
+    },
+    "semantic.capability.section.1": {
+      "label": "← realizes",
+      "kind": "capability",
+      "path": "realizes",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "realizers"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.0": {
+      "label": "realizes",
+      "kind": "workflow",
+      "path": "realizes",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "realizes"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.1": {
+      "label": "start.actor",
+      "kind": "workflow",
+      "path": "start.actor",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "startActors"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.2": {
+      "label": "schedule",
+      "kind": "workflow",
+      "path": "schedule",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "schedule"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.3": {
+      "label": "event",
+      "kind": "workflow",
+      "path": "event",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "event"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.4": {
+      "label": "← calls",
+      "kind": "workflow",
+      "path": "calls",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "callers"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.5": {
+      "label": "← then",
+      "kind": "workflow",
+      "path": "then",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "predecessors"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.6": {
+      "label": "steps.calls",
+      "kind": "workflow",
+      "path": "steps.calls",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "calls"
+      },
+      "filter": null
+    },
+    "semantic.workflow.section.7": {
+      "label": "ends",
+      "kind": "workflow",
+      "path": "ends",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "endings"
+      },
+      "filter": null
+    },
+    "semantic.step.section.0": {
+      "label": "part_of",
+      "kind": "step",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.step.section.1": {
+      "label": "actor",
+      "kind": "step",
+      "path": "actor",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "actor"
+      },
+      "filter": null
+    },
+    "semantic.step.section.2": {
+      "label": "calls",
+      "kind": "step",
+      "path": "calls",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "stepCalls"
+      },
+      "filter": null
+    },
+    "semantic.step.section.3": {
+      "label": "← serves",
+      "kind": "step",
+      "path": "serves",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "interfaces"
+      },
+      "filter": null
+    },
+    "semantic.step.section.4": {
+      "label": "cases",
+      "kind": "step",
+      "path": "cases",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "cases"
+      },
+      "filter": null
+    },
+    "semantic.step.section.5": {
+      "label": "choices",
+      "kind": "step",
+      "path": "choices",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "choices"
+      },
+      "filter": null
+    },
+    "semantic.step.section.6": {
+      "label": "timeout",
+      "kind": "step",
+      "path": "timeout",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "timeouts"
+      },
+      "filter": null
+    },
+    "semantic.case.section.0": {
+      "label": "part_of",
+      "kind": "case",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.case.section.1": {
+      "label": "when.reads",
+      "kind": "case",
+      "path": "when.reads",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "reads"
+      },
+      "filter": null
+    },
+    "semantic.case.section.2": {
+      "label": "covers_ends",
+      "kind": "case",
+      "path": "covers_ends",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "covers_ends"
+      },
+      "filter": null
+    },
+    "semantic.case.section.3": {
+      "label": "then",
+      "kind": "case",
+      "path": "then",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "then"
+      },
+      "filter": null
+    },
+    "semantic.choice.section.0": {
+      "label": "part_of",
+      "kind": "choice",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.choice.section.1": {
+      "label": "then",
+      "kind": "choice",
+      "path": "then",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "then"
+      },
+      "filter": null
+    },
+    "semantic.timeout.section.0": {
+      "label": "part_of",
+      "kind": "timeout",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.timeout.section.1": {
+      "label": "after",
+      "kind": "timeout",
+      "path": "after",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "after"
+      },
+      "filter": null
+    },
+    "semantic.timeout.section.2": {
+      "label": "then",
+      "kind": "timeout",
+      "path": "then",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "then"
+      },
+      "filter": null
+    },
+    "semantic.end.section.0": {
+      "label": "part_of",
+      "kind": "end",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.end.section.1": {
+      "label": "← then",
+      "kind": "end",
+      "path": "then",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "predecessors"
+      },
+      "filter": null
+    },
+    "semantic.effect.section.0": {
+      "label": "on",
+      "kind": "effect",
+      "path": "on",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "on"
+      },
+      "filter": null
+    },
+    "semantic.entity.section.0": {
+      "label": "attributes",
+      "kind": "entity",
+      "path": "attributes",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "fields"
+      },
+      "filter": null
+    },
+    "semantic.entity.section.1": {
+      "label": "states",
+      "kind": "entity",
+      "path": "states",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "states"
+      },
+      "filter": null
+    },
+    "semantic.entity.section.2": {
+      "label": "transitions",
+      "kind": "entity",
+      "path": "transitions",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "transitions"
+      },
+      "filter": null
+    },
+    "semantic.entity.section.3": {
+      "label": "← effects.on",
+      "kind": "entity",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "changers"
+      },
+      "filter": null
+    },
+    "semantic.attribute.section.0": {
+      "label": "of",
+      "kind": "attribute",
+      "path": "of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "type"
+      },
+      "filter": null
+    },
+    "semantic.attribute.section.1": {
+      "label": "part_of",
+      "kind": "attribute",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.attribute.section.2": {
+      "label": "max",
+      "kind": "attribute",
+      "path": "max",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "max"
+      },
+      "filter": null
+    },
+    "semantic.attribute.section.3": {
+      "label": "← when.reads",
+      "kind": "attribute",
+      "path": "when.reads",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "readers"
+      },
+      "filter": null
+    },
+    "semantic.attribute.section.4": {
+      "label": "← effects.on · do=write",
+      "kind": "attribute",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "writers"
+      },
+      "filter": "write"
+    },
+    "semantic.state.section.0": {
+      "label": "part_of",
+      "kind": "state",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.state.section.1": {
+      "label": "← to",
+      "kind": "state",
+      "path": "to",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "incoming"
+      },
+      "filter": null
+    },
+    "semantic.state.section.2": {
+      "label": "← from",
+      "kind": "state",
+      "path": "from",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "outgoing"
+      },
+      "filter": null
+    },
+    "semantic.transition.section.0": {
+      "label": "part_of",
+      "kind": "transition",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.transition.section.1": {
+      "label": "from",
+      "kind": "transition",
+      "path": "from",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "from"
+      },
+      "filter": null
+    },
+    "semantic.transition.section.2": {
+      "label": "to",
+      "kind": "transition",
+      "path": "to",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "to"
+      },
+      "filter": null
+    },
+    "semantic.transition.section.3": {
+      "label": "← effects.on · do=transition",
+      "kind": "transition",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "writers"
+      },
+      "filter": "transition"
+    },
+    "semantic.actor.section.0": {
+      "label": "← start.actor",
+      "kind": "actor",
+      "path": "start.actor",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "starts"
+      },
+      "filter": null
+    },
+    "semantic.actor.section.1": {
+      "label": "← effects.on · do=tell",
+      "kind": "actor",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "tellers"
+      },
+      "filter": "tell"
+    },
+    "semantic.actor.section.2": {
+      "label": "← when.reads",
+      "kind": "actor",
+      "path": "when.reads",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "readers"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.0": {
+      "label": "serves",
+      "kind": "interface",
+      "path": "serves",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "serves"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.1": {
+      "label": "offers",
+      "kind": "interface",
+      "path": "offers",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "offers"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.2": {
+      "label": "accepts",
+      "kind": "interface",
+      "path": "accepts",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "accepts"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.3": {
+      "label": "shows",
+      "kind": "interface",
+      "path": "shows",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "shows"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.4": {
+      "label": "includes",
+      "kind": "interface",
+      "path": "includes",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "includes"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.5": {
+      "label": "allows",
+      "kind": "interface",
+      "path": "allows",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "allows"
+      },
+      "filter": null
+    },
+    "semantic.interface.section.6": {
+      "label": "satisfies",
+      "kind": "interface",
+      "path": "satisfies",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "satisfies"
+      },
+      "filter": null
+    },
+    "semantic.handler.section.0": {
+      "label": "performs",
+      "kind": "handler",
+      "path": "performs",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "performs"
+      },
+      "filter": null
+    },
+    "semantic.handler.section.1": {
+      "label": "uses",
+      "kind": "handler",
+      "path": "uses",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "uses"
+      },
+      "filter": null
+    },
+    "semantic.handler.section.2": {
+      "label": "satisfies",
+      "kind": "handler",
+      "path": "satisfies",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "satisfies"
+      },
+      "filter": null
+    },
+    "semantic.rule.section.0": {
+      "label": "constrains",
+      "kind": "rule",
+      "path": "constrains",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "constrains"
+      },
+      "filter": null
+    },
+    "semantic.rule.section.1": {
+      "label": "← satisfies",
+      "kind": "rule",
+      "path": "satisfies",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "satisfiers"
+      },
+      "filter": null
+    },
+    "semantic.rule.section.2": {
+      "label": "because",
+      "kind": "rule",
+      "path": "because",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "because"
+      },
+      "filter": null
+    },
+    "semantic.decision.section.0": {
+      "label": "options",
+      "kind": "decision",
+      "path": "options",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "options"
+      },
+      "filter": null
+    },
+    "semantic.decision.section.1": {
+      "label": "proposal",
+      "kind": "decision",
+      "path": "proposal",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "proposals"
+      },
+      "filter": null
+    },
+    "semantic.decision.section.2": {
+      "label": "answers",
+      "kind": "decision",
+      "path": "answers",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "answers"
+      },
+      "filter": null
+    },
+    "semantic.decision.section.3": {
+      "label": "because",
+      "kind": "decision",
+      "path": "because",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "because"
+      },
+      "filter": null
+    },
+    "semantic.option.section.0": {
+      "label": "part_of",
+      "kind": "option",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.option.section.1": {
+      "label": "sets",
+      "kind": "option",
+      "path": "sets",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "sets"
+      },
+      "filter": null
+    },
+    "semantic.option.section.2": {
+      "label": "because",
+      "kind": "option",
+      "path": "because",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "because"
+      },
+      "filter": null
+    },
+    "semantic.proposal.section.0": {
+      "label": "part_of",
+      "kind": "proposal",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.proposal.section.1": {
+      "label": "chose",
+      "kind": "proposal",
+      "path": "chose",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "chose"
+      },
+      "filter": null
+    },
+    "semantic.proposal.section.2": {
+      "label": "sets",
+      "kind": "proposal",
+      "path": "sets",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "sets"
+      },
+      "filter": null
+    },
+    "semantic.answer.section.0": {
+      "label": "part_of",
+      "kind": "answer",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.answer.section.1": {
+      "label": "chose",
+      "kind": "answer",
+      "path": "chose",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "chose"
+      },
+      "filter": null
+    },
+    "semantic.answer.section.2": {
+      "label": "said",
+      "kind": "answer",
+      "path": "said",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "said"
+      },
+      "filter": null
+    },
+    "semantic.answer.section.3": {
+      "label": "delegated",
+      "kind": "answer",
+      "path": "delegated",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "delegated"
+      },
+      "filter": null
+    },
+    "semantic.quantity.section.0": {
+      "label": "← when.reads",
+      "kind": "quantity",
+      "path": "when.reads",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "readers"
+      },
+      "filter": null
+    },
+    "semantic.quantity.section.1": {
+      "label": "← effects.on · do=write",
+      "kind": "quantity",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "writers"
+      },
+      "filter": "write"
+    },
+    "semantic.setting.section.0": {
+      "label": "default",
+      "kind": "setting",
+      "path": "default",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "default"
+      },
+      "filter": null
+    },
+    "semantic.setting.section.1": {
+      "label": "← when.reads",
+      "kind": "setting",
+      "path": "when.reads",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "readers"
+      },
+      "filter": null
+    },
+    "semantic.setting.section.2": {
+      "label": "← effects.on · do=write",
+      "kind": "setting",
+      "path": "effects.on",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "writers"
+      },
+      "filter": "write"
+    },
+    "semantic.enum.section.0": {
+      "label": "members",
+      "kind": "enum",
+      "path": "members",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "members"
+      },
+      "filter": null
+    },
+    "semantic.enum.section.1": {
+      "label": "← of",
+      "kind": "enum",
+      "path": "of",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "typedBy"
+      },
+      "filter": null
+    },
+    "semantic.enum.section.2": {
+      "label": "← default",
+      "kind": "enum",
+      "path": "default",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "defaultedBy"
+      },
+      "filter": null
+    },
+    "semantic.dependency.section.0": {
+      "label": "realizes",
+      "kind": "dependency",
+      "path": "realizes",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "realizes"
+      },
+      "filter": null
+    },
+    "semantic.dependency.section.1": {
+      "label": "← uses",
+      "kind": "dependency",
+      "path": "uses",
+      "direction": "inverse",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "users"
+      },
+      "filter": null
+    },
+    "semantic.dependency.section.2": {
+      "label": "workarounds",
+      "kind": "dependency",
+      "path": "workarounds",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "workarounds"
+      },
+      "filter": null
+    },
+    "semantic.workaround.section.0": {
+      "label": "part_of",
+      "kind": "workaround",
+      "path": "part_of",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.structure",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "parent"
+      },
+      "filter": null
+    },
+    "semantic.workaround.section.1": {
+      "label": "when.reads",
+      "kind": "workaround",
+      "path": "when.reads",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "reads"
+      },
+      "filter": null
+    },
+    "semantic.term.section.0": {
+      "label": "names",
+      "kind": "term",
+      "path": "names",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "names"
+      },
+      "filter": null
+    },
+    "semantic.principle.section.0": {
+      "label": "because",
+      "kind": "principle",
+      "path": "because",
+      "direction": "forward",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4",
+        "witnessQuery": "because"
+      },
+      "filter": null
+    },
+    "semantic.path.says": {
+      "label": "says",
+      "path": "says",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.unlike": {
+      "label": "unlike",
+      "path": "unlike",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.for": {
+      "label": "for",
+      "path": "for",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.realizes": {
+      "label": "realizes",
+      "path": "realizes",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.start": {
+      "label": "start",
+      "path": "start",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.schedule": {
+      "label": "schedule",
+      "path": "schedule",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.event": {
+      "label": "event",
+      "path": "event",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.actor": {
+      "label": "actor",
+      "path": "actor",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.calls": {
+      "label": "calls",
+      "path": "calls",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.when": {
+      "label": "when",
+      "path": "when",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.order": {
+      "label": "order",
+      "path": "order",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.covers_ends": {
+      "label": "covers_ends",
+      "path": "covers_ends",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.then": {
+      "label": "then",
+      "path": "then",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.label": {
+      "label": "label",
+      "path": "label",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.after": {
+      "label": "after",
+      "path": "after",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.result": {
+      "label": "result",
+      "path": "result",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.do": {
+      "label": "do",
+      "path": "do",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.on": {
+      "label": "on",
+      "path": "on",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.type": {
+      "label": "type",
+      "path": "type",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.of": {
+      "label": "of",
+      "path": "of",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.max": {
+      "label": "max",
+      "path": "max",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.optional": {
+      "label": "optional",
+      "path": "optional",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.many": {
+      "label": "many",
+      "path": "many",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.derived": {
+      "label": "derived",
+      "path": "derived",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.from": {
+      "label": "from",
+      "path": "from",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.to": {
+      "label": "to",
+      "path": "to",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.nature": {
+      "label": "nature",
+      "path": "nature",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.form": {
+      "label": "form",
+      "path": "form",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.invoked_as": {
+      "label": "invoked_as",
+      "path": "invoked_as",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.serves": {
+      "label": "serves",
+      "path": "serves",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.offers": {
+      "label": "offers",
+      "path": "offers",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.accepts": {
+      "label": "accepts",
+      "path": "accepts",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.shows": {
+      "label": "shows",
+      "path": "shows",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.includes": {
+      "label": "includes",
+      "path": "includes",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.allows": {
+      "label": "allows",
+      "path": "allows",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.satisfies": {
+      "label": "satisfies",
+      "path": "satisfies",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.performs": {
+      "label": "performs",
+      "path": "performs",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.uses": {
+      "label": "uses",
+      "path": "uses",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.constrains": {
+      "label": "constrains",
+      "path": "constrains",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.question": {
+      "label": "question",
+      "path": "question",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.context": {
+      "label": "context",
+      "path": "context",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.sets": {
+      "label": "sets",
+      "path": "sets",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.chose": {
+      "label": "chose",
+      "path": "chose",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.why": {
+      "label": "why",
+      "path": "why",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.heard": {
+      "label": "heard",
+      "path": "heard",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.said": {
+      "label": "said",
+      "path": "said",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.at": {
+      "label": "at",
+      "path": "at",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.note": {
+      "label": "note",
+      "path": "note",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.where": {
+      "label": "where",
+      "path": "where",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.delegated": {
+      "label": "delegated",
+      "path": "delegated",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.is": {
+      "label": "is",
+      "path": "is",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.unit": {
+      "label": "unit",
+      "path": "unit",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.name": {
+      "label": "name",
+      "path": "name",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.default": {
+      "label": "default",
+      "path": "default",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.members": {
+      "label": "members",
+      "path": "members",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.pin": {
+      "label": "pin",
+      "path": "pin",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.word": {
+      "label": "word",
+      "path": "word",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.names": {
+      "label": "names",
+      "path": "names",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.steps": {
+      "label": "steps",
+      "path": "steps",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.ends": {
+      "label": "ends",
+      "path": "ends",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.cases": {
+      "label": "cases",
+      "path": "cases",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.choices": {
+      "label": "choices",
+      "path": "choices",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.timeout": {
+      "label": "timeout",
+      "path": "timeout",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.effects": {
+      "label": "effects",
+      "path": "effects",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.attributes": {
+      "label": "attributes",
+      "path": "attributes",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.states": {
+      "label": "states",
+      "path": "states",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.transitions": {
+      "label": "transitions",
+      "path": "transitions",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.options": {
+      "label": "options",
+      "path": "options",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.proposal": {
+      "label": "proposal",
+      "path": "proposal",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.answers": {
+      "label": "answers",
+      "path": "answers",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.workarounds": {
+      "label": "workarounds",
+      "path": "workarounds",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.part_of": {
+      "label": "part_of",
+      "path": "part_of",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.when.reads": {
+      "label": "when.reads",
+      "path": "when.reads",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.derived.reads": {
+      "label": "derived.reads",
+      "path": "derived.reads",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.effects.on": {
+      "label": "effects.on",
+      "path": "effects.on",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.start.actor": {
+      "label": "start.actor",
+      "path": "start.actor",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.steps.calls": {
+      "label": "steps.calls",
+      "path": "steps.calls",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.because": {
+      "label": "because",
+      "path": "because",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.proof": {
+      "label": "proof",
+      "path": "proof",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.src": {
+      "label": "src",
+      "path": "src",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.path.title": {
+      "label": "title",
+      "path": "title",
+      "source": {
+        "type": "ontology.field",
+        "reference": "design-views.md §1.1/§2.1/§4"
+      }
+    },
+    "semantic.kind.area": {
+      "label": "area",
+      "kind": "area",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/area.yml:1"
+      }
+    },
+    "semantic.kind.goal": {
+      "label": "goal",
+      "kind": "goal",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/goal.yml:1"
+      }
+    },
+    "semantic.kind.capability": {
+      "label": "capability",
+      "kind": "capability",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/capability.yml:1"
+      }
+    },
+    "semantic.kind.workflow": {
+      "label": "workflow",
+      "kind": "workflow",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/workflow.yml:1"
+      }
+    },
+    "semantic.kind.step": {
+      "label": "step",
+      "kind": "step",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/step.yml:1"
+      }
+    },
+    "semantic.kind.case": {
+      "label": "case",
+      "kind": "case",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/case.yml:1"
+      }
+    },
+    "semantic.kind.choice": {
+      "label": "choice",
+      "kind": "choice",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/choice.yml:1"
+      }
+    },
+    "semantic.kind.timeout": {
+      "label": "timeout",
+      "kind": "timeout",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/timeout.yml:1"
+      }
+    },
+    "semantic.kind.end": {
+      "label": "end",
+      "kind": "end",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/end.yml:1"
+      }
+    },
+    "semantic.kind.effect": {
+      "label": "effect",
+      "kind": "effect",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/effect.yml:1"
+      }
+    },
+    "semantic.kind.entity": {
+      "label": "entity",
+      "kind": "entity",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/entity.yml:1"
+      }
+    },
+    "semantic.kind.attribute": {
+      "label": "attribute",
+      "kind": "attribute",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/attribute.yml:1"
+      }
+    },
+    "semantic.kind.state": {
+      "label": "state",
+      "kind": "state",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/state.yml:1"
+      }
+    },
+    "semantic.kind.transition": {
+      "label": "transition",
+      "kind": "transition",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/transition.yml:1"
+      }
+    },
+    "semantic.kind.actor": {
+      "label": "actor",
+      "kind": "actor",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/actor.yml:1"
+      }
+    },
+    "semantic.kind.interface": {
+      "label": "interface",
+      "kind": "interface",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/interface.yml:1"
+      }
+    },
+    "semantic.kind.handler": {
+      "label": "handler",
+      "kind": "handler",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/handler.yml:1"
+      }
+    },
+    "semantic.kind.rule": {
+      "label": "rule",
+      "kind": "rule",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/rule.yml:1"
+      }
+    },
+    "semantic.kind.decision": {
+      "label": "decision",
+      "kind": "decision",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/decision.yml:1"
+      }
+    },
+    "semantic.kind.option": {
+      "label": "option",
+      "kind": "option",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/option.yml:1"
+      }
+    },
+    "semantic.kind.proposal": {
+      "label": "proposal",
+      "kind": "proposal",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/proposal.yml:1"
+      }
+    },
+    "semantic.kind.answer": {
+      "label": "answer",
+      "kind": "answer",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/answer.yml:1"
+      }
+    },
+    "semantic.kind.quantity": {
+      "label": "quantity",
+      "kind": "quantity",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/quantity.yml:1"
+      }
+    },
+    "semantic.kind.setting": {
+      "label": "setting",
+      "kind": "setting",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/setting.yml:1"
+      }
+    },
+    "semantic.kind.enum": {
+      "label": "enum",
+      "kind": "enum",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/enum.yml:1"
+      }
+    },
+    "semantic.kind.dependency": {
+      "label": "dependency",
+      "kind": "dependency",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/dependency.yml:1"
+      }
+    },
+    "semantic.kind.workaround": {
+      "label": "workaround",
+      "kind": "workaround",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/workaround.yml:1"
+      }
+    },
+    "semantic.kind.term": {
+      "label": "term",
+      "kind": "term",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/term.yml:1"
+      }
+    },
+    "semantic.kind.principle": {
+      "label": "principle",
+      "kind": "principle",
+      "source": {
+        "type": "ontology.kind",
+        "reference": "design-views.md §1.1/§4 → K/principle.yml:1"
+      }
+    }
+  },
+  "viewer": {
+    "viewer.command.fit": {
+      "label": "Fit",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.search": {
+      "label": "Search  Ctrl K",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.close": {
+      "label": "Close",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.help": {
+      "label": "How to read",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.legend": {
+      "label": "Legend",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.everything": {
+      "label": "Everything",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.focus": {
+      "label": "Focus on workflow",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.area": {
+      "label": "By area",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.actor": {
+      "label": "By actor",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.purpose": {
+      "label": "goal ← realizes capability ← realizes workflow",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.direct": {
+      "label": "direct",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.hop": {
+      "label": "+ one more hop",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.walk": {
+      "label": "Walk this workflow",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.continue": {
+      "label": "Continue",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.back": {
+      "label": "Back",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.restart": {
+      "label": "Restart",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.stop": {
+      "label": "Stop walking",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.arrows": {
+      "label": "Arrows",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.colour": {
+      "label": "Colour",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.open": {
+      "label": "Open",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.pin": {
+      "label": "Pin",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.moving": {
+      "label": "Moving around",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.views": {
+      "label": "How things are drawn",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.board": {
+      "label": "Board",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.vocabulary": {
+      "label": "Vocabulary",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.provenance": {
+      "label": "Source",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.show_vocabulary": {
+      "label": "Inspect vocabulary",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.choose": {
+      "label": "Choose…",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.pick": {
+      "label": "Pick one…",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.command.type": {
+      "label": "Type here…",
+      "source": "design-views.md §1.2",
+      "category": "command"
+    },
+    "viewer.diagnostic.unsupported-kind": {
+      "label": "unsupported kind",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.not-exported": {
+      "label": "not exported",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.sentence-field-not-exported": {
+      "label": "sentence field not exported",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.unsupported-part": {
+      "label": "unsupported part",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.no-initiator": {
+      "label": "start / schedule / event / ← calls / ← then: none recorded in snapshot",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.nothing-found": {
+      "label": "Nothing found",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.unused": {
+      "label": "unused",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.more-attributes": {
+      "label": "+N attributes",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.sample": {
+      "label": "sample",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.legacy-preview": {
+      "label": "Legacy interface preview",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.first-interface": {
+      "label": "Preview: first interface only",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.no-evaluator": {
+      "label": "No evaluator is connected",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.invalid-hint": {
+      "label": "invalid hint",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.unsupported-hint": {
+      "label": "unsupported hint key",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.hidden": {
+      "label": "hidden",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.filtered": {
+      "label": "filtered",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.diagnostic.missing": {
+      "label": "missing",
+      "source": "design-views.md §1.2/§5",
+      "category": "diagnostic"
+    },
+    "viewer.chrome.help": {
+      "label": "Help and navigation explanations",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.legend": {
+      "label": "Legend rendering policy",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.walk": {
+      "label": "Walk command/log explanations; inspection only",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.layout": {
+      "label": "Layout, lens, arrows and depth options",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.overlay": {
+      "label": "Scripted draft/advice; not KB facts",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.preview": {
+      "label": "Legacy sample interface widgets",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.inspector": {
+      "label": "Relation inspector explanations",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    },
+    "viewer.chrome.mode": {
+      "label": "Renderer contract descriptions",
+      "source": "lab28.tpl.html carried forward; design-views.md §1.2",
+      "category": "viewer-policy",
+      "migration": "Inherited prose explicitly classified; stages 3–8 replace these rendering sites."
+    }
+  },
+  "overlays": {
+    "advice": {
+      "id": "viewer.overlay.advice",
+      "legacyKind": "recommendation",
+      "legacyEdge": "suggest",
+      "source": "lab28.tpl.html:176-222",
+      "ontology": false
+    },
+    "draft": {
+      "id": "viewer.overlay.draft",
+      "source": "lab28.tpl.html:176-222",
+      "ontology": false
+    }
+  },
+  "hints": {
+    "allowedKindKeys": [
+      "icon",
+      "tone",
+      "attention",
+      "compact_fields",
+      "family",
+      "explanation"
+    ],
+    "allowedLinkKeys": [
+      "forward",
+      "inverse",
+      "explanation"
+    ],
+    "accepted": {},
+    "source": "viewer.hint.default"
+  },
+  "unknown": {
+    "id": "viewer.diagnostic.unsupported-kind",
+    "label": "unsupported kind",
+    "icon": "unknown",
+    "color": "#626b77",
+    "policy": "Never attribute"
+  }
+}

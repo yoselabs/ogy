@@ -69,7 +69,14 @@ class _TreeSource:
         fresh = [path for path in wanted if path not in self._texts]
         if self._kb is not None and fresh:
             self.reads += len(fresh)
-            self._texts |= {path: data.decode(errors="replace") for path, data in self._kb.read_many(fresh).items() if data is not None}
+            for path, data in self._kb.read_many(fresh).items():
+                if data is None:
+                    continue
+                try:
+                    self._texts[path] = data.decode("utf-8")
+                except UnicodeDecodeError:
+                    # A YAML scanner refusal becomes a bad-yaml finding, never replacement text masquerading as authored data.
+                    self._texts[path] = "\x00invalid UTF-8"
         return {path: self._texts[path] for path in wanted if path in self._texts}
 
 
@@ -117,6 +124,8 @@ class WorktreeSource(_TreeSource):
             self.reads += 1
             return _at(self.root, rev, path)
         target = self.root / path
+        if not target.resolve().is_relative_to(self.root.resolve()):
+            return None
         if not target.is_file():
             return None
         self.reads += 1

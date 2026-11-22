@@ -3,7 +3,29 @@
 Status: **record**, kept current by every eval. One row per metric. "Moved" = the arms differed beyond scorer noise
 (±1 on most counts, see [protocol](README.md)). Add a row before using a new metric; update the row after every eval.
 
+Board rebuild stage 1 (2026-11-22, ogy-ful.32) is untested as an agent eval.
+Two HTTP scenarios cover standing totals, classifications, every decision,
+delegation, authentication, lock refusal, conditional reads and answer freshness.
+The full test gate passed 608 tests (2 warnings). Eight real-input Chromium runs
+passed 80 standing assertions; all eight screenshots were inspected. This KB
+currently has 5 waiting questions, 253 owed items, 37 unagreed entries, 7 changed
+entries, 85 dropped items and 0 findings. The existing S3 checker fails its exact
+DOM inventory assertion; just check is blocked by the missing Biome 2.6.8 tool
+pin/binary. No agent comparison ran and no capture metric changed.
+
+Board rebuild stage 0 (2026-11-22, ogy-ful.31) is untested as an agent eval.
+Deterministic browser acceptance: 12 blank-page runs pass; 8 real-board runs
+detect 10px text, and 6 detect six type sizes. The synthetic generator stopped
+at the first refused put (copied agreements and answer histories); its four runs
+were not performed. F118 remains open. No agent comparison or capture metric changed.
+Repository validation: 606 tests passed (2 warnings); just check failed the Biome
+tool pin checkpoint. The existing S3 browser checker failed exact DOM address inventory.
+
 ## Capture quality (product requirements)
+
+S3 stage 2 board data (2026-11-22, ogy-ful.26) is untested as an agent eval.
+HTTP regression and Chromium inventory/state assertions measure the implementation;
+no agent comparison ran and no capture metric changed. See docs/board-data.md.
 
 | Metric | Definition | Evals | What happened | Status | Lesson |
 |---|---|---|---|---|---|
@@ -24,6 +46,17 @@ Status: **record**, kept current by every eval. One row per metric. "Moved" = th
 | Hazard holes surfaced | of the key's hazard holes (environment, timing, outside failure), how many are open, asked, read back or answered with a mark | E11 | 6.25 vs 8.9 of 12, ranges 5-7 vs 7-11 | **discriminating** | the hazard pass needs its own step; product capture alone stops near half |
 
 Shelf snapshot adoption (2026-11-22, ogy-whb) has regression and gate validation only; no agent eval ran and no agent metric changed.
+
+S3 stage 3 drawing (2026-11-22, ogy-ful.26) is untested as an agent eval.
+Chromium geometry, native input and stable-layout comparisons are deterministic
+browser checks; no capture or exploration metric changed.
+
+Serve/inspection hardening (2026-11-22, ogy-btz) is untested as an agent eval;
+only deterministic regression scenarios and quality gates measure this change.
+The original HEAD fails 32 new scenarios (one duplicate-header case already passes).
+An additional failing HTTP MCP read scenario extended the same repository-lock
+fix to HTTP reads and review-round creation, alongside the board API.
+No capture or exploration metric changed; no model comparison was run.
 
 ## Exploration and hazards (system behaviour)
 

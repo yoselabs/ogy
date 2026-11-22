@@ -1,7 +1,7 @@
 """What the owner is asked: a count per area, and what no person has seen yet. Computed from a snapshot."""
 
 from collections import Counter
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ogy.model import in_scope
 from ogy.pages import pages
@@ -26,6 +26,7 @@ class Header:
     code: int
     you: int
     changed: int = 0
+    entries: dict[str, tuple[str, bool]] = field(default_factory=dict)
 
     def __str__(self) -> str:
         return (
@@ -36,6 +37,7 @@ class Header:
 
 def headers(snapshot: Snapshot) -> list[Header]:
     count: dict[str, Counter[str]] = {}
+    entries: dict[str, dict[str, tuple[str, bool]]] = {}
     hashes = agreed_hashes(snapshot)
     for decision in decisions(snapshot):
         count.setdefault(decision.address.home, Counter())["answered" if decision.answers else "question"] += 1
@@ -43,17 +45,22 @@ def headers(snapshot: Snapshot) -> list[Header]:
         if not snapshot.kind_of(address).asked or not snapshot.ontology.carded(snapshot.kind_of(address)):
             continue
         found = count.setdefault(address.home, Counter())
+        classified = entries.setdefault(address.home, {})
         match status(snapshot, address, hashes):
             case Status.BY_YOU:
                 found["you"] += 1
+                classified[str(address)] = ("owner", False)
             case Status.CHANGED:
                 found["changed"] += 1
+                classified[str(address)] = ("owner", True)
             case Status.NOBODY:
-                found[str(label(snapshot, address))] += 1
+                origin = label(snapshot, address)
+                found[str(origin)] += 1
+                classified[str(address)] = ({Label.AI: "ai", Label.DOCS: "docs", Label.CODE: "code", Label.WORDS: "owner"}[origin], False)
             case Status.ANSWERED | Status.QUESTION:
                 pass  # counted from the decisions above
     return [
-        Header(area, n["question"], n["answered"], n[Label.AI], n[Label.DOCS], n[Label.CODE], n["you"], n["changed"])
+        Header(area, n["question"], n["answered"], n[Label.AI], n[Label.DOCS], n[Label.CODE], n["you"], n["changed"], entries.get(area, {}))
         for area, n in sorted(count.items())
     ]
 

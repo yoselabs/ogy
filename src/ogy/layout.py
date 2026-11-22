@@ -8,6 +8,7 @@ lazy from collections.abc import Mapping
 
 import any_yaml
 
+from ogy.inspection_values import MARKER, problems
 from ogy.kinds import FILED, NAME, Holds, Kind, Shape
 from ogy.model import Address, Entry, Finding, Problem
 lazy from ogy.ontology import Ontology
@@ -104,6 +105,9 @@ class FileReader:
         self.findings: list[Finding] = []
 
     def read(self, rel: str, text: str) -> None:
+        if text == "\x00invalid UTF-8":
+            self._bad(Problem.BAD_YAML, rel, "invalid UTF-8")
+            return
         place = locate(self.ontology, rel)
         if place is None:
             return
@@ -115,6 +119,12 @@ class FileReader:
         except any_yaml.YAMLError as error:
             self.findings.append(Finding(Problem.BAD_YAML, rel, str(error).splitlines()[0]))
             return
+        issues = problems(data)
+        if any("recursive YAML alias" in issue for issue in issues):
+            self._bad(Problem.BAD_YAML, rel, "recursive YAML alias")
+            return
+        for issue in issues:
+            self._bad(Problem.BAD_YAML, rel, issue)
         if place.ident is not None:
             self._entry(Address(place.layer, place.area, ((place.kind.kind, place.ident),)), place.kind, data, rel)
         else:
@@ -141,7 +151,10 @@ class FileReader:
             return
         if address.key and not NAME.match(address.key):
             self._bad(Problem.BAD_NAME, rel, "names are lowercase kebab-case", address)
-        fields = {str(name): value for name, value in data.items()}
+        fields = {name: value for name, value in data.items() if isinstance(name, str)}
+        unusual = {name: value for name, value in data.items() if not isinstance(name, str)}
+        if unusual:
+            fields[MARKER] = data
         for part in self.ontology.parts_of(kind.kind):
             if part.key is None or part.key not in fields or part.holding is Holds.LIST:
                 continue  # a `holds: list` part has no address: the checker reads it from its parent's fields

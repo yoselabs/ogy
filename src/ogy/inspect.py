@@ -1,4 +1,4 @@
-"""Lossless, read-only inspection document, schema version 1.
+"""Lossless, read-only inspection document, schema version 2.
 schema: integer transport contract version.
 request: explicit layer selection; null means the complete snapshot.
 snapshot.content: SHA-256 of resolved entries and reader findings, not a Git tree.
@@ -12,18 +12,19 @@ entries.fields: all authored fields, including list parts, without renamed keys.
 parts: one indexed record per unaddressable list item; fields mirror its owner slot.
 relations: one outgoing record per authored link occurrence, including unresolved links.
 relations.witness: owner and field path; source identifies the entry or list item.
-absent: a reason object, distinct from authored null; dates/times use ISO text.
+absent: reserved typed envelope, distinct from authored mappings and null; dates/times are tagged ISO text.
 """
 
 from __future__ import annotations
 
 from collections.abc import Mapping
 from dataclasses import asdict, dataclass, replace
-from datetime import date, datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from content_digest import digest
 
+from ogy.inspection_values import plain as _plain
+from ogy.inspection_values import tagged
 from ogy.kinds import Holds
 from ogy.links import LinkItem, link_items, resolve
 
@@ -44,20 +45,7 @@ class InspectionRequest:
 
 
 def _absent(reason: str) -> Document:
-    return {"absent": reason}
-
-
-def _plain(value: object) -> object:
-    if isinstance(value, (date, datetime)):
-        return value.isoformat()
-    if isinstance(value, Mapping):
-        return {key: _plain(value[key]) for key in sorted(value)}
-    if isinstance(value, (list, tuple)):
-        return [_plain(item) for item in value]
-    if value is None or isinstance(value, (str, int, float, bool)):
-        return value
-    msg = f"inspection cannot serialize {type(value).__name__}"
-    raise TypeError(msg)
+    return tagged("absent", reason)
 
 
 def _ontology(snapshot: Snapshot) -> Document:
@@ -224,7 +212,7 @@ def inspect(snapshot: Snapshot, *, request: InspectionRequest | None = None) -> 
         parts.extend(_parts(snapshot, entry))
         relations.extend(_relations(snapshot, entry))
     document = {
-        "schema": 1,
+        "schema": 2,
         "request": asdict(request),
         "snapshot": {
             **identity,

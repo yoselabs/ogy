@@ -1,0 +1,118 @@
+# Board inspection adapter (S3, stage 2)
+
+`js/api.js` reads inspection **v2** with the current cookie exchange and ETag.
+`model/adapt.js` keeps the original document, every field, every part and every
+relation witness. `model/descriptor.js` reads the ontology delivered with that
+document. No copied vocabulary or snapshot is shipped. This follows
+`one-owner-per-fact`: the inspection document owns the facts.
+
+The area inventory was the acceptance surface for stage 2. Every addressable
+entry has exactly one `data-address`; unaddressable list parts have local locator
+identities, never invented addresses. The constitution is included. Counts include
+addressable parts (steps, choices, options), as inspection does.
+
+## Every lab node field and its inspection source
+
+The inventory covers `lab31.tpl.html` and its build inputs (`lab29` descriptor,
+models, renderers, levels, walk and interactions; `lab31` layout and edges).
+The build inputs are read as reference, not copied wholesale into production.
+
+| Lab field | Inspection v2 source / adapter meaning |
+|---|---|
+| `id` | `entries[].address`; list parts use `parts[].locator` (owner, field, index), scoped to this document |
+| `key` | `entry.key`, falling back to the last address segment for single parts; list parts use their slot |
+| `kind` | `record.kind`, never a renamed kind label |
+| `layer`, `area` | `record.layer`, `record.area`; the adapter qualifies area with layer; constitution has no layer |
+| `parent`, `top` | `record.parent`; a tagged root-entry becomes null, and only that makes `top` true |
+| `says` | `record.sentence`, using `record.sentence_field`; no truncation and no guess that the field is called says |
+| `title`, `word` | `record.title`, `fields.word`; the single identity path then uses option/choice label or a humanized key |
+| `label`, `question`, `context` | Authored `fields.label`, `fields.question`, `fields.context`, unchanged in `detail.fields` |
+| `result`, `order` | Authored `fields.result`, `fields.order`; no exporter default or sort order is substituted |
+| `nature`, `form` | Authored `fields.nature`, `fields.form` |
+| `atype`, `invoked` | Presentation aliases of `fields.type`, `fields.invoked_as`; authored names remain in `detail.fields` |
+| `of` | The resolved target of that node's `relations[].field == of`; the original short spelling remains in fields |
+| `optional`, `members` | Authored fields; enum members are text values, **not entry addresses**; render them as literals |
+| `when`, `reads` | `fields.when.text`; resolved `when` relation targets; all original expression text and reads retained |
+| `fx[].do`, `fx[].on`, `fx[].onid` | Effect list parts' `fields.do`, original `fields.on`, and resolved `on` target whose source is that exact part locator |
+| `detail.fields`, `availability` | All `record.fields`, including unfamiliar fields and explicit null; `record.absent_fields` separately means unset |
+| `detail.sentenceField`, `sentence`, `sentenceAvailability` | Corresponding record fields and their reserved tagged absence envelopes |
+| `detail.parts` | Ontology kind's `parts` and each child's `key` identify the owner slot; all matching child records are indexed |
+| `detail.effects` | Every effect list part's complete fields, locator, source path and slot index; no persistent id is invented |
+| `detail.expressions` | Authored `when` / `derived` text, resolved reads, and the exact relation witnesses |
+| `detail.source` | `record.source` and optional part locator; source line is explicitly unavailable in inspection |
+| `detail.provenance` / legacy snapshot pointers | Replaced by the retained record source and relation witness; no graph-export filename or fake source line |
+| `ghost` | Absent: the lab's scripted draft overlay is not inspection data |
+| `x`, `y`, `w`, `h`, measured positions | Future view state, never authored node facts; no layout in stage 2 |
+
+Edges retain one occurrence per `relations[]`: `s` is the real address or local
+source locator, `t` the resolved target (null with an explicit unresolved marker
+when missing), `f` the exact field, and `source` the witness's owner and path.
+An effect link's source remains the effect, not its parent case. Stage 3 must use
+the parent's `fx` for E1 badges and retain that occurrence when drawing relations.
+
+Descriptors expose all common and kind fields, roles, declared part slots and link
+fields, with the raw ontology still available. Typed YAML envelopes remain intact
+in fields. Missing, explicit null and unavailable transport data are distinct.
+The lab's exporter evidence panel is omitted: its export-specific witnesses have
+no job in a live inspection client. Actual source witnesses remain in the model.
+
+## Standing
+
+`GET /api/standing` returns computed totals (waiting questions, owed work,
+unagreed entries, changed entries, dropped items and findings), area status
+counts, every decision's computed status and newest answer, classified entries,
+work items and dropped items. Answer options and delegations are full addresses;
+dates are ISO strings and absent answer fields are null. Dropped rows preserve
+each category occurrence, including multiple rows for one decision.
+
+Because `one-owner-per-fact`, the status overview supplies entry classifications,
+the existing show status function supplies decision status, and the status,
+work and dropped operations supply the remaining facts. CLI formatting is unchanged.
+Waiting counts questions, not the separate count of terms awaiting agreement.
+
+Standing is computed per request, under the same repository lock as inspection;
+it is not memoized because built records and evidence files also affect work.
+`computed: true` distinguishes these facts from authored fields. `version` is
+the inspection snapshot version captured in that same locked read; conditional
+requests use the usual private, per-route ETag. It identifies KB/configuration/
+ontology input changes, not independent built-record or evidence-file changes.
+The browser checks for this stage leave the current board unchanged.
+
+## Inspection cache and state
+
+Every read still takes the hardening run's repository lock, even a cache hit.
+A stat signature (path, size, mtime, ctime, inode) checks the KB, configuration and
+ontology files. A change recomputes the content identity and encodes inspection
+once. Restoring identical input bytes restores the same version. Responses keep
+private cache headers, per-route validators and 304 handling from the server.
+
+`state.js` owns document, version, selection, pins, spotlight and camera. Applying
+a document compares nodes by address/locator, preserves surviving view state and
+clears identities that disappeared. Selection changes no positions. There is no
+canvas, URL interaction, streaming connection or server write in this stage.
+
+## Verification and stage 3 prerequisites
+
+The scratchpad `s3-data-check.mjs` checks both KBs in real Chromium through the
+server's one-use exchange URL. It checks inventories, descriptors, effects,
+immutability, conditional requests, errors and view-state preservation, and saves
+`s3-data-tool.png`, `s3-data-ogy.png`, and `s3-data-results.json`.
+Its server helper injects an ephemeral credential in memory; it never opens a
+credential file. Node is used only by this scratchpad CDP harness, not the build,
+package or runtime. Like a2kay, the shipped assets are plain ES modules, without
+a bundler; a2kay's npm Tailwind recipe is replaced by the standalone binary here.
+
+No authored-field gap blocks stage 3. Drawing is described in [board-draw.md](board-draw.md).
+Source text/line, built records and removed
+ledgers are explicitly unavailable; do not synthesize them. Rendering must handle
+enum members as text and list parts as local identities. Before drawing, finish
+the stage-1 toolchain gate: install and lock Biome 2.6.8 (Linux arm64 release asset
+`biome-linux-arm64` from `biomejs/biome`, tag `@biomejs/biome@2.6.8`).
+
+Stage 3 draws without edges and carries the fixed lab31 behaviour forward:
+positions depend on data and detail class, selection moves only the camera, and
+real mouse clicks on buttons/mentions survive mouseup. Keep the existing lab
+tokens: orange workflow frames, sticky goal/capability notes, blue entities, E1
+effect badges and one mention identity path. The inherited CSS is unchanged apart
+from the temporary area inventory's shell rules. No draw/interaction acceptance
+is claimed by this stage.
