@@ -10,6 +10,7 @@ import { mountStatusStrip } from "./shell/status-strip.js";
 import { words } from "./ui/words.js";
 import { mountCanvas } from "./views/canvas.js";
 import { mountNotFound } from "./views/not-found.js";
+import { waitingRoute } from "./views/waiting.js";
 
 export const store = createStore();
 const inspection = { error: null };
@@ -18,6 +19,7 @@ const board = [{ text: words.board, href: "#/" }];
 // Every page of the board is one entry here; a route no entry claims is the not-found page.
 const routes = [
   { test: (path) => path === "" || path === "board", layer: "product", mount: mountCanvas, crumbs: () => [{ text: words.board }] },
+  waitingRoute,
 ];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);

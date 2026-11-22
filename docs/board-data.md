@@ -128,6 +128,18 @@ function that draws an entry's name (`data-renderer="mention"`); `js/ui/authored
 `js/ui/words.js` is the viewer's own fixed list. `assets/board/tokens.css` holds the five type sizes (11/13/15/18/24), the
 8px grid, the lab28 neutrals and the status colours for light and dark; `js/model/icons.js` gives every kind, effect
 operation and mark one glyph (`tests/test_web_shell.py` keeps them apart).
+## The waiting list (stage 3 of the rebuild)
+
+`js/views/waiting.js` draws the decisions whose `status` in `/api/standing` is `waiting`, grouped by layer and area; titles and
+first question lines come from the inspection model (a row whose model entry has not arrived yet is named by its key).
+It is mounted twice from one function: the page at `#/waiting` and, compact, in the rail's Waiting tab. A row is the
+decision's mention (a link to `#/<decision address>`, the route the decision page claims), the kind word, the question's
+first line (authored) and, when the decision has an answer date, "last answered ...". The standing has no asked-at date for a
+question, so a waiting row shows no age otherwise. While standing loads (several seconds on a large KB) the list says so; a
+failed load offers "Try again"; no waiting decision shows "Nothing waits for you." Keys: `g` then `w` opens the page, `j` and
+`k` move between rows of the list that holds focus (else the page's), Enter opens the focused row. Back remounts the page
+and focuses the row last opened. Nothing polls: the list repaints when standing or the inspection model changes.
+
 ### Option reach
 
 Each decision row also holds `options`: option address -> `{sets, reach, count, truncated}`.

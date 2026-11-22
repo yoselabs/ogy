@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { CONTRAST, OVERLAP, TEXT, VIEWER_WORDS } from './measures.js';
 import { cpSync, rmSync, writeFileSync as put } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { startBoard } from './serve.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const scratch = dirname(here);
@@ -35,15 +36,7 @@ function execute(command, args, options = {}) {
 }
 
 async function startServer(source) {
-  // Identical launch and URL extraction to s3-data-check.mjs; its helper is unchanged.
-  const server = spawn('uv', ['run', '--frozen', '--no-sync', 'python', scratch + '/s3-data-serve.py', source], { env: { ...process.env, TMPDIR: '/var/tmp' } });
-  const url = await new Promise((resolve, reject) => {
-    server.stdout.on('data', chunk => { const match = String(chunk).match(/http:\/\/\S+/); if (match) resolve(match[0]); });
-    server.on('exit', code => reject(Error('server exited ' + code)));
-    server.stderr.on('data', chunk => process.stderr.write(chunk));
-    server.on('error', reject);
-  }).catch(error => { server.kill(); throw error; });
-  return { server, url };
+  return startBoard(source);
 }
 
 function failures(measures) {
@@ -112,14 +105,14 @@ async function main() {
       put(join(repo, 'ogy.yml'), 'land: main\n');
     }
     if (scene.set === 'synthetic' && !blank && process.env.SYNTHETIC_REPO) {
-      repo = process.env.SYNTHETIC_REPO; // a copy made by synthetic.py earlier; skips minutes of generation
+      repo = process.env.SYNTHETIC_REPO; // a copy made by synthetic.mjs earlier; skips minutes of generation
     } else if (scene.set === 'synthetic' && !blank) {
-      const made = await execute('uv', ['run', '--frozen', '--no-sync', 'python', join(here, 'synthetic.py')]);
+      const made = await execute('node', [join(here, 'synthetic.mjs')]);
       writeFileSync(join(out, 'synthetic.txt'), made.stdout + made.stderr);
       if (made.code !== 0) throw Error('Synthetic generation refused (exit ' + made.code + '):\n' + made.stderr);
       const generated = JSON.parse(made.stdout.trim());
       repo = generated.repo;
-      line('synthetic: ' + generated.entries + ' entries');
+      line('synthetic: ' + generated.files + ' files');
     }
     for (const [width, height] of [[1440, 1000], [390, 844]]) {
       for (const theme of ['light', 'dark']) await capture(scene, repo, width, height, theme);

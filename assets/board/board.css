@@ -7,6 +7,7 @@
 @import "./components-cards.css";
 @import "./components-layout.css";
 @import "./components-shell.css";
+@import "./components-waiting.css";
 @import "./components-scene.css";
 @source "../../src/ogy/web/static/index.html";
 @source "../../src/ogy/web/static/js";
