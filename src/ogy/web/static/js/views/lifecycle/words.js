@@ -1,0 +1,20 @@
+// The lifecycle page's own fixed words; everything else on it is an ontology word or authored KB text.
+export const words = {
+  lifecycle: "Lifecycle",
+  transitions: "Transitions",
+  moves: "Permitted moves of the entity, not where any one of them is now.",
+  firedBy: "fired by",
+  owed: "owed",
+  nothingFires: "Nothing fires this transition.",
+  eventOf: "event of",
+  more: "more",
+  from: "from",
+  to: "to",
+  tooWide: "Too wide to draw at this width; the transitions below say the same.",
+  noStates: "No states are recorded for this entity.",
+  loading: "Loading the lifecycle…",
+  couldNotRead: "The board could not read the knowledge base.",
+  noEntity: "There is no entity at",
+  layoutFailed: "The layout could not be drawn.",
+  diagram: "Lifecycle diagram",
+};

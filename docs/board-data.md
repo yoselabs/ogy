@@ -169,3 +169,19 @@ standing again (the header count drops without a reload) and the read-back links
 decision currently reach the same entries, so "Potentially affects" is shown once, as "same for every option", and per option
 only when the lists differ. The page's own fixed words live in `js/views/decision/words.js`; every KB text is `data-authored`.
 `docs/design/board/qa/decision-check.mjs` is its real-mouse check (answering only on a temporary copy of the tool library).
+
+## The lifecycle page and the owed list (stage 12 of the rebuild)
+
+`js/views/lifecycle.js` (parts under `js/views/lifecycle/`) is `#/<layer>/<area>/entity/<id>`: the entity's states as nodes and
+its transitions as edges, laid out left to right by elkjs (top to bottom when that does not fit the width, as on a phone).
+ELK places nodes, routes the edges and reserves room for each edge's label (ELK only does so for a label that has text); the
+page measures what is drawn and positions it. A transition's label is its name and, as paths, the rows that fire it
+(`workflow › step › case`, each name a link to the page that shows it; at most two, then "+N more"); the list under the graph
+holds every path. A transition is fired when an effect with `do: transition` has it as `on`; one nothing fires is `owed`:
+amber, dashed, tagged "owed" and listed in the owed list (its standing cause is `unused`). A transition without `from` starts
+at a hollow dot. The graph says what may happen, not where any one entity is now; no state is drawn as final.
+
+`js/views/owed.js` is `#/owed`: every item of `standing.work`, one row each, grouped by layer and then by cause (the cause
+words are those of `ogy work`). Its row count is `totals.owed`; a row links to the page that shows the address
+(`ui/landing.js`: a part of an entity, workflow or decision opens its owner's page). Unagreed and changed marks come from
+`standing.entries` on every row and card header. `docs/design/board/qa/lifecycle-check.mjs` is the real-input check of both pages.
