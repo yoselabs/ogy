@@ -9,12 +9,14 @@ from ogy.settle import decisions
 from ogy.status import Status, status
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from ogy.inspect import Document
     from ogy.target import Target
 
 
-def standing(target: Target) -> Document:
-    """Return computed standing; the locked API read attaches its inspection version."""
+def standing(target: Target, options: Mapping[str, Mapping[str, object]]) -> Document:
+    """Return computed standing; `options` is the cached reach of every option, the locked API read attaches the version."""
     overview = ops.run_status(target, None, with_coverage=False).value
     work = ops.run_work(target, None).value
     dropped = ops.run_dropped(target).value
@@ -27,6 +29,7 @@ def standing(target: Target) -> Document:
             "chose": str(decision.address.part(decision.names.option, newest.chose)) if newest else None,
             "at": newest.at.isoformat() if newest and newest.at else None,
             "delegated": str(newest.delegated) if newest and newest.delegated else None,
+            "options": options.get(str(decision.address), {}),
         }
     groups = (
         ("proposal says no, nobody has seen it", dropped.proposed_no),
