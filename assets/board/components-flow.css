@@ -1,0 +1,33 @@
+@layer components {
+  /* The workflow page: nodes are DOM boxes at the positions ELK returned, edges one SVG layer beneath them.
+     Colour only for status: an end in its result's colour; edges, labels and boxes stay neutral. */
+  .flow { max-width: none; }
+  .flow .page-head { display: grid; gap: 8px; margin-bottom: 16px; }
+  .flow .says { margin: 0; color: var(--mute); overflow-wrap: anywhere; }
+  .flow .page-head .card-header .mention { font-size: var(--text-xl); }
+  .flow .page-head .card-header .mention svg { width: 24px; height: 24px; }
+  .flow .loading { margin: 0; color: var(--mute); }
+
+  .flow-scroll { overflow: auto; max-width: 100%; }
+  .flow-canvas { position: relative; }
+  .flow-canvas .edge-layer { position: absolute; left: 0; top: 0; overflow: visible; }
+  .edge { fill: none; stroke: var(--line-strong); stroke-width: 1.5px; }
+  .edge-head { fill: context-stroke; stroke: none; }
+
+  .flow-node { position: absolute; width: 152px; padding: 8px 10px; background: var(--card); border: 1px solid var(--line-strong); border-radius: 8px; }
+  .flow-node .card-header { flex-wrap: wrap; }
+  .flow-node .card-header .mention { font-size: var(--text-s); overflow-wrap: break-word; }
+  .flow-canvas[data-direction="down"] .flow-node { width: 132px; }
+  .flow-canvas[data-direction="down"] .flow-start { width: auto; }
+  .flow-node.end-success { border-color: var(--ok-line); background: var(--ok-bg); }
+  .flow-node.end-failure { border-color: var(--fail-line); background: var(--fail-bg); }
+  .flow-node.end-success .mention, .flow-node.end-success .kind-word { color: var(--ok); }
+  .flow-node.end-failure .mention, .flow-node.end-failure .kind-word { color: var(--fail); }
+  .flow-node.is-external { border-style: dashed; }
+  .flow-start { display: flex; align-items: center; gap: 8px; width: auto; padding: 2px 8px; border-radius: 12px; color: var(--mute); font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; }
+  .flow-start .ic { width: 14px; height: 14px; }
+  .route-label { position: absolute; width: max-content; max-width: 112px; padding: 0 4px; color: var(--fg); font-size: var(--text-xs); line-height: 1.4; background: var(--bg); border-radius: 4px; overflow-wrap: anywhere; }
+
+  .flow-measure { position: absolute; left: 0; top: 0; visibility: hidden; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: max-content; pointer-events: none; }
+  .flow-measure .flow-node, .flow-measure .route-label { position: relative; }
+}
