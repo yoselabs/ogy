@@ -30,4 +30,7 @@ export const words = {
   attention: "What needs attention",
   rail: "Side panel",
   tabs: "Side panel tabs",
+  noPage: "There is no page at",
+  // Key names the hints print.
+  keys: { ctrl: "Ctrl", enter: "Enter", esc: "Esc" },
 };

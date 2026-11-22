@@ -3,22 +3,16 @@ import { marksFor } from "../ui/card-header.js";
 import { glyph, h } from "../ui/dom.js";
 import { linked, ownersOf, pathStrip } from "../ui/path.js";
 import { words as shell } from "../ui/words.js";
+import { words } from "./owed/words.js";
 
 // The owed list, #/owed: every item of work `ogy work` lists, one row each, grouped by layer and then by cause.
 const LAYERS = [
   ["product", shell.product],
   ["software", shell.software],
-  ["constitution", "Constitution"],
+  ["constitution", words.constitution],
 ];
 // Causes in the order they call for the owner; any other cause follows, alphabetically.
 const CAUSES = ["unused", "unbuilt", "changed", "no-answer-path", "removed", "code changed since captured"];
-
-const words = {
-  owed: "Owed",
-  loading: "Reading the work owed…",
-  none: "Nothing is owed.",
-  rows: "items",
-};
 
 const KINDS = new Set(["state", "transition", "case", "choice", "timeout", "step", "end", "effect", "option", "answer", "attribute"]);
 
@@ -80,7 +74,7 @@ function row(item, model, standing) {
     h(
       "p",
       { class: "owed-detail" },
-      h("small", { class: "owed-where" }, area),
+      authored(area, "small", { class: "owed-where" }),
       item.text ? authored(item.text, "span", { class: "owed-text" }) : null,
     ),
   );
@@ -107,7 +101,7 @@ function list(state, model) {
           h(
             "section",
             { class: "owed-cause", "data-cause": cause },
-            h("h3", { class: "owed-cause-name" }, cause, h("span", { class: "count" }, ` ${items.length}`)),
+            h("h3", { class: "owed-cause-name" }, words.causes[cause] ?? cause, h("span", { class: "count" }, ` ${items.length}`)),
             h(
               "ul",
               { class: "owed-rows" },

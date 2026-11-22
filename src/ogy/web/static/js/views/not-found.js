@@ -7,7 +7,7 @@ export function mountNotFound(main, { route }) {
       "section",
       { class: "page notice" },
       h("h1", {}, words.notFound),
-      h("p", {}, "There is no page at ", h("code", {}, `#/${route.path}`), "."),
+      h("p", {}, `${words.noPage} `, h("code", { "data-authored": true }, `#/${route.path}`), "."),
       h("p", {}, h("a", { href: "#/" }, words.board)),
     ),
   );

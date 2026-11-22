@@ -1,0 +1,27 @@
+\bapi\b
+\bjson\b
+\byaml\b
+\bhash(es)?\b
+\bpayload
+\bendpoint
+\bsse\b
+\bhttps?\b
+\bdom\b
+\btoken\b
+\bnode\b
+\bedges?\b
+\bgraph\b
+\bserialis|\bserializ
+\bhydrat
+\buuid\b
+\bslug\b
+\bidentifier\b
+\bschema\b
+\bviewer\b
+\binspection\b
+\brender(er|ed|ing)?\b
+\bstate machine\b
+\bfield value\b
+\bkey\b
+\bmcp\b
+\bsnapshot\b

@@ -19,7 +19,7 @@ export function mountHeader(root, { router, live }) {
     { type: "button", class: "btn icon-only", "aria-label": words.back, title: words.back, onclick: router.back },
     glyph("back"),
   );
-  const name = h("strong", { class: "hdr-name" });
+  const name = h("strong", { class: "hdr-name", "data-authored": true });
   const meta = h("span", { class: "hdr-meta" });
   const tabs = LAYERS.map(([layer, label, path]) =>
     router.has(path)
