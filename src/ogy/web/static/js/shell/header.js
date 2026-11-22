@@ -28,7 +28,7 @@ export function mountHeader(root, { router, live }) {
   );
   const search = h(
     "button",
-    { type: "button", class: "btn search", disabled: true, "aria-label": words.search },
+    { type: "button", class: "btn search", "aria-label": words.search },
     glyph("search"),
     h("span", {}, words.search),
     h("kbd", {}, apple ? "⌘K" : "Ctrl K"),

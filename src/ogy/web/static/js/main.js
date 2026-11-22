@@ -11,6 +11,7 @@ import { words } from "./ui/words.js";
 import { mountCanvas } from "./views/canvas.js";
 import { decisionRoute } from "./views/decision.js";
 import { mountNotFound } from "./views/not-found.js";
+import { mountSearch } from "./views/search.js";
 
 export const store = createStore();
 const inspection = { error: null };
@@ -31,6 +32,7 @@ mountHeader(part("header"), context);
 mountStatusStrip(part("strip"), context);
 mountBreadcrumb(part("crumb"), context);
 mountRail(part("rail"), context);
+mountSearch(context);
 
 let path = null;
 let unmount = null;

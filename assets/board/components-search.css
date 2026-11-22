@@ -1,0 +1,34 @@
+@layer components {
+  /* The search overlay: one modal box, groups by kind, a fixed column grid so every row lines up. */
+  dialog.finder { width: min(640px, calc(100vw - 32px)); max-height: min(70vh, 640px); margin: 10vh auto 0; padding: 0; color: var(--fg); background: var(--card); border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; }
+  dialog.finder[open] { display: flex; flex-direction: column; }
+  dialog.finder::backdrop { background: rgb(0 0 0 / 0.45); }
+  .search-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .search-bar .ic { width: 16px; height: 16px; flex: none; color: var(--mute); }
+  .search-input { flex: 1; min-width: 0; min-height: 32px; font: inherit; font-size: var(--text-m); color: var(--fg); background: none; border: 0; border-radius: 8px; }
+  .search-input::-webkit-search-cancel-button { display: none; }
+  .search-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .search-list { flex: 1; min-height: 0; overflow: auto; padding: 4px 8px 8px; }
+  .group-head { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; padding: 0 8px; font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mute); }
+  .group-head .ic { width: 16px; height: 16px; flex: none; }
+  .group-head b { font-weight: 600; }
+  .result { display: grid; grid-template-columns: minmax(0, 1fr) 96px; align-items: center; gap: 12px; min-height: 40px; padding: 4px 8px; color: var(--fg); text-decoration: none; border-radius: 8px; }
+  .result[aria-selected="true"], .more[aria-selected="true"] { background: var(--chip); box-shadow: inset 0 0 0 2px var(--focus); }
+  .result-name { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .result-name .mention { flex: none; max-width: 70%; font-weight: 600; text-decoration: none; }
+  .result-name .mention svg { width: 16px; height: 16px; flex: none; align-self: center; }
+  .result-name mark { color: inherit; background: none; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+  .result-context { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--mute); font-size: var(--text-s); }
+  .result .kind-word { justify-self: end; }
+  .more { display: block; width: 100%; min-height: 32px; margin-top: 4px; padding: 0 8px; font: inherit; font-size: var(--text-s); text-align: left; color: var(--mute); background: none; border: 0; border-radius: 8px; cursor: pointer; }
+  .search-note { margin: 0; padding: 16px; color: var(--mute); }
+  .search-note:empty { display: none; }
+  .search-keys { margin: 0; padding: 8px 16px; font-size: var(--text-xs); color: var(--mute); border-top: 1px solid var(--line); }
+  @media (max-width: 720px) {
+    dialog.finder { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); margin: 8px auto 0; }
+    .search-keys { display: none; }
+    .result { grid-template-columns: minmax(0, 1fr) auto; }
+    .result-name { flex-direction: column; align-items: stretch; gap: 0; }
+    .result-name .mention { max-width: 100%; }
+  }
+}
