@@ -19,13 +19,15 @@ from starlette.routing import Mount
 
 from ogy.mcp_server import build
 from ogy.verdict import RefusalError
-from ogy.web import api
+from ogy.web import api, spotlight
 from ogy.web.boundary import BoardBoundary
+from ogy.web.cache import InspectionCache
+from ogy.web.spotlight import Spotlight
 from ogy.web.token import resolve_token
 
 if TYPE_CHECKING:
     import socket
-    from collections.abc import AsyncGenerator, Callable
+    from collections.abc import AsyncGenerator, Callable, Sequence
     from pathlib import Path
 
     from starlette.types import Receive, Scope, Send
@@ -96,11 +98,20 @@ async def _serve(server: uvicorn.Server, sock: socket.socket) -> None:
 
 def application(target: Target, token: str) -> BoardService:
     """Compose health outside authentication and keep MCP's lifespan in the same process."""
-    mcp = build(target.repo, ontology=target.ontology).http_app(
+    cache = InspectionCache(target)
+
+    def missing(addresses: Sequence[str]) -> list[str]:
+        known = {entry["address"] for entry in cache.current()["entries"]}
+        return [address for address in addresses if address not in known]
+
+    hub = Spotlight(missing)
+    mcp = build(target.repo, ontology=target.ontology, spotlight=hub).http_app(
         path="/mcp/", host_origin_protection=True, json_response=True, stateless_http=True
     )
     app = Starlette(
-        routes=[*api.routes(target), Mount("/", app=mcp)], lifespan=mcp.lifespan, exception_handlers={RefusalError: api.refusal}
+        routes=[*api.routes(target, cache, *spotlight.routes(hub)), Mount("/", app=mcp)],
+        lifespan=mcp.lifespan,
+        exception_handlers={RefusalError: api.refusal},
     )
     return BoardService(app, token)
 

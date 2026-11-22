@@ -19,8 +19,8 @@ if TYPE_CHECKING:
     from ogy.target import Target
 
 
-def routes(target: Target) -> list[Route | Mount]:
-    cache = InspectionCache(target)
+def routes(target: Target, cache: InspectionCache | None = None, *extra: Route) -> list[Route | Mount]:
+    cache = cache or InspectionCache(target)
     static = Path(__file__).with_name("static")
 
     def response(request: Request, data: object, version: str, *, status: int = 200, encoded: bytes | None = None) -> Response:
@@ -66,6 +66,7 @@ def routes(target: Target) -> list[Route | Mount]:
 
     return [
         *answers.routes(target, cache),
+        *extra,
         Route("/api/inspection", inspection),
         Route("/api/standing", standing),
         Route("/api/version", version),

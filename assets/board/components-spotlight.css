@@ -1,0 +1,35 @@
+@layer components {
+  /* A spotlight is a state of the page: targets are the page's own components, marked with a number and one neutral outline;
+     what is neither a target nor holds one is dimmed to 45%. Nothing here is a card of its own. */
+  [data-dim] { opacity: 0.45; }
+  [data-spot] { position: relative; outline: 2px solid var(--fg); outline-offset: 4px; border-radius: 4px; animation: spot-pulse 1.2s ease-in-out 3; }
+  [data-spot]::before { content: attr(data-spot); position: absolute; top: -6px; left: -6px; z-index: 1; display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 4px; font: 600 var(--text-xs) var(--font); color: var(--bg); background: var(--fg); border-radius: 10px; }
+  [data-spot-current]::before { outline: 2px solid var(--focus); outline-offset: 1px; }
+  @keyframes spot-pulse { 50% { outline-offset: 8px; } }
+
+  /* The Agent tab: title, numbered sentences, Back / Next / Dismiss, connection, log. */
+  .rail-agent { display: grid; gap: 12px; }
+  .rail-tabs button[data-request] { color: var(--fg); font-weight: 600; border-bottom-color: var(--warn-line); }
+  .agent-conn { margin: 0; color: var(--mute); font-size: var(--text-xs); }
+  .agent-conn[data-state="live"]::before, .agent-conn[data-state="reconnecting"]::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 4px; background: var(--ok); }
+  .agent-conn[data-state="reconnecting"]::before { background: var(--warn); }
+  .agent-title { margin: 0; font-size: var(--text-m); }
+  .agent-by { margin: 0; color: var(--mute); font-size: var(--text-xs); }
+  .agent-request { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px; background: var(--agent-bg); border: 1px solid var(--line); border-radius: 8px; }
+  .agent-targets { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .agent-target { display: flex; gap: 8px; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .agent-target[aria-current] { border-color: var(--fg); }
+  .agent-n { flex: none; display: grid; place-items: center; width: 20px; height: 20px; font-size: var(--text-xs); font-weight: 600; color: var(--bg); background: var(--fg); border-radius: 10px; }
+  .agent-what { min-width: 0; display: grid; gap: 4px; }
+  .agent-what a { color: var(--fg); overflow-wrap: anywhere; }
+  .agent-says { margin: 0; font-size: var(--text-s); }
+  .agent-away { margin: 0; color: var(--mute); font-size: var(--text-xs); }
+  .agent-gone { overflow-wrap: anywhere; color: var(--mute); }
+  .agent-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .agent-step { color: var(--mute); font-size: var(--text-s); }
+  .agent-log { font-size: var(--text-s); }
+  .agent-log summary { cursor: pointer; color: var(--mute); }
+  .agent-log ol { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; }
+  .agent-call .agent-session { color: var(--mute); }
+  .agent-call.is-refused { color: var(--fail); }
+}

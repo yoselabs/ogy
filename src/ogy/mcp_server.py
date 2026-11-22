@@ -20,7 +20,7 @@ import contextlib
 import io
 import threading
 from functools import wraps
-from typing import Any
+from typing import Any, Literal, Protocol
 lazy from collections.abc import Callable, Sequence
 lazy from pathlib import Path
 
@@ -29,6 +29,7 @@ from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 from fastmcp.tools import FunctionTool
 from fastmcp.tools.tool_transform import ToolAnnotations
+from pydantic import BaseModel, ConfigDict, Field
 
 from ogy import cli
 from ogy.target import Target
@@ -99,8 +100,52 @@ def _pinned_run(repo: Path, ontology: str | None, argv: Sequence[str]) -> cli.Re
         raise ToolError("\n".join(error.lines())) from error
 
 
-def build(repo: Path | None = None, *, ontology: str | None = None) -> FastMCP:
-    """The server: one tool per subcommand of the CLI parser (`argparse-mcp`), each running `ogy.cli.run` in this process."""
+class SpotlightTarget(BaseModel):
+    """One entry the owner is pointed at, and the one sentence that says why."""
+
+    model_config = ConfigDict(extra="forbid")
+    address: str = Field(description="Full address of an existing entry or part, e.g. product/inspection/decision/some-question")
+    says: str = Field(description="One plain sentence: why the owner should look at this entry now")
+
+
+class SpotlightPort(Protocol):
+    """What the board offers the spotlight tool; the web process owns it, the tool only calls it."""
+
+    def show(self, *, title: str, targets: Sequence[tuple[str, str]], session: str) -> dict[str, object]: ...
+    def dismiss(self, *, session: str) -> dict[str, object]: ...
+
+
+SPOTLIGHT_DESCRIPTION = (
+    "Point the owner at entries on the open board. `show` takes a title and 1 to 12 ordered targets (address and one sentence each); "
+    "the board numbers them, dims the rest and, when the owner is idle, opens the first one (when busy it asks instead). "
+    "`dismiss` clears it. A new `show` replaces the previous one. The spotlight lives in memory only: it writes no entry, changes no "
+    "inspection version, and is gone when the server stops. Use it to explain a decision or its consequences; "
+    "it records no answer. Returns the call's sequence number; an unknown address is refused."
+)
+
+
+def _spotlight_tool(port: SpotlightPort) -> FunctionTool:
+    def spotlight(
+        action: Literal["show", "dismiss"],
+        title: str = "",
+        targets: list[SpotlightTarget] | None = None,
+        session: str = "agent",
+    ) -> dict[str, object]:
+        try:
+            if action == "dismiss":
+                return port.dismiss(session=session)
+            return port.show(title=title, targets=[(item.address, item.says) for item in targets or []], session=session)
+        except RefusalError as error:
+            raise ToolError("\n".join(error.lines())) from error
+
+    hints = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+    return FunctionTool.from_function(spotlight, name="spotlight", description=SPOTLIGHT_DESCRIPTION, annotations=hints)
+
+
+def build(repo: Path | None = None, *, ontology: str | None = None, spotlight: SpotlightPort | None = None) -> FastMCP:
+    """The server: one tool per subcommand of the CLI parser (`argparse-mcp`), each running `ogy.cli.run` in this process.
+
+    With a `spotlight` port (the board process has one) the `spotlight` tool is added; the stdio server has no board to point at."""
     top = cli.parser()
     server = FastMCP("ogy", instructions=top.description, strict_input_validation=repo is not None)
 
@@ -120,6 +165,8 @@ def build(repo: Path | None = None, *, ontology: str | None = None) -> FastMCP:
                     tool.parameters["required"] = [name for name in tool.parameters["required"] if name not in HTTP_FORBIDDEN]
             tool.annotations = annotations(tool.name)
             server.add_tool(tool)
+    if spotlight is not None:
+        server.add_tool(_spotlight_tool(spotlight))
     return server
 
 

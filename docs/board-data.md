@@ -196,3 +196,15 @@ at a hollow dot. The graph says what may happen, not where any one entity is now
 words are those of `ogy work`). Its row count is `totals.owed`; a row links to the page that shows the address
 (`ui/landing.js`: a part of an entity, workflow or decision opens its owner's page). Unagreed and changed marks come from
 `standing.entries` on every row and card header. `docs/design/board/qa/lifecycle-check.mjs` is the real-input check of both pages.
+
+## Spotlight (stage 14)
+
+`ogy serve` holds one spotlight in memory (`src/ogy/web/spotlight.py`): a title and 1 to 12 ordered targets, an address and one
+sentence each, the session that sent it, a sequence number and a bounded log of the last 30 calls. It is never written to the KB and
+never enters the inspection document, so the inspection version is the same before, during and after a spotlight; a restart clears it.
+The MCP tool `spotlight` (`show` / `dismiss`; only on the board's HTTP server) sets it; an unknown address is refused and logged.
+`GET /api/events` is a server-sent stream: the whole state at once, then after every call. `GET /api/spotlight` is the polling
+fallback the page uses (every 2 seconds, and says so in the Agent tab) while the stream is down; `POST /api/spotlight/dismiss` is the
+Agent tab's Dismiss. On the page `js/spotlight/` follows the stream: when the owner is idle it opens the page of the first target, when
+a text field has the cursor it asks instead ("Show me"). Targets keep their own components and get a number; the rest dims to 45%.
+Dismiss returns to the exact route and scroll position. `docs/design/board/qa/spotlight-check.mjs` is its real-input check.
