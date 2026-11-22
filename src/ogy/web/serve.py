@@ -19,7 +19,7 @@ from starlette.routing import Mount
 
 from ogy.mcp_server import build
 from ogy.verdict import RefusalError
-from ogy.web import api, spotlight
+from ogy.web import api, sketch, spotlight
 from ogy.web.boundary import BoardBoundary
 from ogy.web.cache import InspectionCache
 from ogy.web.spotlight import Spotlight
@@ -27,7 +27,7 @@ from ogy.web.token import resolve_token
 
 if TYPE_CHECKING:
     import socket
-    from collections.abc import AsyncGenerator, Callable, Sequence
+    from collections.abc import AsyncGenerator, Callable, Mapping, Sequence
     from pathlib import Path
 
     from starlette.types import Receive, Scope, Send
@@ -104,7 +104,11 @@ def application(target: Target, token: str) -> BoardService:
         known = {entry["address"] for entry in cache.current()["entries"]}
         return [address for address in addresses if address not in known]
 
-    hub = Spotlight(missing)
+    def sketcher(records: Sequence[Mapping[object, object]], decision: str | None, option: str | None) -> dict[str, object]:
+        known = {entry["address"]: entry for entry in cache.current()["entries"] if isinstance(entry["address"], str)}
+        return sketch.build(target, known, records, decision=decision, option=option)
+
+    hub = Spotlight(missing, sketcher)
     mcp = build(target.repo, ontology=target.ontology, spotlight=hub).http_app(
         path="/mcp/", host_origin_protection=True, json_response=True, stateless_http=True
     )

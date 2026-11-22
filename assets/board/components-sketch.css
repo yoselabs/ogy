@@ -1,0 +1,41 @@
+@layer components {
+  /* The one sketch treatment: dashed 1.5px violet border, a 45 degree hatch at 6% ink, the word "sketch". Never a status colour:
+     no success, failure or owed colour reaches a sketched node, edge, effect or end. */
+  .is-sketch {
+    border: 1.5px dashed var(--agent);
+    background-color: var(--card);
+    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--fg) 6%, transparent) 0 1px, transparent 1px 6px);
+  }
+  .flow-node.is-sketch { border: 1.5px dashed var(--agent); }
+  .flow-node.is-sketch .kind-word, .flow-node.is-sketch .mention { color: var(--fg); }
+  .flow-node.is-sketch .fx { border-left-color: var(--agent); }
+  .flow-node.is-sketch .flow-end { color: var(--fg); }
+  .flow-node.is-sketch .chip { background: var(--card); }
+  .sketch .flow-node.is-external:not(.is-sketch) { border-style: solid; }
+  .edge.is-sketch { stroke: var(--agent); stroke-dasharray: 6 4; }
+  .sketch-word { font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--agent); }
+
+  .sketch { max-width: none; }
+  .sketch .page-head { display: grid; gap: 8px; margin-bottom: 16px; }
+  .sketch .says { margin: 0; color: var(--mute); overflow-wrap: anywhere; }
+  .sketch .sketch-title { margin: 0; font-size: var(--text-xl); overflow-wrap: anywhere; }
+  .sketch-tag { justify-self: start; margin: 0; padding: 2px 10px; font-size: var(--text-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--agent); border-radius: 99px; }
+  .sketch-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sketch .sketch-flow-name { margin: 24px 0 8px; font-size: var(--text-m); overflow-wrap: anywhere; }
+  .sketch .block h2 { margin: 0 0 8px; font-size: var(--text-m); }
+  .sketch-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .sketch-card { display: grid; gap: 8px; align-content: start; padding: 8px 10px; border-radius: 8px; }
+  .sketch-card .says { font-size: var(--text-xs); }
+  .sketch-card .card-header .mention { font-size: var(--text-s); }
+  .sketch-touch { margin-top: 24px; }
+  .touch-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .touch-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: baseline; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+  .touch-row .says { grid-column: 1 / -1; font-size: var(--text-xs); }
+  .touch-how { font-size: var(--text-xs); color: var(--mute); text-align: right; }
+  .agent-sketch { display: grid; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+  .agent-sketch .agent-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+  @media (max-width: 720px) {
+    .touch-row { grid-template-columns: minmax(0, 1fr); }
+    .touch-how { text-align: left; }
+  }
+}

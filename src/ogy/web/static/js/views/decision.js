@@ -85,6 +85,18 @@ export function mountDecision(main, { store, live, inspection, route }) {
     targeted = true;
     row.classList.add("is-target");
     row.scrollIntoView({ block: "center" });
+    if (route.query.keep) keep();
+  }
+
+  // Keep, from a sketch: the option it stands for is chosen and the answer form is where the owner is; nothing is recorded until
+  // the owner records it (the same form, the same POST as any answer).
+  function keep() {
+    form.choose(`${address}/option/${optionKey}`);
+    signature = null;
+    render();
+    const said = form.element.querySelector("#said");
+    said?.scrollIntoView({ block: "center" });
+    said?.focus();
   }
 
   function render() {

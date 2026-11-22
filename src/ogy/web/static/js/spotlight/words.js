@@ -10,7 +10,7 @@ export const words = {
   by: "Pointed out by",
   step: (at, of) => `${at} of ${of}`,
   calls: (count) => `Calls (${count})`,
-  actions: { dismiss: "Dismissed", refused: "Refused" },
+  actions: { dismiss: "Dismissed", refused: "Refused", sketch: "Sketch", unsketch: "Sketch dismissed" },
   connection: {
     connecting: "Connecting…",
     live: "Live",

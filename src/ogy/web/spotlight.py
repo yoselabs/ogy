@@ -1,7 +1,9 @@
-"""The board's one spotlight: attention held in memory, never written to the KB, and pushed to every open page as server-sent events.
+"""The board's one spotlight and one sketch: attention and a drawing held in memory, never written to the KB, and pushed to every open
+page as server-sent events.
 
 An agent points the owner at entries with a title and ordered targets, one sentence each. The spotlight lives until it is dismissed or
-replaced and is gone when the server stops. It changes no entry, so the inspection version stays what it was.
+replaced and is gone when the server stops. A sketch (entries in the `put` format, drawn but never written) lives the same way. Neither
+changes an entry, so the inspection version stays what it was.
 """
 
 from __future__ import annotations
@@ -20,7 +22,7 @@ from starlette.routing import Route
 from ogy.verdict import RefusalError
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncGenerator, Callable, Sequence
+    from collections.abc import AsyncGenerator, Callable, Mapping, Sequence
 
     from starlette.requests import Request
 
@@ -36,8 +38,14 @@ ADDRESS = re.compile(r"[^/\s]+(?:/[^/\s]+)+")
 class Spotlight:
     """Current spotlight, its bounded log and the open pages listening. Safe to call from tool threads and the event loop."""
 
-    def __init__(self, missing: Callable[[Sequence[str]], list[str]] | None = None) -> None:
+    def __init__(
+        self,
+        missing: Callable[[Sequence[str]], list[str]] | None = None,
+        sketcher: Callable[[Sequence[Mapping[Any, Any]], str | None, str | None], Json] | None = None,
+    ) -> None:
         self._missing = missing  # the addresses among those given that no entry (or part of one) has
+        self._sketcher = sketcher  # records, decision, option -> what the page draws; refuses what `put` would refuse
+        self._sketch: Json | None = None
         self._lock = threading.Lock()
         self._sequence = 0
         self._current: Json | None = None
@@ -60,6 +68,36 @@ class Spotlight:
             had = self._current is not None
             self._current = None
         return self._record("dismiss", session, "", 0, "dismissed" if had else "nothing to dismiss")
+
+    def show_sketch(
+        self,
+        *,
+        title: str,
+        records: Sequence[Mapping[Any, Any]],
+        decision: str | None,
+        option: str | None,
+        session: str,
+    ) -> Json:
+        """Replace the sketch. Every refusal is recorded in the log before it is raised."""
+        try:
+            drawn = self._drawn(title, records, decision, option)
+        except RefusalError as error:
+            self._record("refused", session, title, len(records), "; ".join(error.lines()))
+            raise
+        with self._lock:
+            self._sketch = {"title": title, "session": session, "since": _now(), **drawn}
+        return self._record("sketch", session, title, len(drawn.get("entries", [])), "sketched")
+
+    def _drawn(self, title: str, records: Sequence[Mapping[Any, Any]], decision: str | None, option: str | None) -> Json:
+        if not title.strip() or len(title) > TITLE_LIMIT:
+            raise RefusalError([f"the title is one line of 1 to {TITLE_LIMIT} characters"])
+        return self._sketcher(records, decision, option) if self._sketcher else {}
+
+    def dismiss_sketch(self, *, session: str) -> Json:
+        with self._lock:
+            had = self._sketch is not None
+            self._sketch = None
+        return self._record("unsketch", session, "", 0, "dismissed" if had else "nothing to dismiss")
 
     def snapshot(self) -> Json:
         with self._lock:
@@ -104,7 +142,7 @@ class Spotlight:
         return {"sequence": snapshot["sequence"], "result": result}
 
     def _snapshot(self) -> Json:
-        return {"sequence": self._sequence, "spotlight": self._current, "log": list(self._log)}
+        return {"sequence": self._sequence, "spotlight": self._current, "sketch": self._sketch, "log": list(self._log)}
 
 
 def _now() -> str:
@@ -117,7 +155,8 @@ def _frame(snapshot: Json) -> bytes:
 
 
 def routes(hub: Spotlight) -> list[Route]:
-    """`/api/events` pushes the whole state at once and after every call; `/api/spotlight` is the polling fallback and Dismiss."""
+    """`/api/events` pushes the whole state at once and after every call; `/api/spotlight` is the polling fallback; the two
+    dismiss routes are the board's own Dismiss."""
 
     async def events(_: Request) -> StreamingResponse:
         queue = hub.listen()
@@ -142,4 +181,12 @@ def routes(hub: Spotlight) -> list[Route]:
     async def dismiss(_: Request) -> JSONResponse:
         return JSONResponse(hub.dismiss(session="board"), headers={"Cache-Control": "no-store"})
 
-    return [Route("/api/events", events), Route("/api/spotlight", state), Route("/api/spotlight/dismiss", dismiss, methods=["POST"])]
+    async def dismiss_sketch(_: Request) -> JSONResponse:
+        return JSONResponse(hub.dismiss_sketch(session="board"), headers={"Cache-Control": "no-store"})
+
+    return [
+        Route("/api/events", events),
+        Route("/api/spotlight", state),
+        Route("/api/spotlight/dismiss", dismiss, methods=["POST"]),
+        Route("/api/sketch/dismiss", dismiss_sketch, methods=["POST"]),
+    ]

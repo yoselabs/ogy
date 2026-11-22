@@ -208,3 +208,19 @@ fallback the page uses (every 2 seconds, and says so in the Agent tab) while the
 Agent tab's Dismiss. On the page `js/spotlight/` follows the stream: when the owner is idle it opens the page of the first target, when
 a text field has the cursor it asks instead ("Show me"). Targets keep their own components and get a number; the rest dims to 45%.
 Dismiss returns to the exact route and scroll position. `docs/design/board/qa/spotlight-check.mjs` is its real-input check.
+
+## Sketch (stage 15)
+
+The MCP tool `sketch` (`show` / `dismiss`; only on the board's HTTP server) takes a title and 1 to 40 records in the `put` format, and
+optionally an existing `decision` and one of its `option` keys. `src/ogy/web/sketch.py` applies the records to a throwaway copy of the
+KB folder (the same per-record checks as `put`: address, kind and field types; a refused record is refused with its reasons and
+logged; the whole-KB findings of a write are not run, so a sketch may be unfinished), reads the copy with the inspection
+operation and sends the page the new entries, parts and relations as inspection records, plus the "would touch" rows: the existing
+entries the records change, link to, are linked from, or reach and are reached by (`ogy impact`'s closure), nearest first, at most 40.
+The result sits in the same in-memory state as the spotlight (`sketch` beside `spotlight` in `/api/events`), is never written and never
+enters the inspection document, so the inspection version is the same before, during and after; `POST /api/sketch/dismiss` is the
+page's Dismiss. On the page `js/sketch/` merges those records into a copy of the model, marks each drawn node `sketch`, and draws every
+sketched workflow with the flow renderer at `#/sketch`: dashed violet border, 45 degree hatch at 6% ink, the word "sketch" in the
+corner, dashed edges, and no result or failure colour on any node, end, effect or edge. Keep (only when a decision and option were
+named) opens `#/<decision>/option/<key>?keep=1`: the option is chosen and the answer form has the cursor; the owner records it through
+the same `POST /api/answer`. `docs/design/board/qa/sketch-check.mjs` is its real-input check.

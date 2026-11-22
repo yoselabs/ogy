@@ -124,7 +124,7 @@ def _one(
     return address, given, new
 
 
-def _checked(target: Target, snapshot: Snapshot, records: list[Mapping[object, object]]) -> list[tuple[Address, Data, bool]]:
+def checked(target: Target, snapshot: Snapshot, records: list[Mapping[object, object]]) -> list[tuple[Address, Data, bool]]:
     """Every record as (address, fields, is new), or a refusal that names each record at fault."""
     found: list[tuple[Address, Data, bool]] = []
     problems: list[str] = []
@@ -153,7 +153,7 @@ def put(target: Target, records: list[Mapping[object, object]], why: str | None 
     same write, so a reshaped step loses nothing silently."""
     editor = Editor(target.repo, target.kb, target.kinds())
     snapshot = editor.snapshot()
-    ordered = sorted(_checked(target, snapshot, records), key=lambda item: len(item[0].path))
+    ordered = sorted(checked(target, snapshot, records), key=lambda item: len(item[0].path))
     done = [Put(address, new) for address, _, new in ordered]
 
     def act(ed: Editor) -> None:
