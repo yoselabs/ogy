@@ -5,7 +5,7 @@ The CLI and the MCP server only parse and print."""
 import datetime as dt
 from dataclasses import dataclass, replace
 from typing import override
-lazy from collections.abc import Mapping
+lazy from collections.abc import Callable, Mapping
 lazy from pathlib import Path
 
 from git_porcelain import git_dir
@@ -372,11 +372,14 @@ def run_answer(
     note: str | None = None,
     delegated: str | None = None,
     now: writes.Clock = writes.utc_now,
+    ensure: Callable[[], None] | None = None,
 ) -> Run[Answered]:
     """Choose the option: the answer keeps a short paraphrase of what was said, when and where (no message, no quote);
     with `delegated` an agent answered, under the decision whose person's answer let it decide; who is never a field."""
     who = "ai" if delegated is not None else "human"
     with writes.locked(target, "answer"):
+        if ensure is not None:
+            ensure()  # a precondition checked under the same lock as the write (the board's inspection version)
         return Run(writes.answer(target, decision, option, writes.said(said, where, at, now, who=who, note=note), delegated, now=now), 0)
 
 
@@ -390,10 +393,13 @@ def run_reply(
     round_id: str | None = None,
     now: writes.Clock = writes.utc_now,
     note: str | None = None,
+    ensure: Callable[[], None] | None = None,
 ) -> Run[reply.Replied]:
     """Apply the owner's reply (a grammar line, with a paraphrase of what they said) to a round; findings when some item was
     refused, refused when all were."""
     with writes.locked(target, "reply"):
+        if ensure is not None:
+            ensure()
         done = reply.reply(target, text, said, where, at=at, round_id=round_id, now=now, note=note)
     verdict = Verdict.OK if not done.refused else Verdict.FINDINGS if done.changed else Verdict.REFUSED
     return Run(done, 0, verdict)

@@ -12,6 +12,7 @@ from starlette.staticfiles import StaticFiles
 lazy from starlette.requests import Request
 
 from ogy.verdict import RefusalError
+from ogy.web import answers
 from ogy.web.cache import InspectionCache
 
 if TYPE_CHECKING:
@@ -64,6 +65,7 @@ def routes(target: Target) -> list[Route | Mount]:
         return FileResponse(static / request.url.path.removeprefix("/"), headers={"Cache-Control": "no-cache"})
 
     return [
+        *answers.routes(target, cache),
         Route("/api/inspection", inspection),
         Route("/api/standing", standing),
         Route("/api/version", version),

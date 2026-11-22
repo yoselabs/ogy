@@ -45,6 +45,11 @@ class InspectionCache:
             document = self._current()
             return {**standing(self.target), "version": document["snapshot"]["version"]}
 
+    def version_in_write(self) -> str:
+        """The inspection version while the caller already holds the repository's write lock."""
+        with self.guard:
+            return str(self._current()["snapshot"]["version"])
+
     def _current(self) -> Document:
         target = self.target
         root = target.repo / target.ontology if "/" in target.ontology else Path(str(files("ogy").joinpath("ontologies", target.ontology)))
