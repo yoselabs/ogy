@@ -10,6 +10,7 @@
 @import "./components-decision.css";
 @import "./components-waiting.css";
 @import "./components-area.css";
+@import "./components-search.css";
 @import "./components-scene.css";
 @source "../../src/ogy/web/static/index.html";
 @source "../../src/ogy/web/static/js";
