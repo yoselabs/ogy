@@ -13,6 +13,7 @@
 @import "./components-lifecycle.css";
 @import "./components-map.css";
 @import "./components-spotlight.css";
+@import "./components-sketch.css";
 @source "../../src/ogy/web/static/index.html";
 @source "../../src/ogy/web/static/js";
 

@@ -62,12 +62,18 @@ function bodyOf(item, level) {
 }
 
 export function nodeElement(item, { level, marks, hrefOf, select }) {
-  if (item.stub) return h("div", { class: "flow-node flow-start", "data-node": item.id }, h("span", {}, words.start));
+  if (item.stub) {
+    return h("div", { class: `flow-node flow-start${item.sketch ? " is-sketch" : ""}`, "data-node": item.id }, h("span", {}, words.start));
+  }
   const { node } = item;
   const classes = ["flow-node", `kind-${node.kind}`];
-  if (node.kind === "end") classes.push(`end-${node.result}`);
+  if (node.sketch)
+    classes.push("is-sketch"); // a sketched end carries no result colour: a sketch never shows a status
+  else if (node.kind === "end") classes.push(`end-${node.result}`);
   if (item.external) classes.push("is-external");
   const clickable = !item.external;
   const header = nodeHeader(node, marks(node.address), clickable ? { href: hrefOf(node.id), select } : { link: true });
+  if (node.sketch)
+    header.querySelector(".card-header-side").prepend(h("small", { class: "sketch-word", "data-part": "sketch-word" }, "sketch"));
   return h("div", { class: classes.join(" "), "data-node": item.id, "data-address": node.address || null }, header, ...bodyOf(item, level));
 }

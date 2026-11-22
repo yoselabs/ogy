@@ -1,0 +1,28 @@
+// The sketch page's own fixed words; the agent's title and every entry's text are authored and never pass through here.
+export const words = {
+  sketch: "sketch",
+  notKept: "Not in the knowledge base.",
+  by: "Drawn by",
+  nothing: "There is no sketch.",
+  loading: "Reading the sketch…",
+  graph: "Sketched steps and ends",
+  alsoDrawn: "Also sketched",
+  wouldTouch: "Would touch",
+  touchesNothing: "It would touch nothing that exists.",
+  more: (count) => `${count} more not listed.`,
+  keep: "Keep",
+  keepHint: "Opens the answer form of the option this sketch stands for.",
+  dismiss: "Dismiss",
+  open: "Open the sketch",
+  request: "The agent shows a sketch.",
+  couldNotDraw: "The sketch could not be laid out.",
+  couldNotRead: "The board could not read the knowledge base.",
+  partOf: "its parent",
+  how: {
+    change: "would change",
+    link: "linked from the sketch by",
+    "linked-from": "links to the sketch by",
+    reaches: "reached through links",
+    "reached-by": "reaches the sketch through links",
+  },
+};

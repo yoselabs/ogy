@@ -21,7 +21,7 @@ import io
 import threading
 from functools import wraps
 from typing import Any, Literal, Protocol
-lazy from collections.abc import Callable, Sequence
+lazy from collections.abc import Callable, Mapping, Sequence
 lazy from pathlib import Path
 
 from argparse_mcp import tools_from_parser
@@ -109,10 +109,14 @@ class SpotlightTarget(BaseModel):
 
 
 class SpotlightPort(Protocol):
-    """What the board offers the spotlight tool; the web process owns it, the tool only calls it."""
+    """What the board offers the spotlight and sketch tools; the web process owns it, the tools only call it."""
 
     def show(self, *, title: str, targets: Sequence[tuple[str, str]], session: str) -> dict[str, object]: ...
     def dismiss(self, *, session: str) -> dict[str, object]: ...
+    def show_sketch(
+        self, *, title: str, records: Sequence[Mapping[Any, Any]], decision: str | None, option: str | None, session: str
+    ) -> dict[str, object]: ...
+    def dismiss_sketch(self, *, session: str) -> dict[str, object]: ...
 
 
 SPOTLIGHT_DESCRIPTION = (
@@ -142,10 +146,44 @@ def _spotlight_tool(port: SpotlightPort) -> FunctionTool:
     return FunctionTool.from_function(spotlight, name="spotlight", description=SPOTLIGHT_DESCRIPTION, annotations=hints)
 
 
+SKETCH_DESCRIPTION = (
+    "Show the owner what does not exist yet. `show` takes a title and 1 to 40 `records` in the `put` format (an `address` and the "
+    "kind's fields; parents before their parts or in the same call); the board draws the new entries in the sketch treatment "
+    "(dashed, hatched, labelled sketch, no status colours) with the flow renderer and lists what they would touch, from the impact "
+    "operation. A record whose address, kind or fields `put` would refuse is refused with its reasons; the whole-knowledge-base "
+    "checks of a write are not run, so a sketch may be unfinished. To offer Keep, name an existing `decision` and its `option` key; "
+    "the owner then opens that option's answer form on the board; Keep writes nothing itself, and the answer is the owner's. "
+    "`dismiss` clears the sketch. The sketch is applied to a throwaway copy: it writes no entry, changes no inspection "
+    "version, and is gone when the server stops."
+)
+
+
+def _sketch_tool(port: SpotlightPort) -> FunctionTool:
+    def sketch(
+        action: Literal["show", "dismiss"],
+        *,
+        title: str = "",
+        records: list[dict[str, Any]] | None = None,
+        decision: str | None = None,
+        option: str | None = None,
+        session: str = "agent",
+    ) -> dict[str, object]:
+        try:
+            if action == "dismiss":
+                return port.dismiss_sketch(session=session)
+            return port.show_sketch(title=title, records=records or [], decision=decision, option=option, session=session)
+        except RefusalError as error:
+            raise ToolError("\n".join(error.lines())) from error
+
+    hints = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=True, openWorldHint=False)
+    return FunctionTool.from_function(sketch, name="sketch", description=SKETCH_DESCRIPTION, annotations=hints)
+
+
 def build(repo: Path | None = None, *, ontology: str | None = None, spotlight: SpotlightPort | None = None) -> FastMCP:
     """The server: one tool per subcommand of the CLI parser (`argparse-mcp`), each running `ogy.cli.run` in this process.
 
-    With a `spotlight` port (the board process has one) the `spotlight` tool is added; the stdio server has no board to point at."""
+    With a `spotlight` port (the board process has one) the `spotlight` and `sketch` tools are added; the stdio server has
+    no board to point at."""
     top = cli.parser()
     server = FastMCP("ogy", instructions=top.description, strict_input_validation=repo is not None)
 
@@ -167,6 +205,7 @@ def build(repo: Path | None = None, *, ontology: str | None = None, spotlight: S
             server.add_tool(tool)
     if spotlight is not None:
         server.add_tool(_spotlight_tool(spotlight))
+        server.add_tool(_sketch_tool(spotlight))
     return server
 
 

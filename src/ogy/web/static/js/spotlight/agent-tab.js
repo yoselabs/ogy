@@ -2,6 +2,7 @@ import { authored } from "../ui/authored.js";
 import { h } from "../ui/dom.js";
 import { mention } from "../ui/mention.js";
 import { linked } from "../ui/path.js";
+import { words as sketchWords } from "../sketch/words.js";
 import { words } from "./words.js";
 
 const button = (label, onclick, props = {}) => h("button", { type: "button", class: "btn", onclick, ...props }, label);
@@ -30,7 +31,11 @@ function targetRow(model, target, index, { state, reaches }) {
 }
 
 function callRow(row) {
-  const text = [row.action === "show" ? row.title : words.actions[row.action] || row.action, row.result !== "shown" ? row.result : ""];
+  const named = row.action === "show" ? row.title : words.actions[row.action] || row.action;
+  const text = [
+    row.action === "sketch" ? `${named}: ${row.title}` : named,
+    ["shown", "sketched"].includes(row.result) || row.action === "unsketch" ? "" : row.result,
+  ];
   return h(
     "li",
     { class: `agent-call is-${row.action}` },
@@ -60,6 +65,25 @@ function nav(state, controls, last) {
     h("span", { class: "agent-step" }, words.step(state.index + 1, last + 1)),
     button(words.next, controls.next, { "data-action": "next", disabled: state.index === last || state.request }),
     button(words.dismiss, controls.dismiss, { "data-action": "dismiss" }),
+  );
+}
+
+// The sketch the agent shows: what it is called, who drew it, the request when the owner was busy, and the two ways on.
+function sketchBlock(state, controls) {
+  const sketch = state.sketch;
+  if (!sketch) return null;
+  return h(
+    "section",
+    { class: "agent-sketch", "data-part": "agent-sketch" },
+    authored(sketch.title, "h2", { class: "agent-title", "data-part": "agent-sketch-title" }),
+    h("p", { class: "agent-by" }, `${sketchWords.sketch} · ${sketchWords.by} `, authored(sketch.session)),
+    state.sketchRequest ? h("p", { class: "agent-request agent-sketch-request", role: "status" }, sketchWords.request) : null,
+    h(
+      "div",
+      { class: "agent-nav" },
+      button(sketchWords.open, controls.openSketch, { "data-action": "open-sketch" }),
+      button(sketchWords.dismiss, controls.dismissSketch, { "data-action": "dismiss-sketch-tab" }),
+    ),
   );
 }
 
@@ -96,7 +120,7 @@ export function bindAgent(host, { spotlight, store }) {
     const focused = host.contains(document.activeElement) ? document.activeElement.dataset.action : null;
     host.replaceChildren(
       h("p", { class: "agent-conn", "data-part": "agent-connection", "data-state": state.connection }, words.connection[state.connection]),
-      ...[...body(state, model, spotlight), log(state.log)].filter(Boolean),
+      ...[...body(state, model, spotlight), sketchBlock(state, spotlight), log(state.log)].filter(Boolean),
     );
     if (focused) host.querySelector(`[data-action=${focused}]:not(:disabled)`)?.focus();
   };

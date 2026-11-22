@@ -18,13 +18,14 @@ import { mountNotFound } from "./views/not-found.js";
 import { waitingRoute } from "./views/waiting.js";
 import { mapRoutes } from "./views/map.js";
 import { mountSearch } from "./views/search.js";
+import { sketchRoute } from "./sketch/view.js";
 
 export const store = createStore();
 const inspection = { error: null };
 const live = createLive(standingClient(), versionClient());
 const board = [{ text: words.board, href: "#/" }];
 // Every page of the board is one entry here; a route no entry claims is the not-found page.
-const routes = [...mapRoutes, decisionRoute, waitingRoute, areaRoute, lifecycleRoute, owedRoute, flowRoute];
+const routes = [...mapRoutes, decisionRoute, waitingRoute, areaRoute, lifecycleRoute, owedRoute, flowRoute, sketchRoute];
 const fallback = { layer: null, mount: mountNotFound, crumbs: () => [...board, { text: words.notFound }] };
 const router = createRouter(routes, fallback);
 

@@ -160,7 +160,7 @@ def test_http_mcp_lists_the_stdio_tools_and_stops_with_its_process_scope(tmp_pat
                 names = {tool.name for tool in await client.list_tools()}
                 result = await client.call_tool("show", {"address": "product/lending/actor/member"})
                 assert not result.is_error and "A person who borrows tools." in result.content[0].model_dump()["text"]
-            assert names == {tool.name for tool in await build().list_tools()} | {"spotlight"}
+            assert names == {tool.name for tool in await build().list_tools()} | {"spotlight", "sketch"}
             assert not names & {"view", "serve"}
 
     asyncio.run(session())
