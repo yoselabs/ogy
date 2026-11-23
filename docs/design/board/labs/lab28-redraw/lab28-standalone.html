@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board canvas (lab 28 redraw)</title>
+<style>/* Lab 28 redraw. Colours are tokens only; the palette is lab 28's neutrals and note colours. */
+:root {
+  color-scheme: light;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --bg: #f4f5f7; --fg: #1d1f27; --mute: #596175; --card: #fff; --line: #d3d6df; --line-strong: #7d869b;
+  --chip: #eef1f7; --focus: #2b5fd9; --focus-bg: #e6eeff;
+  --ok: #1b6b34; --ok-bg: #e8f7ee; --ok-line: #5bbb83;
+  --fail: #b42318; --fail-bg: #fdeceb; --fail-line: #e0736b;
+  --warn: #8a4b00; --warn-bg: #fff4e0; --warn-line: #e08a00;
+  --agent: #5b3fc4; --agent-bg: #f1ecff;
+  --workflow: #e8590c; --workflow-tint: #fff4e0; --workflow-head: #e8590c; --workflow-head-fg: #fff;
+  --goal: #fff08a; --capability: #ffd27a; --note-fg: #3a3000;
+  --entity: #eaf4fd; --entity-line: #8ecbf5;
+  --dot: #9aa0b355;
+  --region-p: #ebedf3; --region-s: #e3eef0; --region-x: #efeee8;
+  --shadow: 0 1px 2px #0002, 0 4px 14px #0001;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark;
+    --bg: #1d1f27; --fg: #e7e9ef; --mute: #aeb7c8; --card: #292d38; --line: #4d5567; --line-strong: #8590a6;
+    --chip: #353b49; --focus: #8fb0ff; --focus-bg: #263459;
+    --ok: #7dd89a; --ok-bg: #1a3324; --ok-line: #3f8f5a; --fail: #ff9a90; --fail-bg: #3a2020; --fail-line: #b8584f;
+    --warn: #ffc266; --warn-bg: #3a2c12; --warn-line: #b87a14; --agent: #c3b3ff; --agent-bg: #2c2548;
+    --workflow: #ff8a3d; --workflow-tint: #332a20; --workflow-head: #b86400; --workflow-head-fg: #fff;
+    --goal: #5c511e; --capability: #63431c; --note-fg: #fff3c4; --entity: #223a50; --entity-line: #487ba4;
+    --region-p: #262a36; --region-s: #1f2e32; --region-x: #2b2a25; --shadow: 0 1px 2px #0008, 0 4px 14px #0005; }
+}
+:root[data-theme="dark"] { color-scheme: dark;
+  --bg: #1d1f27; --fg: #e7e9ef; --mute: #aeb7c8; --card: #292d38; --line: #4d5567; --line-strong: #8590a6;
+  --chip: #353b49; --focus: #8fb0ff; --focus-bg: #263459;
+  --ok: #7dd89a; --ok-bg: #1a3324; --ok-line: #3f8f5a; --fail: #ff9a90; --fail-bg: #3a2020; --fail-line: #b8584f;
+  --warn: #ffc266; --warn-bg: #3a2c12; --warn-line: #b87a14; --agent: #c3b3ff; --agent-bg: #2c2548;
+  --workflow: #ff8a3d; --workflow-tint: #332a20; --workflow-head: #b86400; --workflow-head-fg: #fff;
+  --goal: #5c511e; --capability: #63431c; --note-fg: #fff3c4; --entity: #223a50; --entity-line: #487ba4;
+  --region-p: #262a36; --region-s: #1f2e32; --region-x: #2b2a25; --shadow: 0 1px 2px #0008, 0 4px 14px #0005; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--fg); font: 13px/1.35 var(--font); }
+#stage { position: fixed; inset: 44px 0 0 0; overflow: hidden; touch-action: none; cursor: grab; user-select: none;
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.4px); background-size: 24px 24px; }
+#stage.panning { cursor: grabbing; }
+#world { position: absolute; left: 0; top: 0; transform-origin: 0 0; --inv: 1; }
+#world.anim { transition: transform .35s ease; }
+#bar { position: fixed; inset: 0 0 auto 0; height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+  background: var(--card); border-bottom: 1px solid var(--line); z-index: 20; }
+#bar b { font-size: 15px; }
+#bar .sp { flex: 1; }
+#bar .mute { color: var(--mute); }
+button { font: inherit; color: var(--fg); background: var(--chip); border: 1px solid var(--line); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+button:hover { border-color: var(--line-strong); }
+button[aria-pressed="true"] { background: var(--focus-bg); border-color: var(--focus); color: var(--focus); }
+.seg { display: inline-flex; gap: 0; }
+.seg button { border-radius: 0; margin-left: -1px; } .seg button:first-child { border-radius: 6px 0 0 6px; margin: 0; } .seg button:last-child { border-radius: 0 6px 6px 0; }
+.mark { font-size: 11px; padding: 1px 7px; border-radius: 9px; border: 1px solid var(--warn-line); background: var(--warn-bg); color: var(--warn); }
+
+/* regions */
+.region { position: absolute; border-radius: 28px; border: 2px solid var(--line); z-index: 0; }
+.region.p { background: var(--region-p); } .region.s { background: var(--region-s); } .region.x { background: var(--region-x); }
+.rhead { position: absolute; left: 40px; top: 26px; right: 40px; }
+.rhead .layer { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.rhead h2 { margin: 0; font-size: 28px; line-height: 1.15; }
+.rhead p { margin: 4px 0 0; color: var(--mute); max-width: 760px; }
+.rsum { margin-top: calc(10px * var(--inv)); display: none; flex-wrap: wrap; gap: calc(10px * var(--inv)); align-content: flex-start; }
+.rsum span { font-size: calc(15px * var(--inv)); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: calc(3px * var(--inv)) calc(12px * var(--inv)); }
+.rsum span.w { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn); }
+.gl { position: absolute; white-space: nowrap; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); }
+.grp { position: absolute; display: flex; flex-direction: column; gap: 12px; }
+.grp.wrap { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+.grp.grid { display: grid; grid-template-columns: repeat(3, 250px); }
+
+/* cards */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 10px 12px; position: relative; z-index: 3; width: 100%; }
+.card .hd { display: flex; align-items: baseline; gap: 8px; }
+.card .hd b { font-size: 14px; flex: 1; min-width: 0; overflow-wrap: break-word; }
+.kw { font-size: 11px; color: var(--mute); text-transform: lowercase; margin-left: auto; white-space: nowrap; }
+.card .says { color: var(--mute); margin-top: 3px; }
+.note { border: 0; border-radius: 3px; color: var(--note-fg); transform: rotate(-.4deg); }
+.note .says { color: inherit; opacity: .85; }
+.note.goal { background: var(--goal); } .note.capability { background: var(--capability); }
+.note .kw { color: inherit; opacity: .7; }
+.chip { display: inline-flex; align-items: center; gap: 4px; background: var(--chip); border: 1px solid var(--line); border-radius: 999px; padding: 0 8px; font-size: 12px; margin: 2px 4px 0 0; }
+.chip.mono, .mono { font-family: var(--mono); font-size: 12px; }
+.chip.go { cursor: pointer; }
+.entity { background: var(--entity); border-color: var(--entity-line); }
+.entity .st { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 6px; }
+.pill { border-radius: 999px; padding: 0 9px; border: 1px solid var(--entity-line); background: var(--card); font-size: 12px; }
+.tr { font-size: 12px; color: var(--mute); margin-top: 4px; }
+.attr { font-size: 12px; display: flex; gap: 6px; } .attr i { font-style: normal; color: var(--mute); margin-left: auto; }
+.dec { cursor: pointer; } .dec.waiting { border: 2px solid var(--warn-line); background: var(--warn-bg); }
+.dec .opt { display: flex; gap: 6px; font-size: 12px; margin-top: 3px; } .dec .opt.chosen { color: var(--ok); font-weight: 600; }
+.stat { font-size: 11px; border-radius: 9px; padding: 0 7px; border: 1px solid var(--ok-line); color: var(--ok); background: var(--ok-bg); }
+.stat.waiting { border-color: var(--warn-line); color: var(--warn); background: var(--card); }
+.stat.deleg { border-color: var(--agent); color: var(--agent); background: var(--agent-bg); }
+.ag { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ok-line); margin-right: 4px; }
+
+/* screens (interfaces) and handlers */
+.screen { padding: 0; overflow: hidden; background: var(--card); }
+.screen .bar { display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-bottom: 1px solid var(--line); background: var(--chip); }
+.screen .bar i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-strong); opacity: .6; }
+.screen .bar b { margin-left: 8px; font-size: 13px; flex: 1; }
+.screen .body { padding: 8px 12px 10px; }
+.screen.nested { margin-top: 8px; box-shadow: none; border-style: dashed; z-index: 4; }
+.btn { display: inline-block; background: var(--focus); color: var(--card); border-radius: 6px; padding: 2px 12px; margin: 4px 6px 0 0; font-weight: 600; }
+.cli { font-family: var(--mono); font-size: 12px; background: var(--fg); color: var(--bg); border-radius: 6px; padding: 5px 8px; margin-top: 6px; overflow-wrap: anywhere; }
+.handler { border-left: 4px solid var(--agent); }
+.handler .hd .ic { color: var(--agent); }
+.sw-rule { border-style: dashed; }
+
+/* workflows */
+.frame { position: absolute; z-index: 1; }
+.frame-bg { position: absolute; inset: 0; background: var(--workflow-tint); border: 2px solid var(--workflow); border-radius: 14px; z-index: 1; }
+.frame-hd { position: absolute; left: 0; right: 0; top: 0; height: 56px; background: var(--workflow-head); color: var(--workflow-head-fg); border-radius: 12px 12px 0 0; padding: 8px 16px; z-index: 2; }
+.frame-hd b { font-size: 18px; } .frame-hd .kw { color: inherit; opacity: .85; position: absolute; right: 14px; top: 10px; }
+.frame-hd p { margin: 0; font-size: 12px; opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.trigger { position: absolute; left: 16px; top: 62px; z-index: 3; font-size: 12px; color: var(--workflow); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.step { position: absolute; width: 250px; z-index: 3; }
+.step .ic { color: var(--mute); }
+.step .who { margin-top: 4px; }
+.sec { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--mute); margin-top: 8px; }
+.row { border-top: 1px solid var(--line); margin-top: 6px; padding-top: 5px; position: relative; }
+.row .rt { display: flex; gap: 6px; align-items: baseline; } .row .rt .rl { flex: 1; font-weight: 600; }
+.row .rk { font-size: 10px; text-transform: lowercase; color: var(--mute); }
+.row .when { font-size: 12px; color: var(--mute); }
+.to { font-size: 12px; border-radius: 999px; padding: 0 8px; border: 1px solid var(--line-strong); white-space: nowrap; }
+.to.success { border-color: var(--ok-line); color: var(--ok); background: var(--ok-bg); } .to.failure { border-color: var(--fail-line); color: var(--fail); background: var(--fail-bg); }
+.fx { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; font-size: 12px; margin-top: 3px; padding: 1px 6px; border-left: 3px solid var(--line-strong); background: var(--chip); border-radius: 3px; }
+.fx.create { border-left-color: var(--ok-line); } .fx.delete { border-left-color: var(--fail-line); } .fx .op { font-size: 10px; text-transform: lowercase; color: var(--mute); }
+.by { font-size: 11px; color: var(--agent); background: var(--agent-bg); border-radius: 999px; padding: 0 7px; margin-top: 3px; display: inline-block; }
+.end { position: absolute; width: 190px; z-index: 3; border-radius: 999px; padding: 6px 14px 6px 22px; border: 2px solid var(--line-strong); background: var(--card); }
+.end.success { border-color: var(--ok-line); background: var(--ok-bg); } .end.failure { border-color: var(--fail-line); background: var(--fail-bg); }
+.end b { display: block; font-size: 13px; } .end small { color: var(--mute); }
+.callchip { display: inline-flex; gap: 5px; margin-top: 4px; border: 1px solid var(--workflow); color: var(--workflow); border-radius: 6px; padding: 0 8px; font-weight: 600; cursor: pointer; background: var(--card); }
+
+/* links */
+svg.links { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+#links { z-index: 2; } #overlay { z-index: 12; } .frame svg.links { z-index: 2; }
+.e { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-dasharray: 7 5; animation: dash 1.2s linear infinite; }
+.e.success { stroke: var(--ok-line); } .e.failure { stroke: var(--fail-line); } .e.call { stroke: var(--workflow); }
+.x { fill: none; stroke: var(--focus); stroke-width: 2.5; stroke-dasharray: 3 6; stroke-linecap: round; animation: dash 1.6s linear infinite; }
+.x.sel { stroke-width: 3; } .x.impact { stroke: var(--warn-line); stroke-dasharray: 8 5; stroke-width: 3; }
+.ah { fill: var(--line-strong); } .ah.success { fill: var(--ok-line); } .ah.failure { fill: var(--fail-line); } .ah.call { fill: var(--workflow); } .ah.x { fill: var(--focus); } .ah.impact { fill: var(--warn-line); }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { .e, .x { animation: none; } #world.anim { transition: none; } }
+.lk { position: absolute; z-index: 5; font-size: calc(12px * var(--inv)); background: var(--card); border: 1px solid var(--focus); color: var(--focus); border-radius: 999px; padding: 0 calc(8px * var(--inv)); transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none; }
+.bundle { position: absolute; z-index: 6; display: none; transform: translate(-50%, -50%); text-align: center; background: var(--card); border: 2px solid var(--focus); border-radius: 12px; padding: calc(5px * var(--inv)) calc(12px * var(--inv)); font-size: calc(13px * var(--inv)); box-shadow: var(--shadow); white-space: nowrap; }
+.bundle small { display: block; font-size: calc(12px * var(--inv)); white-space: normal; max-width: calc(360px * var(--inv)); color: var(--mute); }
+.bundle b { color: var(--focus); }
+path.bundle-line { fill: none; stroke: var(--focus); stroke-width: calc(5px * var(--inv)); opacity: .6; stroke-linecap: round; }
+
+/* selection and impact */
+#world.has-sel .card, #world.has-sel .step, #world.has-sel .end, #world.has-sel .frame-bg { opacity: .35; }
+#world.has-sel .sel, #world.has-sel .rel, #world.has-sel .impact, #world.has-sel .keep { opacity: 1; }
+.card.sel, .step.sel, .end.sel, .frame.sel { outline: 3px solid var(--focus); outline-offset: 2px; }
+.card.rel, .step.rel, .end.rel { outline: 2px solid var(--focus); outline-offset: 2px; }
+.card.impact, .step.impact, .end.impact { outline: 3px solid var(--warn-line); outline-offset: 2px; }
+.rowhit { background: var(--warn-bg); outline: 2px solid var(--warn-line); border-radius: 4px; }
+.tag { position: absolute; left: 0; top: 0; transform: translateY(-100%); font-size: calc(12px * var(--inv)); font-weight: 600; line-height: 1.25; background: var(--warn-line); color: #1d1f27; border-radius: calc(8px * var(--inv)) calc(8px * var(--inv)) 0 0; padding: 0 calc(10px * var(--inv)); z-index: 7; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.tag.rel { background: var(--focus); color: var(--card); }
+
+/* semantic zoom. Geometry never changes; only what shows and how big the names are. */
+#world[data-lod="areas"] .rsum { display: flex; }
+#world[data-lod="areas"] .card, #world[data-lod="areas"] .step, #world[data-lod="areas"] .end, #world[data-lod="areas"] .gl,
+#world[data-lod="areas"] svg.links, #world[data-lod="areas"] .lk, #world[data-lod="areas"] .trigger, #world[data-lod="areas"] .rhead p { visibility: hidden; }
+#world[data-lod="areas"] .rhead h2 { font-size: calc(26px * var(--inv)); } #world[data-lod="areas"] .rhead .layer { font-size: calc(14px * var(--inv)); }
+#world[data-lod="areas"] .bundle { display: block; }
+#world[data-lod="areas"] .frame-hd { height: 56px; } #world[data-lod="areas"] .frame-hd b { font-size: calc(17px * var(--inv)); }
+#world[data-lod="areas"] .fsum { display: block; }
+#world[data-lod="areas"] .frame-bg { opacity: 1; }
+#world[data-lod="areas"] .frame-hd { height: auto; min-height: 56px; }
+#world[data-lod="flows"] .rsum { display: none; }
+#world[data-lod="flows"] .frame-hd b { font-size: calc(15px * var(--inv)); }
+#world[data-lod="flows"] .card > .says, #world[data-lod="flows"] .row, #world[data-lod="flows"] .step .who, #world[data-lod="flows"] .sec,
+#world[data-lod="flows"] .callchip, #world[data-lod="flows"] .attr, #world[data-lod="flows"] .tr, #world[data-lod="flows"] .body,
+#world[data-lod="flows"] .st, #world[data-lod="flows"] .opt, #world[data-lod="flows"] .chip, #world[data-lod="flows"] .btn, #world[data-lod="flows"] .cli, #world[data-lod="flows"] .screen.nested { visibility: hidden; }
+#world[data-lod="flows"] .hd b { font-size: calc(12.5px * min(var(--inv), 3)); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+#world[data-lod="flows"] .end b { font-size: calc(12.5px * min(var(--inv), 3)); } #world[data-lod="flows"] .end small { visibility: hidden; }
+#world[data-lod="flows"] .step .hd b { font-size: calc(13px * min(var(--inv), 3)); }
+#world[data-lod="flows"] .lk { font-size: calc(12px * var(--inv)); }
+
+#world[data-lod="areas"] #bundles { display: block !important; }
+/* panel */
+#panel { position: fixed; top: 44px; right: 0; bottom: 0; width: 380px; max-width: 92vw; background: var(--card); border-left: 1px solid var(--line); z-index: 15; overflow: auto; padding: 14px 16px 24px; transform: translateX(100%); transition: transform .2s; }
+#panel.open { transform: none; }
+#panel h3 { margin: 0 0 2px; font-size: 18px; } #panel h4 { margin: 14px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--mute); }
+#panel .q { font-size: 15px; margin: 6px 0; }
+#panel .x { all: unset; } #panel ul { list-style: none; margin: 0; padding: 0; }
+#panel li { margin: 2px 0; } #panel .it { cursor: pointer; display: flex; gap: 8px; padding: 3px 6px; border-radius: 6px; border: 1px solid transparent; }
+#panel .it:hover { background: var(--chip); border-color: var(--line); } #panel .it .k { color: var(--mute); width: 76px; flex: none; font-size: 12px; } #panel .it .w { color: var(--mute); font-size: 12px; }
+#panel .close { position: absolute; right: 10px; top: 10px; }
+#panel .opt { border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; margin: 6px 0; } #panel .opt.chosen { border-color: var(--ok-line); background: var(--ok-bg); }
+#panel .note2 { color: var(--mute); font-size: 12px; margin-top: 6px; }
+#legend { position: fixed; left: 12px; bottom: 12px; z-index: 14; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; color: var(--mute); font-size: 12px; }
+
+.fsum { display: none; position: absolute; left: 24px; right: 24px; top: 150px; z-index: 3; }
+.fsum .flow { font-size: calc(15px * var(--inv)); font-weight: 600; margin-bottom: calc(8px * var(--inv)); }
+.fchip { display: inline-block; font-size: calc(13px * var(--inv)); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 0 calc(10px * var(--inv)); margin: 0 calc(6px * var(--inv)) calc(6px * var(--inv)) 0; }
+.fchip.sw { border-color: var(--focus); color: var(--focus); }
+.fl { font-size: calc(13px * var(--inv)); color: var(--mute); margin-right: calc(8px * var(--inv)); }
+
+.fsays { font-size: calc(14px * var(--inv)); color: var(--mute); margin-bottom: calc(8px * var(--inv)); }
+#world[data-lod="areas"] .frame-hd .kw { font-size: calc(11px * var(--inv)); }
+.bundle:not(.big) small { display: inline; font-size: calc(12px * var(--inv)); }
+#world[data-lod="areas"] .frame-hd p { display: none; }
+.rsum span.n { background: var(--goal); border-color: transparent; color: var(--note-fg); } .rsum span.n.capability { background: var(--capability); }
+#world[data-lod="flows"] .card .kw { display: none; }
+#world[data-lod="flows"] .frame-hd p, #world[data-lod="flows"] .trigger, #world[data-lod="flows"] .rhead p, #world[data-lod="flows"] .card .kw, #world[data-lod="flows"] .quantity b, #world[data-lod="flows"] .frame-hd .kw { visibility: hidden; }
+.gl { font-size: calc(11px * min(var(--inv), 2.2)); }
+#world[data-lod="flows"] .rhead h2 { font-size: calc(24px * min(var(--inv), 2.2)); } #world[data-lod="flows"] .rhead .layer { font-size: calc(12px * min(var(--inv), 2.2)); }
+#world.has-sel .lk, #world.has-sel #links { opacity: .2; }
+</style>
+</head>
+<body>
+<header id="bar">
+  <b>Board</b><span class="mute">lab 28 redraw, prototype · tool library</span>
+  <span class="seg" role="group" aria-label="Zoom level"><button data-lod-btn="areas">Areas</button><button data-lod-btn="flows">Workflows</button><button data-lod-btn="detail">Detail</button></span>
+  <button id="fit">Fit</button><span id="zoom" class="mute">40%</span>
+  <span id="wait"></span><span class="sp"></span><button id="theme">Light / dark</button>
+</header>
+<main id="stage" aria-label="Canvas">
+  <div id="world">
+    <svg id="bundles" class="bsvg" width="1" height="1" style="position:absolute;left:0;top:0;overflow:visible;display:none;pointer-events:none"></svg>
+    <svg id="links" class="links" width="1" height="1"></svg>
+    <svg id="overlay" class="links" width="1" height="1"></svg>
+  </div>
+</main>
+<aside id="panel" aria-label="Selected entry"></aside>
+<div id="legend">Drag to pan · wheel or pinch to zoom · click a decision to see what it impacts · 0 fits</div>
+<script id="data" type="application/json">{"entries":[{"a":"constitution/principle/members-first","k":"principle","ly":"","ar":"constitution","f":{"says":"A member's time comes before the library's convenience.","why":"The library exists for its members."},"ag":1},{"a":"product/lending/actor/mail-relay","k":"actor","ly":"product","ar":"lending","f":{"says":"The mail relay a reminder is handed to, whichever mailer runs it.","nature":"program"}},{"a":"product/lending/actor/member","k":"actor","ly":"product","ar":"lending","f":{"says":"A person who borrows tools.","nature":"human"},"ag":1},{"a":"product/lending/actor/owner","k":"actor","ly":"product","ar":"lending","f":{"says":"The person who runs the tool library and decides its rules.","nature":"human"},"ag":1},{"a":"product/lending/actor/reminder-bot","k":"actor","ly":"product","ar":"lending","f":{"says":"The agent that drafts reminder texts.","nature":"ai"},"ag":1},{"a":"product/lending/area/lending","k":"area","ly":"product","ar":"lending","f":{"says":"Lending tools of the library to members. Not here: How the mails go out is software/lending."}},{"a":"product/lending/capability/lend-tools","k":"capability","ly":"product","ar":"lending","f":{"says":"The library lends a tool to a member and takes it back.","because":["constitution/principle/members-first"],"realizes":["product/lending/goal/tools-reach-members"]}},{"a":"product/lending/decision/fee-details","k":"decision","ly":"product","ar":"lending","f":{"question":"May the agent decide the details of fees on your behalf?","answers":[{"chose":"yes","said":"Decide the fee details yourself","at":"2026-11-24T18:45:00+01:00","where":"ai:claude/9b01#42"}]}},{"a":"product/lending/decision/fee-details/option/no","k":"option","ly":"product","ar":"lending","f":{"label":"The owner decides every fee detail","sets":{"product/lending/rule/agent-decides-fee-details":null}}},{"a":"product/lending/decision/fee-details/option/yes","k":"option","ly":"product","ar":"lending","f":{"label":"The agent decides fee details","sets":{"product/lending/rule/agent-decides-fee-details":{"says":"The agent decides the details of fees and lists them at session end."}}}},{"a":"product/lending/decision/fee-details/proposal","k":"proposal","ly":"product","ar":"lending","f":{"chose":"yes","why":"Fee details are small and reversible."}},{"a":"product/lending/decision/fee-rounding","k":"decision","ly":"product","ar":"lending","f":{"question":"Is a late fee rounded up to whole days?","answers":[{"chose":"up","said":"Rounded up, under the owner's delegation","at":"2026-11-24T18:50:00+01:00","where":"ai:claude/9b01#43","delegated":"product/lending/decision/fee-details"}]}},{"a":"product/lending/decision/fee-rounding/option/down","k":"option","ly":"product","ar":"lending","f":{"label":"Whole days only","sets":{"product/lending/rule/fees-round-up":null}}},{"a":"product/lending/decision/fee-rounding/option/up","k":"option","ly":"product","ar":"lending","f":{"label":"Rounded up","sets":{"product/lending/rule/fees-round-up":{"says":"A late fee counts every started day."}}}},{"a":"product/lending/decision/fee-rounding/proposal","k":"proposal","ly":"product","ar":"lending","f":{"chose":"up","why":"Simpler to explain."}},{"a":"product/lending/decision/late-fee","k":"decision","ly":"product","ar":"lending","f":{"title":"Late fee amount","question":"How much is the late fee?","context":"You asked for a small fee and gave no amount.","answers":[{"chose":"two","said":"Two euros is fine for now","at":"2026-11-24T18:42:00+01:00","where":"ai:claude/9b01#41","note":"for now"}]}},{"a":"product/lending/decision/late-fee/option/one","k":"option","ly":"product","ar":"lending","f":{"label":"1 EUR per day, per tool","sets":{"product/lending/quantity/late-fee":{"is":1}}}},{"a":"product/lending/decision/late-fee/option/two","k":"option","ly":"product","ar":"lending","f":{"label":"2 EUR per day, per tool","sets":{"product/lending/quantity/late-fee":{"is":2}}}},{"a":"product/lending/decision/late-fee/proposal","k":"proposal","ly":"product","ar":"lending","f":{"chose":"two","why":"A small fee should not scare members away; 1 EUR may not cover a reminder.","heard":"A small fee"}},{"a":"product/lending/decision/reply-wait","k":"decision","ly":"product","ar":"lending","f":{"question":"How long does the borrow page wait for the member?"}},{"a":"product/lending/decision/reply-wait/proposal","k":"proposal","ly":"product","ar":"lending","f":{"why":"Two days fit a weekend.","sets":{"product/lending/quantity/reply-wait":{"is":2}}}},{"a":"product/lending/entity/loan","k":"entity","ly":"product","ar":"lending","f":{"says":"One tool lent to one member until it comes back."}},{"a":"product/lending/entity/loan/attribute/condition","k":"attribute","ly":"product","ar":"lending","f":{"of":"product/lending/enum/tool-condition","optional":true},"ag":1},{"a":"product/lending/entity/loan/attribute/renewals","k":"attribute","ly":"product","ar":"lending","f":{"type":"number","max":"product/lending/quantity/max-loans"},"ag":1},{"a":"product/lending/entity/loan/attribute/tool","k":"attribute","ly":"product","ar":"lending","f":{"says":"The tool lent.","of":"product/lending/entity/tool"},"ag":1},{"a":"product/lending/entity/loan/state/open","k":"state","ly":"product","ar":"lending","f":{"says":"The member has the tool."},"ag":1},{"a":"product/lending/entity/loan/state/returned","k":"state","ly":"product","ar":"lending","f":{"says":"The tool is back."},"ag":1},{"a":"product/lending/entity/loan/transition/return","k":"transition","ly":"product","ar":"lending","f":{"from":["open"],"to":"returned"}},{"a":"product/lending/entity/loan/transition/start","k":"transition","ly":"product","ar":"lending","f":{"to":"open"}},{"a":"product/lending/entity/tool","k":"entity","ly":"product","ar":"lending","f":{"says":"A tool the library owns."}},{"a":"product/lending/entity/tool/attribute/out","k":"attribute","ly":"product","ar":"lending","f":{"says":"The tool is out on a loan.","type":"flag","derived":{"text":"an open loan holds the tool","reads":["product/lending/entity/loan"]}}},{"a":"product/lending/entity/tool/attribute/parts","k":"attribute","ly":"product","ar":"lending","f":{"says":"The parts that come with the tool.","type":"text","many":true}},{"a":"product/lending/enum/tool-condition","k":"enum","ly":"product","ar":"lending","f":{"says":"The condition a tool comes back in.","members":["good","damaged"]}},{"a":"product/lending/goal/tools-reach-members","k":"goal","ly":"product","ar":"lending","f":{"says":"Members get the tools they need without buying them.","for":["product/lending/actor/member"]}},{"a":"product/lending/quantity/late-fee","k":"quantity","ly":"product","ar":"lending","f":{"title":"Late fee","says":"The fee for each day a tool is late","is":2,"unit":"EUR"}},{"a":"product/lending/quantity/max-loans","k":"quantity","ly":"product","ar":"lending","f":{"says":"How many tools one member may hold at once.","is":3,"unit":"tools"}},{"a":"product/lending/quantity/remind-every","k":"quantity","ly":"product","ar":"lending","f":{"says":"How often reminders go out.","is":1,"unit":"days"}},{"a":"product/lending/quantity/reply-wait","k":"quantity","ly":"product","ar":"lending","f":{"says":"How long the borrow page waits for the member.","is":2,"unit":"days"}},{"a":"product/lending/rule/agent-decides-fee-details","k":"rule","ly":"product","ar":"lending","f":{"says":"The agent decides the details of fees and lists them at session end."}},{"a":"product/lending/rule/at-most-max-loans","k":"rule","ly":"product","ar":"lending","f":{"says":"A member holds at most max-loans tools at once.","constrains":["product/lending/entity/loan/attribute/renewals","product/lending/quantity/max-loans"]}},{"a":"product/lending/rule/fees-round-up","k":"rule","ly":"product","ar":"lending","f":{"says":"A late fee counts every started day."}},{"a":"product/lending/rule/late-fee-is-per-day","k":"rule","ly":"product","ar":"lending","f":{"says":"A late tool costs the late fee for each day or part of a day it is late.","constrains":["product/lending/quantity/late-fee"]}},{"a":"product/lending/rule/tools-are-checked-on-return","k":"rule","ly":"product","ar":"lending","f":{"says":"Every tool is checked when it comes back.","constrains":["product/lending/entity/loan"]}},{"a":"product/lending/workflow/borrow","k":"workflow","ly":"product","ar":"lending","f":{"says":"A member borrows a tool.","start":"ask","realizes":"product/lending/capability/lend-tools","satisfies":["product/lending/rule/at-most-max-loans"]}},{"a":"product/lending/workflow/borrow/end/left","k":"end","ly":"product","ar":"lending","f":{"says":"The member left without a tool.","result":"failure"},"ag":1},{"a":"product/lending/workflow/borrow/end/lent","k":"end","ly":"product","ar":"lending","f":{"says":"The member has the tool.","result":"success"},"ag":1},{"a":"product/lending/workflow/borrow/end/refused","k":"end","ly":"product","ar":"lending","f":{"says":"The member may not borrow now.","result":"failure"},"ag":1},{"a":"product/lending/workflow/borrow/step/ask","k":"step","ly":"product","ar":"lending","f":{"says":"The member asks for a tool.","actor":"product/lending/actor/member"}},{"a":"product/lending/workflow/borrow/step/ask/choice/borrow","k":"choice","ly":"product","ar":"lending","f":{"label":"Borrow a tool","then":"standing","satisfies":["product/lending/rule/late-fee-is-per-day"]}},{"a":"product/lending/workflow/borrow/step/ask/choice/leave","k":"choice","ly":"product","ar":"lending","f":{"label":"Leave","then":"left","when":{"text":"the member is not a staff member","reads":["product/lending/actor/member"]}}},{"a":"product/lending/workflow/borrow/step/ask/timeout","k":"timeout","ly":"product","ar":"lending","f":{"after":"product/lending/quantity/reply-wait","then":"left","effects":[{"do":"tell","on":"product/lending/actor/member"}],"satisfies":["product/lending/rule/at-most-max-loans"]}},{"a":"product/lending/workflow/borrow/step/record","k":"step","ly":"product","ar":"lending","f":{"says":"The library records the loan."},"ag":1},{"a":"product/lending/workflow/borrow/step/record/case/full","k":"case","ly":"product","ar":"lending","f":{"order":1,"when":{"text":"the member holds max-loans tools","reads":["product/lending/quantity/max-loans"]},"then":"refused","satisfies":["product/lending/rule/at-most-max-loans"]}},{"a":"product/lending/workflow/borrow/step/record/case/otherwise","k":"case","ly":"product","ar":"lending","f":{"then":"lent","effects":[{"do":"create","on":"product/lending/entity/loan"},{"do":"transition","on":"product/lending/entity/loan/transition/start"}]}},{"a":"product/lending/workflow/borrow/step/standing","k":"step","ly":"product","ar":"lending","f":{"says":"Only a member who owes no late fee may borrow.","satisfies":["product/lending/rule/late-fee-is-per-day"]}},{"a":"product/lending/workflow/borrow/step/standing/case/otherwise","k":"case","ly":"product","ar":"lending","f":{"then":"record"}},{"a":"product/lending/workflow/borrow/step/standing/case/owes","k":"case","ly":"product","ar":"lending","f":{"order":1,"when":{"text":"the member owes a late fee","reads":["product/lending/quantity/late-fee"]},"then":"refused"}},{"a":"product/lending/workflow/close-loan","k":"workflow","ly":"product","ar":"lending","f":{"says":"A returned tool closes its loan.","event":"product/lending/entity/loan/transition/return","start":"close"}},{"a":"product/lending/workflow/close-loan/end/closed","k":"end","ly":"product","ar":"lending","f":{"says":"The loan is closed.","result":"success"},"ag":1},{"a":"product/lending/workflow/close-loan/step/close","k":"step","ly":"product","ar":"lending","f":{"says":"The library closes the loan."},"ag":1},{"a":"product/lending/workflow/close-loan/step/close/case/otherwise","k":"case","ly":"product","ar":"lending","f":{"then":"closed"}},{"a":"product/lending/workflow/notify","k":"workflow","ly":"product","ar":"lending","f":{"says":"One member gets one message.","start":"send"}},{"a":"product/lending/workflow/notify/end/failed","k":"end","ly":"product","ar":"lending","f":{"says":"The message did not go out.","result":"failure"},"ag":1},{"a":"product/lending/workflow/notify/end/sent","k":"end","ly":"product","ar":"lending","f":{"says":"The message went out.","result":"success"},"ag":1},{"a":"product/lending/workflow/notify/step/send","k":"step","ly":"product","ar":"lending","f":{"says":"The mailer takes the message."},"ag":1},{"a":"product/lending/workflow/notify/step/send/case/ok","k":"case","ly":"product","ar":"lending","f":{"order":1,"when":{"text":"the mail relay accepted the message","reads":["product/lending/actor/mail-relay"]},"then":"sent","effects":[{"do":"tell","on":"product/lending/actor/mail-relay"},{"do":"tell","on":"product/lending/actor/member"}]}},{"a":"product/lending/workflow/notify/step/send/case/otherwise","k":"case","ly":"product","ar":"lending","f":{"then":"failed"}},{"a":"product/lending/workflow/remind","k":"workflow","ly":"product","ar":"lending","f":{"says":"Members with late tools are reminded.","schedule":"product/lending/quantity/remind-every","start":"call"}},{"a":"product/lending/workflow/remind/end/done","k":"end","ly":"product","ar":"lending","f":{"says":"Every late member was reminded.","result":"success"},"ag":1},{"a":"product/lending/workflow/remind/step/call","k":"step","ly":"product","ar":"lending","f":{"says":"The reminder is sent.","calls":"product/lending/workflow/notify"},"ag":1},{"a":"product/lending/workflow/remind/step/call/case/otherwise","k":"case","ly":"product","ar":"lending","f":{"covers_ends":["product/lending/workflow/notify/end/failed"],"then":"done"}},{"a":"product/lending/workflow/remind/step/call/case/sent","k":"case","ly":"product","ar":"lending","f":{"order":1,"covers_ends":["product/lending/workflow/notify/end/sent"],"then":"done"}},{"a":"product/shared/area/shared","k":"area","ly":"product","ar":"shared","f":{"says":"What two or more areas of this layer use: their shared terms, actors and sets."}},{"a":"product/shared/term/loan","k":"term","ly":"product","ar":"shared","f":{"word":"loan","names":"product/lending/entity/loan","avoid":["rental"]},"ag":1},{"a":"product/shared/term/member","k":"term","ly":"product","ar":"shared","f":{"word":"member","says":"A person who borrows tools: the actor product/lending/actor/member."},"ag":1},{"a":"software/lending/area/lending","k":"area","ly":"software","ar":"lending","f":{"says":"The pages. Not here: What members may do is product/lending.","unlike":["product/lending/area/lending"]}},{"a":"software/lending/decision/mailer","k":"decision","ly":"software","ar":"lending","f":{"question":"Which mailer sends the reminders?","structure":true,"answers":[{"chose":"smtp","said":"Plain SMTP","at":"2026-11-24T18:55:00+01:00","where":"ai:claude/9b01#44"}]}},{"a":"software/lending/decision/mailer/option/service","k":"option","ly":"software","ar":"lending","f":{"label":"A mail service","sets":{"software/lending/dependency/mailer":{"says":"Sends mail through a paid service.","pin":"service API v3"}}}},{"a":"software/lending/decision/mailer/option/smtp","k":"option","ly":"software","ar":"lending","f":{"label":"Plain SMTP","sets":{"software/lending/dependency/mailer":{"says":"Sends mail over SMTP.","pin":"smtplib (Python 3.15)"}}}},{"a":"software/lending/decision/mailer/proposal","k":"proposal","ly":"software","ar":"lending","f":{"chose":"smtp","why":"No account and no cost."}},{"a":"software/lending/dependency/mailer","k":"dependency","ly":"software","ar":"lending","f":{"says":"Sends mail over SMTP.","pin":"smtplib (Python 3.15)","realizes":"product/lending/actor/mail-relay","satisfies":["software/lending/rule/one-reminder-a-day"]}},{"a":"software/lending/dependency/mailer/workaround/slow-at-night","k":"workaround","ly":"software","ar":"lending","f":{"when":{"text":"the mailer answers after reply-wait","reads":["product/lending/quantity/reply-wait"]},"says":"The reminder is sent again the next morning."},"ag":1},{"a":"software/lending/handler/lend","k":"handler","ly":"software","ar":"lending","f":{"says":"Records a loan and tells the member when the page times out.","performs":["product/lending/workflow/borrow/step/ask/choice/borrow","product/lending/workflow/borrow/step/ask/timeout","product/lending/workflow/borrow/step/record/case/otherwise"],"uses":["software/lending/dependency/mailer"]}},{"a":"software/lending/handler/send-reminder","k":"handler","ly":"software","ar":"lending","f":{"says":"Hands one reminder to the mailer.","performs":["product/lending/workflow/notify/step/send/case/ok"],"uses":["software/lending/dependency/mailer"],"satisfies":["software/lending/rule/one-reminder-a-day"]}},{"a":"software/lending/interface/borrow-cli","k":"interface","ly":"software","ar":"lending","f":{"says":"The librarian lends a tool from the command line.","invoked_as":"library borrow <tool> <member>","serves":["product/lending/workflow/borrow/step/ask"],"offers":["product/lending/workflow/borrow/step/ask/choice/borrow"],"form":"cli","accepts":["product/lending/entity/tool/attribute/parts"]}},{"a":"software/lending/interface/borrow-page","k":"interface","ly":"software","ar":"lending","f":{"says":"The page where a member borrows a tool.","serves":["product/lending/workflow/borrow/step/ask"],"satisfies":["product/lending/rule/late-fee-is-per-day"],"form":"web","shows":["product/lending/entity/tool"],"includes":["software/lending/interface/leave-button"]}},{"a":"software/lending/interface/leave-button","k":"interface","ly":"software","ar":"lending","f":{"says":"The button that leaves the borrow page without a tool.","serves":["product/lending/workflow/borrow/step/ask"],"offers":["product/lending/workflow/borrow/step/ask/choice/leave"],"form":"web"}},{"a":"software/lending/interface/loans-report","k":"interface","ly":"software","ar":"lending","f":{"says":"The export of every open loan that the owner downloads.","form":"file","shows":["product/lending/entity/loan"],"allows":["product/lending/actor/owner"]}},{"a":"software/lending/rule/one-reminder-a-day","k":"rule","ly":"software","ar":"lending","f":{"says":"A member gets at most one reminder mail a day."}},{"a":"software/lending/setting/remind-every","k":"setting","ly":"software","ar":"lending","f":{"says":"How often reminders go out","name":"LIBRARY_REMIND_DAYS","default":"product/lending/quantity/remind-every"}},{"a":"software/lending/setting/smtp-host","k":"setting","ly":"software","ar":"lending","f":{"says":"The mail server the reminders go through.","name":"LIBRARY_SMTP_HOST"}}],"relations":[{"o":"product/lending/capability/lend-tools","t":"constitution/principle/members-first","f":"because"},{"o":"product/lending/capability/lend-tools","t":"product/lending/goal/tools-reach-members","f":"realizes"},{"o":"product/lending/decision/fee-details","t":"product/lending/decision/fee-details/option/yes","f":"chose"},{"o":"product/lending/decision/fee-details/proposal","t":"product/lending/decision/fee-details/option/yes","f":"chose"},{"o":"product/lending/decision/fee-rounding","t":"product/lending/decision/fee-rounding/option/up","f":"chose"},{"o":"product/lending/decision/fee-rounding","t":"product/lending/decision/fee-details","f":"delegated"},{"o":"product/lending/decision/fee-rounding/proposal","t":"product/lending/decision/fee-rounding/option/up","f":"chose"},{"o":"product/lending/decision/late-fee","t":"product/lending/decision/late-fee/option/two","f":"chose"},{"o":"product/lending/decision/late-fee/proposal","t":"product/lending/decision/late-fee/option/two","f":"chose"},{"o":"product/lending/entity/loan/attribute/condition","t":"product/lending/enum/tool-condition","f":"of"},{"o":"product/lending/entity/loan/attribute/renewals","t":"product/lending/quantity/max-loans","f":"max"},{"o":"product/lending/entity/loan/attribute/tool","t":"product/lending/entity/tool","f":"of"},{"o":"product/lending/entity/loan/transition/return","t":"product/lending/entity/loan/state/open","f":"from"},{"o":"product/lending/entity/loan/transition/return","t":"product/lending/entity/loan/state/returned","f":"to"},{"o":"product/lending/entity/loan/transition/start","t":"product/lending/entity/loan/state/open","f":"to"},{"o":"product/lending/entity/tool/attribute/out","t":"product/lending/entity/loan","f":"derived"},{"o":"product/lending/goal/tools-reach-members","t":"product/lending/actor/member","f":"for"},{"o":"product/lending/rule/at-most-max-loans","t":"product/lending/entity/loan/attribute/renewals","f":"constrains"},{"o":"product/lending/rule/at-most-max-loans","t":"product/lending/quantity/max-loans","f":"constrains"},{"o":"product/lending/rule/late-fee-is-per-day","t":"product/lending/quantity/late-fee","f":"constrains"},{"o":"product/lending/rule/tools-are-checked-on-return","t":"product/lending/entity/loan","f":"constrains"},{"o":"product/lending/workflow/borrow","t":"product/lending/capability/lend-tools","f":"realizes"},{"o":"product/lending/workflow/borrow","t":"product/lending/rule/at-most-max-loans","f":"satisfies"},{"o":"product/lending/workflow/borrow","t":"product/lending/workflow/borrow/step/ask","f":"start"},{"o":"product/lending/workflow/borrow/step/ask","t":"product/lending/actor/member","f":"actor"},{"o":"product/lending/workflow/borrow/step/ask/choice/borrow","t":"product/lending/rule/late-fee-is-per-day","f":"satisfies"},{"o":"product/lending/workflow/borrow/step/ask/choice/borrow","t":"product/lending/workflow/borrow/step/standing","f":"then"},{"o":"product/lending/workflow/borrow/step/ask/choice/leave","t":"product/lending/workflow/borrow/end/left","f":"then"},{"o":"product/lending/workflow/borrow/step/ask/choice/leave","t":"product/lending/actor/member","f":"when"},{"o":"product/lending/workflow/borrow/step/ask/timeout","t":"product/lending/quantity/reply-wait","f":"after"},{"o":"product/lending/workflow/borrow/step/ask/timeout","t":"product/lending/rule/at-most-max-loans","f":"satisfies"},{"o":"product/lending/workflow/borrow/step/ask/timeout","t":"product/lending/workflow/borrow/end/left","f":"then"},{"o":"product/lending/workflow/borrow/step/ask/timeout","t":"product/lending/actor/member","f":"on"},{"o":"product/lending/workflow/borrow/step/record/case/full","t":"product/lending/rule/at-most-max-loans","f":"satisfies"},{"o":"product/lending/workflow/borrow/step/record/case/full","t":"product/lending/workflow/borrow/end/refused","f":"then"},{"o":"product/lending/workflow/borrow/step/record/case/full","t":"product/lending/quantity/max-loans","f":"when"},{"o":"product/lending/workflow/borrow/step/record/case/otherwise","t":"product/lending/workflow/borrow/end/lent","f":"then"},{"o":"product/lending/workflow/borrow/step/record/case/otherwise","t":"product/lending/entity/loan","f":"on"},{"o":"product/lending/workflow/borrow/step/record/case/otherwise","t":"product/lending/entity/loan/transition/start","f":"on"},{"o":"product/lending/workflow/borrow/step/standing","t":"product/lending/rule/late-fee-is-per-day","f":"satisfies"},{"o":"product/lending/workflow/borrow/step/standing/case/otherwise","t":"product/lending/workflow/borrow/step/record","f":"then"},{"o":"product/lending/workflow/borrow/step/standing/case/owes","t":"product/lending/workflow/borrow/end/refused","f":"then"},{"o":"product/lending/workflow/borrow/step/standing/case/owes","t":"product/lending/quantity/late-fee","f":"when"},{"o":"product/lending/workflow/close-loan","t":"product/lending/entity/loan/transition/return","f":"event"},{"o":"product/lending/workflow/close-loan","t":"product/lending/workflow/close-loan/step/close","f":"start"},{"o":"product/lending/workflow/close-loan/step/close/case/otherwise","t":"product/lending/workflow/close-loan/end/closed","f":"then"},{"o":"product/lending/workflow/notify","t":"product/lending/workflow/notify/step/send","f":"start"},{"o":"product/lending/workflow/notify/step/send/case/ok","t":"product/lending/workflow/notify/end/sent","f":"then"},{"o":"product/lending/workflow/notify/step/send/case/ok","t":"product/lending/actor/mail-relay","f":"when"},{"o":"product/lending/workflow/notify/step/send/case/ok","t":"product/lending/actor/mail-relay","f":"on"},{"o":"product/lending/workflow/notify/step/send/case/ok","t":"product/lending/actor/member","f":"on"},{"o":"product/lending/workflow/notify/step/send/case/otherwise","t":"product/lending/workflow/notify/end/failed","f":"then"},{"o":"product/lending/workflow/remind","t":"product/lending/quantity/remind-every","f":"schedule"},{"o":"product/lending/workflow/remind","t":"product/lending/workflow/remind/step/call","f":"start"},{"o":"product/lending/workflow/remind/step/call","t":"product/lending/workflow/notify","f":"calls"},{"o":"product/lending/workflow/remind/step/call/case/otherwise","t":"product/lending/workflow/notify/end/failed","f":"covers_ends"},{"o":"product/lending/workflow/remind/step/call/case/otherwise","t":"product/lending/workflow/remind/end/done","f":"then"},{"o":"product/lending/workflow/remind/step/call/case/sent","t":"product/lending/workflow/notify/end/sent","f":"covers_ends"},{"o":"product/lending/workflow/remind/step/call/case/sent","t":"product/lending/workflow/remind/end/done","f":"then"},{"o":"product/shared/term/loan","t":"product/lending/entity/loan","f":"names"},{"o":"software/lending/area/lending","t":"product/lending/area/lending","f":"unlike"},{"o":"software/lending/decision/mailer","t":"software/lending/decision/mailer/option/smtp","f":"chose"},{"o":"software/lending/decision/mailer/proposal","t":"software/lending/decision/mailer/option/smtp","f":"chose"},{"o":"software/lending/dependency/mailer","t":"product/lending/actor/mail-relay","f":"realizes"},{"o":"software/lending/dependency/mailer","t":"software/lending/rule/one-reminder-a-day","f":"satisfies"},{"o":"software/lending/dependency/mailer/workaround/slow-at-night","t":"product/lending/quantity/reply-wait","f":"when"},{"o":"software/lending/handler/lend","t":"product/lending/workflow/borrow/step/ask/choice/borrow","f":"performs"},{"o":"software/lending/handler/lend","t":"product/lending/workflow/borrow/step/ask/timeout","f":"performs"},{"o":"software/lending/handler/lend","t":"product/lending/workflow/borrow/step/record/case/otherwise","f":"performs"},{"o":"software/lending/handler/lend","t":"software/lending/dependency/mailer","f":"uses"},{"o":"software/lending/handler/send-reminder","t":"product/lending/workflow/notify/step/send/case/ok","f":"performs"},{"o":"software/lending/handler/send-reminder","t":"software/lending/rule/one-reminder-a-day","f":"satisfies"},{"o":"software/lending/handler/send-reminder","t":"software/lending/dependency/mailer","f":"uses"},{"o":"software/lending/interface/borrow-cli","t":"product/lending/entity/tool/attribute/parts","f":"accepts"},{"o":"software/lending/interface/borrow-cli","t":"product/lending/workflow/borrow/step/ask/choice/borrow","f":"offers"},{"o":"software/lending/interface/borrow-cli","t":"product/lending/workflow/borrow/step/ask","f":"serves"},{"o":"software/lending/interface/borrow-page","t":"software/lending/interface/leave-button","f":"includes"},{"o":"software/lending/interface/borrow-page","t":"product/lending/rule/late-fee-is-per-day","f":"satisfies"},{"o":"software/lending/interface/borrow-page","t":"product/lending/workflow/borrow/step/ask","f":"serves"},{"o":"software/lending/interface/borrow-page","t":"product/lending/entity/tool","f":"shows"},{"o":"software/lending/interface/leave-button","t":"product/lending/workflow/borrow/step/ask/choice/leave","f":"offers"},{"o":"software/lending/interface/leave-button","t":"product/lending/workflow/borrow/step/ask","f":"serves"},{"o":"software/lending/interface/loans-report","t":"product/lending/actor/owner","f":"allows"},{"o":"software/lending/interface/loans-report","t":"product/lending/entity/loan","f":"shows"},{"o":"software/lending/setting/remind-every","t":"product/lending/quantity/remind-every","f":"default"}],"decisions":{"product/lending/decision/fee-details":{"status":"answered","chose":"product/lending/decision/fee-details/option/yes","at":"2026-11-24T18:45:00+01:00","delegated":null,"options":{"product/lending/decision/fee-details/option/no":{"sets":["product/lending/rule/agent-decides-fee-details"],"reach":[],"count":0,"truncated":false},"product/lending/decision/fee-details/option/yes":{"sets":["product/lending/rule/agent-decides-fee-details"],"reach":[],"count":0,"truncated":false}}},"product/lending/decision/fee-rounding":{"status":"answered","chose":"product/lending/decision/fee-rounding/option/up","at":"2026-11-24T18:50:00+01:00","delegated":"product/lending/decision/fee-details","options":{"product/lending/decision/fee-rounding/option/down":{"sets":["product/lending/rule/fees-round-up"],"reach":[],"count":0,"truncated":false},"product/lending/decision/fee-rounding/option/up":{"sets":["product/lending/rule/fees-round-up"],"reach":[],"count":0,"truncated":false}}},"product/lending/decision/late-fee":{"status":"answered","chose":"product/lending/decision/late-fee/option/two","at":"2026-11-24T18:42:00+01:00","delegated":null,"options":{"product/lending/decision/late-fee/option/one":{"sets":["product/lending/quantity/late-fee"],"reach":["product/lending/rule/late-fee-is-per-day","product/lending/workflow/borrow/step/ask/choice/borrow","product/lending/workflow/borrow/step/standing","product/lending/workflow/borrow/step/standing/case/otherwise","product/lending/workflow/borrow/step/standing/case/owes","software/lending/handler/lend","software/lending/interface/borrow-cli","software/lending/interface/borrow-page"],"count":8,"truncated":false},"product/lending/decision/late-fee/option/two":{"sets":["product/lending/quantity/late-fee"],"reach":["product/lending/rule/late-fee-is-per-day","product/lending/workflow/borrow/step/ask/choice/borrow","product/lending/workflow/borrow/step/standing","product/lending/workflow/borrow/step/standing/case/otherwise","product/lending/workflow/borrow/step/standing/case/owes","software/lending/handler/lend","software/lending/interface/borrow-cli","software/lending/interface/borrow-page"],"count":8,"truncated":false}}},"product/lending/decision/reply-wait":{"status":"waiting","chose":null,"at":null,"delegated":null,"options":{}},"software/lending/decision/mailer":{"status":"answered","chose":"software/lending/decision/mailer/option/smtp","at":"2026-11-24T18:55:00+01:00","delegated":null,"options":{"software/lending/decision/mailer/option/service":{"sets":["software/lending/dependency/mailer"],"reach":["product/lending/actor/mail-relay","software/lending/dependency/mailer/workaround/slow-at-night","software/lending/handler/lend","software/lending/handler/send-reminder","software/lending/rule/one-reminder-a-day"],"count":5,"truncated":false},"software/lending/decision/mailer/option/smtp":{"sets":["software/lending/dependency/mailer"],"reach":["product/lending/actor/mail-relay","software/lending/dependency/mailer/workaround/slow-at-night","software/lending/handler/lend","software/lending/handler/send-reminder","software/lending/rule/one-reminder-a-day"],"count":5,"truncated":false}}}},"totals":{"waiting":4,"owed":35,"unagreed":5,"changed":7,"dropped":3,"findings":0},"repository":"stage12-dump","revision":"worktree"}</script>
+<script>// Data access and small helpers. Plain script: no modules, so the page opens by file.
+window.B = (() => {
+  const data = JSON.parse(document.getElementById("data").textContent);
+  const by = new Map(data.entries.map((e) => [e.a, e]));
+  const out = new Map(), inc = new Map();
+  for (const r of data.relations) {
+    (out.get(r.o) || out.set(r.o, []).get(r.o)).push(r);
+    (inc.get(r.t) || inc.set(r.t, []).get(r.t)).push(r);
+  }
+  const key = (a) => a.split("/").pop();
+  const human = (k) => { const s = k.replace(/[-_]+/g, " "); return s[0].toUpperCase() + s.slice(1); };
+  const depth = (a) => (a.startsWith("constitution/") ? 3 : 4);
+  // address = layer/area/kind/id then (kind/id)* then optionally a lone kind for a single part (timeout, proposal)
+  const parent = (a) => { const p = a.split("/"), extra = p.length - depth(a); return extra <= 0 ? null : p.slice(0, extra % 2 ? -1 : -2).join("/"); };
+  const kids = (a, kinds) => data.entries.filter((e) => parent(e.a) === a && (!kinds || kinds.includes(e.k)));
+  const name = (e) => {
+    if (typeof e === "string") e = by.get(e) || { a: e, k: "?", f: {} };
+    const f = e.f || {};
+    return f.title || f.word || (e.k === "decision" && f.question) || f.label || human(key(e.a));
+  };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const h = (tag, cls, html, attrs) => {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (html != null) el.innerHTML = html;
+    for (const k in attrs || {}) el.setAttribute(k, attrs[k]);
+    return el;
+  };
+  const place = (a) => { const e = by.get(a); return e ? (e.ly ? `${e.ly[0].toUpperCase() + e.ly.slice(1)} · ${e.ar}` : "Constitution") : ""; };
+  const route = (a) => { // workflow > step > case, as names
+    const out = []; for (let p = a; p; p = parent(p)) out.unshift(name(p)); return out;
+  };
+  const decision = (a) => data.decisions[a];
+  const waiting = () => data.entries.filter((e) => e.k === "decision" && decision(e.a)?.status === "waiting");
+  const kindWord = (e) => e.k;
+  return { data, by, out, inc, key, human, parent, kids, name, esc, h, place, route, decision, waiting, kindWord };
+})();
+</script><script>// Card renderers. A card is named by its title, else its key humanized; kind is a small word in the corner.
+(() => {
+  const { h, esc, by, name, human, key, out, inc, kids, decision } = B;
+  const go = (a, label) => `<span class="chip go" data-go="${esc(a)}">${esc(label ?? name(a))}</span>`;
+  const mark = (e) => (e.ag ? '<span class="ag" title="agreed"></span>' : "");
+  const card = (e, cls, inner) => h("div", `card ${cls || ""}`, inner, { "data-a": e.a, "data-k": e.k });
+  const head = (e, ic) => `<div class="hd"><span class="ic">${ic || ""}</span><b>${mark(e)}${esc(name(e))}</b><span class="kw">${e.k}</span></div>`;
+  const says = (e) => (e.f.says ? `<div class="says">${esc(e.f.says)}</div>` : "");
+  const tgt = (e, f) => (out.get(e.a) || []).filter((r) => r.f === f).map((r) => r.t);
+  const list = (label, as) => (as.length ? `<div class="says">${label} ${as.map((a) => go(a)).join("")}</div>` : "");
+
+  const C = {};
+  C.note = (e) => card(e, `note ${e.k}`, head(e) + says(e) + list("for", tgt(e, "for")).replace(/class="says"/, 'class="says"')
+    + list("realizes", tgt(e, "realizes")));
+  C.rule = (e) => card(e, "rule", head(e, "§") + says(e) + list("constrains", tgt(e, "constrains")));
+  C.principle = (e) => card(e, "rule", head(e, "§") + says(e) + `<div class="says">because ${esc(e.f.why || "")}</div>`);
+  C.actor = (e) => card(e, "actor", head(e, e.f.nature === "human" ? "☺" : e.f.nature === "ai" ? "✦" : "⚙") + `<div class="says">${esc(e.f.says)}</div><span class="chip">${e.f.nature}</span>`);
+  C.quantity = (e) => card(e, "quantity", head(e, "#") + `<div class="says">${esc(e.f.says || "")}</div><b>${esc(e.f.is)} ${esc(e.f.unit || "")}</b>`);
+  C.enum = (e) => card(e, "enum", head(e, "≡") + says(e) + (e.f.members || []).map((m) => `<span class="chip mono">${esc(m)}</span>`).join(""));
+  C.term = (e) => card(e, "term", head(e, "“") + `<div class="says">${esc(e.f.says || "")}</div>${list("names", tgt(e, "names"))}`
+    + (e.f.avoid ? `<div class="says">avoid: ${e.f.avoid.map(esc).join(", ")}</div>` : ""));
+  C.area = (e) => null;
+  C.entity = (e) => {
+    const attrs = kids(e.a, ["attribute"]).map((a) => `<div class="attr"><span>${esc(name(a))}</span><i>${esc(a.f.of ? name(a.f.of) : a.f.type || "")}${a.f.many ? " ×n" : ""}${a.f.optional ? " ?" : ""}</i></div>`).join("");
+    const states = kids(e.a, ["state"]), trs = kids(e.a, ["transition"]);
+    const st = states.length ? `<div class="st">${states.map((s) => `<span class="pill" data-a="${esc(s.a)}">${esc(name(s))}</span>`).join('<span class="tr">›</span>')}</div>` : "";
+    const tr = trs.map((t) => `<div class="tr" data-a="${esc(t.a)}">${esc(name(t))}: ${t.f.from ? esc([].concat(t.f.from).map((f) => human(f)).join(", ")) : "(new)"} → ${esc(human(t.f.to))}</div>`).join("");
+    return card(e, "entity", head(e, "▦") + says(e) + attrs + st + tr);
+  };
+  C.decision = (e) => {
+    const d = decision(e.a), f = e.f, opts = kids(e.a, ["option"]), prop = kids(e.a, ["proposal"])[0];
+    const status = d?.status || "waiting", chose = d?.chose;
+    const stat = status === "waiting" ? '<span class="stat waiting">waiting</span>' : d.delegated ? '<span class="stat deleg">answered · delegated</span>' : '<span class="stat">answered</span>';
+    const os = opts.map((o) => `<div class="opt ${o.a === chose ? "chosen" : ""}" data-a="${esc(o.a)}">${o.a === chose ? "✓" : "○"} ${esc(name(o))}</div>`).join("");
+    const pr = !opts.length && prop?.f.sets ? `<div class="says">proposal sets ${Object.keys(prop.f.sets).map((a) => go(a)).join("")}</div>` : "";
+    const c = card(e, `dec ${status}`, `<div class="hd"><span class="ic">◇</span><b>${esc(name(e))}</b><span class="kw">decision</span></div>`
+      + `<div class="says">${esc(f.question || "")}</div><div style="margin-top:4px">${stat}</div>${os}${pr}`);
+    return c;
+  };
+  C.screen = (e, nested) => {
+    const f = e.f, inc2 = tgt(e, "includes").map((a) => by.get(a)).filter(Boolean);
+    const offers = tgt(e, "offers").map((a) => `<span class="btn" data-go="${esc(a)}">${esc(name(a))}</span>`).join("");
+    const body = says(e) + `<div>${f.form ? `<span class="chip">${esc(f.form)}</span>` : ""}</div>`
+      + (f.invoked_as ? `<div class="cli">$ ${esc(f.invoked_as)}</div>` : "")
+      + list("shows", tgt(e, "shows")) + list("accepts", tgt(e, "accepts")) + list("allows", tgt(e, "allows")) + list("serves", tgt(e, "serves")) + (offers ? `<div>${offers}</div>` : "");
+    const el = h("div", `card screen${nested ? " nested" : ""}`, `<div class="bar"><i></i><i></i><i></i><b>${esc(name(e))}</b><span class="kw">interface</span></div><div class="body">${body}</div>`, { "data-a": e.a, "data-k": "interface" });
+    for (const i of inc2) el.querySelector(".body").append(C.screen(i, true));
+    return el;
+  };
+  C.handler = (e) => card(e, "handler", head(e, "⚙") + says(e) + list("performs", tgt(e, "performs")) + list("uses", tgt(e, "uses")));
+  C.dependency = (e) => card(e, "handler", head(e, "⛓") + says(e) + (e.f.pin ? `<span class="chip mono">${esc(e.f.pin)}</span>` : "")
+    + list("realizes", tgt(e, "realizes")) + kids(e.a, ["workaround"]).map((w) => `<div class="says" data-a="${esc(w.a)}">workaround · when ${esc(w.f.when?.text || "")}: ${esc(w.f.says)}</div>`).join(""));
+  C.swrule = (e) => card(e, "rule sw-rule", head(e, "§") + says(e));
+  B.cards = C;
+  B.go = go;
+})();
+</script><script>// A workflow frame as in lab 28: orange header, step boxes in columns, ends on the right, arrows leave the row that causes them.
+(() => {
+  const { h, esc, by, name, human, key, out, kids, go } = B;
+  const SW = 250, GAP = 84, X0 = 24, Y0 = 124;
+  const tgt = (a, f) => (out.get(a) || []).filter((r) => r.f === f).map((r) => r.t);
+  const val = (a) => { const e = by.get(a); return e ? `${e.f.is ?? ""} ${e.f.unit ?? ""}`.trim() : ""; };
+
+  function effectHTML(fx) {
+    const t = fx.on, e = by.get(t), op = fx.do;
+    const ic = { create: "+", delete: "−", write: "✎", transition: "⇄", tell: "✉" }[op] || "•";
+    let body = go(t);
+    if (op === "transition" && e) {
+      const owner = by.get(B.parent(t)), to = e.f.to;
+      body = `${go(owner.a)}: ${go(t, name(e))} <span class="tr">→</span> <span class="pill">${esc(human(to))}</span>`;
+    }
+    return `<div class="fx ${op}"><span>${ic}</span><span class="op">${op}</span>${body}</div>`;
+  }
+  function rowHTML(r, wfAddr) {
+    const f = r.f, to = f.then ? `${wfAddr}/${by.has(`${wfAddr}/end/${f.then}`) ? "end" : "step"}/${f.then}` : null;
+    const toE = to && by.get(to), res = toE?.k === "end" ? toE.f.result : "";
+    let label;
+    if (r.k === "choice") label = esc(f.label);
+    else if (r.k === "timeout") label = `after ${go(f.after, `${name(f.after)} (${val(f.after)})`)}`;
+    else if (f.covers_ends) label = `when ${esc(name(B.parent(f.covers_ends[0])))} ends: ${f.covers_ends.map((a) => esc(name(a))).join(", ")}`;
+    else label = f.when ? esc(f.when.text.replace(/^./, (c) => c.toUpperCase())) : "Otherwise";
+    const perf = (B.inc.get(r.a) || []).filter((x) => x.f === "performs").map((x) => `<span class="by" data-go="${esc(x.o)}">⚙ performed by ${esc(name(x.o))}</span>`).join("");
+    return `<div class="row" data-a="${esc(r.a)}" data-to="${esc(to || "")}" data-res="${res}"><div class="rt"><span class="rl">${label}</span><span class="rk">${r.k}</span>`
+      + `<span class="to ${res}">${to ? "→ " + esc(name(toE)) : ""}</span></div>`
+      + (r.k === "choice" && f.when ? `<div class="when">when ${esc(f.when.text)}</div>` : "")
+      + (f.effects || []).map(effectHTML).join("") + perf + `</div>`;
+  }
+  function stepEl(s, wf) {
+    const f = s.f, calls = f.calls, rows = kids(s.a, ["choice", "case", "timeout"]);
+    const who = f.actor ? `<div class="who">${go(f.actor)}</div>` : "";
+    const el = h("div", "step card", `<div class="hd"><span class="ic">▢</span><b>${esc(name(s))}</b><span class="kw">step</span></div>`
+      + (f.says ? `<div class="says">${esc(f.says)}</div>` : "") + who
+      + (calls ? `<div class="sec">Calls</div><span class="callchip" data-go="${esc(calls)}">▷ ${esc(name(calls))}</span><div class="sec">Then, by how it ended</div>` : "")
+      + rows.sort((a, b) => (a.f.order ?? 99) - (b.f.order ?? 99)).map((r) => rowHTML(r, wf.a)).join(""), { "data-a": s.a, "data-k": "step" });
+    return el;
+  }
+  function endEl(e) {
+    return h("div", `end ${e.f.result}`, `<b>${esc(name(e))}</b><small>${esc(e.f.says || "")}</small>`, { "data-a": e.a, "data-k": "end", "data-res": e.f.result });
+  }
+  const path = (x1, y1, x2, y2, lane, ox, oy) => {
+    if (lane == null) { const d = Math.max(30, (x2 - x1) / 2); return `M${x1},${y1} C${x1 + d},${y1} ${x2 - d},${y2} ${x2},${y2}`; }
+    const a = x1 + ox, b = x2 - oy;
+    return `M${x1},${y1} L${a - 8},${y1} Q${a},${y1} ${a},${y1 + 8} L${a},${lane - 8} Q${a},${lane} ${a + 8},${lane} L${b - 8},${lane} Q${b},${lane} ${b},${lane - 8} L${b},${y2 + 8} Q${b},${y2} ${b + 8},${y2} L${x2},${y2}`;
+  };
+  const pos = (el, up) => { let x = 0, y = 0; for (let n = el; n && n !== up; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y }; };
+
+  B.workflow = (wf) => {
+    const steps = kids(wf.a, ["step"]), ends = kids(wf.a, ["end"]), sub = new Map();
+    const start = wf.f.start;
+    // columns by breadth from the start step
+    const col = new Map(), stepOf = (k) => steps.find((s) => key(s.a) === k);
+    const q = [[start, 0]];
+    while (q.length) { const [k, c] = q.shift(); const s = stepOf(k); if (!s || col.has(k)) continue; col.set(k, c);
+      for (const r of kids(s.a, ["choice", "case", "timeout"])) if (r.f.then) q.push([r.f.then, c + 1]); }
+    steps.forEach((s) => { if (!col.has(key(s.a))) col.set(key(s.a), 0); });
+    const maxc = Math.max(...col.values());
+    const f = h("div", "frame", "", { "data-a": wf.a, "data-k": "workflow" });
+    const trig = [];
+    if (wf.f.event) trig.push("starts when " + name(wf.f.event) + " (" + name(B.parent(wf.f.event)) + ")");
+    if (wf.f.schedule) trig.push("every " + val(wf.f.schedule));
+    if (!trig.length) trig.push("starts at " + name(by.get(`${wf.a}/step/${start}`)));
+    f.innerHTML = `<div class="frame-bg"></div><div class="frame-hd"><b>${esc(name(wf))}</b><span class="kw">workflow</span><p>${esc(wf.f.says || "")}</p></div><div class="trigger">${esc(trig.join(" · "))}</div>`
+      + `<svg class="links"><defs>${["", "success", "failure", "call"].map((c) => `<marker id="ah-${wf.a.split("/").pop()}-${c}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah ${c}" d="M0,0L10,5L0,10z"/></marker>`).join("")}</defs></svg>`;
+    const width = X0 * 2 + (maxc + 1) * (SW + GAP) + 190;
+    const sid = wf.a.split("/").pop();
+    const els = [];
+    steps.forEach((s) => { const el = stepEl(s, wf); el.style.left = X0 + col.get(key(s.a)) * (SW + GAP) + "px"; el.style.top = Y0 + "px"; f.append(el); sub.set(s.a, el); });
+    ends.forEach((e) => { const el = endEl(e); el.style.left = X0 + (maxc + 1) * (SW + GAP) + "px"; f.append(el); sub.set(e.a, el); els.push(el); });
+    return { el: f, steps: sub, width, finish() {
+      // measure, stack ends, route arrows
+      let y = Y0;
+      ends.forEach((e) => { const el = sub.get(e.a); el.style.top = y + "px"; y += el.offsetHeight + 22; });
+      let bottom = Math.max(y - 22, ...steps.map((s) => Y0 + sub.get(s.a).offsetHeight));
+      const edges = [];
+      steps.forEach((s) => {
+        const sEl = sub.get(s.a); let n = 0;
+        sEl.querySelectorAll(".row").forEach((row) => {
+          const to = row.dataset.to; if (!to) return; const tEl = sub.get(to); if (!tEl) return;
+          const x1 = sEl.offsetLeft + sEl.offsetWidth, y1 = sEl.offsetTop + row.offsetTop + 16;
+          const x2 = tEl.offsetLeft, y2 = tEl.offsetTop + Math.min(24, tEl.offsetHeight / 2);
+          const adj = x2 - x1 <= GAP + 2 && x2 > x1;
+          edges.push({ x1, y1, x2, y2, adj, res: row.dataset.res, n: n++ });
+        });
+      });
+      const longs = edges.filter((e) => !e.adj), lane0 = bottom + 26;
+      let k = 0; const svg = f.querySelector("svg"), sidx = sid;
+      edges.forEach((e) => {
+        const cls = e.res || "";
+        const lane = e.adj ? null : lane0 + 12 * k++;
+        const d = path(e.x1, e.y1, e.x2, e.y2, lane, 14 + 7 * e.n, 14 + 7 * e.n);
+        svg.insertAdjacentHTML("beforeend", `<path class="e ${cls}" d="${d}" marker-end="url(#ah-${sidx}-${cls})"/>`);
+      });
+      const H = lane0 + 12 * longs.length + 24;
+      f.style.width = width + "px"; f.style.height = H + "px";
+      return H;
+    }, anchors(addr) { const el = sub.get(addr); return el ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight } : null; } };
+  };
+})();
+</script><script>// Places every region, card and frame on the world, then draws the links between Product and Software.
+(() => {
+  const { h, esc, by, name, data, parent, out, inc, key, waiting, human } = B;
+  const C = B.cards, world = document.getElementById("world");
+  const at = (el, x, y, w) => { el.style.left = x + "px"; el.style.top = y + "px"; if (w) el.style.width = w + "px"; world.append(el); return el; };
+  const group = (x, y, w, label, cls, items) => {
+    const g = h("div", "grp " + (cls || ""), ""); g.style.width = w + "px";
+    items.filter(Boolean).forEach((i) => g.append(i));
+    if (label) at(h("div", "gl", label), x, y - 20);
+    return at(g, x, y);
+  };
+  const entries = (k, ly, ar) => data.entries.filter((e) => e.k === k && e.ly === ly && e.ar === ar && !parent(e.a));
+  const region = (id, cls, layer, title, says, x, y, w, hgt) => {
+    const r = h("div", "region " + cls, `<div class="rhead"><div class="layer">${layer}</div><h2>${esc(title)}</h2><p>${esc(says)}</p><div class="rsum"></div></div>`, { "data-region": id });
+    r.style.height = hgt + "px"; at(r, x, y, w); return r;
+  };
+  const worldRect = (el) => { let x = 0, y = 0; for (let n = el; n && n !== world; n = n.offsetParent) { x += n.offsetLeft; y += n.offsetTop; } return { x, y, w: el.offsetWidth, h: el.offsetHeight }; };
+  B.worldRect = worldRect;
+
+  // Geometry must not change with the zoom level: a card is as tall as the taller of its detail and its (larger-type) workflow-level look.
+  const probe = (els, lod, inv) => { const l0 = world.dataset.lod, i0 = world.style.getPropertyValue("--inv"); if (lod) { world.dataset.lod = lod; world.style.setProperty("--inv", inv); }
+    const r = els.map((e) => e.offsetHeight); if (lod) { l0 ? (world.dataset.lod = l0) : delete world.dataset.lod; world.style.setProperty("--inv", i0 || "1"); } return r; };
+  const fix = (els) => { const a = probe(els), b = probe(els, "flows", "3"); els.forEach((e, i) => { if (b[i] > a[i]) e.style.minHeight = b[i] + "px"; }); };
+  const fixIn = (g) => fix([...g.querySelectorAll(".card, .end")]);
+
+  B.build = () => {
+    const rects = {}, regionEls = {};
+    const area = (ly, ar) => by.get(`${ly}/${ar}/area/${ar}`);
+    const PLx = 760, x0 = PLx + 40;
+    // ---- Product lending, context band
+    const pl = (k) => entries(k, "product", "lending");
+    const A = 170;
+    const decs = pl("decision").sort((p, q) => (B.decision(q.a)?.status === "waiting") - (B.decision(p.a)?.status === "waiting")).map(C.decision);
+    decs.forEach((c) => (c.style.width = "260px"));
+    const g5 = group(x0, A, 1090, "Decisions, waiting first", "wrap", decs);
+    const g1 = group(x0 + 1130, A, 300, "Goal and capability", "", [...pl("goal"), ...pl("capability")].map(C.note));
+    const g2 = group(x0 + 1470, A, 780, "Rules", "grid", pl("rule").map(C.rule));
+    const ent = [...pl("entity"), ...pl("enum")].map((e) => (e.k === "enum" ? C.enum(e) : C.entity(e)));
+    const g3 = group(x0 + 2290, A, 800, "Entities", "wrap", ent); ent.forEach((c, i) => (c.style.width = i === 0 ? "300px" : "250px"));
+    [g5, g1, g2, g3].forEach(fixIn);
+    const row2 = Math.max(...[g5, g1, g2, g3].map((g) => g.offsetTop + g.offsetHeight)) + 50;
+    const act = pl("actor").map(C.actor); act.forEach((c) => (c.style.width = "250px"));
+    const g4 = group(x0, row2, 3060, "Actors and settings", "wrap", [...act, ...pl("quantity").map(C.quantity)]);
+    g4.querySelectorAll(".quantity").forEach((c) => (c.style.width = "250px"));
+    fixIn(g4);
+    const bandBottom = Math.max(...[g1, g2, g3, g4, g5].map((g) => g.offsetTop + g.offsetHeight));
+    // ---- workflows
+    const fy = bandBottom + 90; let fx = x0; const frames = [];
+    for (const wf of pl("workflow").sort((a, b) => (a.a.endsWith("borrow") ? -1 : 0) - (b.a.endsWith("borrow") ? -1 : 0))) {
+      const f = B.workflow(wf); at(f.el, fx, fy); fixIn(f.el); let H = f.finish();
+      frameSummary(wf, f); H = Math.max(H, areaNeed(f.el)); f.el.style.height = H + "px";
+      frames.push({ wf, f, x: fx, y: fy, H, W: f.width }); fx += f.width + 50;
+    }
+    const PW = fx - 50 + 40 - PLx, fBottom = fy + Math.max(...frames.map((f) => f.H));
+    const PLh = fBottom + 40;
+    rects["product/lending"] = { x: PLx, y: 0, w: PW, h: PLh };
+    regionEls["product/lending"] = region("product/lending", "p", "Product", "Lending", area("product", "lending").f.says, PLx, 0, PW, PLh);
+    // ---- Software lending
+    const SWy = PLh + 420, borrow = frames.find((f) => f.wf.a.endsWith("borrow")), rest = frames.filter((f) => f !== borrow);
+    const sw = (k) => entries(k, "software", "lending");
+    const ifs = sw("interface").filter((e) => !(B.inc.get(e.a) || []).some((r) => r.f === "includes"));
+    const sA = SWy + 170;
+    const gi = group(borrow.x, sA, borrow.W, "Interfaces", "wrap", ifs.map((e) => C.screen(e)));
+    gi.style.gap = "30px"; gi.children.length && [...gi.children].forEach((c, i) => (c.style.width = i === 0 ? "340px" : "300px"));
+    const lend = group(borrow.x, sA + gi.offsetHeight + 50, 320, "Handlers", "wrap", [sw("handler").find((e) => e.a.endsWith("lend"))].map(C.handler));
+    const rx = rest[0].x, rw = fx - 50 - rx;
+    const sgrp = group(rx, sA, rw, "Handlers, dependency and rule", "wrap", [
+      C.handler(sw("handler").find((e) => e.a.endsWith("send-reminder"))), ...sw("dependency").map(C.dependency), ...sw("rule").map(C.swrule), ...sw("decision").map(C.decision)]);
+    [...sgrp.children].forEach((c) => (c.style.width = "290px")); sgrp.style.gap = "20px";
+    [gi, lend, sgrp].forEach(fixIn);
+    const SWb = Math.max(...[gi, lend, sgrp].map((g) => g.offsetTop + g.offsetHeight)) + 40, SWh = SWb - SWy;
+    rects["software/lending"] = { x: PLx, y: SWy, w: PW, h: SWh };
+    regionEls["software/lending"] = region("software/lending", "s", "Software", "Lending", area("software", "lending").f.says, PLx, SWy, PW, SWh);
+    // ---- Constitution and shared, to the left
+    const cons = data.entries.filter((e) => e.k === "principle");
+    group(40, 170, 380, "Principles", "", cons.map(C.principle));
+    rects["constitution"] = { x: 0, y: 0, w: 460, h: 360 };
+    regionEls.constitution = region("constitution", "x", "Constitution", "Principles", "What every decision is judged against.", 0, 0, 460, 360);
+    const terms = group(40, 590, 380, "Terms", "", entries("term", "product", "shared").map(C.term));
+    rects["product/shared"] = { x: 0, y: 420, w: 460, h: Math.max(380, terms.offsetTop + terms.offsetHeight - 420 + 40) };
+    regionEls["product/shared"] = region("product/shared", "p", "Product", "Shared", area("product", "shared").f.says, 0, 420, 460, rects["product/shared"].h);
+    for (const id in regionEls) world.insertBefore(regionEls[id], world.firstChild);
+    summaries(regionEls);
+    // ---- element map and links
+    const els = new Map();
+    world.querySelectorAll("[data-a]").forEach((el) => { if (!els.has(el.dataset.a)) els.set(el.dataset.a, el); });
+    B.els = els; B.rects = rects; B.frames = frames;
+    B.elFor = (a) => { for (let p = a; p; p = parent(p)) if (els.has(p)) return els.get(p); return null; };
+    crossLinks(); bundles();
+    const all = Object.values(rects);
+    B.bounds = { x: 0, y: 0, w: Math.max(...all.map((r) => r.x + r.w)), h: Math.max(...all.map((r) => r.y + r.h)) };
+    return B.bounds;
+  };
+
+  const areaNeed = (frame) => { const l0 = world.dataset.lod, i0 = world.style.getPropertyValue("--inv"); world.dataset.lod = "areas"; world.style.setProperty("--inv", "3");
+    const s = frame.querySelector(".fsum"); const n = s ? s.offsetTop + s.offsetHeight + 24 : 0; l0 ? (world.dataset.lod = l0) : delete world.dataset.lod; world.style.setProperty("--inv", i0 || "1"); return n; };
+  function summaries(regionEls) {
+    for (const id in regionEls) {
+      const [ly, ar] = id.split("/"); const rs = regionEls[id].querySelector(".rsum");
+      const list = id === "constitution" ? data.entries.filter((e) => !e.ly) : data.entries.filter((e) => e.ly === ly && e.ar === ar && !parent(e.a));
+      const n = {}; list.forEach((e) => { if (e.k !== "area") n[e.k] = (n[e.k] || 0) + 1; });
+            rs.innerHTML = list.filter((e) => e.k === "goal" || e.k === "capability").map((e) => `<span class="n ${e.k}">${e.k === "goal" ? "Goal" : "Capability"}: ${esc(B.name(e))}</span>`).join("") + Object.entries(n).map(([k, c]) => `<span>${c} ${c > 1 ? (k.endsWith("y") ? k.slice(0, -1) + "ies" : k + "s") : k}</span>`).join("") + list.filter((e) => e.k === "decision" && B.decision(e.a)?.status === "waiting").map((e) => `<span class="w">Waiting: ${esc(B.name(e))}</span>`).join("");
+    }
+  }
+
+  function frameSummary(wf, f) {
+    {
+      const steps = B.kids(wf.a, ["step"]), ends = B.kids(wf.a, ["end"]);
+      const ifs = new Set(), hs = new Set(), under = (a) => a === wf.a || a.startsWith(wf.a + "/");
+      for (const r of data.relations) { if (!under(r.t)) continue; if (r.f === "serves") ifs.add(r.o); if (r.f === "performs") hs.add(r.o); }
+      const flow = steps.sort((a, b) => f.steps.get(a.a).offsetLeft - f.steps.get(b.a).offsetLeft).map((s) => esc(name(s))).join(" › ");
+      const chip = (n, w, c) => (n ? `<span class="fchip ${c || ""}">${n} ${n > 1 ? w + "s" : w}</span>` : "");
+      f.el.insertAdjacentHTML("beforeend", `<div class="fsum"><div class="fsays">${esc(wf.f.says)}</div><div class="flow">${flow}</div><div>${chip(steps.length, "step")}${chip(ends.length, "end")}</div>`
+        + `<div>${chip(ifs.size, "interface", "sw")}${ifs.size ? '<span class="fl">serve it</span>' : ""} ${chip(hs.size, "handler", "sw")}${hs.size ? '<span class="fl">perform it</span>' : ""}</div></div>`);
+    }
+  }
+  function crossLinks() {
+    const svg = document.getElementById("links"); let html = "", lbl = "";
+    const seen = new Set();
+    for (const r of data.relations) {
+      if (r.f !== "serves" && r.f !== "performs") continue;
+      const own = B.elFor(r.o);
+      let t = r.t; while (t && by.get(t)?.k !== "step") t = parent(t);
+      const te = t && B.els.get(t); if (!own || !te) continue;
+      const id = r.o + ">" + t + r.f; if (seen.has(id)) continue; seen.add(id);
+      const a = worldRect(own), b = worldRect(te), n = seen.size;
+      const x1 = a.x + a.w / 2, y1 = a.y, x2 = b.x + 40 + ((n * 53) % (b.w - 80)), y2 = b.y + b.h + 8; // end just below the step box
+      const my = (y1 + y2) / 2;
+      html += `<path class="x" d="M${x1},${y1} C${x1},${y1 - 120} ${x2},${y2 + 160} ${x2},${y2}" marker-end="url(#ah-x)"/>`;
+      const u = 0.3, bx = (1 - u) ** 3 * x1 + 3 * (1 - u) ** 2 * u * x1 + 3 * (1 - u) * u * u * x2 + u ** 3 * x2, by2 = (1 - u) ** 3 * y1 + 3 * (1 - u) ** 2 * u * (y1 - 120) + 3 * (1 - u) * u * u * (y2 + 160) + u ** 3 * y2;
+      lbl += `<div class="lk" style="left:${bx}px;top:${by2}px">${r.f}</div>`;
+    }
+    svg.innerHTML = `<defs><marker id="ah-x" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah x" d="M0,0L10,5L0,10z"/></marker></defs>` + html;
+    world.insertAdjacentHTML("beforeend", lbl);
+    // a call: arrow from the call chip to the called workflow
+    const cs = document.getElementById("links");
+    for (const r of data.relations.filter((r) => r.f === "calls")) {
+      const own = B.els.get(r.o), tgt = B.els.get(r.t); if (!own || !tgt) continue;
+      const a = worldRect(own), b = worldRect(tgt);
+      cs.insertAdjacentHTML("beforeend", `<path class="e call" d="M${a.x + a.w / 2},${a.y + a.h} L${b.x + b.w / 2},${b.y}" marker-end="url(#ah-call)"/>`);
+    }
+  }
+
+  function bundles() {
+    const svg = document.getElementById("bundles"), pairs = new Map();
+    const reg = (a) => { const e = by.get(a); return e ? (e.ly ? `${e.ly}/${e.ar}` : "constitution") : null; };
+    for (const r of data.relations) {
+      const a = reg(r.o), b = reg(r.t); if (!a || !b || a === b) continue;
+      const k = [a, b].sort().join("|"); const m = pairs.get(k) || pairs.set(k, { a, b, f: {} }).get(k);
+      m.f[r.f] = (m.f[r.f] || 0) + 1;
+    }
+    let html = "", labels = "";
+    for (const { a, b, f } of pairs.values()) {
+      const A = B.rects[a], Bt = B.rects[b]; if (!A || !Bt) continue;
+      let p1, p2;
+      if (Math.abs(A.x - Bt.x) < 5) { const top = A.y < Bt.y ? A : Bt, low = top === A ? Bt : A; p1 = [Math.max(top.x, low.x) + 900, top.y + top.h]; p2 = [p1[0], low.y]; }
+      else { const left = A.x < Bt.x ? A : Bt, right = left === A ? Bt : A; const y = Math.max(left.y, right.y) + 130; p1 = [left.x + left.w, y]; p2 = [right.x, y]; }
+      const tot = Object.values(f).reduce((s, n) => s + n, 0), words = Object.entries(f).sort((x, y) => y[1] - x[1]).map(([k, n]) => `${k} ${n}`).join(" · ");
+      html += `<path class="bundle-line" d="M${p1[0]},${p1[1]} L${p2[0]},${p2[1]}"/>`;
+      const title = (id) => (id === "constitution" ? "Constitution" : human(id.split("/")[0]) + " " + id.split("/")[1]);
+      labels += `<div class="bundle ${tot > 3 ? "big" : ""}" style="left:${(p1[0] + p2[0]) / 2}px;top:${(p1[1] + p2[1]) / 2}px">${tot > 3 ? `<b>${esc(title(a))} ↔ ${esc(title(b))}</b>` : ""}<small>${esc(words)}</small></div>`;
+    }
+    svg.innerHTML = html; world.insertAdjacentHTML("beforeend", labels);
+  }
+})();
+</script><script>// The panel: what the selected entry is, what it connects to, and for a decision what it impacts and where.
+(() => {
+  const { by, name, esc, decision, route, place, kids, human } = B;
+  const item = (a, extra) => { const e = by.get(a); return `<li><div class="it" data-pick="${esc(a)}"><span class="k">${e ? e.k : ""}</span><span><b>${esc(name(a))}</b>`
+    + `<div class="w">${esc(place(a))}${B.parent(a) ? " › " + esc(route(a).slice(0, -1).join(" › ")) : ""}</div>${extra || ""}</span></div></li>`; };
+  const group = (as, extra) => { // grouped by area, as the owner reads them: where in the system
+    const by2 = new Map(); as.forEach((a) => { const p = place(a); (by2.get(p) || by2.set(p, []).get(p)).push(a); });
+    return [...by2].map(([p, l]) => `<h4>${esc(p)}</h4><ul>${l.map((a) => item(a, extra?.(a))).join("")}</ul>`).join("");
+  };
+  const setLine = (o, sets) => Object.entries(sets || {}).map(([a, v]) => v == null ? `removes ${esc(name(a))}` : `sets ${esc(name(a))}${v && typeof v === "object" ? " " + esc(Object.entries(v).map(([k, x]) => `${k} ${x}`).join(", ")) : ""}`).join("; ");
+
+  B.panel = (a, imp, rel) => {
+    const e = by.get(a), f = e.f, p = document.getElementById("panel");
+    let html = `<button class="close" id="closep" aria-label="Close">Close</button><div class="kw" style="text-align:left">${e.k} · ${esc(place(a))}</div><h3>${esc(name(a))}</h3>`;
+    if (route(a).length > 1) html += `<div class="w" style="color:var(--mute)">${esc(route(a).join(" › "))}</div>`;
+    if (f.says) html += `<p>${esc(f.says)}</p>`;
+    if (e.k === "decision") {
+      const d = decision(a), opts = kids(a, ["option"]), prop = kids(a, ["proposal"])[0];
+      html += `<div class="q">${esc(f.question)}</div>`;
+      if (f.context) html += `<div class="note2">${esc(f.context)}</div>`;
+      html += `<div>${d.status === "waiting" ? '<span class="stat waiting">waiting for the owner</span>' : '<span class="stat">answered</span>'}${d.delegated ? ' <span class="stat deleg">delegated</span>' : ""}</div>`;
+      html += "<h4>Options</h4>" + (opts.length ? opts.map((o) => `<div class="opt ${o.a === d.chose ? "chosen" : ""}"><b>${o.a === d.chose ? "✓ " : ""}${esc(name(o))}</b><div class="w" style="color:var(--mute)">${setLine(o, o.f.sets)}</div></div>`).join("")
+        : `<div class="note2">No options yet.${prop ? " Proposal: " + esc(prop.f.why || "") : ""}</div>`);
+      const ans = (f.answers || [])[0]; if (ans) html += `<div class="note2">Answered: “${esc(ans.said)}” (${esc(ans.at.slice(0, 10))})${ans.delegated ? ", under a delegation" : ""}</div>`;
+      if (prop && opts.length) html += `<div class="note2">Proposal: ${esc(prop.f.why)}</div>`;
+      html += `<h4>Impacts ${imp.count} ${imp.count === 1 ? "entry" : "entries"}</h4>`;
+      if (imp.sets.length) html += `<div class="note2">Sets ${imp.sets.map((s) => esc(name(s))).join(", ")}.</div>`;
+      html += imp.derived ? `<div class="note2">${imp.count ? "ogy impact lists nothing for these options yet; these are the entries that link to what they set." : "Nothing links to what these options set yet."}</div>`
+        : `<div class="note2">From ogy impact: the same for every option.</div>`;
+      html += group(imp.reach);
+    } else {
+      const fe = Object.entries(f).filter(([k, v]) => k !== "says" && v !== null && typeof v !== "object");
+      if (fe.length) html += `<h4>Fields</h4><ul>${fe.map(([k, v]) => `<li><span class="w" style="color:var(--mute)">${esc(k)}</span> ${esc(v)}</li>`).join("")}</ul>`;
+      const groups = new Map(); for (const [x, fs] of rel) { const k = [...fs].join(", "); (groups.get(k) || groups.set(k, []).get(k)).push(x); }
+      for (const [k, l] of groups) html += `<h4>${esc(k)}</h4><ul>${l.map((x) => item(x)).join("")}</ul>`;
+      if (!groups.size) html += '<div class="note2">Nothing links to or from this entry.</div>';
+    }
+    p.innerHTML = html;
+    p.querySelectorAll("[data-pick]").forEach((n) => n.addEventListener("click", () => B.select(n.dataset.pick, true)));
+    p.querySelector("#closep").onclick = () => B.select(null);
+  };
+})();
+</script><script>// Camera (pan, zoom, pinch), semantic zoom, selection and the panel.
+(() => {
+  const { by, name, esc, h, decision, parent, route, place, out, inc, data, human } = B;
+  const stage = document.getElementById("stage"), world = document.getElementById("world");
+  const cam = { x: 0, y: 0, s: 0.4 }, MIN = 0.12, MAX = 2.5;
+  let sel = null;
+  const lodOf = (s) => (s < 0.5 ? "areas" : s < 0.95 ? "flows" : "detail");
+
+  function apply(animate) {
+    world.classList.toggle("anim", !!animate);
+    world.style.transform = `translate(${cam.x}px,${cam.y}px) scale(${cam.s})`;
+    world.style.setProperty("--inv", String(1 / cam.s));
+    // a selection needs names on the cards it touches, so it never zooms out to the area level
+    const lod = sel && cam.s < 0.5 ? "flows" : lodOf(cam.s); world.dataset.lod = lod;
+    document.getElementById("zoom").textContent = Math.round(cam.s * 100) + "%";
+    document.querySelectorAll("[data-lod-btn]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lodBtn === lod)));
+    if (animate) setTimeout(() => world.classList.remove("anim"), 400);
+  }
+  function zoomAt(cx, cy, k) {
+    const s = Math.min(MAX, Math.max(MIN, cam.s * k)), r = s / cam.s;
+    cam.x = cx - (cx - cam.x) * r; cam.y = cy - (cy - cam.y) * r; cam.s = s; apply();
+  }
+  function fitRect(r, pad = 60, max = 1.4, right = 0) {
+    const W = stage.clientWidth - right, H = stage.clientHeight;
+    const s = Math.min(max, Math.max(MIN, Math.min((W - pad * 2) / r.w, (H - pad * 2) / r.h)));
+    cam.s = s; cam.x = (W - r.w * s) / 2 - r.x * s; cam.y = (H - r.h * s) / 2 - r.y * s; apply(true);
+  }
+  const rectOf = (el) => B.worldRect(el);
+  const union = (rs) => { const x = Math.min(...rs.map((r) => r.x)), y = Math.min(...rs.map((r) => r.y)); return { x, y, w: Math.max(...rs.map((r) => r.x + r.w)) - x, h: Math.max(...rs.map((r) => r.y + r.h)) - y }; };
+
+  // ---- pointer: drag pans, wheel zooms, two fingers pinch
+  const ptrs = new Map(); let drag = null, pinch = null;
+  stage.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: cam.s }; drag = null; }
+    else drag = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y, moved: false };
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinch && ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y), r = stage.getBoundingClientRect();
+      zoomAt((a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top, (pinch.s * d / pinch.d) / cam.s); return;
+    }
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.moved && Math.hypot(dx, dy) > 4) { drag.moved = true; stage.classList.add("panning"); stage.setPointerCapture(e.pointerId); }
+    if (drag.moved) { cam.x = drag.cx + dx; cam.y = drag.cy + dy; apply(); }
+  });
+  const up = (e) => {
+    const was = drag; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null;
+    stage.classList.remove("panning"); drag = null;
+    if (was && !was.moved && e.type === "pointerup") click(document.elementFromPoint(e.clientX, e.clientY));
+  };
+  stage.addEventListener("pointerup", up); stage.addEventListener("pointercancel", up);
+  stage.addEventListener("wheel", (e) => {
+    e.preventDefault(); const r = stage.getBoundingClientRect();
+    if (e.shiftKey || e.altKey) { cam.x -= e.deltaY; cam.y -= e.deltaX; apply(); return; }
+    zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)));
+  }, { passive: false });
+  addEventListener("keydown", (e) => {
+    if (e.target.closest?.("input,textarea")) return;
+    const cx = stage.clientWidth / 2, cy = stage.clientHeight / 2;
+    if (e.key === "+" || e.key === "=") zoomAt(cx, cy, 1.25); else if (e.key === "-") zoomAt(cx, cy, 0.8);
+    else if (e.key === "0") fit(); else if (e.key === "Escape") select(null);
+    else if (e.key.startsWith("Arrow")) { const d = { ArrowLeft: [60, 0], ArrowRight: [-60, 0], ArrowUp: [0, 60], ArrowDown: [0, -60] }[e.key]; cam.x += d[0]; cam.y += d[1]; apply(); }
+  });
+
+  function click(el) {
+    if (!el || !stage.contains(el) && el !== stage) return;
+    const g = el.closest("[data-go]"); if (g) return select(g.dataset.go, true);
+    const t = el.closest(".row[data-a], .step[data-a], .card[data-a], .end[data-a], .frame[data-a]");
+    if (world.dataset.lod === "areas") { // at area level a click opens what you clicked
+      const f = el.closest(".frame"), r = el.closest(".region");
+      if (f) return fitRect(rectOf(f), 70, 1.2, panelWidth());
+      if (r) return fitRect(rectOf(r), 40, 0.5);
+    }
+    if (!t) return select(null);
+    select(t.dataset.a, false);
+  }
+  const panelWidth = () => (document.getElementById("panel").classList.contains("open") ? 380 : 0);
+  const fit = () => { select(null); fitRect(B.bounds, 40, 0.6); };
+
+  // ---- selection
+  function impactOf(a) {
+    const d = decision(a); if (!d) return null;
+    const reach = new Set(); for (const o of Object.values(d.options)) o.reach.forEach((x) => reach.add(x));
+    const sets = new Set(); for (const o of Object.values(d.options)) o.sets.forEach((x) => sets.add(x));
+    const prop = (B.kids(a, ["proposal"])[0]?.f.sets) || {}; Object.keys(prop).forEach((x) => by.has(x) && sets.add(x));
+    let derived = false;
+    if (!reach.size) { // no ogy impact data: what links to what the options set
+      derived = true;
+      for (const s of sets) { for (const r of out.get(s) || []) reach.add(r.t); for (const r of inc.get(s) || []) if (r.o !== a && !r.o.startsWith(a + "/")) reach.add(r.o); }
+      reach.delete(a);
+    }
+    return { reach: [...reach].filter((x) => by.has(x)).sort(), sets: [...sets], derived, count: reach.size };
+  }
+  function related(a) {
+    const map = new Map();
+    const add = (x, f) => { if (x && x !== a && by.has(x)) (map.get(x) || map.set(x, new Set()).get(x)).add(f); };
+    const prefix = a + "/";
+    for (const r of data.relations) {
+      if (r.o === a || r.o.startsWith(prefix)) add(r.t, r.f);
+      if (r.t === a || r.t.startsWith(prefix)) add(r.o, "← " + r.f);
+    }
+    return map;
+  }
+  function select(a, pan) {
+    for (const c of ["sel", "rel", "impact", "rowhit", "keep"]) world.querySelectorAll("." + c).forEach((n) => n.classList.remove(c));
+    world.querySelectorAll(".tag").forEach((n) => n.remove());
+    document.getElementById("overlay").innerHTML = ""; sel = a;
+    world.classList.toggle("has-sel", !!a);
+    const panel = document.getElementById("panel");
+    if (!a) { panel.classList.remove("open"); return; }
+    const el = B.elFor(a); if (!el) return;
+    const imp = impactOf(a), ids = imp ? imp.reach : [...related(a).keys()], cls = imp ? "impact" : "rel";
+    const top = (x) => { const n = B.elFor(x); return n && (n.matches(".row,.opt,.tr,.pill") ? n.closest(".step,.card,.end") : n); };
+    const targets = [];
+    for (const x of ids) { const n = B.els.get(x) || B.elFor(x); const t = top(x); if (!t) continue;
+      t.classList.add(cls); if (n && n.matches(".row")) n.classList.add("rowhit"); if (!targets.includes(t)) targets.push(t); }
+    const own = top(a) || el; own.classList.add("sel"); if (el.matches(".row")) el.classList.add("rowhit");
+    own.querySelectorAll("[data-a]").forEach((x) => x.classList.add("keep")); own.closest(".frame")?.querySelector(".frame-bg")?.classList.add("keep");
+    const names = new Map();
+    for (const x of ids) { const t = top(x); if (!t) continue; const e = by.get(x), r = route(x); (names.get(t) || names.set(t, []).get(t)).push(name(x)); }
+    targets.forEach((t) => { t.closest(".frame")?.querySelector(".frame-bg")?.classList.add("keep");
+      const l = [...new Set(names.get(t) || [])]; t.insertAdjacentHTML("beforeend", `<span class="tag ${cls === "impact" ? "" : "rel"}">${esc(l.slice(0, 1).join("") + (l.length > 1 ? " +" + (l.length - 1) : ""))}</span>`); });
+    // lines from the selection to each target
+    const ov = document.getElementById("overlay"), A = rectOf(own); let d = "";
+    for (const t of targets) { if (t === own) continue; const R = rectOf(t);
+      const x1 = A.x + A.w / 2, y1 = A.y + A.h / 2, x2 = R.x + R.w / 2, y2 = R.y + R.h / 2, vert = Math.abs(y2 - y1) > Math.abs(x2 - x1);
+      const p1 = vert ? [x1, y2 > y1 ? A.y + A.h : A.y] : [x2 > x1 ? A.x + A.w : A.x, y1], p2 = vert ? [x2, y2 > y1 ? R.y : R.y + R.h] : [x2 > x1 ? R.x : R.x + R.w, y2];
+      d += `<path class="x ${cls}" d="M${p1[0]},${p1[1]} C${vert ? `${p1[0]},${(p1[1] + p2[1]) / 2} ${p2[0]},${(p1[1] + p2[1]) / 2}` : `${(p1[0] + p2[0]) / 2},${p1[1]} ${(p1[0] + p2[0]) / 2},${p2[1]}`} ${p2[0]},${p2[1]}" marker-end="url(#ah-${cls === "impact" ? "impact" : "x"})"/>`; }
+    ov.innerHTML = `<defs>${["x", "impact"].map((c) => `<marker id="ah-${c}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah ${c}" d="M0,0L10,5L0,10z"/></marker>`).join("")}</defs>` + d;
+    B.panel(a, imp, related(a));
+    panel.classList.add("open");
+    if (pan !== false || imp) fitRect(union([A, ...targets.map(rectOf)]), 80, 1.1, 380);
+  }
+  B.select = select; B.cam = cam; B.fitRect = fitRect; B.stage = stage;
+
+  // ---- header
+  function header() {
+    const w = B.waiting();
+    document.getElementById("wait").innerHTML = w.length ? `<span class="mark" id="waitmark" style="cursor:pointer">${w.length} waiting</span>` : "";
+    document.getElementById("wait").onclick = () => w[0] && select(w[0].a, true);
+    document.querySelectorAll("[data-lod-btn]").forEach((b) => b.addEventListener("click", () => {
+      const s = { areas: 0.38, flows: 0.7, detail: 1.15 }[b.dataset.lodBtn], cx = stage.clientWidth / 2, cy = stage.clientHeight / 2; zoomAt(cx, cy, s / cam.s); }));
+    document.getElementById("fit").onclick = fit;
+    document.getElementById("theme").onclick = () => { const r = document.documentElement, d = r.dataset.theme === "dark" || (!r.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches); r.dataset.theme = d ? "light" : "dark"; };
+  }
+  const bounds = B.build(); header(); fit();
+  addEventListener("resize", () => !sel && fitRect(B.bounds, 40, 0.6));
+})();
+</script>
+</body>
+</html>
