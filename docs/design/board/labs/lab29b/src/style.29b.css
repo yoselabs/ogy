@@ -1,0 +1,29 @@
+/* lab 29B: lab 28's stylesheet (colours, fonts) above; only what the new levels need below */
+.dim{opacity:.38}.dim2{opacity:.22}
+.note rect{stroke:none}.note rect.nb{filter:drop-shadow(2px 3px 3px #0002)}
+.note text{font-weight:inherit}
+.mn{cursor:pointer}.mn .mt{font-weight:600}.mn:hover .mt{text-decoration:underline}
+#top{pointer-events:none}#top>*{pointer-events:auto}#zoom{font-size:12px;color:#6b7285;min-width:42px;text-align:right}
+#top .seg button{font-size:13px;padding:6px 14px}
+.kw{pointer-events:none}
+.edge{fill:none;stroke-width:1.8;opacity:.85;stroke:#7d8497}.edge.rel{stroke:#8a8fa0}.edge.effect{stroke:#7d8497}.edge.call{stroke:#a855f7;stroke-width:2.4;stroke-dasharray:8 5;opacity:.95}.edge.cover{stroke:#a855f7;stroke-width:2;stroke-dasharray:2 5;stroke-linecap:round;opacity:.95}
+.edge-hit{fill:none;stroke:transparent;stroke-width:12;pointer-events:stroke;cursor:pointer}
+.edgeg .dot{fill:#7d8497}.edgeg.hl .edge{stroke:#f08c00;stroke-width:3;opacity:1;stroke-dasharray:9 6;animation:fl .9s linear infinite}.edgeg.hl .dot{fill:#f08c00}
+.elab-bg{fill:#f4f5f7;stroke:none}.elab text,.el{fill:#4a5163;font-weight:500;stroke:none;paint-order:normal}.elab.hl text{fill:#a55a00;font-weight:700}
+.iedge{fill:none;stroke:#e8590c;stroke-width:1.6;opacity:.9}.idot{fill:#e8590c}
+.st-pill{fill:#fff;stroke:#8ecbf5!important;stroke-width:1.4}.st-arrow{stroke:#1d4f7a;stroke-width:1.5;fill:none}
+.scr .b rect.pb{fill:#fff;stroke:#c6ccda}.scr .b text.pl{fill:#fff;opacity:.9}.scr .b.sys text.pl,.scr .b.tmo text.pl{fill:#444}
+.scr .b .badge rect.bd{fill:#fff;stroke:#c9ced9}.scr .b .badge.op-delete rect.bd{fill:#fdeceb;stroke:#e0736b}.scr .b .badge text{fill:#2b2f3a}
+.slot .call rect{fill:#f1e6ff;stroke:#c9a6f5}
+#tip{position:fixed;z-index:20;width:300px;background:#fff;border:1px solid #dfe3ec;border-radius:14px;padding:12px 14px;box-shadow:0 10px 30px #0003;pointer-events:none;display:none;font:12.5px/1.45 system-ui}
+#tip .hh,#card .hh{display:flex;gap:10px;align-items:center;margin-bottom:6px}.hi{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;flex:none}.hi svg{width:16px;height:16px}
+.ht{font-size:15px;font-weight:700;flex:1}.hk{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;align-self:flex-start;color:#6b7285}
+#tip p,#card p{margin:4px 0}.says{color:#3a3328}.hint{font-size:11.5px;color:#7a6a3a;background:#fff8e1;border-radius:8px;padding:5px 8px}
+.sec{margin:8px 0 0}.sec label,.rg label{display:block;font-size:11px;letter-spacing:.06em;color:#737b8b;font-weight:700;text-transform:uppercase;margin-bottom:3px}.chs{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.mn svg{width:12px;height:12px;flex:none}span.mn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;vertical-align:middle}span.mn .mt{font-weight:600}
+#card{right:14px;bottom:14px;top:auto;width:320px;max-height:58%;font-size:12.5px;overflow:auto;z-index:6}#card .close{float:right;border:0;background:none;font:22px system-ui;cursor:pointer;color:#6b7285}
+.it{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding:3px 0;cursor:default}.it .fw{font-size:11px;color:#6b7285;font-weight:500}.ar{color:#6b7285}
+#rel{position:absolute;right:14px;top:58px;width:340px;z-index:5}#rel details{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:12px;box-shadow:0 4px 18px #0002;font-size:12px}#rel summary{padding:8px 12px;cursor:pointer;font-weight:600}#rel .rb{max-height:46vh;overflow:auto;padding:0 12px 10px}.rg{margin-top:8px}.rg .it{cursor:pointer;border-radius:6px}.rg .it:hover{background:#eef3ff}
+#help{display:none}
+.slot text{font-family:system-ui,sans-serif}
+#card .hk,#tip .hk,#card .sec label,#tip .sec label,.rg label,#card .k{font-size:11px!important}
