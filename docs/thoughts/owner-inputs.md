@@ -31,3 +31,9 @@ All right, wonderful. Lab 28 is what I like. But Lab 28 has some issues. I think
 ## 2026-11-23, decision on the next prototype
 
 All right. Then let's take lab 28 and generate 29B. All right. Addressing all of this feedback.
+
+---
+
+## 2026-11-23, on lab 29B
+
+I think you still need to polish it, like the site for every example entity. What do you expect to see? Like, for example, I see actor, and I see only icon of the actor. It's weird. Also, I see no relay actor, and it's only a weird, really weird icon what I see. I think we might need to ask favor on each level what actually is important.
