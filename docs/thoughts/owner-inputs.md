@@ -43,3 +43,9 @@ I think you still need to polish it, like the site for every example entity. Wha
 ## 2026-11-23, on the ontology gaps
 
 ok, don't miss a single item - let fable design it, correlate and consolidate it against our current topology. cost of everything is nothing - we should not just add to ontology, we should consider changing things and adjusting things
+
+---
+
+## 2026-11-24, on a parallel ontology review
+
+Yeah, it's unique in GitLab. But in parallel, I want to start doing another session to test the ontology review and design. I want to make sure that all of the findings which we found were ontology needs to be adjusted. Will be thought through again. For that, I'd like to use Fable with a very special skill - /ontology-designer - It is from my GitHub plugin called iorlas-wip
