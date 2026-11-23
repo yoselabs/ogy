@@ -37,3 +37,9 @@ All right. Then let's take lab 28 and generate 29B. All right. Addressing all of
 ## 2026-11-23, on lab 29B
 
 I think you still need to polish it, like the site for every example entity. What do you expect to see? Like, for example, I see actor, and I see only icon of the actor. It's weird. Also, I see no relay actor, and it's only a weird, really weird icon what I see. I think we might need to ask favor on each level what actually is important.
+
+---
+
+## 2026-11-23, on the ontology gaps
+
+ok, don't miss a single item - let fable design it, correlate and consolidate it against our current topology. cost of everything is nothing - we should not just add to ontology, we should consider changing things and adjusting things
