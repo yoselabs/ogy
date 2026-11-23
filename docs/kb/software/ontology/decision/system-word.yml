@@ -1,0 +1,13 @@
+title: The word for what we ship
+question: If the ontology gains a kind for one thing the owner ships and names (the engine, the board), is it called system, product or program?
+context: Comes up only if context-form is answered system-kind. The word `system` is free as an entry word (17 hits, all prose); the word product is already avoided for area names, and program is already a nature of an actor (someone else's program). The phrases system step and outside system already use it.
+options:
+  system:
+    label: '`system`: like a C4 software system'
+  product:
+    label: '`product`: the word the layer already has'
+  program:
+    label: '`program`: the nature of an actor we do not ship'
+proposal:
+  chose: system
+  why: It fits the phrases system step and outside system, and does not clash with the layer name product or the actor nature program.

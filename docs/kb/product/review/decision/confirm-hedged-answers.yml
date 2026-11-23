@@ -1,0 +1,11 @@
+title: Confirm the 13 answers the owner hedged
+question: Thirteen answers in force carry the hedge "Yes, I guess" or an equal one. Are they confirmed as recorded, or does the owner revisit some of them?
+context: 'ogy has no mechanism for re-confirming an answer; a new answer to the same decision does that. The 13: software/ontology/decision/contexts-above-areas, software/ontology/decision/style-book-home, software/ontology/decision/view-contract, software/ontology/decision/derive-justification, software/ontology/decision/command-inputs-are-accepted, product/inspection/decision/human-decision-mode, product/inspection/decision/map-layers, product/inspection/decision/map-modes, product/inspection/decision/preview-a-new-requirement, product/inspection/decision/why-chain-on-board, software/cli/decision/view-delivery, software/cli/decision/review-all-fills-the-round, software/cli/decision/viewer-is-an-interface. Answering confirmed changes none of them. Answering revisit lists them again and the session asks one by one.'
+options:
+  confirmed:
+    label: Confirmed as recorded
+  revisit:
+    label: Revisit these, one by one
+proposal:
+  chose: confirmed
+  why: The answers read plainly; confirming costs one reply. This is a recommendation, not an answer.

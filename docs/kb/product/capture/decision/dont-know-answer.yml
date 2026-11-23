@@ -1,0 +1,13 @@
+title: When the owner does not know
+question: When the owner says "I do not know" to a question, may the agent decide that one question, with a note saying so?
+context: Today there is no answer for it. Option delegation is one decision per knowledge base, "when the owner does not know, may the agent decide that one question?"; after a yes the click is `ogy answer --delegated <that decision>` with a `note`, and `ogy dropped` already lists such answers for a veto. The owner would still be able to choose each time.
+options:
+  delegation:
+    label: One decision that delegates the question; each such answer is delegated, noted and listed for a veto
+  answer-field:
+    label: A new field on the answer meaning "the owner did not know"
+  owner-chooses:
+    label: The owner always chooses; no delegation for it
+proposal:
+  chose: delegation
+  why: Delegated answers, notes and the `dropped` list already exist, so it needs no new field, and the owner can veto each one.

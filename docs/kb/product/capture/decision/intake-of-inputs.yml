@@ -1,0 +1,13 @@
+title: Raw inputs and where they live
+question: When the owner gives a long input (a call transcript, a document), where does it live and how does an entry point to the passage it came from?
+context: "`src` takes `doc:<commit>:<path>#<anchor>`, which is a Markdown heading at the finest; a transcript has no headings. The KB keeps no quotes and no messages. Option inputs-folder: raw inputs live in the repository outside the KB, as `owner-inputs.md` does, and `evidence.doc` accepts a section or a line range (`#L10-L14`), with the pinned commit keeping lines stable; \"new from this input\" is every entry whose `src` names that file. Only the person at the desk answers: a stakeholder's sentence is an input."
+options:
+  inputs-folder:
+    label: An inputs folder in the repository, cited by `doc:` with a section or a line range
+  input-kind:
+    label: A kind `input` in the KB that holds each input
+  outside-git:
+    label: Inputs stay outside Git; entries keep only a paraphrase
+proposal:
+  chose: inputs-folder
+  why: It keeps the no-quotes answer (a pointer to pinned lines, not the words) and needs no kind; the ledger thread on mis-cites gives the eval.

@@ -1,0 +1,13 @@
+title: Whether a write effect carries its value
+question: A row that writes says what it writes but not the value; should the effect have a field `to` for the value, or is the value text in the row's `says`, or no value at all?
+context: 'The owner asked for the value twice (card spec 7.1, feedback 9). `value` was dropped from effect in a field cut (commit b6d3470); this brings the fact back with a reader. `to` would be an expression (text plus the links it reads, the type of `when`), allowed only with `do: write`; a changed quantity it reads makes the row work.'
+options:
+  to-on-write:
+    label: 'A field `effect.to`, only with `do: write`, read like `when`; the tool-library fixture fills it'
+  says-text:
+    label: The value is plain text in the row's `says`; nothing reads it
+  none:
+    label: No value in the ontology
+proposal:
+  chose: to-on-write
+  why: It has a reader (work when a quantity it reads changes, the effect badge on the board), which answers the "too many fields" worry.

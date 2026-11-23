@@ -1,0 +1,11 @@
+title: Unused checks for actor, entity and handler
+question: Do actors, entities and handlers that nothing uses (an actor no step or goal names, an entity no attribute or row reads, a handler that performs no row) become work `unused`, as rules, quantities and enums already are?
+context: 'Decision unused-is-work made unused work left, computed from links, and a kind declares it. Actor, entity and handler declare none, so an orphan stays invisible. Fix-the-class: the same cause applies to these three kinds. The library fixture may gain `unused` rows in its work table; it keeps its two unused rules on purpose.'
+options:
+  yes:
+    label: Each of the three kinds declares an unused work requirement
+  no:
+    label: Leave them as they are
+proposal:
+  chose: yes
+  why: Principle fix-the-class; it costs three declarations in kind files and no field.

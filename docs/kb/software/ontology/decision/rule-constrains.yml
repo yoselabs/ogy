@@ -6,9 +6,13 @@ options:
     label: constrains for data kinds, satisfies only for behaviour kinds
   common:
     label: satisfies on every kind, no constrains
+  area-and-system-satisfy:
+    label: '`satisfies` may also come from an area and from a system; every behaviour entry inside is then held to the rule (computed); the choice of one part or one interface stays as it is; data kinds keep `constrains`'
+  requirement-kind:
+    label: A new kind for requirements that hold for a whole area or system; rule stays for one part
 proposal:
-  chose: split
-  why: A rule then reads the number it is about.
+  chose: area-and-system-satisfy
+  why: The owner needs a rule for everything, one area or one endpoint, and 66 of 74 rules link to nothing; widening the source of `satisfies` serves that with no new kind, since an area or a system holds behaviour. Keeping split (the earlier answer) stays an option. This is a recommendation, not an answer (Fable redesign, 2026-11-23, M6).
 answers:
 - chose: split
   said: 'Yes, all: constrains for data kinds, satisfies only for behaviour kinds'

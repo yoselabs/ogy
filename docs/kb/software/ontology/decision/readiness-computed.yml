@@ -1,0 +1,13 @@
+title: Whether an entry is ready or waiting
+question: How does ogy know that a part of the product is not ready for design, for instance because a question about it waits for the owner or an AI decided it and nobody agreed?
+context: 'The owner wants waiting parts marked and "no missing decisions" to be a fact one can read. Computed rule (M4): an entry waits when an unanswered decision names it in `sets` or is cited by its `because`, when `ogy status` classes it decided by AI or changed since agreed, or when one of its parts waits. Today the first reason marks nothing (0 questions) and the second marks 43 entries (37 decided by AI, 6 changed).'
+options:
+  computed:
+    label: 'Computed from decisions and status, never stored: `ready` joins the computed names, `ogy work` lists a row owed for a waiting entry apart, `ogy status` counts ready per area'
+  stored-mark:
+    label: A field on each entry that a person or agent sets to ready or waiting
+  none:
+    label: No readiness; the owner reads `ogy status` and `ogy review`
+proposal:
+  chose: computed
+  why: A stored mark drifts from the answers it summarises; computing it keeps one owner of the fact (principle one-owner-per-fact).

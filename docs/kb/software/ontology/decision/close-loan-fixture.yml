@@ -1,0 +1,11 @@
+title: close-loan in the tool library
+question: In the tool-library fixture, the step close-loan listens to a transition that nothing fires. Does close-loan perform the return itself, or does it only react and another workflow fires the return?
+context: The fixture is the test of every kind and field (tests/test_tool_library.py). The unfired transition shows as a fault the redesign wants a check for. This changes the fixture only, after the owner decides.
+options:
+  performs-return:
+    label: close-loan performs return, so the transition has a row that fires it
+  reacts:
+    label: close-loan reacts, and another workflow fires return
+proposal:
+  chose: performs-return
+  why: One workflow shows the whole loan, and no second workflow is needed only to fire a transition.

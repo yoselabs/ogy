@@ -1,0 +1,29 @@
+title: Audiences as actors
+question: Do the people who read this knowledge base for different reasons (a business analyst, an architect, an engineer, an operator of the AI factory) become four human actors in product/shared/actor/, or not yet?
+context: 'The owner described different people with different questions on one knowledge base. The proposal makes no new kind: a hat is only a filter on layer and readiness, and different permitted actions make a new actor. Goals name these actors with `for`. Both options name the same four addresses; not-now sets each to null.'
+options:
+  four-actors:
+    label: Four human actors now (analyst, architect, engineer, operator)
+    sets:
+      product/shared/actor/analyst:
+        says: The person who states what the business needs and answers its questions; reads the product layer.
+        nature: human
+      product/shared/actor/architect:
+        says: The person who designs the system and its boundaries; reads both layers and what waits for a decision.
+        nature: human
+      product/shared/actor/engineer:
+        says: The person who builds from the software layer and its proofs.
+        nature: human
+      product/shared/actor/operator:
+        says: The person who runs the AI factory and watches what is ready, running and blocked.
+        nature: human
+  not-now:
+    label: Not now; the existing actors stay
+    sets:
+      product/shared/actor/analyst:
+      product/shared/actor/architect:
+      product/shared/actor/engineer:
+      product/shared/actor/operator:
+proposal:
+  chose: four-actors
+  why: Goals can then say for whom they are, with no new kind; adding them later is also cheap, so this is only worth doing if the owner wants goals named by audience.

@@ -10,9 +10,11 @@ options:
     label: Nothing in the ontology; the board lets the owner group areas and keeps that outside the knowledge base
   defer:
     label: Nothing for now; decide when the board filters by it
+  system-kind:
+    label: 'A kind `system`: one thing the owner ships and names, with a sentence (`says`); areas of both layers link to it with a new field `area.system`; a system holds rules and cites principles'
 proposal:
-  chose: defer
-  why: No build needs it yet, and the word must be chosen first.
+  chose: system-kind
+  why: 'An area-field has no sentence, no card and nowhere to hold a rule or a principle; a kind gives all three and reads like a C4 software system. This is a recommendation, not an answer: the earlier answer, area-field, stays in force until the owner answers again (Fable redesign, 2026-11-23, M1).'
 answers:
 - chose: area-field
   said: "Follow Fable's recommendation: a field of area, with a new word that is not context."

@@ -26,9 +26,14 @@ options:
     sets:
       product/inspection/capability/see-the-product-map:
         says: 'ogy shows the product as pages to dive through: a map of areas, an area page, and one drawn flow or lifecycle at a time, with every link a click away and the entries that wait for the owner in sight.'
+  canvas-again:
+    label: 'One canvas of the whole product with pages as the zoom levels: areas far out, an area page in the middle, one flow or lifecycle up close; `pages` stays an option'
+    sets:
+      product/inspection/capability/see-the-product-map:
+        says: 'ogy shows the product as one canvas of the whole product, with pages as its zoom levels: areas far out, an area page in the middle, one drawn flow or lifecycle up close, every link a click away and the entries that wait for the owner in sight.'
 proposal:
-  chose: pages
-  why: Four generations of the canvas gave overlapping blocks, struck-through labels and merged arrows; position on a free canvas carries no meaning in this data, and the two real graphs are small enough to draw one at a time without crossings.
+  chose: canvas-again
+  why: 'Recommended: ask the owner after he has tasted lab 29C. This recommends asking, not choosing; `pages` stays in force until he answers, and nothing here is his answer.'
   heard: Wants the whole thing reviewed harshly and made right, and the cost of everything is nothing, even if it means starting anew.
 answers:
 - chose: sitemap-mocks

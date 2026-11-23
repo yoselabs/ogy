@@ -1,0 +1,11 @@
+title: A where for answers given in the board
+question: May an answer's `where` name the board (scheme `ui`), besides `ai`, `bd` and a path?
+context: '`answer.where` takes only ai:, bd: and path:. The decision mode of the board (human-decision-mode) records a choice from a click, so it has no honest address today.'
+options:
+  yes:
+    label: Add the scheme `ui`, for example `ui:board`
+  no:
+    label: Keep ai, bd and path only
+proposal:
+  chose: yes
+  why: The board answers must say where they came from; without it they are recorded as an AI session that did not happen.

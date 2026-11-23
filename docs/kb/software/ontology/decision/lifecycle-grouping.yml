@@ -1,0 +1,13 @@
+title: Several lifecycles of one entity
+question: When an entity has more than one lifecycle (a loan is requested, then lent, then returned; its fee is due, then paid), does ogy only report a state nothing reaches, or also group states into named lifecycles?
+context: Final states stay computed. A second lifecycle is already expressible as an attribute `of` an enum, or as its own entity. The reached check would make a state no transition leads to work `unused`, in the same way as the other unused checks.
+options:
+  reached-check:
+    label: Only the check that a state no transition leads to is work `unused`; a second lifecycle is an enum attribute or its own entity
+  grouping:
+    label: A lifecycle grouping field or kind on states, besides the check
+  none:
+    label: Neither
+proposal:
+  chose: reached-check
+  why: The check finds the real fault with no new field; grouping has no reader yet (principle rigid-where-checked).

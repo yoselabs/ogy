@@ -1,0 +1,11 @@
+title: Where derived relations are written
+question: About 25 relations (an actor acts in a workflow, a step is told by an effect, a row is fired by a transition) are derived from links, and today each viewer computes them in its own code. Are they declared once in the kind files, or does each viewer compute its own?
+context: 'Requirements are declared in kind files and never in Python, but derived relations are not, so the board re-invents them with its own words and the CLI cannot print the same. A declaration would be a `derived:` block per kind, a name and a path in the hop syntax of `requires` (for example on actor, `acts_in: ["<-actor"]`); `kindlint` validates it, inspection emits it. It is meaning, not drawing: icons, order and layout stay in the viewer.'
+options:
+  declared:
+    label: A `derived:` block in the kind files; the engine computes once, CLI, MCP and board read the same names
+  each-viewer:
+    label: Each viewer computes what it needs
+proposal:
+  chose: declared
+  why: One declaration serves every viewer and keeps meaning out of drawing code (principles one-owner-per-fact, intuitive-for-ai); it also makes the coverage and problems views possible without re-deriving.

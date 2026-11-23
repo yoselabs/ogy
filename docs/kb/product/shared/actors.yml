@@ -17,3 +17,15 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: Kept no-views and YAML-only glossary; agreed to the five sentences
     hash: bccdd6fd3915
+- id: analyst
+  says: The person who states what the business needs and answers its questions; reads the product layer.
+  nature: human
+- id: architect
+  says: The person who designs the system and its boundaries; reads both layers and what waits for a decision.
+  nature: human
+- id: engineer
+  says: The person who builds from the software layer and its proofs.
+  nature: human
+- id: operator
+  says: The person who runs the AI factory and watches what is ready, running and blocked.
+  nature: human
