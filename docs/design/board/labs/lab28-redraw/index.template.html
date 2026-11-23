@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Board canvas (lab 28 redraw)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header id="bar">
+  <b>Board</b><span class="mute">lab 28 redraw, prototype · tool library</span>
+  <span class="seg" role="group" aria-label="Zoom level"><button data-lod-btn="areas">Areas</button><button data-lod-btn="flows">Workflows</button><button data-lod-btn="detail">Detail</button></span>
+  <button id="fit">Fit</button><span id="zoom" class="mute">40%</span>
+  <span id="wait"></span><span class="sp"></span><button id="theme">Light / dark</button>
+</header>
+<main id="stage" aria-label="Canvas">
+  <div id="world">
+    <svg id="bundles" class="bsvg" width="1" height="1" style="position:absolute;left:0;top:0;overflow:visible;display:none;pointer-events:none"></svg>
+    <svg id="links" class="links" width="1" height="1"></svg>
+    <svg id="overlay" class="links" width="1" height="1"></svg>
+  </div>
+</main>
+<aside id="panel" aria-label="Selected entry"></aside>
+<div id="legend">Drag to pan · wheel or pinch to zoom · click a decision to see what it impacts · 0 fits</div>
+<script id="data" type="application/json">__DATA__</script>
+<script src="util.js"></script><script src="cards.js"></script><script src="workflow.js"></script><script src="layout.js"></script><script src="panel.js"></script><script src="main.js"></script>
+</body>
+</html>
