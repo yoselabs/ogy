@@ -1,0 +1,12 @@
+title: The word for a dependency that replaces a program actor
+structure: true
+question: 'A workflow realizes a capability and a capability realizes a goal, but a dependency "realizes" a program actor in another sense: it stands in for that actor, and a vendor swap replaces it. Does that link keep the word `realizes`?'
+context: "Found 2026-11-24 (second review, F6). The answer dependency-realizes-actor settled which way the link runs, not its name. 0 entries in the KB and 1 link in the tool-library fixture would move; the kind file would declare `renamed` for ogy migrate. Owner feedback 2 (lab 29B): use only the ontology's own words, and fix a name that does not fit."
+options:
+  realizes:
+    label: Keep `realizes`.
+  plays:
+    label: 'Rename to `plays`: the dependency plays the program actor; `renamed: {realizes: plays}` in dependency.yml for ogy migrate.'
+proposal:
+  chose: plays
+  why: One word, one meaning; almost nothing moves.

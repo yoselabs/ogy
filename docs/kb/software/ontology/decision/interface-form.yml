@@ -6,6 +6,8 @@ options:
     label: A required enum form (web, cli, http, mcp, library, file, message); invoked_as kept, required when form is cli
   text:
     label: A free text form, a note
+  enum-list:
+    label: '`form` is a list of the same enum; an interface reached as a command and as an MCP tool says both, and the 18 ogy commands become cli and mcp'
 proposal:
   chose: enum
   why: A check reads it, so its values are closed; the old view and command become web and cli.

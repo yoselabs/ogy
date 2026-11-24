@@ -1,0 +1,12 @@
+title: What brings an entity into being
+structure: true
+question: The effect guidance says a transition without `from` creates an entity with a lifecycle and a create is only for an entity without one, yet never-written counts only a create as writing the attributes. Which one brings an entity into being?
+context: 'Found 2026-11-24 (second review, F7): the fixture creates loan with both a create and a transition without `from`, and remove-entry deletes `entry`, which has a lifecycle; no check holds the guidance.'
+options:
+  create-always:
+    label: A create brings any entity into being and writes its attributes; a transition without `from` only sets its first state, and a check asks for a create on the same row; a delete may end any entity. The guidance changes; no entry moves.
+  transition-creates:
+    label: A transition without `from` creates an entity with a lifecycle and counts as writing its attributes; a create names only an entity without one. The fixture's borrow row drops its create.
+proposal:
+  chose: create-always
+  why: It agrees with the answer create-writes-attributes and the never-written path, so no data and no check changes meaning.

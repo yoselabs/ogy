@@ -1,0 +1,15 @@
+title: Asking an answered decision again
+structure: true
+question: How is a decision the owner already answered asked again, when an agent proposes another option or the owner's answer was hedged?
+context: Found 2026-11-24 by the second ontology review (docs/research/2026-11-24-ontology-review-opus.md, F1, checked in status.py lines 177 and 293-295). A proposal is inert once a decision has an answer, and cards are made only for unanswered or delegated decisions. Re-proposals on context-form, rule-constrains and product-map, and the new option on rules-need-a-check, are never shown. confirm-hedged-answers works around it. 22 answered decisions keep an older proposal that names another option.
+options:
+  proposal-at:
+    label: 'The proposal gains `at`. A proposal newer than the newest answer makes the decision a question again, shown with the answer in force beside it: the same option asks for a confirmation, another asks to change. A proposal without `at` stays inert.'
+  listing-decision:
+    label: Re-asking goes through a decision that lists the addresses to revisit, as confirm-hedged-answers does; nothing re-asks by itself.
+  not-now:
+    label: Not now; an answered decision changes only when the owner raises it.
+proposal:
+  chose: proposal-at
+  why: One field reused from answer, one computed rule; it lets the owner see re-proposals while older proposals stay silent. A listing decision hides the question behind an address list.
+  heard: The owner wants every proposed adjustment thought through again and asked, and cost is no reason to skip it.

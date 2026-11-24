@@ -8,6 +8,8 @@ options:
     label: The value is plain text in the row's `says`; nothing reads it
   none:
     label: No value in the ontology
+  becomes-on-write:
+    label: 'The same value on a write effect, named `becomes` (an expression: text plus the links it reads), because `to` already means a state on a transition and `value` is a dropped field that migrate would print'
 proposal:
   chose: to-on-write
   why: It has a reader (work when a quantity it reads changes, the effect badge on the board), which answers the "too many fields" worry.

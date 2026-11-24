@@ -6,6 +6,8 @@ options:
     label: A `derived:` block in the kind files; the engine computes once, CLI, MCP and board read the same names
   each-viewer:
     label: Each viewer computes what it needs
+  reverse-by-field-word:
+    label: The engine names every reverse link by the field word it came from ("actor of", "offers of"); only paths of two hops or more, or with a filter, are declared in the kind files
 proposal:
   chose: declared
   why: One declaration serves every viewer and keeps meaning out of drawing code (principles one-owner-per-fact, intuitive-for-ai); it also makes the coverage and problems views possible without re-deriving.

@@ -8,6 +8,8 @@ options:
     label: A field on each entry that a person or agent sets to ready or waiting
   none:
     label: No readiness; the owner reads `ogy status` and `ogy review`
+  computed-unanswered-only:
+    label: Computed, but an entry waits only on an unanswered decision (through sets or because) or on a part that does; entries decided by AI or changed since agreed are counted apart as unagreed, never as a missing decision
 proposal:
   chose: computed
   why: A stored mark drifts from the answers it summarises; computing it keeps one owner of the fact (principle one-owner-per-fact).

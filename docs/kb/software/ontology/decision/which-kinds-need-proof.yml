@@ -8,6 +8,8 @@ options:
     label: Only rule and quantity
   keep:
     label: Keep the 13 kinds
+  behaviour-and-built-decisions:
+    label: As behaviour, and an answered structure decision whose options set nothing carries a `proof`, a test that reads the kind file; until it has one it is work
 proposal:
   chose: behaviour
   why: Work left becomes a number one can drive to zero.

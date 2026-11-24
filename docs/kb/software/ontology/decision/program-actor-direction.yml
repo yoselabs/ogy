@@ -1,0 +1,13 @@
+title: Which program actors are told and which call us
+question: 'An actor of nature program is either one we tell (a payment provider: a dependency realizes it) or one that calls us (an MCP client, a scheduler). Does ogy tell them apart by what links to them, or by a new value, or not at all?'
+context: Found 2026-11-24 by the ontology review (finding N6). The redesign's derived check says a program actor with no dependency is owed work (C11). The actor kind says program includes `an MCP client calling a tool`, and the two program actors in the software layer (software/checks, software/mcp) call us, so that check would report every one of them as owed. Today only a row that tells a program actor is held to a dependency.
+options:
+  derive:
+    label: 'Derived from links: told when an effect `tell` names it, calls us when a step or `allows` names it; the owed-dependency work applies only to told ones'
+  nature-value:
+    label: Split nature `program` into two values, one we tell and one that calls us
+  none:
+    label: No difference; the owed-dependency work stays off for program actors
+proposal:
+  chose: derive
+  why: Direction is already in the links, and a stored value would drift from them (principle one-owner-per-fact); a value before a kind, and a derived fact before a value.

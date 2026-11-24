@@ -6,6 +6,10 @@ options:
     label: A rule stays only when a handler, interface, test or check can satisfy it; the others become plain decisions or are removed with a reason
   keep-all:
     label: Every rule stays as it is, and the work list explains the unlinked ones
+  triage-by-catchability:
+    label: 'A rule stays when an existing check, test or engine behaviour could catch it: it is linked to the handler or interface that models that check, and keeps its agreement; only a rule nothing could catch becomes a plain decision, removed with its own reason, one by one'
+  link-or-reask:
+    label: A rule an engine check already enforces stays and is linked with `satisfies` from a handler in software/checks that models that check, keeping its agreement; every other rule set by an answer in force is asked again on its own decision with an option that sets it null, because `ogy remove` alone cannot remove it
 proposal:
   chose: keep-checkable
   why: A rule nothing can follow is a decision in prose, and it floods the work list with rows that are not work.

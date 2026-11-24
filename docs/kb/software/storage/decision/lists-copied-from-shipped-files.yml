@@ -1,0 +1,11 @@
+title: Lists copied from shipped files
+question: Four enums copy a list whose owner is a shipped file (software/storage/enum/layers, software/cli/enum/where-schemes, software/checks/enum/checks, software/checks/enum/landing-checks). Nothing links to them, and where-schemes already says `file` where answer.yml says `path`. Do they stay?
+context: 'Found 2026-11-24 (second review, F8). Principle one-owner-per-fact: a copy already disagrees with its owner, and `code:` evidence checks only that the symbol exists. The options carry no sets: a decision that sets the enums would make ogy remove refuse them (second review, F2); the applier removes them with this decision as the reason.'
+options:
+  owner-only:
+    label: The shipped file is the only owner; the four copies do not exist.
+  keep-and-fix:
+    label: Keep the four and correct where-schemes to ai, bd, path; the applier copies the three unchanged lists as they are now.
+proposal:
+  chose: owner-only
+  why: One owner per fact; a copy cannot be checked against its owner.

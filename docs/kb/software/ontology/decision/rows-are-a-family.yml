@@ -1,0 +1,13 @@
+title: A name for choice, case and timeout together
+question: Choice, case and timeout share satisfies, then, effects and a performing handler, and the list "case, choice, timeout" is written in 8 kind files and in ontology.py. Does the ontology get one name for the three (a family that a link may target), does the word only enter the glossary, or do the three merge into one kind?
+context: "Found 2026-11-24 by the ontology review (docs/research/2026-11-24-ontology-review.md, finding N4). The redesign proposed only the term `row`. The three differ in their trigger (a button, a condition, a clock) and each has its own required field (label; order and when; after), so a merge would make three fields optional and move the step's checks onto a value. A family keeps the kinds and writes the triple once. Whether the engine can declare a family is not checked: a kind-file change that needs engine work is a cost the owner should see."
+options:
+  family:
+    label: A named family of the three kinds in the kind system; links and checks name `row` once instead of the triple
+  term-only:
+    label: '`row` is a glossary word only; the triple stays written out where it is used'
+  one-kind:
+    label: One kind `row` with a `trigger` value (choice, case, timeout) and the fields optional by trigger
+proposal:
+  chose: family
+  why: "The three are queried together in 8 places and have two children's worth of shared fields, so a shared parent is cheaper than the repeated list; a merge would hide three different identities (principles one-owner-per-fact, rigid-where-checked). Not checked: engine support."

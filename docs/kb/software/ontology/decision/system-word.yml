@@ -8,6 +8,10 @@ options:
     label: '`product`: the word the layer already has'
   program:
     label: '`program`: the nature of an actor we do not ship'
+  container:
+    label: 'container: the C4 word for one thing shipped inside a bigger system (the CLI, the board, the MCP server of ogy); one level only, no nesting field until a second level has a real case'
+  none-yet:
+    label: "No kind yet: `system` already means the product in \"system step\" and someone else's program in \"outside system\"; ask again when one knowledge base holds two shipped things that share no handler"
 proposal:
   chose: system
   why: It fits the phrases system step and outside system, and does not clash with the layer name product or the actor nature program.
