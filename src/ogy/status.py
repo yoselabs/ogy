@@ -42,7 +42,7 @@ class Card:
     """One thing the review asks: a `question` (a decision with no answer), a `delegated` decision (an agent answered it under
     the owner's delegation: the owner may confirm or veto), or a `yes` (decided by AI) or a `changed` entry."""
 
-    kind: str  # question, delegated, yes (decided by AI) or changed
+    kind: str  # question, again (an answered decision with a newer proposal), delegated, yes (decided by AI) or changed
     address: Address
     harm: str | None  # the worst harm tag
     dependants: int
@@ -181,9 +181,10 @@ def delegated(decision: Decision) -> bool:
 
 def _reason(decision: Decision) -> str:
     """The line under a question: why the AI proposed it, unless the proposal rests on the owner's words (the card's `heard` line)."""
-    if decision.answers:
+    if decision.answers and not decision.asked_again:
         return ""
-    fields: Mapping[str, object] = decision.proposal.fields if decision.proposal and not decision.heard else {}
+    quiet = decision.heard and not decision.answers  # the card's `heard` line stands for the reason
+    fields: Mapping[str, object] = decision.proposal.fields if decision.proposal and not quiet else {}
     value = fields.get(decision.names.why)
     return f"AI proposal because: {value.strip()}" if isinstance(value, str) and value.strip() else ""
 
@@ -192,7 +193,14 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
     settled = [found for text in settles(decision)[0] if (found := snapshot.resolve(text)) is not None]
     tags = sorted((harm(snapshot, decision.address), *(harm(snapshot, found) for found in settled)), key=snapshot.ontology.declared.rank)
     force, names = decision.in_force, decision.names
-    proposal = force.option if decision.answers and force else decision.proposal.fields.get(names.chose) if decision.proposal else None
+    again = kind == "again"
+    proposal = (
+        force.option
+        if decision.answers and force and not again
+        else decision.proposal.fields.get(names.chose)
+        if decision.proposal
+        else None
+    )
     keys = sorted(decision.options, key=lambda key: (key != proposal, key))  # the proposal (or the option in force) first: letter A
     said = decision.heard if not decision.answers else None
     addresses = [decision.address.part(names.option, key) for key in keys]
@@ -210,8 +218,8 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
         _reason(decision),
         context=decision.entry.text(names.context) or "",
         then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
-        earlier=_earlier(decision) if kind == "delegated" else "",
-        alone=asked_alone(snapshot, tags[0] if tags else None),
+        earlier=_earlier(decision) if kind == "delegated" else _kept(snapshot, decision) if again else "",
+        alone=again or asked_alone(snapshot, tags[0] if tags else None),
     )
 
 
@@ -233,6 +241,15 @@ def _then(snapshot: Snapshot, sets: object) -> tuple[str, ...]:
         if rest:
             lines[-1] += ("; " if isinstance(says, str) else ": ") + rest
     return tuple(lines)
+
+
+def _kept(snapshot: Snapshot, decision: Decision) -> str:
+    """For a decision asked again: the answer that stays in force until the owner picks a letter."""
+    newest = decision.newest
+    if newest is None or newest.at is None:
+        return ""
+    label = snapshot.sentence(decision.address.part(decision.names.option, newest.chose)) or newest.chose
+    return f"In force until you choose: {label} (your answer of {newest.at.date().isoformat()}: {newest.said})"
 
 
 def _earlier(decision: Decision) -> str:
@@ -290,9 +307,9 @@ def queue(snapshot: Snapshot, limit: int | None = MAX_CARDS) -> list[Card]:
     agreed, each group by harm then dependants; at most `limit` in all (None: every one)."""
     count, hashes = dependants(snapshot), agreed_hashes(snapshot)
     questions = [
-        _asked(snapshot, decision, count, "question" if not decision.answers else "delegated")
+        _asked(snapshot, decision, count, "question" if not decision.answers else "again" if decision.asked_again else "delegated")
         for decision in decisions(snapshot)
-        if not decision.answers or delegated(decision)
+        if not decision.answers or decision.asked_again or delegated(decision)
     ]
     cards: list[Card] = []
     for address in snapshot.entries:

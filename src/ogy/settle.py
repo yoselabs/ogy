@@ -63,6 +63,18 @@ class Decision:
         return max(dated, key=lambda item: item[0])[1] if dated else None
 
     @property
+    def proposed_at(self) -> datetime | None:
+        """When the proposal was written to an answered decision: ogy stamps it, never a hand."""
+        return moment(self.proposal.fields.get(self.names.at)) if self.proposal else None
+
+    @property
+    def asked_again(self) -> bool:
+        """An answered decision whose proposal is newer than its newest answer: a question again, the answer staying in force
+        (software/ontology/decision/re-ask-conditions)."""
+        newest, at = self.newest, self.proposed_at
+        return newest is not None and newest.at is not None and at is not None and at > newest.at
+
+    @property
     def in_force(self) -> Force | None:
         """The answer with the newest `at`; with no answer, the proposal."""
         dated = [(answer.at, answer) for answer in self.answers if answer.at is not None]

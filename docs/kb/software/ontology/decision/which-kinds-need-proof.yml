@@ -13,6 +13,7 @@ options:
 proposal:
   chose: behaviour-and-built-decisions
   why: 41 answered structure decisions set nothing and nothing reports one unbuilt (context-form area-field); needs engine work, built after the re-asks.
+  at: '2026-11-25T20:30:57+01:00'
 answers:
 - chose: behaviour
   said: 'Yes, all: D15, proof on rows, rule, interface, setting, workaround; entity only with transitions; not step, handler, quantity'

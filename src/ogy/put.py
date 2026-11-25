@@ -14,8 +14,9 @@ from ogy.edit import Editor
 from ogy.fieldtypes import fields_problems
 from ogy.kinds import NAME, Holds, Kind, Shape
 from ogy.model import Address, parse_address
+from ogy.settle import decisions, settling_of
 from ogy.target import last_seen, removal_base
-from ogy.writes import Data, WriteRefusedError, commit, utc_now
+from ogy.writes import Clock, Data, WriteRefusedError, commit, utc_now
 lazy from ogy.snapshot import Snapshot
 lazy from ogy.target import Target
 
@@ -147,13 +148,13 @@ def _try(snapshot: Snapshot, record: Mapping[object, object]) -> Address | None:
         return None
 
 
-def put(target: Target, records: list[Mapping[object, object]], why: str | None = None) -> list[Put]:
+def put(target: Target, records: list[Mapping[object, object]], why: str | None = None, *, now: Clock | None = None) -> list[Put]:
     """Add or change every record in one atomic, checked write (the lock is held); parents are written before their parts.
     A record that drops parts (`cases: null`, a part left out) needs `why`: each dropped part gets its removed.yml item in the
     same write, so a reshaped step loses nothing silently."""
     editor = Editor(target.repo, target.kb, target.kinds())
     snapshot = editor.snapshot()
-    ordered = sorted(checked(target, snapshot, records), key=lambda item: len(item[0].path))
+    ordered = sorted(_stamped(snapshot, checked(target, snapshot, records), now or utc_now), key=lambda item: len(item[0].path))
     done = [Put(address, new) for address, _, new in ordered]
 
     def act(ed: Editor) -> None:
@@ -163,6 +164,33 @@ def put(target: Target, records: list[Mapping[object, object]], why: str | None 
 
     commit(target, lambda _: [address for address, _, _ in ordered], act)
     return done
+
+
+def _stamped(snapshot: Snapshot, found: list[tuple[Address, Data, bool]], now: Clock) -> list[tuple[Address, Data, bool]]:
+    """A proposal's `at` is ogy's, never a hand's: refused in a record, stamped on every proposal written to an answered
+    decision, so the decision is asked again (software/ontology/decision/re-ask-conditions)."""
+    names = settling_of(snapshot)
+    if names is None:
+        return found
+    key, settling_kind = snapshot.ontology.get(names.proposal), snapshot.ontology.settling_kind()
+    settler = settling_kind.kind if settling_kind else ""
+    inline = key.key if key and key.key else names.proposal
+    proposals = [(address, fields) for address, fields, _ in found if address.kind == names.proposal]
+    proposals += [  # a decision written with its proposal inline
+        (address.part(names.proposal), given)
+        for address, fields, _ in found
+        if address.kind == settler and isinstance(given := fields.get(inline), dict)
+    ]
+    if hand := [str(address) for address, fields in proposals if names.at in fields]:
+        raise WriteRefusedError(
+            [f"{address}: {names.at} is stamped by ogy when the decision has an answer, never given" for address in hand]
+        )
+    answered = {decision.address for decision in decisions(snapshot) if decision.answers}
+    stamp = now().isoformat()  # as answers keep theirs: ISO text
+    for address, fields in proposals:
+        if address.parent() in answered:
+            fields[names.at] = stamp  # an inline proposal is the same dict as in its decision's record
+    return found
 
 
 def _record_dropped(target: Target, before: Snapshot, after: Snapshot, roots: list[Address], why: str | None) -> None:

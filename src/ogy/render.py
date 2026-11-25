@@ -140,12 +140,16 @@ def _card(label: str, card: Card) -> list[str]:
             for address, text, _ in card.members
         ]
     for index, (letter, (key, text)) in enumerate(zip(string.ascii_uppercase, card.options, strict=False)):
-        mark = "  (in force, an agent's answer under your delegation)" if card.kind == "delegated" else "  (recommended)"
+        mark = {"delegated": "  (in force, an agent's answer under your delegation)", "again": "  (proposed again)"}.get(
+            card.kind, "  (recommended)"
+        )
         lines.append(f"   {letter}. {text}" + (mark if key == card.proposal else ""))
         lines += [f"      then {line}" for line in (card.then[index] if index < len(card.then) else ())]
     if card.earlier:
         lines.append(f"   {card.earlier}")
-    if card.alone:
+    if card.kind == "again":
+        lines.append(f"   Asked again: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
+    elif card.alone:
         lines.append(f"   Structural: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
     if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")

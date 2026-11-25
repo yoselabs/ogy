@@ -15,6 +15,7 @@ options:
 proposal:
   chose: split-whole-product-by-proof
   why: No system kind is proposed, so an area or system cannot be a satisfier; a whole-product rule stands by its proof.
+  at: '2026-11-25T20:31:04+01:00'
 answers:
 - chose: split
   said: 'Yes, all: constrains for data kinds, satisfies only for behaviour kinds'

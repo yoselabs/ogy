@@ -1,6 +1,7 @@
 """`ogy review` keeps its rounds by id; `ogy reply` applies the grammar to the round it answers, keeping a paraphrase, never a quote."""
 
 import asyncio
+import datetime as dt
 import json
 lazy from pathlib import Path
 
@@ -285,3 +286,64 @@ def test_a_bare_question_needs_no_proposal_and_is_answered_in_words(repo: Path) 
     options = {"address": q, "options": {"yes": {"label": "Yes"}, "no": {"label": "No"}}}
     code, lines = w(repo, "put", json.dumps(options))
     assert code == cli.REFUSED and "no-proposal" in lines[0], lines
+
+
+ANSWERED_AT = "2026-11-12T10:05:00+01:00"
+PROPOSED_AT = "2026-11-13T09:00:00+01:00"
+
+
+def fee(repo: Path) -> str:
+    """The built value of the fee the decision sets."""
+    return next(line.strip() for line in w(repo, "show", "product/app/quantity/fee")[1] if line.strip().startswith("is:"))
+
+
+@pytest.fixture
+def again(asked: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    """Q1 answered `two` by the owner, then the AI proposes `one` on it: ogy stamps the proposal, the question is asked again."""
+    assert (
+        w(asked, "answer", "product/app/decision/fee-amount", "two", "--said", "Two", "--where", "ai:claude/1", "--at", ANSWERED_AT)[0]
+        == cli.OK
+    )
+    monkeypatch.setattr("ogy.put.utc_now", lambda: dt.datetime.fromisoformat(PROPOSED_AT))
+    code, lines = put(asked, "product/app/decision/fee-amount/proposal", chose="one", why="one keeps members")
+    assert code == cli.OK, lines
+    return asked
+
+
+def test_a_proposal_written_to_an_answered_decision_is_stamped_and_asks_it_again(again: Path) -> None:
+    """re-ask-conditions (1) and (5): ogy stamps `at`; the card shows the answer in force; the built entry keeps its value."""
+    assert "at: '2026-11-13T09:00:00+01:00'" in tree(again)["docs/kb/product/app/decision/fee-amount.yml"]
+    text = "\n".join(w(again, "review")[1])
+    assert "Q1. again  product/app/decision/fee-amount" in text and "A. One  (proposed again)" in text
+    assert "In force until you choose: Two (your answer of 2026-11-12: Two)" in text and "one keeps members" in text
+    assert fee(again) == "is: 2"
+
+
+def test_a_hand_written_proposal_time_is_refused(asked: Path) -> None:
+    code, lines = put(asked, "product/app/decision/fee-amount/proposal", chose="one", why="w", at=PROPOSED_AT)
+    assert code == cli.REFUSED and any("stamped by ogy" in line for line in lines)
+
+
+def test_a_proposal_on_an_unanswered_decision_carries_no_time(asked: Path) -> None:
+    assert put(asked, "product/app/decision/fee-amount/proposal", chose="two", why="w")[0] == cli.OK
+    assert "at:" not in tree(asked)["docs/kb/product/app/decision/fee-amount.yml"]
+
+
+@pytest.mark.parametrize("reply", ["yes all", "decide", "yes Q1"])
+def test_a_decision_asked_again_takes_only_its_own_letter(again: Path, reply: str) -> None:
+    """re-ask-conditions (3): yes, yes all and decide never answer it; its letter does."""
+    w(again, "review")
+    code, lines = r(again, reply)
+    assert "asked again" in "\n".join(lines), (code, lines)
+    assert fee(again) == "is: 2"
+    assert r(again, "Q1 a", "--at", "2026-11-14T09:00:00+01:00")[0] == cli.OK
+    assert fee(again) == "is: 1"
+    assert "Q1. again" not in "\n".join(w(again, "review")[1])
+
+
+def test_an_answer_older_than_the_proposal_asked_again_is_refused(again: Path) -> None:
+    """re-ask-conditions (2): an answer to a decision asked again is newer than its proposal."""
+    code, lines = w(
+        again, "answer", "product/app/decision/fee-amount", "one", "--said", "One", "--where", "ai:claude/1", "--at", ANSWERED_AT
+    )
+    assert code == cli.REFUSED and any("asked again since" in line for line in lines)

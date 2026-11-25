@@ -15,6 +15,7 @@ options:
 proposal:
   chose: proof-or-decision
   why: 61 of 74 rules are set by an answer in force; each that goes is asked again on its own decision.
+  at: '2026-11-25T20:30:49+01:00'
 answers:
 - chose: keep-checkable
   said: "Follow Fable's recommendation: rules stay only when a check can catch them."

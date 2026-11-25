@@ -19,7 +19,7 @@ from ogy.edit import Editor
 from ogy.fieldtypes import AGREED_HASH
 from ogy.model import Address, Finding, Problem, parse_address
 from ogy.removal import RemoveRefusedError
-from ogy.settle import Decision, answers_key, decision_of, decisions
+from ogy.settle import Decision, answers_key, decision_of, decisions, moment
 from ogy.target import Target, last_seen, removal_base, worktree_findings
 from ogy.verdict import RefusalError
 lazy from ogy.kinds import Settling
@@ -272,6 +272,17 @@ def _delegation(snapshot: Snapshot, words: Said, delegated: str | None) -> str |
     return str(found.address) if found else None
 
 
+def _again(found: Decision, words: Said) -> None:
+    """A decision asked again is answered by the owner alone, after its proposal (software/ontology/decision/re-ask-conditions)."""
+    if not found.asked_again:
+        return
+    if words.who != "human":
+        raise WriteRefusedError([f"{found.address} is asked again: only the owner answers it, never an agent under a delegation"])
+    at, proposed = moment(words.at), found.proposed_at
+    if at is not None and proposed is not None and at <= proposed:
+        raise WriteRefusedError([f"{found.address} is asked again since {proposed.isoformat()}: an answer to it is newer (--at)"])
+
+
 def answer(target: Target, decision_text: str, option: str, words: Said, delegated: str | None = None, *, now: Clock = utc_now) -> Answered:
     """A person (or an agent under `delegated`) chose an option: append the answer and apply the option's `sets`. A person's
     answer also agrees to the entries the option sets, as their cards show them (decision answer-agrees-shown); an agent's
@@ -286,6 +297,7 @@ def answer(target: Target, decision_text: str, option: str, words: Said, delegat
         )
     if option not in found.options:
         raise WriteRefusedError([f"{decision_text} has no option {option!r} (options: {', '.join(sorted(found.options)) or 'none'})"])
+    _again(found, words)
     outcome: list[Answered] = []
 
     names, key = settling(snapshot), answers_key(snapshot)

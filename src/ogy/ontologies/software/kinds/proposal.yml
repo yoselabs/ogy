@@ -1,7 +1,7 @@
 kind: proposal
 was: {kind: guess, key: guess}
-about: what is built while a decision has no answer; an option, or values (`sets`) when the decision has no options; a proposal of "no" chooses an option that sets `null`, or sets the address to `null`
-guidance: "What is built while the decision has no answer: the option the AI would choose, and why. `heard` is what the owner said that it rests on, a short paraphrase, never a quote; one yes in review then records the answer. A proposal is never an answer."
+about: the option the AI would choose, and why; what is built while a decision has no answer; on an answered decision, a proposal newer than the newest answer asks the question again while the answer stays in force; an option, or values (`sets`) when the decision has no options; a proposal of "no" chooses an option that sets `null`, or sets the address to `null`
+guidance: "The option the AI would choose, and why; built while the decision has no answer. On an answered decision ogy stamps `at` (never a hand) and asks the question again; the answer stays in force until the owner picks a letter. `heard`: what the owner said that it rests on, paraphrased. A proposal is never an answer."
 like: "an ADR with status proposed: what is built until the owner answers"
 unlike: "an answer: nobody said yes to it"
 shape: inline
@@ -14,5 +14,6 @@ fields:
   sets: {type: sets}                                 # {address: {field: value} | null}, as in option.sets
   why: {note: true, required: true}
   heard: {note: true}                                # one short line: the AI's paraphrase of what the owner said, never a quote
+  at: {type: time}                                   # stamped by `put` when the decision has an answer; newer than the newest answer: asked again (decision re-ask-conditions)
 renamed: {value: sets}
 folded: {heard: said}                                # the part heard {said} is now this text field (`ogy migrate`)

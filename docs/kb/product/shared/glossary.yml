@@ -181,7 +181,7 @@
     hash: eb217092bd47
 - id: question
   word: question
-  says: A decision with no answer yet; not an entry's state, not a card.
+  says: A decision with no answer, or one asked again; not a card.
   avoid:
   - ?open
   - open question
@@ -254,7 +254,7 @@
     hash: 281f3d1b5c4c
 - id: proposal
   word: proposal
-  says: The option or values the AI builds on until the owner answers a decision.
+  says: "The AI's pick for a decision: built until answered; a newer one asks again."
   avoid:
   - assumed
   - ?assumed

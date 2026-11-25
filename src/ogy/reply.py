@@ -184,6 +184,8 @@ def _yes(target: Target, found: Round, words: Said, group: str | None) -> str:
         wanted = [
             label for label in wanted if not _card(found, label, entry=False).structure and _heard(target, _card(found, label, entry=False))
         ]
+    if again := [label for label in wanted if _card(found, label, entry=False).kind == "again"]:
+        raise WriteRefusedError([f"{label} is asked again: choose its letter ({label} a), never yes" for label in again])
     cards = [_card(found, label, entry=True) for label in labels if not label.upper().startswith("Q")]
     if not group:
         cards = [card for card in cards if card.kind in rounds.ENTRY_CARDS]
@@ -221,6 +223,8 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
             kept.append(why)
         elif card.kind in rounds.ENTRY_CARDS:
             fresh.append(card)
+        elif card.kind == "again":
+            kept.append(f"{card.address} is asked again: it needs its own letter ({card.label} a), not yes all")
         elif card.structure:
             kept.append(f"{card.address} is structural: it needs its own letter ({card.label} a), not yes all")
         else:

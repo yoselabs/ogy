@@ -66,7 +66,9 @@ WORK = {
     ),
 }
 # kind.field -> why this knowledge base leaves it empty
-UNEXERCISED: dict[str, str] = {}
+UNEXERCISED: dict[str, str] = {
+    "proposal.at": "stamped only on a proposal written to an answered decision; the fixture asks none again (test_reply.py does)",
+}
 
 
 def read() -> tuple[Snapshot, WorktreeSource]:
