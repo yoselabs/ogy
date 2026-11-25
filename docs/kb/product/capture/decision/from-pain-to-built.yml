@@ -1,0 +1,23 @@
+title: From a pain or an idea to built software
+question: When a person brings only a pain or an idea about a flow, where is it written first, and in what order is the rest written?
+context: "Pain, on an invented pet shop storefront: the owner says customers cannot tell if a pet is still available. There is no goal, capability or workflow yet, and nothing says what the agent writes first, so the pain stays in the chat. Under decision-first the agent writes one decision at once: the pain opens its context, and the options are a new goal, an existing goal, or not now. The answer writes the goal (a customer knows before a visit whether a pet can still be bought); ogy work then prints, link by link, what is missing: no capability, no workflow, no handler, no proof. An idea about a flow enters the same way: a decision whose option sets the workflow. Choices met later (does a reservation expire?) are decisions at that stage. Under goal-first the agent must word a goal before the owner chose to act. Under pain-kind a pain waits in a list of its own. Real case: the pain in software/cli/decision/work-types hangs on no goal and lives in a decision's context today."
+options:
+  decision-first:
+    label: 'A pain or an idea is written first as a decision: the pain opens its context, the options say what to do about it, not now is one of them, and the proposal is not now until the owner answers. Its answer writes the goal; capability, workflow, interface and handler follow as ogy work lists them. Decisions come at every stage, in both layers. No new kind'
+  goal-first:
+    label: A pain is written first as a goal that nothing realizes yet; a decision is written only when a choice appears
+  pain-kind:
+    label: A new kind holds pains and ideas that belong to no goal yet
+  no:
+    label: 'As today: the order is not written down; the capture skill starts from words, documents or code'
+  same-decision:
+    label: As decision-first, and a later pain about a goal that a decision already wrote is asked again on that decision as a new option, each pain kept as its own dated line
+proposal:
+  chose: decision-first
+  why: Every kind it needs exists, and staged-changes-home already keeps a prepared change as a proposal on a decision. A pain always leaves a choice (act now, join an existing goal, not now), so a decision is never empty. goal-first words a result before anyone chose to act. pain-kind adds a kind with no real case that a decision or a goal cannot hold (no-flexibility-until-needed).
+  heard: 'Holding only a pain or a wild idea about a flow: what is the process, are capabilities or workflows written first and decisions after, and where is ideation kept before any workflow exists?'
+answers:
+- chose: decision-first
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:43+01:00'
+  where: ai:claude/ontology-review-session-749f16

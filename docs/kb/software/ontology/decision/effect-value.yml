@@ -10,6 +10,8 @@ options:
     label: No value in the ontology
   becomes-on-write:
     label: 'The same value on a write effect, named `becomes` (an expression: text plus the links it reads), because `to` already means a state on a transition and `value` is a dropped field that migrate would print'
+  no-field-yet:
+    label: 'No field yet: the question comes back with the first real row whose write sets an attribute to a value that no rule it satisfies and no `derived` attribute can say; the name is chosen then.'
 proposal:
-  chose: to-on-write
-  why: It has a reader (work when a quantity it reads changes, the effect badge on the board), which answers the "too many fields" worry.
+  chose: no-field-yet
+  why: Fixture write effects 0, KB 1 with no scalar; `to`, `becomes` and `value` each clash with an existing meaning; no real record yet (L5).

@@ -1,0 +1,23 @@
+title: Types of work in ogy work
+question: Does ogy work say what type of work each row is, and for whom?
+context: 'Pain: product work prints 91 rows; the 14 that ask why something exists are mixed with 55 that ask for a test, and live-answer-is-in-force prints twice, as unbuilt and as unused. Three computed types: meaning (the why is missing: a workflow with no capability, a goal with no pain; for the owner, or for an AI proposing it when recovering a system from code), model (the description is incomplete: unused, unhandled, no answer path; for the agent writing that layer), build (described but not proven: unbuilt, changed, removed; for the coding agent). Gap found: a new handler, attribute or step prints no build row today; repair: ogy work --since <rev> lists entries added, changed or removed since that commit.'
+options:
+  three-types:
+    label: meaning, model, build; computed, never stored; each requires rule says which
+  two-types:
+    label: meaning and build only
+  no:
+    label: 'As today: one list'
+  meaning-design-build:
+    label: 'Three types named meaning (the why is missing), design (the description has a gap: a rule nothing checks, a state with no handler) and build (to implement or prove)'
+  discover-design-build:
+    label: 'Three types named discover (the why is missing: a capability with no goal or no workflow, a goal no capability realizes, a workflow that realizes no capability), design (the description has a gap) and build (to implement or prove)'
+proposal:
+  chose: discover-design-build
+  why: 'A verb like design and build, known from the Double Diamond (discover, define, develop, deliver) and product discovery; no entry uses it. define sounds like design; ask reads as a card for the owner while an AI may do the work. Before: meaning-design-build.'
+  heard: Rename meaning to a word in the same theme as design and build; clarification is long, maybe ask.
+answers:
+- chose: discover-design-build
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:57:05+01:00'
+  where: ai:claude/ontology-review-session-749f16

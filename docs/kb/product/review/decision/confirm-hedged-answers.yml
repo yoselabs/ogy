@@ -6,6 +6,8 @@ options:
     label: Confirmed as recorded
   revisit:
     label: Revisit these, one by one
+  ask-each:
+    label: 'Neither here: each of the 13 is asked again on its own decision, by a dated proposal that names the answer in force; its own letter confirms or changes it; this decision records nothing more.'
 proposal:
-  chose: confirmed
-  why: The answers read plainly; confirming costs one reply. This is a recommendation, not an answer.
+  chose: ask-each
+  why: This decision is the listing pattern the owner declined in ask-an-answered-decision-again; several of the 13 are being re-opened by this review.

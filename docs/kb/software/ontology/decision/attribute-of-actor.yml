@@ -1,0 +1,18 @@
+title: An attribute that names an actor
+question: How does an entity say which actor it belongs to?
+context: "Pain: in the tool-library fixture a loan is 'one tool lent to one member', yet loan has no attribute for the member, because an attribute's of takes an enum or an entity and member is an actor. On an invented pet shop the same refusal met 'reserved by which customer'."
+options:
+  of-actor:
+    label: of may also name an actor
+  twin-entity:
+    label: An entity of the same name is written beside the actor
+  text:
+    label: 'As today: a text attribute or the sentence'
+proposal:
+  chose: of-actor
+  why: when and derived already read actors; a twin gives one word two entries.
+answers:
+- chose: of-actor
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:58+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -1,0 +1,14 @@
+title: Whether the board is part of the product
+question: Is the board part of what ogy promises its owner and agents, or a tool used only to build ogy?
+context: "The owner is the actor of 3 product workflows only the board serves (inspect-map, walk-product, preview-requirement); 13 of 16 decisions of this area are about the board. Its built side is software/viewing: 3 interfaces, 3 handlers, 2 entities, 7 rules. With interface-layer answered product-only, 19 links from the board's interfaces to software/viewing entities and rules need a home."
+structure: true
+options:
+  product:
+    label: 'Product: board, entry-details, view and view-server live in product/inspection; the 2 entities and each of the 7 rules are judged one by one (what is promised moves, how it renders stays); handlers stay in software/viewing'
+  build-tool:
+    label: 'A build tool: the board leaves the product layer, with the 3 workflows whose actor is the owner'
+  own-kb:
+    label: A second shipped thing with its own knowledge base
+proposal:
+  chose: product
+  why: 'The product layer already describes it: 3 workflows and 13 decisions. It shares handlers with the commands, so it is not a second shipped thing.'

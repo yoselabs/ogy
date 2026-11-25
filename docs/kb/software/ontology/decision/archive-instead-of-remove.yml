@@ -1,0 +1,18 @@
+title: Archive instead of remove
+question: When a built workflow or its data is dropped, is it removed, or archived or disabled?
+context: 'Pain, on a pet shop: the owner drops reservations; today the button, the Reserved status and the 2-day expiry become work to remove, and the reservations already stored would be deleted with them. Archiving or disabling would keep the data and let the shop switch reservations back on. No product case needs that yet.'
+options:
+  not-now:
+    label: 'Not now: a dropped thing is removed, and its removal is build work'
+  archive:
+    label: A dropped workflow is disabled and its data archived, never deleted
+  ask-when-data:
+    label: 'When a dropped entry holds data (an entity, an attribute or a state, or a workflow that writes one), its removal work comes with a decision asking what happens to the data: disable the feature, change it, archive the data, soft-delete, or delete. An entry with no data is removed as build work'
+proposal:
+  chose: not-now
+  why: 'No described product has dropped an entry with stored data; the task loop drops none. An automatic five-way question on every data-holding removal is flexibility ahead of a case (no-flexibility-until-needed). Today an agent writes a decision about the data and cites it in ogy remove --why. Reopen on the first removal of an entity, attribute or state with stored rows. Before: ask-when-data.'
+answers:
+- chose: not-now
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:57:19+01:00'
+  where: ai:claude/ontology-review-session-749f16

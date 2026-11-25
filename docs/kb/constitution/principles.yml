@@ -15,9 +15,9 @@
 - id: layers-split-business-from-technical
   says: 'What the business decides is kept apart from how it is built: a business fact lives in the product layer, a build fact in the software layer.'
   agreed:
-    at: '2026-11-20T03:15:34+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Yes: an actor the business deals with lives in product whatever its nature; technical actors stay in software'
+    at: '2026-11-25T19:56:24+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Yes to all 9 of Fable's picks, read on the pet shop cards
     hash: d9c979d95e10
 - id: rigid-where-checked
   says: A fact that a check, work left or impact reads is a field or a link; a fact only a reader needs is text on its entry.
@@ -43,3 +43,9 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner: I agree those (the two new principles)'
     hash: a101fa87c7fd
+- id: no-flexibility-until-needed
+  says: 'The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it.'
+  why: Unproven flexibility costs every writer a choice and every reader a branch, and taking a freedom back is harder than giving one.
+- id: words-from-known-tools
+  says: ogy takes its words from vocabularies people already know from popular tools and methods, such as GitHub, Figma and Domain-Driven Design, each for its own domain; a word none of them uses needs a decision.
+  why: Most readers know technical or business English, not native English.

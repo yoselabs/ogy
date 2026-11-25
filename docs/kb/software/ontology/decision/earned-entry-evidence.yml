@@ -1,0 +1,21 @@
+title: What evidence lets a concept enter
+question: The ontology-designer skill admits a term only with a real case that exists today. What does that law read once the cases are named reference cases, some of them planned or sketched?
+context: "The law made reviews count ogy's own entries, the only data at hand, and left no place for a product that is planned. The skill serves other ontologies too, so a record in the data must stay valid evidence. Proposed text: L5 Earned entry. A term enters only with a competency question that fails today and a case behind it. A case is a record that exists in the data today, given with its id, or a record quoted from a reference case: a product the owner has named as one the ontology must describe, with the source it was read from (code, a document, the owner's description). A reference case may be built, half built or planned. One the designer could not read raises a question but carries no growth verdict alone. Counts taken from the ontology's own data say what a change moves (R4); they never show that a concept is needed or not needed. A growth verdict with no case is blocked with that one demand."
+structure: true
+options:
+  record-or-reference-case:
+    label: 'The proposed text: a record in the data today, or a record quoted from a named reference case with its source'
+  reference-case-only:
+    label: Only a named reference case counts; the ontology's own data never does
+  keep:
+    label: 'Keep the words: a real case that exists today'
+proposal:
+  chose: record-or-reference-case
+  why: Keeps the bar (a failing question and a quoted record) and changes only where the record may come from. Reference cases alone would bar real data in ontologies that have plenty.
+  heard: Replace the skill's real case with something, or think against the real projects; Fable decides.
+answers:
+- chose: record-or-reference-case
+  said: Relies on Fable's pick for replacing the real-case rule
+  at: '2026-11-24T17:03:44+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: given before the replacement text was drafted; confirm or veto at read-back

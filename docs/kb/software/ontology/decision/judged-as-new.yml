@@ -1,0 +1,15 @@
+title: A challenged concept is judged as if proposed today
+question: Does the constitution gain a principle that what already exists earns no weight from existing, and that a challenged kind, field or link is judged as if it were proposed today?
+context: "Today nothing says that work already done is no reason to keep a concept. Example: interface sits in the software layer because it was written there first; no decision chose that, yet on 2026-11-24 reviews counted the cost of moving it as a reason to keep it. The principle is a way to judge and costs nothing by itself: when someone challenges interface, the question is 'would we add it to software if we started today?'. A full test run is the costly part; when it runs is zero-base-when. Principle text (written with the answer): What exists earns no weight from existing: a challenged kind, field or link is judged as if proposed today, and is rebuilt or dropped when it would not be added, however much must change. Why: work already done and the size of a change are not reasons; a concept kept for them costs every writer and reader after."
+structure: true
+options:
+  principle:
+    label: Add the principle; the costly test of a whole concept runs only when zero-base-when says
+  skill-only:
+    label: No principle; only the ontology-designer skill gains the test
+  no:
+    label: No; a concept that exists stays unless it breaks a law
+proposal:
+  chose: principle
+  heard: The cost of everything is nothing; when something is challenged, imagine ripping it out and embedding it better, and put that in the constitution and the skill.
+  why: 'The test is bound to evidence: it runs against the fixed reference cases and records what would change the verdict, so it does not reopen a question without a new record.'

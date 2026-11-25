@@ -1,0 +1,14 @@
+title: How a software workflow is started
+question: Product may not name software, so no product step can lead to a software workflow. How is a software workflow started without repeating an actor step?
+context: '4 of 4 software workflows start with an actor step: 2 repeat a product actor step (init-reads-its-files, write-under-the-lock), 2 use the only software actors (pre-commit-check, call-a-tool). All four end in something the actor sees (refused, tool error, committed). 4 interface serves links point at these steps.'
+structure: true
+options:
+  fold-into-product:
+    label: The four become cases of the product rows they detail, or product workflows (pre-commit-check, call-a-tool); a software workflow has no actor step and starts by schedule or event only
+  details-link:
+    label: A software workflow gains a link to the product row it details and counts as started through it; no actor step
+  as-today:
+    label: 'As today: a software workflow repeats the actor step'
+proposal:
+  chose: fold-into-product
+  why: Every end of the four is visible to the actor, so each is a product outcome; no new field. A link is asked again with the first software flow that no actor can see.

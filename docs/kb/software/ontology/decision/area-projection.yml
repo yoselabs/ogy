@@ -1,0 +1,18 @@
+title: Whether software areas mirror product areas
+question: Should each software area build exactly one product area, and how does ogy hold that?
+context: '10 product and 9 software areas share 3 names; software areas are cut by tier: cli holds 22 interfaces and no handler, writes 5 handlers and no interface. The owner wants a new design to project one to one and accepts that old code bases map badly.'
+structure: true
+options:
+  measure:
+    label: 'Computed and printed: software areas per workflow and product areas per software area; no check'
+  work:
+    label: Printed, and a software area that builds two product areas is work left
+  mirror:
+    label: A software area carries the name of its product area; anything else is a finding
+  nothing:
+    label: Nothing; areas of the two layers are independent
+  guidance-measure:
+    label: A guidance line on area (a software area carries the name of the product area it builds, or of a mechanism several areas share, never of a tier such as cli, api or database) and the printed measure; no check
+proposal:
+  chose: guidance-measure
+  why: The tool library is cut by product area (lending in both layers); ogy is not (3 of 9 names match). The area guidance says nothing on this, so the writer had no line to follow. Shared mechanisms (storage, writes) are legitimate, so a check would mark them for good.

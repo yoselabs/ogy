@@ -12,12 +12,20 @@ options:
     label: Nothing for now; decide when the board filters by it
   system-kind:
     label: 'A kind `system`: one thing the owner ships and names, with a sentence (`says`); areas of both layers link to it with a new field `area.system`; a system holds rules and cites principles'
+  computed-until-second-system:
+    label: 'Nothing stored now: which product areas a software area builds is computed from `performs`, `serves` and `offers` and printed with the area; a kind for what the owner ships is asked again when one knowledge base holds two shipped things that share no handler.'
+  one-kb-each:
+    label: Each shipped thing keeps its own knowledge base with both layers; another one reads its product interfaces as its dependencies. No kind for a shipped thing inside one knowledge base. Asked when a second knowledge base exists
 proposal:
-  chose: system-kind
-  why: 'An area-field has no sentence, no card and nowhere to hold a rule or a principle; a kind gives all three and reads like a C4 software system. This is a recommendation, not an answer: the earlier answer, area-field, stays in force until the owner answers again (Fable redesign, 2026-11-23, M1).'
+  chose: computed-until-second-system
+  why: One shipped thing today; system-word and proportion-home propose no kind; the product-to-software link is computed from performs, serves and offers.
 answers:
 - chose: area-field
   said: "Follow Fable's recommendation: a field of area, with a new word that is not context."
   at: '2026-11-22T15:44:57+01:00'
   where: ai:claude/f6fcc5ed
   note: The word is still to be chosen.
+- chose: computed-until-second-system
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:33+01:00'
+  where: ai:claude/ontology-review-session-749f16

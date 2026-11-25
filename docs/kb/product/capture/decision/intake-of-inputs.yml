@@ -8,6 +8,8 @@ options:
     label: A kind `input` in the KB that holds each input
   outside-git:
     label: Inputs stay outside Git; entries keep only a paraphrase
+  inputs-folder-headings:
+    label: Raw inputs stay in the repository outside the KB, one dated heading per input, cited by `doc:` with that heading; a finer pointer (line range, other file types) waits for the first input that has lines and no headings.
 proposal:
-  chose: inputs-folder
-  why: It keeps the no-quotes answer (a pointer to pinned lines, not the words) and needs no kind; the ledger thread on mis-cites gives the eval.
+  chose: inputs-folder-headings
+  why: The only real input has one line per heading, so a line range is no finer than the heading anchor (L5).

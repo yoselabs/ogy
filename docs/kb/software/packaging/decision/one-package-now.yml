@@ -1,5 +1,5 @@
 question: Is ogy split into a generic ontology engine and the software ontology now?
-context: The owner first meant a generic engine (a smaller a2kay); they accept moving on and challenging it later.
+context: The owner first meant a generic engine and accepted one package. On 2026-11-24 he asked again for a generic core with the product and software specifics as a separate Python package. The engine names no kind in 4 of 5 checked cases; the specifics are 29 kind files of data; only a test fixture is a second ontology.
 options:
   one-package:
     label: One package for now; revisit the split later

@@ -1,0 +1,17 @@
+title: No flexibility until a case needs it
+question: Does the constitution say the ontology gains no flexibility until a real case shows it is needed?
+context: "Pain: structure: true was added so ogy's own knowledge base could flag changes to its kinds; no other product needs it, and the owner could not say what it means. With the principle, a field, option or way to change the ontology ships only after a reference case needs it. Applying it: the field structure leaves the decision kind and the 88 decisions that carry it (the owner said drop it straight away, 2026-11-24). Principle text: The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it. Why: unproven flexibility costs every writer a choice and every reader a branch, and taking a freedom back is harder than giving one."
+options:
+  add:
+    label: Add the principle no-flexibility-until-needed
+  no:
+    label: No principle
+proposal:
+  chose: add
+  why: 'The owner asked for it in these words; it also answers why structure: true is dropped.'
+  heard: Do not provide flexibility until it is proven to be really needed; put that principle in the knowledge base.
+answers:
+- chose: add
+  said: 'Put a principle in the knowledge base: no flexibility until it is proven needed'
+  at: '2026-11-24T19:07:37+01:00'
+  where: ai:claude/ontology-review-session-749f16

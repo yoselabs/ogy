@@ -1,0 +1,21 @@
+title: Which rule places an entry in a layer
+question: For a kind that may live in both layers, which rule that ogy can compute says where an entry lives?
+context: "Nine kinds list both layers: actor, area, decision, entity, enum, quantity, rule, term, workflow. One rule is checked today: product never names software. Counted in ogy's knowledge base by a script (approximate): all 2 software entities and all 4 software workflows name a software entry; 49 of 54 software rules and 7 of 7 software enums are named by software entries only; 4 software rules and 3 software quantities have no link that decides; 1 product enum and 1 product rule are named by software entries only; 84 of 146 software decisions and all 33 terms link nothing. actor-layers and interface-layer carry proposals for one layer each."
+structure: true
+options:
+  links-decide:
+    label: 'Three computed rules for entity, enum, quantity, rule and workflow: an entry that names a software entry is software (checked today); an entry that a product entry names is product (the same check); an entry that neither rule places and that only software entries name is software (new, reported as work). An entry no link places is listed as placed by hand. Actor and interface take one layer from the kind file. A decision, a term and an area take the layer of the folder they are written in; no rule'
+  one-layer-per-kind:
+    label: Every kind has one layer; a kind of both layers is split in two kinds or folded into one layer
+  as-today:
+    label: 'As today: guidance text in the kind file, judged per entry'
+proposal:
+  chose: links-decide
+  why: The first two rules exist; the third makes the common case computable and names the few entries a person must place. One layer per kind would need new kinds for a software rule, enum, quantity and entity, with no fact of their own.
+  heard: If a kind sits on both layers there must be a deterministic way to tell what goes where and to see a wrong placement.
+answers:
+- chose: links-decide
+  said: Agrees with Fable's placement rule
+  at: '2026-11-24T18:26:24+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: 'as a trial: we could give it a try'

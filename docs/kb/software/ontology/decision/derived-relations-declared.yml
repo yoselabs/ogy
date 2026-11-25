@@ -7,7 +7,7 @@ options:
   each-viewer:
     label: Each viewer computes what it needs
   reverse-by-field-word:
-    label: The engine names every reverse link by the field word it came from ("actor of", "offers of"); only paths of two hops or more, or with a filter, are declared in the kind files
+    label: The engine gives every reverse link under the field word it came from (an effect's `on` under its `do` word), the same in show, MCP, inspection and the board; no reverse gets a second name. A path of two hops or more is written in a kind file in the `requires` hop syntax, with no name of its own, only when a check or a shipped view reads it.
 proposal:
-  chose: declared
-  why: One declaration serves every viewer and keeps meaning out of drawing code (principles one-owner-per-fact, intuitive-for-ai); it also makes the coverage and problems views possible without re-deriving.
+  chose: reverse-by-field-word
+  why: The shipped board reads 4 single-hop reverses and composes 2 longer paths in its own code (goal chain, what a workflow touches); derived is already a field name and acts_in would be a second name for actor.

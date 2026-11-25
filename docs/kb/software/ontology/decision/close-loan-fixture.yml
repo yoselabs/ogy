@@ -6,6 +6,8 @@ options:
     label: close-loan performs return, so the transition has a row that fires it
   reacts:
     label: close-loan reacts, and another workflow fires return
+  reacts-with-return-workflow:
+    label: close-loan stays the listener; a new workflow return-tool (the member hands the tool back) has the row that fires `return`, so `workflow.event` stays filled.
 proposal:
-  chose: performs-return
-  why: One workflow shows the whole loan, and no second workflow is needed only to fire a transition.
+  chose: reacts-with-return-workflow
+  why: close-loan is the only `event:` in the fixture; having it fire its own transition would leave the field unused.

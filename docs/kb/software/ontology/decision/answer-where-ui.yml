@@ -6,6 +6,8 @@ options:
     label: Add the scheme `ui`, for example `ui:board`
   no:
     label: Keep ai, bd and path only
+  yes-ui-token:
+    label: Add the scheme `ui`, as `ui:board/<token>`; the board stops writing `path:ogy-board/`.
 proposal:
-  chose: yes
-  why: The board answers must say where they came from; without it they are recorded as an AI session that did not happen.
+  chose: yes-ui-token
+  why: The board stretches `path` to mean itself; all 352 existing `where` values are `ai:`, so nothing migrates.

@@ -6,6 +6,8 @@ options:
     label: Each of the three kinds declares an unused work requirement
   no:
     label: Leave them as they are
+  yes-handler-performs:
+    label: 'Each of the three declares unused work: an actor nothing links to; an entity nothing outside its own parts links to; a handler that performs no row (not a handler nothing links to: all 11 handlers have no inbound link).'
 proposal:
-  chose: yes
-  why: Principle fix-the-class; it costs three declarations in kind files and no field.
+  chose: yes-handler-performs
+  why: An orphan stays invisible otherwise (fix-the-class); a check written on inbound links would flag all 11 handlers.

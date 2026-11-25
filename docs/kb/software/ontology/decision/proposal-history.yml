@@ -1,0 +1,17 @@
+title: Where an earlier proposal stays
+question: When an agent changes the proposal of a decision, where do the earlier proposal and what moved it stay?
+context: "Today a proposal is rewritten in place. Example: actor-layers proposed by-layer, then product-only on 2026-11-24; nothing in the knowledge base shows the change, and ogy history prints only answers. With a list, each proposal stays with its time and what moved it, as answers do. Only a decision's proposals and answers are a log; entries (workflows, rules, interfaces) still change and get removed, and removed.yml keeps why. About 188 decisions migrate."
+structure: true
+options:
+  proposal-list:
+    label: 'A decision keeps its proposals as a list, as it keeps answers: a new one is appended with its time, an earlier one is never edited (checked against the base commit), the last is in force. Its `why` says what moved it; the option before is read from the item before'
+  before-field:
+    label: One proposal; it gains `before` (the option it replaced) and `moved` (one line). One step is kept, the others stay in Git
+  git-only:
+    label: 'No field: ogy history prints proposal changes from Git; changes made inside one commit are lost'
+  as-today:
+    label: "As today: the agent writes 'Before: ...' in `why` when it remembers"
+proposal:
+  chose: proposal-list
+  why: 'Appending keeps the history inside one session and closes the silent edit found by re-ask-conditions with the same check. A `before` field keeps one step and trusts the agent. Cost: proposal changes from one to many and about 188 decisions migrate.'
+  heard: 'Should those movements be traced: the previous option and what moved it.'

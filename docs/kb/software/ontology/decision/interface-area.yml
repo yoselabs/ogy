@@ -1,0 +1,17 @@
+title: The area of an interface that serves two areas
+question: In which area does an interface live, and what happens when it serves steps of two areas?
+context: '4 of 26 interfaces serve steps of two product areas: reply (review, capture), check (checks, review), history and show (capture, inspection). Each has one invocation for both steps, so no flag separates them; check --landing already exists where behaviour differs. Today all live in software/cli, an area named after a form.'
+structure: true
+options:
+  steps-area:
+    label: 'An interface lives in the area of the steps it serves; one that serves steps of two areas is work left (shared step): one workflow calls the other, so the step exists once'
+  shared-area:
+    label: An interface that serves two areas lives in the shared area of its layer
+  form-area:
+    label: 'As today: one area per form holds every command'
+  split-command:
+    label: A command that serves two workflows is split into subcommands or flags
+proposal:
+  chose: steps-area
+  why: 'The duplicate is the step, not the command: hand-over runs the same check as check-and-land. A call removes it and the area follows from the links. The shared area is the fallback where a call does not fit.'
+  heard: One command that serves several workflows suggests subcommands or flags.

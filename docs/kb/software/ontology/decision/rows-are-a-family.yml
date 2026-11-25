@@ -9,5 +9,5 @@ options:
   one-kind:
     label: One kind `row` with a `trigger` value (choice, case, timeout) and the fields optional by trigger
 proposal:
-  chose: family
-  why: "The three are queried together in 8 places and have two children's worth of shared fields, so a shared parent is cheaper than the repeated list; a merge would hide three different identities (principles one-owner-per-fact, rigid-where-checked). Not checked: engine support."
+  chose: term-only
+  why: The engine has no family concept (kind lists are checked name by name); no question fails today and no fourth row kind exists; a glossary word removes the confusion.

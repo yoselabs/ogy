@@ -10,7 +10,7 @@ options:
     label: '`form` is a list of the same enum; an interface reached as a command and as an MCP tool says both, and the 18 ogy commands become cli and mcp'
 proposal:
   chose: enum
-  why: A check reads it, so its values are closed; the old view and command become web and cli.
+  why: An interface is one point of reach in one form (borrow-cli and borrow-page are two); MCP tools are generated from the command table and one interface, mcp, serves them.
 answers:
 - chose: enum
   said: 'Yes, all: interface (owner 2026-11-19/20)'

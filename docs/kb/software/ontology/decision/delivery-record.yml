@@ -1,0 +1,14 @@
+title: How an entry says it is delivered
+question: Where do the code, tests, commits, date, author and task of a built entry live?
+context: The owner wants every provable entry to say where it is built, which tests hold it, in which commits, when, by whom and under which task. proof and the built line exist; commit, date and author are reserved as computed; a task has no home. 0 of 49 rows carry a proof and no built folder exists.
+structure: true
+options:
+  computed:
+    label: 'Nothing new stored: show prints handler and code, interfaces, proof, built or not, and the last commit, date and author from Git; the task is read from the commit message'
+  stored-block:
+    label: A delivered block stored on each entry
+  task-field:
+    label: As computed, plus a stored task field
+proposal:
+  chose: computed
+  why: Every asked fact but the task already has one owner (proof, built line, Git); a stored copy would drift, and an entry has many tasks over time.

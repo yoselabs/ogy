@@ -6,9 +6,13 @@ options:
     label: shows and accepts link to entities and attributes (content inputs); one that only shows may serve no step, one that accepts or offers serves a step
   step-shows:
     label: A step's shows field
+  step-first:
+    label: A step says what its actor is shown and gives; an interface serving it takes both from the step, as it takes its users; its own shows and accepts stay for one that serves no step
+  step-and-interface:
+    label: A step says what its actor is shown and gives, in product entities; an interface keeps shows and accepts for what only the build has
 proposal:
   chose: links
-  why: A read-only page needs no ceremonial workflow, and a changed entity reaches the pages that show it.
+  why: 'Kept as answered. Interfaces serving one step differ in content: 11 on inspect-kb read; in the tool library borrow-cli accepts parts while borrow-page shows the tool. A step field would be a second home for one fact (one-owner-per-fact). If interface-layer is answered both-layers, shown content has a product home.'
 answers:
 - chose: links
   said: 'Yes, all: interface (owner 2026-11-19/20)'

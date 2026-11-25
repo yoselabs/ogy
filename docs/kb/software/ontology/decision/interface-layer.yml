@@ -1,0 +1,26 @@
+title: Which layer holds an interface
+question: Is an interface a software entry, a product entry, two kinds (what a person meets and how it is built), or an entry of a third design layer?
+context: 26 interfaces, all software; 22 carry invoked_as, 1 a proof. 8 of 19 actor steps are served by two or more interfaces, one by 11 in 3 forms. The owner argued twice that what the client sees in a design is product. Shown content has no product home today; interface-shows-accepts asks that.
+structure: true
+options:
+  software:
+    label: 'Stays a software kind: one built point of reach in one form'
+  product:
+    label: Moves to the product layer
+  split:
+    label: 'Two kinds: a product one for what a person meets, a software one for how it is built'
+  design-layer:
+    label: A third layer, design, between product and software, holding interfaces
+  both-layers:
+    label: 'A kind of both layers, as actor is: an interface that serves a product step lives in product, also when it serves a software step too; one that serves only software steps, or shows or accepts a software entity, lives in software; one that serves no step, in the layer of the actors it allows. No new kind and no new field'
+  product-only:
+    label: 'A product kind only: an interface is where an actor outside the product reaches it, whatever its form (web, cli, http, mcp, message, file); the kind file says layers: product, so a software address is refused at write. A contract between two of our own parts is not an interface (see own-part-contracts)'
+proposal:
+  chose: product-only
+  why: "The both-layers rule gives two answers for 5 of 26 interfaces (they serve product steps and show software/viewing entities), and product may not name software. Only 2 of 26 serve software steps alone, and both reach an outside party (Git, an MCP client). One layer per kind needs no judgement per entry. Cost: 26 moves and 23 links to repair. Before: both-layers (third pass); moved by the zero-base pass on the owner's view that every interface faces the outside."
+  heard: Every interface is where something outside reaches the system; MCP is product-facing too.
+answers:
+- chose: product-only
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:18+01:00'
+  where: ai:claude/ontology-review-session-749f16

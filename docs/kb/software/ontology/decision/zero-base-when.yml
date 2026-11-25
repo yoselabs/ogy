@@ -1,0 +1,23 @@
+title: When the judged-as-new test runs
+question: When does the judged-as-new test run, given what one run costs?
+context: "Measured 2026-11-24: one Fable pass used 110 to 160 thousand tokens and 4 to 10 minutes. One concept with an independent review is two passes: 220 to 320 thousand tokens, 8 to 20 minutes. The 29 kinds form about 14 neighbourhoods (a kind with its parts): 3 to 4.5 million tokens, 2 to 4.5 hours one after another (estimate). judged-as-new's option principle says every audit runs the test."
+structure: true
+options:
+  on-challenge:
+    label: 'Only on a challenge: the owner or a reviewer names the concept and a competency question that fails on a reference case; one concept per run'
+  challenge-change-and-new-case:
+    label: On a challenge for that concept; on a change of a kind file for that kind's neighbourhood; and the whole ontology once when a reference case is added or the competency questions change
+  every-audit:
+    label: The whole ontology in every audit
+  trial-then-monthly:
+    label: 'First one trial, when the backlog is ready: the owner and an agent design a few small new products with ogy, and the owner makes them harder step by step. After that, a test of the whole ontology at most once a month'
+proposal:
+  chose: challenge-change-and-new-case
+  why: A verdict moves only on a new record, and a new case or question is the one event that brings new records for every kind. A whole run on the same evidence can only repeat or flip without cause.
+  heard: Run a zero-base test; how many tokens would it cost.
+answers:
+- chose: trial-then-monthly
+  said: Not millions of tokens; first a trial on small products he brainstorms and makes harder, then perhaps monthly
+  at: '2026-11-24T18:26:33+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: once a month, maybe; the trial starts when the backlog is ready

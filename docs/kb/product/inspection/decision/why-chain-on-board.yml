@@ -9,13 +9,22 @@ options:
     label: Also add an optional pain text to a goal, read by a missing-pain work check
   problem-kind:
     label: A new problem kind with its own evidence and review
+  pain-and-trace:
+    label: 'No new kind. A goal gains one optional text, `pain`: what goes wrong today for the actors it is for; a goal without it is work. A product workflow that realizes no capability, and is not called by one that does, is work. The board shows pain, goal, capability, workflow'
+  pains-list:
+    label: No new top kind. A goal holds a list pains; each pain is a short paraphrase with when and where it was heard, added and never rewritten. A goal with no pain is work; a product workflow realizing no capability is work. The board shows pains, goal, capability, workflow
+  because-decisions:
+    label: 'No new field. A pain lives in the context of the decision it raised; the goal cites that decision with because. The board shows, under a goal, each cited decision with its title, date and place, then capability and workflow. A goal citing none reads: purpose not recorded'
 proposal:
-  chose: expose-existing
-  why: Costs no ontology change and shows whether the chain is recorded at all.
-  heard: It makes sense, but what kind of problem does the workflow solve; is that in the ontology.
+  chose: because-decisions
+  why: "from-pain-to-built writes each pain as a decision, so a pains list on the goal is a second home for the same sentence (one-owner-per-fact), and a pain answered not now has no goal to hold it. because on a goal already takes many decisions; each keeps its own date and place. No check reads a pain's time or place (rigid-where-checked). Before: pains-list."
 answers:
 - chose: expose-existing
   said: 'Approved the verdict table: show the existing why-chain on the board.'
   at: '2026-11-21T22:32:00+01:00'
   where: ai:claude/f6fcc5ed
   note: 'Hedged: "Yes, I guess."'
+- chose: because-decisions
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:48+01:00'
+  where: ai:claude/ontology-review-session-749f16

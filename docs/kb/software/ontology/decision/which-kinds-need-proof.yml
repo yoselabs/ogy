@@ -9,10 +9,10 @@ options:
   keep:
     label: Keep the 13 kinds
   behaviour-and-built-decisions:
-    label: As behaviour, and an answered structure decision whose options set nothing carries a `proof`, a test that reads the kind file; until it has one it is work
+    label: 'As behaviour, and an answered decision marked `structure` whose option in force sets nothing is work until it carries a `proof`: a test that reads the kind files and fails when they stop matching that answer; a new answer makes the proof out of date.'
 proposal:
-  chose: behaviour
-  why: Work left becomes a number one can drive to zero.
+  chose: behaviour-and-built-decisions
+  why: 41 answered structure decisions set nothing and nothing reports one unbuilt (context-form area-field); needs engine work, built after the re-asks.
 answers:
 - chose: behaviour
   said: 'Yes, all: D15, proof on rows, rule, interface, setting, workaround; entity only with transitions; not step, handler, quantity'

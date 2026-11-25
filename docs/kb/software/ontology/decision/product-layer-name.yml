@@ -1,0 +1,12 @@
+title: The name of the product layer
+question: Is the layer that holds what the product does, for whom and through which points of reach still called product?
+context: 'The glossary says: product (what, why), software (how it is built). The name suggests the work of product people only; with interface-layer answered both-layers it also holds API and message interfaces. A rename rewrites every product address.'
+structure: true
+options:
+  keep:
+    label: Keep product; the layer line says it holds every input and output the business agrees, whoever draws it
+  rename:
+    label: Rename the layer to a word free of that bias (behaviour)
+proposal:
+  chose: keep
+  why: The definition is already neutral; only the name leans, and a rename moves every address for no question it lets ogy answer.

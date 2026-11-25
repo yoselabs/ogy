@@ -10,4 +10,4 @@ options:
     label: Neither
 proposal:
   chose: reached-check
-  why: The check finds the real fault with no new field; grouping has no reader yet (principle rigid-where-checked).
+  why: One requires line on state. It finds 2 states in ogy's KB, both initial (entry nobody-agreed, decision question-waiting), so it depends on create-on-a-lifecycle; 0 in the fixture.

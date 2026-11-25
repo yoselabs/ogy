@@ -8,5 +8,5 @@ options:
   plays:
     label: 'Rename to `plays`: the dependency plays the program actor; `renamed: {realizes: plays}` in dependency.yml for ogy migrate.'
 proposal:
-  chose: plays
-  why: One word, one meaning; almost nothing moves.
+  chose: realizes
+  why: One meaning holds across the three uses (the concrete thing that makes the abstract one real); `plays` borrows a word the glossary avoids for actors; no real KB case yet.

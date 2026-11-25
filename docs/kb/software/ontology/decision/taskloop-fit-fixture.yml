@@ -1,0 +1,20 @@
+title: Whether taskloop-fit stays
+question: Once examples/task-loop exists, does tests/fixtures/taskloop-fit stay?
+context: 'Pain: the fixture pins 47 entries and six exact findings, so the land workflow, cut on purpose, could not be written back without breaking a test. Other tests already cover what it checks (test_constitution, test_ops and the layout test).'
+structure: true
+options:
+  replace:
+    label: examples/task-loop lands first with the land and claim areas; then the fixture goes in the same change that rewrites test_examples.py, which pins per example folder only that it loads and that check finds nothing but terms awaiting the owner's yes. No entry counts, no exact addresses
+  both:
+    label: Keep the fixture and the example; two copies of one product
+  keep-fixture:
+    label: Keep only the fixture
+proposal:
+  chose: replace
+  why: Two copies of one product drift; a pinned count freezes design input.
+  heard: The fixture may be removed and replaced with examples.
+answers:
+- chose: replace
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:57:12+01:00'
+  where: ai:claude/ontology-review-session-749f16

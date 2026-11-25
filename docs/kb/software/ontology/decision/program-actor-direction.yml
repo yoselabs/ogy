@@ -3,7 +3,7 @@ question: 'An actor of nature program is either one we tell (a payment provider:
 context: Found 2026-11-24 by the ontology review (finding N6). The redesign's derived check says a program actor with no dependency is owed work (C11). The actor kind says program includes `an MCP client calling a tool`, and the two program actors in the software layer (software/checks, software/mcp) call us, so that check would report every one of them as owed. Today only a row that tells a program actor is held to a dependency.
 options:
   derive:
-    label: 'Derived from links: told when an effect `tell` names it, calls us when a step or `allows` names it; the owed-dependency work applies only to told ones'
+    label: "Derived from links, never stored: told when an effect `tell` names it, calling us when a step or `allows` names it. No new work on the actor: a told program actor with no dependency already shows as `unhandled` on the row that tells it. The actor kind's `about` is reworded to cover a program the product tells."
   nature-value:
     label: Split nature `program` into two values, one we tell and one that calls us
   none:

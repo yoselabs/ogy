@@ -1,0 +1,18 @@
+title: An answer that takes away an entry others link to
+question: When the owner's new answer sets an entry to null and other entries link to it, is the answer recorded?
+context: "Pain, on an invented pet shop: the owner first said yes to the goal 'a customer knows before a visit whether a pet can still be bought', a capability was written, then the owner said drop it. ogy answer refused because the capability links to the goal, and the no was kept nowhere."
+options:
+  record-then-work:
+    label: The answer is recorded at once; each entry that still links to the absent one prints as work until removed or re-pointed
+  refuse:
+    label: 'As today: refused until the agent removes every linking entry'
+  cascade:
+    label: ogy removes the linking entries itself
+proposal:
+  chose: record-then-work
+  why: What the owner said must not depend on clean-up; a cascade removes entries nobody looked at.
+answers:
+- chose: record-then-work
+  said: Record the no at once; whatever was built on it becomes work to build its removal
+  at: '2026-11-25T19:22:02+01:00'
+  where: ai:claude/ontology-review-session-749f16

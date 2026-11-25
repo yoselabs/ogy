@@ -6,6 +6,8 @@ options:
     label: 'A principle or a decision: the reason, never a source'
   any:
     label: Any entry, as before
+  goal-or-capability-too:
+    label: because may also cite a goal or a capability
 proposal:
   chose: principle-or-decision
   why: One meaning; evidence is src, a settling decision or the owner yes.

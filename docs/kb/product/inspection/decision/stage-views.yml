@@ -1,0 +1,15 @@
+title: One view per stage of the work
+question: How does ogy give product design, solution design, code design, implementation, QA and release each its own view?
+context: map-layers answered two layer views with limits. Each stage question is answered by existing kinds, work statuses and proofs; none needs a kind. The one gap is that a missing proof shows only as unbuilt.
+structure: false
+options:
+  filters:
+    label: Six named filters over layer, work status and proof, the same in the command line and the board
+  actors:
+    label: One actor per stage, with goals for each
+  stage-kind:
+    label: A kind stage that entries name
+proposal:
+  chose: filters
+  why: A stage is a point of view, not a thing with identity; an entry passes through all six.
+  heard: Every stage of the work should get exactly the view its person or agent needs.

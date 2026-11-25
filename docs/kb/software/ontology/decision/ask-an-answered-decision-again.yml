@@ -13,3 +13,8 @@ proposal:
   chose: proposal-at
   why: One field reused from answer, one computed rule; it lets the owner see re-proposals while older proposals stay silent. A listing decision hides the question behind an address list.
   heard: The owner wants every proposed adjustment thought through again and asked, and cost is no reason to skip it.
+answers:
+- chose: proposal-at
+  said: A proposal with a time, newer than the newest answer, turns an answered decision back into a question; take the recommendation.
+  at: '2026-11-24T02:32:30+01:00'
+  where: ai:claude/ontology-review-session-749f16

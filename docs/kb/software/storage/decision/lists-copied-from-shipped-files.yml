@@ -5,7 +5,7 @@ options:
   owner-only:
     label: The shipped file is the only owner; the four copies do not exist.
   keep-and-fix:
-    label: Keep the four and correct where-schemes to ai, bd, path; the applier copies the three unchanged lists as they are now.
+    label: Keep the four and correct where-schemes to the schemes answer.yml lists when this is applied; the applier copies the three unchanged lists as they are now.
 proposal:
   chose: owner-only
   why: One owner per fact; a copy cannot be checked against its owner.

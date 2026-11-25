@@ -11,6 +11,11 @@ options:
     sets:
       software/checks/rule/ogy-has-no-plugin-system:
         says: ogy loads plugins by name at run time.
+  ontology-package:
+    label: An ontology may ship in its own Python package as data files; the engine imports no code from it
+    sets:
+      software/checks/rule/ogy-has-no-plugin-system:
+        says: ogy loads no extension code; an ontology may ship as data files in its own package.
 proposal:
   chose: no-plugins
   why: Dynamic loading adds a failure mode with no job that data cannot do.

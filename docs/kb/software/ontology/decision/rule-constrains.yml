@@ -10,9 +10,11 @@ options:
     label: '`satisfies` may also come from an area and from a system; every behaviour entry inside is then held to the rule (computed); the choice of one part or one interface stays as it is; data kinds keep `constrains`'
   requirement-kind:
     label: A new kind for requirements that hold for a whole area or system; rule stays for one part
+  split-whole-product-by-proof:
+    label: '`split` stays: `constrains` for data kinds, `satisfies` from behaviour kinds only. A rule that holds for the whole product names nothing and carries a `proof`; the unused check reads a proof like a satisfier. An area or a system is no satisfier; ask again when three rules are each linked from every behaviour entry of one area.'
 proposal:
-  chose: area-and-system-satisfy
-  why: The owner needs a rule for everything, one area or one endpoint, and 66 of 74 rules link to nothing; widening the source of `satisfies` serves that with no new kind, since an area or a system holds behaviour. Keeping split (the earlier answer) stays an option. This is a recommendation, not an answer (Fable redesign, 2026-11-23, M6).
+  chose: split-whole-product-by-proof
+  why: No system kind is proposed, so an area or system cannot be a satisfier; a whole-product rule stands by its proof.
 answers:
 - chose: split
   said: 'Yes, all: constrains for data kinds, satisfies only for behaviour kinds'

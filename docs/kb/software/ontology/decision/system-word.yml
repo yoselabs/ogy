@@ -1,6 +1,6 @@
 title: The word for what we ship
 question: If the ontology gains a kind for one thing the owner ships and names (the engine, the board), is it called system, product or program?
-context: Comes up only if context-form is answered system-kind. The word `system` is free as an entry word (17 hits, all prose); the word product is already avoided for area names, and program is already a nature of an actor (someone else's program). The phrases system step and outside system already use it.
+context: Asked only if context-form is answered system-kind; otherwise it is not shown. The word `system` is free as an entry word (17 hits, all prose); product is already avoided for area names, and program is already a nature of an actor.
 options:
   system:
     label: '`system`: like a C4 software system'
@@ -13,5 +13,10 @@ options:
   none-yet:
     label: "No kind yet: `system` already means the product in \"system step\" and someone else's program in \"outside system\"; ask again when one knowledge base holds two shipped things that share no handler"
 proposal:
-  chose: system
-  why: It fits the phrases system step and outside system, and does not clash with the layer name product or the actor nature program.
+  chose: none-yet
+  why: One real case (ogy); the CLI, MCP and board are areas of one shipped command set; `system` already means two opposite things in 7 kind files (Fable, final review 2026-11-24).
+answers:
+- chose: none-yet
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:38+01:00'
+  where: ai:claude/ontology-review-session-749f16

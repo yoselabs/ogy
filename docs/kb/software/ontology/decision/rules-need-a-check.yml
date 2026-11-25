@@ -10,9 +10,11 @@ options:
     label: 'A rule stays when an existing check, test or engine behaviour could catch it: it is linked to the handler or interface that models that check, and keeps its agreement; only a rule nothing could catch becomes a plain decision, removed with its own reason, one by one'
   link-or-reask:
     label: A rule an engine check already enforces stays and is linked with `satisfies` from a handler in software/checks that models that check, keeping its agreement; every other rule set by an answer in force is asked again on its own decision with an option that sets it null, because `ogy remove` alone cannot remove it
+  proof-or-decision:
+    label: 'A rule stays when a test can prove it and no kind file already declares it: it is linked with `satisfies` from the handler or interface whose behaviour it states, or stands for the whole product with its proof, keeps its agreement and is work until it has a proof. A rule that repeats a kind-file check, an absence, a plan or an agent habit goes: its decision is asked again with an option that keeps the answer and sets the rule null. No handler is written only to carry a rule.'
 proposal:
-  chose: keep-checkable
-  why: A rule nothing can follow is a decision in prose, and it floods the work list with rows that are not work.
+  chose: proof-or-decision
+  why: 61 of 74 rules are set by an answer in force; each that goes is asked again on its own decision.
 answers:
 - chose: keep-checkable
   said: "Follow Fable's recommendation: rules stay only when a check can catch them."

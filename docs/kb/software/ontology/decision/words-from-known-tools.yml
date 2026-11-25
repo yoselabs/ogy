@@ -1,0 +1,17 @@
+title: Words come from tools people already know
+question: Does the constitution say that ogy's words are taken from vocabularies people already know from popular tools and methods?
+context: "Pain: work-types named a work type 'model'; the owner could not tell if it meant modelling or designing. Most readers know English as technical or business English, not as natives. With the principle, a new word is first looked up in GitHub (issues, pull requests, checks), Figma (frames, components, prototypes) or Domain-Driven Design (bounded context, aggregate, ubiquitous language), and a word none of them uses needs a reason. Principle text: ogy's words come from vocabularies people already know from popular tools and methods, such as GitHub, Figma and Domain-Driven Design, each for its own domain; readers know technical or business English, not native English. A word none of them uses needs a decision."
+options:
+  add:
+    label: Add the principle words-from-known-tools
+  no:
+    label: No principle
+proposal:
+  chose: add
+  why: The owner asked for it in these words.
+  heard: 'Most readers come from other countries and know technical or business English; take the vocabulary from popular software: GitHub, Figma, Domain-Driven Design.'
+answers:
+- chose: add
+  said: 'Solidify the rule: vocabulary comes from popular software such as GitHub, Figma and Domain-Driven Design'
+  at: '2026-11-24T19:13:27+01:00'
+  where: ai:claude/ontology-review-session-749f16

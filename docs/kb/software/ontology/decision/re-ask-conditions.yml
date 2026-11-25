@@ -1,0 +1,19 @@
+title: Four conditions on asking an answered decision again
+structure: true
+question: "You chose that a proposal with a time (`at`), newer than the newest answer, turns an answered decision back into a question. Fable's check says that as written it has two holes that bring the old problem back or loop forever. Do these four conditions come with it: ogy stamps `at` itself, time order is enforced on both sides, only an explicit letter answers a re-ask card, and the definition of `proposal` changes?"
+context: Found 2026-11-24 by Fable's read-only check of ask-an-answered-decision-again (status.py:292-296, put.py:114-116, cli.py:261, reply.py:161). (1) An agent that hand-writes `at`, or edits a proposal without changing `at`, stays silent with no finding. (2) A future-dated proposal or a back-dated answer leaves the decision asking forever. (3) A bare yes, `yes all` or the "You said ... Read as" path would answer a re-ask for you on an agent's reading. (4) The glossary term proposal says "until the owner answers", which the second meaning contradicts; a term change needs your yes.
+options:
+  all-four:
+    label: "All four, widened: (1) ogy stamps `at` itself on every proposal written to an answered decision, with the same option (a confirmation) or another, and refuses a hand-written `at`; (2) a proposal is never dated later than now, and an answer to a re-ask is newer than the proposal; (3) a re-ask card is answered only by its own letter from the owner: never yes, yes all, decide, Read as, or an answer under a delegation; (4) the kind text and glossary lines of `proposal` and of `question` are reworded, each with the owner's yes; (5) the entries this decision sets keep their status while it is asked again: only the queue changes."
+  first-three:
+    label: The first three now; the definition of proposal is reworded later
+  as-chosen:
+    label: Build exactly as chosen, without the conditions
+proposal:
+  chose: all-four
+  why: 'Each condition closes a concrete way for the re-ask to fail silently, loop, or answer for you (principles one-owner-per-fact, intuitive-for-ai; AGENTS.md: never answer for the owner).'
+answers:
+- chose: all-four
+  said: Yes to all 9 of Fable's picks, read on the pet shop cards
+  at: '2026-11-25T19:56:13+01:00'
+  where: ai:claude/ontology-review-session-749f16

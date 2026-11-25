@@ -9,7 +9,7 @@ options:
   owner-chooses:
     label: The owner always chooses; no delegation for it
   parked:
-    label: "\"I do not know\" is a note on the question, not an answer: the question stays waiting, comes back reworded or with the agent's reading as its proposal, and nothing is decided for the owner"
+    label: "\"I do not know\" is `later`: nothing is recorded and the question stays waiting; the agent rewrites the decision's context or proposal so it comes back clearer. The agent decides only when the owner says so for one question or a named group of them, which is the delegation that exists."
 proposal:
-  chose: delegation
-  why: Delegated answers, notes and the `dropped` list already exist, so it needs no new field, and the owner can veto each one.
+  chose: parked
+  why: 'A blanket delegation turns hesitation into consent (AGENTS.md: delegation only when the owner says decide on my behalf for a named group of questions); an answer needs a chosen option.'
