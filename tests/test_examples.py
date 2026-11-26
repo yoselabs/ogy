@@ -50,7 +50,7 @@ EXAMPLES = Path(__file__).parent.parent / "examples"  # reference cases written 
 
 @pytest.mark.parametrize(
     ("root", "folder"),
-    [(V5, "example-tool-library"), (V5, "example-task-loop"), (EXAMPLES / "pet-shop", "docs/kb")],
+    [(V5, "example-tool-library"), (EXAMPLES / "task-loop", "docs/kb"), (EXAMPLES / "pet-shop", "docs/kb")],
     ids=["tool-library", "task-loop", "pet-shop"],
 )
 def test_an_example_loads_and_finds_nothing_but_terms_awaiting_the_owner(root: Path, folder: str) -> None:

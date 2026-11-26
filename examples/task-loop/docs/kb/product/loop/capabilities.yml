@@ -1,0 +1,6 @@
+- id: run-rounds
+  says: 'The factory runs rounds: each settles running attempts, advances finished steps and admits ready tasks into free slots.'
+  realizes:
+  - product/loop/goal/tasks-run-unattended
+  src:
+  - code:src/taskloop/round.py#run_round

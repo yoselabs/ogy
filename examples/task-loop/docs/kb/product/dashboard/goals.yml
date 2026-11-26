@@ -1,0 +1,6 @@
+- id: see-the-factory
+  says: The person sees every task's step and state without asking the factory.
+  for:
+  - product/shared/actor/person
+  src:
+  - code:src/taskloop/dash_server.py#respond

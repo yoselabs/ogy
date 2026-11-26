@@ -1,0 +1,44 @@
+says: One run of one step of a task in a slot.
+src:
+- code:src/taskloop/attempt_status.py#AttemptView
+states:
+  running:
+    says: The step runs in its slot.
+  done:
+    says: The step finished and waits to be advanced.
+  passed:
+    says: The task's checks passed; it waits for land.
+  failed:
+    says: The checks failed; a failed checks attempt is never re-run.
+  held:
+    says: 'The task waits for the person: its change was refused.'
+  landed:
+    says: The task is on main and closed.
+transitions:
+  admit:
+    to: running
+  finish:
+    from:
+    - running
+    to: done
+  advance:
+    from:
+    - done
+    to: running
+  pass:
+    from:
+    - running
+    to: passed
+  fail:
+    from:
+    - running
+    to: failed
+  hold:
+    from:
+    - done
+    - passed
+    to: held
+  land:
+    from:
+    - passed
+    to: landed

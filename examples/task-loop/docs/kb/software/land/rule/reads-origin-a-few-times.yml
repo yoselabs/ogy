@@ -1,0 +1,5 @@
+says: One land reads origin again at most delivery-rounds times before it answers that main moved.
+constrains:
+- software/land/quantity/delivery-rounds
+src:
+- code:src/taskloop/land_push.py#ROUNDS

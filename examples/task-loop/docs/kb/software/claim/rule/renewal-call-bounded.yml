@@ -1,0 +1,5 @@
+says: One renewal call to the tracker is abandoned after renewal-call-limit; the claim then counts as unconfirmed.
+constrains:
+- software/claim/quantity/renewal-call-limit
+src:
+- code:src/taskloop/claim_lease.py#KeepAlive

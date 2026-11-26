@@ -1,0 +1,22 @@
+- id: person
+  title: The person
+  says: The human who owns the repository and its main branch and runs commands in their own shell.
+  nature: human
+  src:
+  - code:src/taskloop/land.py#_barred
+- id: implementing-agent
+  title: Implementing agent
+  says: The model that writes a task's code in a slot; its environment refuses every push.
+  nature: ai
+  src:
+  - code:src/taskloop/agent_credentials.py#PUSH_REFUSED
+- id: tracker
+  says: The task tracker that holds each task, its status and the factory's claim on it.
+  nature: program
+  src:
+  - code:src/taskloop/claim_lease.py#KeepAlive
+- id: code-host
+  says: The Git host whose main branch tasks land on.
+  nature: program
+  src:
+  - code:src/taskloop/land_push.py#REMOTE

@@ -1,0 +1,7 @@
+says: "The answer an agent returns at the end of a step: its disposition and explanation, decoded against the step's schema."
+form: message
+serves:
+- product/loop/workflow/attempt/step/plan
+- product/loop/workflow/attempt/step/implement
+src:
+- code:src/taskloop/implement_step.py#contract

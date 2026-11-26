@@ -1,0 +1,11 @@
+says: An outside automation asks for a round.
+realizes: product/loop/capability/run-rounds
+start: fire
+steps:
+  fire:
+    says: The automation asks for a round.
+    actor: product/loop/actor/automation-trigger
+    choices:
+      fire:
+        label: Ask for a round
+        then: product/loop/workflow/round

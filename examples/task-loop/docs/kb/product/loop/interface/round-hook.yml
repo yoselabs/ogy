@@ -1,0 +1,5 @@
+says: The address an automation calls to ask for a round.
+form: http
+invoked_as: POST /rounds
+serves:
+- product/loop/workflow/triggered-round/step/fire

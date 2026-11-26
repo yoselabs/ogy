@@ -1,0 +1,8 @@
+says: The read-only web page of the factory, served from the rounds process.
+form: web
+serves:
+- product/dashboard/workflow/watch/step/look
+shows:
+- product/loop/entity/attempt
+src:
+- code:src/taskloop/dash_server.py#respond

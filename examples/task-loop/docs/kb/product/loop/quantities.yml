@@ -1,0 +1,6 @@
+- id: max-running
+  says: How many of the backlog's tasks may be in flight at once.
+  is: 3
+  unit: tasks
+  src:
+  - code:src/taskloop/round.py#max_running_refused

@@ -1,0 +1,22 @@
+title: Rounds through MCP (planned)
+question: Does the factory offer one round to an agent as an MCP tool?
+context: 'Planned, not built (hypothesis, picked to test ogy): the factory has a command line and a dashboard today; an MCP server is planned. It puts a third interface on the step the two round commands serve.'
+options:
+  tool:
+    label: 'Yes: an MCP tool rounds_once'
+    sets:
+      product/loop/interface/rounds-tool:
+        says: The MCP tool an agent calls to run one round.
+        form: mcp
+        invoked_as: rounds_once
+        serves:
+        - product/loop/workflow/round/step/run
+        offers:
+        - product/loop/workflow/round/step/run/choice/once
+  not-now:
+    label: Not now
+    sets:
+      product/loop/interface/rounds-tool:
+proposal:
+  chose: tool
+  why: An agent that runs the loop asks for a round the way a person does.

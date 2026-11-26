@@ -1,0 +1,3 @@
+says: The implementing agent works offline in its slot and cannot push; only the factory publishes its result.
+src:
+- code:src/taskloop/agent_credentials.py#push_bar

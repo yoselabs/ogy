@@ -1,0 +1,62 @@
+says: One task is planned, implemented and checked, each step in a slot.
+realizes: product/loop/capability/run-rounds
+src:
+- code:src/taskloop/operations.py#start
+start: plan
+steps:
+  plan:
+    says: The implementing agent writes the task's plan.
+    actor: product/shared/actor/implementing-agent
+    choices:
+      planned:
+        label: Plan written
+        then: implement
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/finish
+      refused:
+        label: Cannot plan it
+        then: gave-up
+  implement:
+    says: The implementing agent writes the code and commits it in its slot.
+    actor: product/shared/actor/implementing-agent
+    choices:
+      committed:
+        label: Committed
+        then: checks
+        satisfies:
+        - product/loop/rule/agent-never-pushes
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/finish
+      refused:
+        label: Cannot implement it
+        then: gave-up
+  checks:
+    says: The factory runs the repository's checks on the committed change.
+    cases:
+      failed:
+        order: 1
+        when:
+          text: a required check failed
+          reads:
+          - product/loop/entity/attempt
+        then: checks-failed
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/fail
+      otherwise:
+        then: passed
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/pass
+ends:
+  passed:
+    says: The task waits for land.
+    result: success
+  checks-failed:
+    says: The checks failed; the attempt is never re-run.
+    result: failure
+  gave-up:
+    says: The agent could not do the step; the task is released.
+    result: failure

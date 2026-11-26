@@ -1,0 +1,6 @@
+- id: watch
+  says: A live board of every task in flight, its step and its state.
+  realizes:
+  - product/dashboard/goal/see-the-factory
+  src:
+  - code:src/taskloop/dash_board.py#build_board

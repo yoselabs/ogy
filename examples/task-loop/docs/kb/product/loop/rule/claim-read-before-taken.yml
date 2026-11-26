@@ -1,0 +1,3 @@
+says: A round claims a ready task only after reading it from the tracker in that round; a claim it could not confirm is read again next round, never taken twice.
+src:
+- code:src/taskloop/round.py#_admit

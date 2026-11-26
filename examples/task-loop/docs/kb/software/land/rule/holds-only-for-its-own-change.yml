@@ -1,0 +1,5 @@
+says: A round holds a task only for a refusal about the task's own change; any other refusal leaves it waiting.
+constrains:
+- software/land/enum/holding-refusals
+src:
+- code:src/taskloop/round_land.py#HOLDING

@@ -1,0 +1,11 @@
+title: An option that brings a whole workflow
+question: When an option of a decision brings a whole workflow, does its sets hold the steps too, or only the workflow's own fields?
+context: "Pain, found writing examples/task-loop (2026-11-26): the planned outside trigger went in as one option that sets an actor, an HTTP hook and a workflow with its steps; put refused the steps and ends (unknown-field), since sets holds an entry's fields, not its parts. product/capture/decision/from-pain-to-built says an idea about a flow enters as a decision whose option sets the workflow. Written instead: the option sets the workflow's own fields (says, start), the steps come in the same write, and not-now sets the workflow to null, which takes its parts with it."
+options:
+  fields-only:
+    label: "Only the workflow's own fields: its parts come in the same write; null still removes the whole workflow"
+  parts-too:
+    label: sets may hold the parts too, compared as written while the option is in force
+proposal:
+  chose: fields-only
+  why: 'It works today in both directions: the option brings the workflow and not-now takes it away with its parts. One case so far, and no flexibility until a case needs it.'

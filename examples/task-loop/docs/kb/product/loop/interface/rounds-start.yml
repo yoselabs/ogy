@@ -1,0 +1,9 @@
+says: The command that repeats rounds in the foreground until Ctrl-C.
+form: cli
+invoked_as: tl rounds start --backlog <key> --label <label>
+serves:
+- product/loop/workflow/round/step/run
+offers:
+- product/loop/workflow/round/step/run/choice/repeat
+src:
+- code:src/taskloop/cli_step.py#_rounds

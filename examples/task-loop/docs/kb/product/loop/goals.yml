@@ -1,0 +1,6 @@
+- id: tasks-run-unattended
+  says: An approved task is planned, implemented and checked without the person driving each step.
+  for:
+  - product/shared/actor/person
+  src:
+  - code:src/taskloop/round.py#run_round

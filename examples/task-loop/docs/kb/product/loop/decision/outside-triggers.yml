@@ -1,0 +1,28 @@
+title: Rounds asked for from outside (planned)
+question: May a program outside the factory, such as a scheduled automation, ask for a round?
+context: 'Planned, not built (hypothesis, picked to test ogy): today only the person starts rounds. A trigger would be a second actor that starts the round workflow through another workflow.'
+options:
+  hook:
+    label: 'Yes: an HTTP hook that starts a round'
+    sets:
+      product/loop/actor/automation-trigger:
+        says: A program outside the factory, such as a scheduled automation, that asks for a round.
+        nature: program
+      product/loop/interface/round-hook:
+        says: The address an automation calls to ask for a round.
+        form: http
+        invoked_as: POST /rounds
+        serves:
+        - product/loop/workflow/triggered-round/step/fire
+      product/loop/workflow/triggered-round:
+        says: An outside automation asks for a round.
+        start: fire
+  not-now:
+    label: Not now
+    sets:
+      product/loop/actor/automation-trigger:
+      product/loop/interface/round-hook:
+      product/loop/workflow/triggered-round:
+proposal:
+  chose: hook
+  why: A scheduled automation can run the loop overnight without a person at the shell.

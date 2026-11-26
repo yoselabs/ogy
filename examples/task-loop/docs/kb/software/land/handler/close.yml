@@ -1,0 +1,7 @@
+says: Closes the task in the local tracker as its assignee once the change is on main.
+src:
+- code:src/taskloop/land_close.py#closed
+performs:
+- product/land/workflow/land/step/close/case/otherwise
+uses:
+- software/claim/dependency/bd

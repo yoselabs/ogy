@@ -1,0 +1,5 @@
+says: A round advances claimed tasks before it admits new ones, so started work takes the free slots first.
+constrains:
+- product/loop/quantity/max-running
+src:
+- code:src/taskloop/round.py#_advance

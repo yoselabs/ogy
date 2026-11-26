@@ -1,0 +1,11 @@
+says: Pushes the squashed commit to origin's main without force and records the delivery from what origin says.
+src:
+- code:src/taskloop/land_push.py#_pushed
+performs:
+- product/land/workflow/land/step/push/case/otherwise
+uses:
+- software/land/dependency/origin
+satisfies:
+- software/land/rule/never-forced
+- software/land/rule/delivery-read-from-origin
+- software/land/rule/reads-origin-a-few-times

@@ -1,0 +1,10 @@
+says: Launches the step's harness in the slot with push barred and decodes the agent's answer.
+src:
+- code:src/taskloop/agents/launch.py#codex_access
+performs:
+- product/loop/workflow/attempt/step/plan/choice/planned
+- product/loop/workflow/attempt/step/implement/choice/committed
+uses:
+- software/loop/dependency/codex
+satisfies:
+- product/loop/rule/agent-never-pushes

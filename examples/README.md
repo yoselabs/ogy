@@ -8,7 +8,7 @@ nothing in it but terms waiting for their owner's yes.
 | case | what it is | layers written |
 |---|---|---|
 | [pet-shop](pet-shop/README.md) | a small storefront: a pet list, holding a pet online, paying at the counter | product |
-| [task-loop](../tests/fixtures/example-task-loop) | the autonomous task loop: claim and land | product, software |
+| [task-loop](task-loop/README.md) | the task factory `tl`, read from its code: rounds, agent steps, land, the board; an MCP tool and outside triggers planned | product, software |
 
 A case that describes a real product says where it was read from; an invented one (the pet shop) says so, and its owner's
 answers are invented too (`where: ai:example/<case>#owner`).

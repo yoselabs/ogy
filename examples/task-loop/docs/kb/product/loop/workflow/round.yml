@@ -1,0 +1,81 @@
+says: One round settles, advances and admits.
+realizes: product/loop/capability/run-rounds
+src:
+- code:src/taskloop/round.py#run_round
+start: run
+steps:
+  run:
+    says: The person starts rounds.
+    actor: product/shared/actor/person
+    choices:
+      once:
+        label: Run one round
+        then: settle
+      repeat:
+        label: Run rounds until stopped
+        then: settle
+  settle:
+    says: The round settles each existing attempt.
+    cases:
+      stopped:
+        order: 1
+        when:
+          text: a round-taken task stopped with its change refused
+          reads:
+          - product/loop/entity/attempt
+        then: advance
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/hold
+      otherwise:
+        then: advance
+  advance:
+    says: The round advances each claimed task whose step is done, before admitting new ones.
+    cases:
+      done-step:
+        order: 1
+        when:
+          text: a claimed task's step is done
+          reads:
+          - product/loop/entity/attempt
+        then: admit
+        satisfies:
+        - product/loop/rule/claimed-before-new
+        effects:
+        - do: transition
+          on: product/loop/entity/attempt/transition/advance
+      otherwise:
+        then: admit
+  admit:
+    says: The round admits approved ready tasks into the free slots.
+    cases:
+      full:
+        order: 1
+        when:
+          text: max-running tasks are in flight
+          reads:
+          - product/loop/quantity/max-running
+        then: idle
+      no-answer:
+        order: 2
+        when:
+          text: the tracker did not answer
+          reads:
+          - product/shared/actor/tracker
+        then: unavailable
+      otherwise:
+        then: product/loop/workflow/attempt
+        satisfies:
+        - product/loop/rule/claim-read-before-taken
+        effects:
+        - do: tell
+          on: product/shared/actor/tracker
+        - do: transition
+          on: product/loop/entity/attempt/transition/admit
+ends:
+  idle:
+    says: Every slot is busy; the next round tries again.
+    result: success
+  unavailable:
+    says: The tracker did not answer; nothing was claimed.
+    result: failure

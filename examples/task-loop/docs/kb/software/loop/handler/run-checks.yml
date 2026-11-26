@@ -1,0 +1,6 @@
+says: Runs the profile's checks in the factory and concludes from the required ones.
+src:
+- code:src/taskloop/checks.py#conclusion
+performs:
+- product/loop/workflow/attempt/step/checks/case/failed
+- product/loop/workflow/attempt/step/checks/case/otherwise

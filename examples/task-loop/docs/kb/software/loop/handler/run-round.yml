@@ -1,0 +1,13 @@
+says: 'Runs one round: settles, advances and admits, reading and claiming through the tracker.'
+src:
+- code:src/taskloop/round.py#run_round
+performs:
+- product/loop/workflow/round/step/settle/case/stopped
+- product/loop/workflow/round/step/advance/case/done-step
+- product/loop/workflow/round/step/admit/case/otherwise
+uses:
+- software/claim/dependency/bd
+satisfies:
+- software/land/rule/one-land-per-round
+- software/land/rule/holds-only-for-its-own-change
+- software/claim/rule/renewal-call-bounded

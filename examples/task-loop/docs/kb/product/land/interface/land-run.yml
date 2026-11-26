@@ -1,0 +1,7 @@
+says: The command that lands one checked task.
+form: cli
+invoked_as: tl land run <task> --backlog <key> --checkout <path>
+serves:
+- product/land/workflow/land/step/run
+src:
+- code:src/taskloop/cli_land.py#register

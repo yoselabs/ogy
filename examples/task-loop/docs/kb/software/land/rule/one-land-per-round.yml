@@ -1,0 +1,6 @@
+says: Under automatic landing a round lands or holds at most lands-per-round tasks, the oldest passed first.
+constrains:
+- software/land/quantity/lands-per-round
+- software/land/setting/land-mode
+src:
+- code:src/taskloop/round_land.py#land_passed

@@ -1,0 +1,7 @@
+says: The MCP tool an agent calls to run one round.
+form: mcp
+invoked_as: rounds_once
+serves:
+- product/loop/workflow/round/step/run
+offers:
+- product/loop/workflow/round/step/run/choice/once

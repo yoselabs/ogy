@@ -1,0 +1,11 @@
+title: What is built in a case read from code
+question: How does a reference case read from another repository's code say which parts are built and which are planned?
+context: 'Pain, found writing examples/task-loop (2026-11-26): every entry reads unbuilt in ogy work (40 product and 12 software rows) though the code exists, because the built record holds lines only after a proof passes in this repository; the two planned parts differ only by being unanswered decisions. A reader of the case cannot tell built from planned from ogy work alone.'
+options:
+  decisions-only:
+    label: 'As today: a planned part is an unanswered decision with a proposal; everything else is taken as built, and ogy work of a case is read as owed, not as unbuilt'
+  foreign-built:
+    label: A case may hold built lines that name the other repository and commit its proof ran in
+proposal:
+  chose: decisions-only
+  why: One case; the planned parts are already told apart by their decisions. A foreign built record is a new kind of evidence that no product needs yet.

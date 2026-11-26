@@ -1,0 +1,17 @@
+says: The person watches the factory work.
+realizes: product/dashboard/capability/watch
+src:
+- code:src/taskloop/dash_server.py#respond
+start: look
+steps:
+  look:
+    says: The person looks at the board.
+    actor: product/shared/actor/person
+    choices:
+      close:
+        label: Close the board
+        then: seen
+ends:
+  seen:
+    says: The person knows where each task stands.
+    result: success

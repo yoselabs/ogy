@@ -1,0 +1,3 @@
+- id: automation-trigger
+  says: A program outside the factory, such as a scheduled automation, that asks for a round.
+  nature: program

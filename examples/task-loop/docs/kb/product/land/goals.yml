@@ -1,0 +1,4 @@
+- id: delivered-once
+  says: A task whose checks passed ends on origin's main as one commit and is closed, exactly once, however often the land is rerun.
+  for: [product/shared/actor/person]
+  src: [code:src/taskloop/land.py#land]

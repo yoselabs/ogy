@@ -1,0 +1,4 @@
+says: The Codex command line, the default harness that runs the implementing agent offline in its slot; claude and opencode are the other harnesses.
+realizes: product/shared/actor/implementing-agent
+src:
+- code:src/taskloop/harness_choice.py#HarnessKind

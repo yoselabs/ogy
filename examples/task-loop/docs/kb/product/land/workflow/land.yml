@@ -1,0 +1,78 @@
+says: The person lands one checked task on origin's main.
+realizes: product/land/capability/land-a-task
+src:
+- code:src/taskloop/land.py#land
+start: run
+steps:
+  run:
+    says: The person asks to land a checked task.
+    actor: product/shared/actor/person
+    choices:
+      land:
+        label: Land the task
+        then: squash
+        satisfies:
+        - product/land/rule/held-once
+  squash:
+    says: The land squashes the checked commit onto origin's main.
+    satisfies:
+    - product/land/rule/lands-what-was-checked
+    cases:
+      conflict:
+        order: 1
+        when:
+          text: the checked commit does not apply to origin's main
+          reads:
+          - product/shared/actor/code-host
+        then: held
+      otherwise:
+        then: push
+  push:
+    says: The land pushes the squashed commit to origin's main without force.
+    cases:
+      rejected:
+        order: 1
+        when:
+          text: origin rejected the push, or main moved on every pass
+          reads:
+          - product/shared/actor/code-host
+        then: held
+      otherwise:
+        then: close
+        satisfies:
+        - product/land/rule/rerun-does-what-is-missing
+        effects:
+        - do: tell
+          on: product/shared/actor/code-host
+  close:
+    says: The land closes the task in the person's local tracker.
+    satisfies:
+    - product/land/rule/push-then-close
+    - product/land/rule/tracker-never-synced
+    cases:
+      refused:
+        order: 1
+        when:
+          text: the tracker refused the close
+          reads:
+          - product/shared/actor/tracker
+        then: closed-by-hand
+      otherwise:
+        then: landed
+        satisfies:
+        - product/land/rule/rerun-does-what-is-missing
+        effects:
+        - do: tell
+          on: product/shared/actor/tracker
+        - do: transition
+          on: product/loop/entity/attempt/transition/land
+ends:
+  landed:
+    says: The task is one commit on main and closed.
+    result: success
+  held:
+    says: The task waits for the person; it is not tried again until they answer.
+    result: failure
+  closed-by-hand:
+    says: The change is on main; the person closes the task by hand.
+    result: failure

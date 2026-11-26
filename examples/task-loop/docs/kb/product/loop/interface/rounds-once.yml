@@ -1,0 +1,9 @@
+says: The command that runs one round.
+form: cli
+invoked_as: tl rounds once --backlog <key> --label <label>
+serves:
+- product/loop/workflow/round/step/run
+offers:
+- product/loop/workflow/round/step/run/choice/once
+src:
+- code:src/taskloop/cli_step.py#_register_rounds
