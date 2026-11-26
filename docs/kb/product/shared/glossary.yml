@@ -277,3 +277,8 @@
 - id: pain
   word: pain
   says: What goes wrong for the people a product serves; a goal cites it.
+  agreed:
+    at: '2026-11-27T00:21:34+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Yes, agrees to the glossary line for pain as written
+    hash: 57ada296a53d
