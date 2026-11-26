@@ -139,6 +139,7 @@ class Requirement(BaseModel):
     kinds: tuple[str, ...] = ()
     without: tuple[str, ...] = ()
     same: bool = False
+    or_settled: bool = False  # met too when a decision in force sets the entry (its answer is the entry's reason)
     work: bool = False  # set by hand for work in the same layer; a requirement a later layer owes is made work on load
     status: str | None = None  # the work status an unmet `work` requirement is listed under
     error: str

@@ -147,3 +147,7 @@ Yes, agree both
 2 - ok, a
 
 3 - are you asking about like new elements added to KB, but not implemented yet? Like, what should we do if we didn't build something yet or what?
+
+## 2026-11-26: picks on case-built-record and reason-is-owed
+
+ok I rely on you

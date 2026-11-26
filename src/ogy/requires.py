@@ -8,6 +8,7 @@ from ogy.kinds import ANY, Holds, Requirement, where
 from ogy.links import LinkItem, resolve
 from ogy.model import Address, link_values
 from ogy.paths import kept
+lazy from ogy.settle import decisions, set_by
 lazy from ogy.snapshot import Snapshot
 
 if TYPE_CHECKING:
@@ -68,6 +69,8 @@ def satisfied(
     """Whether the entry (or the item of kind `kind` held by `origin`) meets what the requirement asks."""
     if need.needs_field is not None:
         return fields.get(need.needs_field) is not None
+    if need.or_settled and str(origin) in set_by(decisions(snapshot)):
+        return True
     if not need.path:
         return kind in need.kinds and _bare(fields, need.without)
     reached = {found for path in need.paths for found in _reached(snapshot, path, origin, fields, kind if item else None)}

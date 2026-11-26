@@ -12,3 +12,9 @@ proposal:
   chose: goal-owes
   why: One reason per chain, at its top, where a person must give it; the rest is derived as decided on 2026-11-21. A goal read from code starts empty and stays owed until someone says why.
   heard: Every proven entry should have a because; read from code it stays empty until someone gives one.
+answers:
+- chose: goal-owes
+  said: "Ok to Fable's pick: a goal with no because is work"
+  at: '2026-11-26T17:05:38+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: "Relies on Fable: 'ok I rely on you'"

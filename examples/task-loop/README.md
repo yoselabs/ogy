@@ -38,7 +38,8 @@ Read it with `just ogy --repo examples/task-loop status` (code links then report
 7. **A product made of parts.** Partly. The dashboard is its own area in both layers and reads only the attempt, so it can be
    described alone. Every part still shares one product layer: there is no way to say "this part ships on its own".
 8. **A fact from code with no reason.** Holds. 58 entries carry a `code:` source and no `because`; `ogy status` labels them
-   "from code", apart from "decided by you". Nothing lists "reason unknown" by that name.
+   "from code", apart from "decided by you". Its three goals cite no reason, so `ogy work product` lists each as discover
+   work, `no-reason` (decision `software/ontology/decision/reason-is-owed`); what hangs below a goal takes its reason from it.
 9. **Entries no person confirmed.** Holds: all of them. Nobody agreed to anything in this case; `ogy status` shows 28 "decided by
    AI" (written without a source) and 58 "from code".
 10. **Planned, not built, and what each layer owes.** Partly. The planned parts are the two unanswered decisions. Everything

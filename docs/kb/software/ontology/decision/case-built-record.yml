@@ -9,3 +9,9 @@ options:
 proposal:
   chose: decisions-only
   why: One case; the planned parts are already told apart by their decisions. A foreign built record is a new kind of evidence that no product needs yet.
+answers:
+- chose: decisions-only
+  said: "Ok to Fable's pick: planned parts stay unanswered decisions"
+  at: '2026-11-26T17:05:30+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: "Relies on Fable: 'ok I rely on you'"
