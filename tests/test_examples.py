@@ -1,8 +1,10 @@
-"""The three v5 example knowledge bases, read-only: the acceptance test of every step of the v5 loader plan."""
+"""The example knowledge bases, read-only: each loads and its check finds nothing but terms awaiting the owner's yes."""
 
 import re
 from pathlib import Path
 from typing import override
+
+import pytest
 
 from ogy.check import check
 from ogy.model import Problem
@@ -17,8 +19,8 @@ CODE_LINK = re.compile(r"code:([^#\"\]\s]+)#(\w+)(?:\.(\w+))?")
 
 
 class Stand(WorktreeSource):
-    """The fit was captured from the task-loop repository, which this one does not hold: every `code:` link names a stand-in
-    file that defines its symbol, so the links are read as they were when the fit was written."""
+    """An example captured from another repository (the task loop) names code this one does not hold: every `code:` link
+    names a stand-in file that defines its symbol, so the links are read as they were when the example was written."""
 
     @override
     def repo_file(self, path: str, rev: str | None = None) -> str | None:
@@ -40,26 +42,14 @@ def findings(folder: str, root: Path = V5, source: WorktreeSource | None = None,
     return {(item.problem, str(item.address)) for item in check(load(source, packaged()), source, landing=landing)}
 
 
-def test_example_tool_library_has_no_findings() -> None:
-    assert findings("example-tool-library") == set()
+AWAITING = {Problem.TERM_NOT_AGREED}  # a term waits for the owner's yes: an error only when a land is asked for
 
 
-def test_taskloop_fit_has_only_expected_findings() -> None:
-    terms = {"claim", "land", "squash", "target-tip", "gate", "checked-commit"}
-    expected = {(Problem.TERM_NOT_AGREED, f"product/shared/term/{word}") for word in terms}
-    assert findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb")) == expected
-    assert not {
-        item
-        for item in findings("taskloop-fit/kb", source=Stand(V5, "taskloop-fit/kb"), landing=False)
-        if item[0] is Problem.TERM_NOT_AGREED
-    }  # waiting for the owner, an error only when a land is asked for
-
-
-def test_taskloop_fit_reads_every_part_with_a_slash_address() -> None:
-    """The owner cut the land workflow (35 links from product into software) to re-capture it after stage 3 (bead
-    ogy-yy9.75), and with it what only it used: the handlers close, deliver, squash, validate and hold-after-land, the
-    interface step-land, the workflow round-land that called it, the entity land-candidate and the three decisions that set
-    their fields."""
-    snapshot = load(WorktreeSource(V5, "taskloop-fit/kb"), packaged())
-    assert len(snapshot.entries) == 47
-    assert snapshot.resolve("product/land/workflow/land") is None and snapshot.resolve("software/land/dependency/origin") is not None
+@pytest.mark.parametrize("folder", ["example-tool-library", "example-task-loop"])
+def test_an_example_loads_and_finds_nothing_but_terms_awaiting_the_owner(folder: str) -> None:
+    """Decision software/ontology/decision/taskloop-fit-fixture (replace): an example pins that it loads and that `check` finds
+    nothing but terms awaiting the owner's yes; no entry counts and no exact addresses, so it may grow."""
+    source = Stand(V5, folder)
+    assert load(source, packaged()).entries
+    assert {problem for problem, _ in findings(folder, source=source)} <= AWAITING
+    assert not findings(folder, source=source, landing=False)

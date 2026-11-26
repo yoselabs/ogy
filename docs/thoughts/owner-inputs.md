@@ -131,3 +131,7 @@ Yeah, I think probably when we have some part of solution which has some data, w
 ## 2026-11-26: interfaces and actors in product (Fable picks on 3 decisions)
 
 ok
+
+## 2026-11-26: autonomy
+
+cmon, worth thru stuff autnonmously and emrge on my behalf
