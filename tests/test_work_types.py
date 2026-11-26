@@ -33,3 +33,15 @@ def test_work_is_listed_by_type_and_each_entry_once_under_its_earliest(repo: Pat
     assert any(line.startswith("unbuilt: product/app/interface/page") for line in lines[build:])
     flat = ops.run_work(Target(repo), "product").value  # the agents' table keeps every row
     assert {str(item.status) for item in flat if item.address == RULE} == {"unused", "unbuilt"}
+
+
+def test_a_row_set_by_no_decision_goes_under_the_decision_it_cites(repo: Path) -> None:
+    """Decision software/cli/decision/work-cause-reads-because: `because` names the cause when no decision sets the entry."""
+    options, proposal = {"yes": {"label": "Yes"}}, {"chose": "yes", "why": "w"}
+    decision = {"address": "product/app/decision/loans", "question": "Lend?", "options": options, "proposal": proposal}
+    capability = {"address": CAPABILITY, "says": "A member borrows a tool.", "because": ["product/app/decision/loans"]}
+    code, lines = w(repo, "put", json.dumps([decision, capability]))
+    assert code == cli.OK, lines
+    lines = w(repo, "work", "product")[1]
+    head = next(index for index, line in enumerate(lines) if line.startswith("by product/app/decision/loans"))
+    assert lines[head + 1].startswith(f"unrealized: {CAPABILITY}"), lines[head : head + 3]

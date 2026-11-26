@@ -1,6 +1,6 @@
 """`ogy work` for a person, by type (discover, design, build: decision software/cli/decision/work-types), then by cause: the
-decision that set the entry (or one of its parents), then what its flow realizes (the container's `flow.group` link). Display
-only: nothing routes on it, and the agents' table stays flat."""
+decision that set the entry (or one of its parents), else the one it cites with `because`, then what its flow realizes (the
+container's `flow.group` link). Display only: nothing routes on it, and the agents' table stays flat."""
 
 lazy from collections.abc import Iterable
 
@@ -23,8 +23,15 @@ def _lineage(address: Address) -> Iterable[Address]:
         at = at.parent()
 
 
-def _decision(found: list[Decision], address: Address) -> str:
-    return next((str(decision.address) for at in _lineage(address) if (decision := decision_of(found, at)) is not None), "")
+def _decision(snapshot: Snapshot, found: list[Decision], address: Address) -> str:
+    """The decision that sets the entry or a parent; with none, the first decision the entry or a parent cites with because
+    (decision software/cli/decision/work-cause-reads-because)."""
+    setting = next((str(decision.address) for at in _lineage(address) if (decision := decision_of(found, at)) is not None), "")
+    kind, because = snapshot.ontology.settling_kind(), snapshot.ontology.declared.roles.because
+    if setting or kind is None or because is None:
+        return setting
+    cited = (sorted(target for target in snapshot.links.forward(at, because) if target.kind == kind.kind) for at in _lineage(address))
+    return next((str(targets[0]) for targets in cited if targets), "")
 
 
 def _realized(snapshot: Snapshot, address: Address) -> str:
@@ -59,7 +66,7 @@ def grouped(snapshot: Snapshot, work: list[Work]) -> list[Group]:
     found, groups = decisions(snapshot), dict[tuple[str, str], list[Work]]()
     for item in work:
         address = snapshot.resolve(item.address)
-        key = (_decision(found, address), _realized(snapshot, address)) if address is not None else ("", "")
+        key = (_decision(snapshot, found, address), _realized(snapshot, address)) if address is not None else ("", "")
         groups.setdefault(key, []).append(item)
     return [
         (decision, realized, items)

@@ -20,7 +20,7 @@ the answer writes the goal or the value, and the rest cites that decision with `
 ## The twelve questions (2026-11-26)
 
 1. **Why a workflow exists.** Holds. Each workflow realizes a capability, each capability a goal, and each goal was written by
-   the answer to a decision whose context holds the owner's pain. Gap in `ogy work`: see finding 1.
+   the answer to a decision whose context holds the owner's pain. `ogy work` groups each row under its decision (finding 1).
 2. **Outside parties and their interfaces.** Holds. The customer and the assistant (human) reach the shop through four web
    interfaces: the pet list, the hold button, the stock form and the till. The payment provider (program) reaches it through
    none: we call it.
@@ -47,8 +47,8 @@ the answer writes the goal or the value, and the rest cites that decision with `
 ## Findings
 
 1. **`ogy work` says "by no decision" for entries that cite one.** Its grouping reads only the decision that sets an entry; this
-   case sets few entries and cites decisions with `because`, so every row read "by no decision". Recorded as
-   `software/cli/decision/work-cause-reads-because`.
+   case sets few entries and cites decisions with `because`, so every row read "by no decision". Decided
+   (`software/cli/decision/work-cause-reads-because`, because-too) and built: a row now goes under the decision it cites.
 2. **A proposal in force writes its entries before the answer.** A pain-only decision wrote the goal at once, before the
    owner answered; the goal read "decided by AI" until then. That is how a proposal works (built until answered); no change.
 3. **`realizes` takes a list on a capability and one link on a workflow.** A writer used one form for both and was refused.
