@@ -1,0 +1,29 @@
+says: A hold that ran out puts the pet back on the list.
+realizes: product/reservations/capability/hold-a-pet
+because:
+- product/reservations/decision/hold-online
+schedule: product/reservations/quantity/release-check
+start: look
+steps:
+  look:
+    says: The shop looks at every held pet.
+    cases:
+      ran-out:
+        order: 1
+        when:
+          text: the pet has been held longer than hold-days
+          reads:
+          - product/reservations/quantity/hold-days
+        then: released
+        effects:
+        - do: transition
+          on: product/catalog/entity/pet/transition/release
+      otherwise:
+        then: kept
+ends:
+  released:
+    says: The pet is available again.
+    result: success
+  kept:
+    says: Every hold is still within hold-days.
+    result: success

@@ -1,0 +1,5 @@
+says: A pet is held by at most one customer at a time.
+constrains:
+- product/catalog/entity/pet/state/held
+because:
+- product/reservations/decision/hold-online

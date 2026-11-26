@@ -1,0 +1,12 @@
+- id: show-what-is-left
+  says: A customer sees every pet the shop has and whether it can still be bought.
+  realizes:
+  - product/catalog/goal/know-before-visit
+  because:
+  - product/catalog/decision/stock-goal
+- id: keep-the-list-true
+  says: The assistant adds each new pet to the list the day it arrives.
+  realizes:
+  - product/catalog/goal/know-before-visit
+  because:
+  - product/catalog/decision/stock-goal

@@ -1,0 +1,22 @@
+title: Cards at the counter
+question: Does the counter take cards, or cash only?
+context: 'Pain (the shop owner, invented): buyers leave to find a cash machine and some do not come back.'
+options:
+  cards:
+    label: Cards, through a payment provider
+    sets:
+      product/sales/actor/payment-provider:
+        says: The company that charges a customer's card for us.
+        nature: program
+  cash-only:
+    label: Cash only
+    sets:
+      product/sales/actor/payment-provider:
+proposal:
+  chose: cards
+  why: The owner names lost buyers; a card reader keeps them at the counter.
+answers:
+- chose: cards
+  said: Cards, obviously
+  at: '2026-11-26T09:10:00+01:00'
+  where: ai:example/pet-shop#owner

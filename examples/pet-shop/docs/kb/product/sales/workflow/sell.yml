@@ -1,0 +1,48 @@
+says: A customer pays for a pet and takes it home.
+realizes: product/sales/capability/pay-at-the-counter
+because:
+- product/sales/decision/card-payments
+start: ring-up
+steps:
+  ring-up:
+    says: The assistant rings up the pet the customer chose.
+    actor: product/shared/actor/assistant
+    choices:
+      charge:
+        label: Charge the card
+        then: charge
+  charge:
+    says: The card reader asks the payment provider to charge the card.
+    cases:
+      approved:
+        order: 1
+        when:
+          text: the payment provider approves the charge
+          reads:
+          - product/sales/actor/payment-provider
+        then: paid
+        effects:
+        - do: tell
+          on: product/sales/actor/payment-provider
+        - do: transition
+          on: product/catalog/entity/pet/transition/sell
+        satisfies:
+        - product/sales/rule/charge-once
+      otherwise:
+        then: not-paid
+      no-answer:
+        order: 2
+        when:
+          text: the payment provider has not answered within card-wait
+          reads:
+          - product/sales/quantity/card-wait
+        then: not-paid
+        satisfies:
+        - product/sales/rule/charge-once
+ends:
+  paid:
+    says: The customer takes the pet home.
+    result: success
+  not-paid:
+    says: The card was declined or the provider did not answer; the pet stays.
+    result: failure

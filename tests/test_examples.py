@@ -45,11 +45,18 @@ def findings(folder: str, root: Path = V5, source: WorktreeSource | None = None,
 AWAITING = {Problem.TERM_NOT_AGREED}  # a term waits for the owner's yes: an error only when a land is asked for
 
 
-@pytest.mark.parametrize("folder", ["example-tool-library", "example-task-loop"])
-def test_an_example_loads_and_finds_nothing_but_terms_awaiting_the_owner(folder: str) -> None:
+EXAMPLES = Path(__file__).parent.parent / "examples"  # reference cases written through ogy (decision reference-cases)
+
+
+@pytest.mark.parametrize(
+    ("root", "folder"),
+    [(V5, "example-tool-library"), (V5, "example-task-loop"), (EXAMPLES / "pet-shop", "docs/kb")],
+    ids=["tool-library", "task-loop", "pet-shop"],
+)
+def test_an_example_loads_and_finds_nothing_but_terms_awaiting_the_owner(root: Path, folder: str) -> None:
     """Decision software/ontology/decision/taskloop-fit-fixture (replace): an example pins that it loads and that `check` finds
     nothing but terms awaiting the owner's yes; no entry counts and no exact addresses, so it may grow."""
-    source = Stand(V5, folder)
+    source = Stand(root, folder)
     assert load(source, packaged()).entries
-    assert {problem for problem, _ in findings(folder, source=source)} <= AWAITING
-    assert not findings(folder, source=source, landing=False)
+    assert {problem for problem, _ in findings(folder, root, source)} <= AWAITING
+    assert not findings(folder, root, source, landing=False)

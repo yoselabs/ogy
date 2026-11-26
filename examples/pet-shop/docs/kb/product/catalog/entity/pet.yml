@@ -1,0 +1,35 @@
+says: One animal the shop has for sale.
+because:
+- product/catalog/decision/stock-goal
+attributes:
+  name:
+    says: What the shop calls it.
+    type: text
+  species:
+    of: product/catalog/enum/species
+  price:
+    says: What it costs.
+    type: money
+states:
+  available:
+    says: It can be bought or held.
+  held:
+    says: A customer holds it; nobody else may buy or hold it.
+  sold:
+    says: It has a home.
+transitions:
+  arrive:
+    to: available
+  hold:
+    from:
+    - available
+    to: held
+  release:
+    from:
+    - held
+    to: available
+  sell:
+    from:
+    - available
+    - held
+    to: sold

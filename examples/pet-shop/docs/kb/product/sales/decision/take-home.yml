@@ -1,0 +1,23 @@
+title: Taking the pet home
+question: Does a customer take the pet home the day they pay, or does the shop deliver?
+context: 'Pain (the shop owner, invented): a delivery van costs more than the shop earns in a month; customers ask anyway.'
+options:
+  same-day:
+    label: Same day, from the counter
+    sets:
+      product/sales/goal/take-home-today:
+        says: A customer pays at the counter and takes the pet home that day.
+        for:
+        - product/shared/actor/customer
+  delivery:
+    label: The shop delivers
+    sets:
+      product/sales/goal/take-home-today:
+proposal:
+  chose: same-day
+  why: The owner rules out the van.
+answers:
+- chose: same-day
+  said: No van. They take it home.
+  at: '2026-11-26T09:15:00+01:00'
+  where: ai:example/pet-shop#owner

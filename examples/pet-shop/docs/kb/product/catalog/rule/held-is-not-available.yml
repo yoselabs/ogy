@@ -1,0 +1,5 @@
+says: A held pet is shown as held, never as available.
+constrains:
+- product/catalog/entity/pet/state/held
+because:
+- product/catalog/decision/stock-goal

@@ -1,0 +1,15 @@
+- id: hold-days
+  says: How long a pet stays held for the customer who reserved it.
+  is: 2
+  unit: days
+  agreed:
+    at: '2026-11-26T09:05:00+01:00'
+    where: ai:example/pet-shop#owner
+    said: Two days, so a weekend visit works
+    hash: a02bd3bb033a
+- id: release-check
+  says: How often the shop looks for holds that ran out.
+  is: 1
+  unit: hours
+  because:
+  - product/reservations/decision/hold-online

@@ -1,0 +1,10 @@
+- id: species
+  says: The kinds of pet the shop sells.
+  members:
+  - dog
+  - cat
+  - rabbit
+  - bird
+  - fish
+  because:
+  - product/catalog/decision/stock-goal

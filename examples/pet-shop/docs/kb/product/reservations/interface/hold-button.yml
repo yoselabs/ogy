@@ -1,0 +1,6 @@
+says: The button on a pet's card that holds it.
+form: web
+serves:
+- product/reservations/workflow/hold/step/pick
+because:
+- product/reservations/decision/hold-online

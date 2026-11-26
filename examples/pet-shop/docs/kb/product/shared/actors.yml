@@ -1,0 +1,6 @@
+- id: customer
+  says: A person who looks for a pet and buys one.
+  nature: human
+- id: assistant
+  says: A shop assistant who serves customers at the counter.
+  nature: human

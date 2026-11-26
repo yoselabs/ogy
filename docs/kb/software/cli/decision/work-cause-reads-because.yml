@@ -1,0 +1,11 @@
+title: Grouping work by the decision behind it
+question: When no decision sets an entry, does ogy work group its rows under the decision the entry cites with because?
+context: 'Pain, found writing examples/pet-shop (2026-11-26): ogy work groups rows by the decision that sets an entry (or a parent), and the pet shop sets few entries: they cite their decision with because, so every row read by no decision. ogy own knowledge base: 83 rows of product work sit under by no decision today. Display only: the agents table stays flat.'
+options:
+  because-too:
+    label: 'Yes: with no decision setting it, a row goes under the first decision the entry (or a parent) cites with because'
+  settling-only:
+    label: 'No: only a decision that sets the entry groups it; because stays a reason, not a cause'
+proposal:
+  chose: because-too
+  why: Both say which decision a row comes from; a reader asking why this work exists finds it under that decision instead of under by no decision.

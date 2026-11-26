@@ -1,0 +1,6 @@
+- id: hold-a-pet
+  says: A customer holds a pet online so nobody else buys it before the visit.
+  realizes:
+  - product/catalog/goal/know-before-visit
+  because:
+  - product/reservations/decision/hold-online

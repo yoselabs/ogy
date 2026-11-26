@@ -1,0 +1,9 @@
+- id: know-before-visit
+  says: A customer knows before a visit whether a pet can still be bought.
+  for:
+  - product/shared/actor/customer
+  agreed:
+    at: '2026-11-26T09:00:00+01:00'
+    where: ai:example/pet-shop#owner
+    said: "Yes, put it on the site: I'm tired of the phone"
+    hash: 1b111e0464ea

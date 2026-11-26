@@ -1,0 +1,17 @@
+says: A customer looks through the pets the shop has.
+realizes: product/catalog/capability/show-what-is-left
+because:
+- product/catalog/decision/stock-goal
+start: look
+steps:
+  look:
+    says: The customer looks at the list of pets.
+    actor: product/shared/actor/customer
+    choices:
+      done:
+        label: Done looking
+        then: seen
+ends:
+  seen:
+    says: The customer knows what is left.
+    result: success

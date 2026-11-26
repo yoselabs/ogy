@@ -1,0 +1,3 @@
+says: 'A card is charged once per sale: after no answer, the assistant asks the provider before charging again.'
+because:
+- product/sales/decision/card-payments

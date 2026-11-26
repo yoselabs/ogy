@@ -1,0 +1,12 @@
+says: The page that lists every pet with its price and whether it can still be bought.
+form: web
+serves:
+- product/catalog/workflow/browse/step/look
+shows:
+- product/catalog/entity/pet
+satisfies:
+- product/catalog/rule/held-is-not-available
+because:
+- product/catalog/decision/stock-goal
+includes:
+- product/reservations/interface/hold-button

@@ -1,0 +1,23 @@
+title: Knowing before a visit
+question: Does the shop promise customers they can see, before a visit, whether a pet can still be bought?
+context: 'Pain (the shop owner, invented for this example): customers phone to ask whether a pet is still there, and the assistant cannot keep up; some drive an hour for a pet sold that morning.'
+options:
+  promise:
+    label: 'Yes: a customer knows before a visit whether a pet can still be bought'
+    sets:
+      product/catalog/goal/know-before-visit:
+        says: A customer knows before a visit whether a pet can still be bought.
+        for:
+        - product/shared/actor/customer
+  not-now:
+    label: 'Not now: customers keep phoning'
+    sets:
+      product/catalog/goal/know-before-visit:
+proposal:
+  chose: promise
+  why: The phone calls are the pain the owner named; a list that shows each pet's state ends them.
+answers:
+- chose: promise
+  said: "Yes, put it on the site: I'm tired of the phone"
+  at: '2026-11-26T09:00:00+01:00'
+  where: ai:example/pet-shop#owner

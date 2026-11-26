@@ -1,0 +1,20 @@
+says: The assistant puts a new pet on the list.
+realizes: product/catalog/capability/keep-the-list-true
+because:
+- product/catalog/decision/stock-goal
+start: add
+steps:
+  add:
+    says: The assistant fills in the new pet's name, species and price.
+    actor: product/shared/actor/assistant
+    choices:
+      add:
+        label: Add to the list
+        then: listed
+        effects:
+        - do: transition
+          on: product/catalog/entity/pet/transition/arrive
+ends:
+  listed:
+    says: Customers can see the new pet.
+    result: success

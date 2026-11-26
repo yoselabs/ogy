@@ -1,0 +1,8 @@
+- id: payment-provider
+  says: The company that charges a customer's card for us.
+  nature: program
+  agreed:
+    at: '2026-11-26T09:10:00+01:00'
+    where: ai:example/pet-shop#owner
+    said: Cards, obviously
+    hash: 30334e6dbf02

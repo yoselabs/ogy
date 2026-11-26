@@ -1,0 +1,6 @@
+- id: card-wait
+  says: How long the card reader waits for the provider.
+  is: 30
+  unit: seconds
+  because:
+  - product/sales/decision/card-payments

@@ -1,0 +1,30 @@
+title: Holding a pet online
+question: May a customer hold a pet online before coming in, and for how long?
+context: 'Pain (the shop owner, invented): a customer sees a puppy on the list, drives over, and someone else bought it on the way.'
+options:
+  two-days:
+    label: Yes, for 2 days
+    sets:
+      product/reservations/quantity/hold-days:
+        says: How long a pet stays held for the customer who reserved it.
+        is: 2
+        unit: days
+  one-day:
+    label: Yes, for 1 day
+    sets:
+      product/reservations/quantity/hold-days:
+        says: How long a pet stays held for the customer who reserved it.
+        is: 1
+        unit: days
+  no:
+    label: 'No: first come, first served'
+    sets:
+      product/reservations/quantity/hold-days:
+proposal:
+  chose: two-days
+  why: A weekend visit fits in 2 days; a longer hold keeps a pet off the list.
+answers:
+- chose: two-days
+  said: Two days, so a weekend visit works
+  at: '2026-11-26T09:05:00+01:00'
+  where: ai:example/pet-shop#owner

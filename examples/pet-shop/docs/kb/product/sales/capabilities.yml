@@ -1,0 +1,6 @@
+- id: pay-at-the-counter
+  says: A customer pays for a pet at the counter, by card.
+  realizes:
+  - product/sales/goal/take-home-today
+  because:
+  - product/sales/decision/card-payments

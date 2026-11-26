@@ -1,0 +1,45 @@
+says: A customer holds a pet until the visit.
+realizes: product/reservations/capability/hold-a-pet
+because:
+- product/reservations/decision/hold-online
+start: pick
+steps:
+  pick:
+    says: The customer picks a pet on the list and asks to hold it.
+    actor: product/shared/actor/customer
+    choices:
+      hold:
+        label: Hold this pet
+        then: check
+        satisfies:
+        - product/reservations/rule/one-hold-per-pet
+      back:
+        label: Back to the list
+        then: left
+  check:
+    says: The shop checks that the pet is still available.
+    cases:
+      gone:
+        order: 1
+        when:
+          text: the pet is held or sold already
+          reads:
+          - product/catalog/entity/pet/state/available
+        then: too-late
+      otherwise:
+        then: held
+        effects:
+        - do: transition
+          on: product/catalog/entity/pet/transition/hold
+        - do: tell
+          on: product/shared/actor/customer
+ends:
+  held:
+    says: The pet waits for the customer for hold-days.
+    result: success
+  too-late:
+    says: Someone else got there first.
+    result: failure
+  left:
+    says: The customer went back to the list.
+    result: failure

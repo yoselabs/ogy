@@ -1,0 +1,9 @@
+- id: take-home-today
+  says: A customer pays at the counter and takes the pet home that day.
+  for:
+  - product/shared/actor/customer
+  agreed:
+    at: '2026-11-26T09:15:00+01:00'
+    where: ai:example/pet-shop#owner
+    said: No van. They take it home.
+    hash: bd8cd6039c39

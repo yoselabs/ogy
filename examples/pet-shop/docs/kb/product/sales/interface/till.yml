@@ -1,0 +1,8 @@
+says: The counter screen the assistant rings a sale up on.
+form: web
+serves:
+- product/sales/workflow/sell/step/ring-up
+shows:
+- product/catalog/entity/pet
+because:
+- product/sales/decision/card-payments
