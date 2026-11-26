@@ -302,3 +302,12 @@ def test_a_goal_no_capability_realizes_is_work(kb: Make) -> None:
     assert left(kb, goal, "unused") == {"product/app/goal/tools"}
     lend = {**goal, "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
     assert left(kb, lend, "unused") == set()
+
+
+def test_an_attribute_may_name_an_actor_and_not_a_goal(kb: Make) -> None:
+    """Decision attribute-of-actor: who it was (the member who borrowed) is an attribute that names the actor."""
+    who = LOAN.replace("member: {of: product/app/entity/loan}", "member: {of: product/app/actor/member}")
+    assert kb({**SERVED, "product/app/entity/loan.yml": who}).findings() == kb(SERVED).findings()  # nothing new
+    goal = LOAN.replace("member: {of: product/app/entity/loan}", "member: {of: product/app/goal/lend}")
+    found = kb({**SERVED, "product/app/goals.yml": "- {id: lend, says: Members borrow tools.}\n", "product/app/entity/loan.yml": goal})
+    assert (Problem.LINK_KIND, "product/app/entity/loan/attribute/member") in found.findings()

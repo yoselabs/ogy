@@ -28,6 +28,9 @@ attributes:
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
       hash: e4b88b93cb08
+  member:
+    says: The member who borrowed the tool.
+    of: product/lending/actor/member
 states:
   open:
     says: The member has the tool.
