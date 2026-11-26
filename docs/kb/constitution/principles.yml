@@ -46,6 +46,16 @@
 - id: no-flexibility-until-needed
   says: 'The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it.'
   why: Unproven flexibility costs every writer a choice and every reader a branch, and taking a freedom back is harder than giving one.
+  agreed:
+    at: '2026-11-26T03:36:02+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
+    hash: 8ed78ae20b8a
 - id: words-from-known-tools
   says: ogy takes its words from vocabularies people already know from popular tools and methods, such as GitHub, Figma and Domain-Driven Design, each for its own domain; a word none of them uses needs a decision.
   why: Most readers know technical or business English, not native English.
+  agreed:
+    at: '2026-11-26T03:36:02+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
+    hash: 6d17a80b2132

@@ -135,3 +135,7 @@ ok
 ## 2026-11-26: autonomy
 
 cmon, worth thru stuff autnonmously and emrge on my behalf
+
+## 2026-11-26: the two principles
+
+Yes, agree both
