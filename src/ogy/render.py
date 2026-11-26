@@ -13,7 +13,7 @@ lazy from ogy.overview import Overview
 lazy from ogy.receipts import Work
 lazy from ogy.semdiff import SemanticDiff
 lazy from ogy.show import Shown
-lazy from ogy.workcause import Group
+lazy from ogy.workcause import Typed
 
 if TYPE_CHECKING:
     from ogy.graph import Context, Impact
@@ -48,15 +48,22 @@ def render_impact(found: Impact) -> list[str]:
     return lines
 
 
-def render_work(found: list[Work], groups: list[Group] | None = None) -> list[str]:
-    """One line per piece of work; with `groups`, each group under a line naming its cause (`workcause`)."""
-    if groups is None:
+WORK_TYPES = {"discover": "the why is missing", "design": "the description has a gap", "build": "to implement or prove"}
+
+
+def render_work(found: list[Work], types: list[Typed] | None = None) -> list[str]:
+    """One line per piece of work; with `types`, each type under its line, each group under a line naming its cause
+    (`workcause`); an entry shows once, under its earliest type."""
+    if types is None:
         return [_work_line(item) for item in found] or ["no work left"]
-    lines = [
-        line
-        for decision, realized, items in groups
-        for line in (f"by {decision or 'no decision'}, for {realized or 'nothing realized'} ({len(items)}):", *map(_work_line, items))
-    ]
+    lines: list[str] = []
+    for name, groups in types:
+        lines.append(f"{name} ({sum(len(items) for _, _, items in groups)}): {WORK_TYPES.get(name, '')}")
+        lines += [
+            line
+            for decision, realized, items in groups
+            for line in (f"by {decision or 'no decision'}, for {realized or 'nothing realized'} ({len(items)}):", *map(_work_line, items))
+        ]
     return lines or ["no work left"]
 
 

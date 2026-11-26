@@ -6,7 +6,7 @@ lazy import argparse
 
 from ogy import ops, put, render, wire
 from ogy.model import home_of
-from ogy.workcause import grouped
+from ogy.workcause import typed
 lazy from ogy.target import Target
 
 type Result = tuple[int, list[str]]
@@ -79,7 +79,7 @@ def _work(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
     done = ops.run_work(target, args.area)
     if agent:  # the agents' table stays flat: the cause is for a person to read
         return done.verdict, wire.work(done.value)
-    return done.verdict, render.render_work(done.value, grouped(target.read()[1], done.value))
+    return done.verdict, render.render_work(done.value, typed(target.read()[1], done.value))
 
 
 def _review(target: Target, args: argparse.Namespace, **_: object) -> Result:
