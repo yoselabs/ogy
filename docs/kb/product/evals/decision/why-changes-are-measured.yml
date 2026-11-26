@@ -13,4 +13,4 @@ options:
       product/evals/goal/changes-are-measured:
 proposal:
   chose: this-pain
-  why: The goal is what the code already does; this is the pain it answers, as the session history shows.
+  why: A guess from what the code does; the owner's words replace it.

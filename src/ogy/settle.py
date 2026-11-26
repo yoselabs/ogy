@@ -187,9 +187,11 @@ def said_no(found: list[Decision]) -> dict[str, Address]:
     return {text: d.address for d in found if (force := d.in_force) for text, given in force.sets.items() if given is None}
 
 
-def set_by(found: list[Decision]) -> set[str]:
-    """Each address an option in force writes (not `null`): the entries a decision settles."""
-    return {text for d in found if (force := d.in_force) for text, given in force.sets.items() if given is not None}
+def answered(found: list[Decision]) -> tuple[set[Address], set[str]]:
+    """The decisions with an answer in force (a person's, or an agent's under delegation), and each address such an answer
+    writes (not `null`). A proposal is never an answer."""
+    forces = [(d.address, force) for d in found if (force := d.in_force) and force.by_answer]
+    return {address for address, _ in forces}, {text for _, force in forces for text, given in force.sets.items() if given is not None}
 
 
 def slot_index(found: list[Decision]) -> dict[tuple[str, str | None], list[Address]]:

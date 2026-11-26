@@ -9,9 +9,9 @@ file: goals.yml
 layers: [product]
 requires:                     # owner, delegated (decision goal-realized-by-capability): until a capability realizes it, a goal is work
   - {path: ["<-realizes"], kinds: [capability], work: true, status: unused, error: "a goal no capability realizes"}
-  # owner (decision reason-is-owed): a goal owes its reason, a principle or a decision it cites or the decision that sets it;
-  # read from code it starts with none
-  - {path: [because], kinds: [principle, decision], or_settled: true, work: true, status: no-reason, error: "a goal cites its reason with because"}
+  # owner (decision reason-is-owed): a goal owes its reason, a principle it cites or an answered decision it cites or that sets
+  # it; a proposal is never the reason. Read from code it starts with none
+  - {path: [because], kinds: [principle, decision], or_answered: true, work: true, status: no-reason, error: "a goal cites its reason with because"}
 fields:
   says: {required: true}
   for: {type: links, to: [actor]}

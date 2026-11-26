@@ -1,5 +1,6 @@
-"""A goal owes its reason: a principle or a decision it cites with `because`, or the decision that sets it. One with neither,
-as a goal read from code starts, is discover work (decision software/ontology/decision/reason-is-owed)."""
+"""A goal owes its reason: a principle it cites with `because`, or an answered decision it cites or that sets it. One with
+neither, as a goal read from code starts, is discover work (decision software/ontology/decision/reason-is-owed). A proposal is
+never the reason: a goal only an AI's proposal explains stays owed until the owner answers."""
 
 import json
 lazy from pathlib import Path
@@ -28,10 +29,16 @@ def test_a_goal_with_no_reason_is_discover_work_and_one_with_a_reason_is_not(rep
     ]
     code, lines = w(repo, "put", json.dumps(records))
     assert code == cli.OK, lines
-    owed = {item.address for item in ops.run_work(Target(repo), "product").value if str(item.status) == "no-reason"}
-    assert owed == {BARE}
+    assert _owed(repo) == {BARE, CITES, SET}  # the decision is only proposed: no person gave a reason yet
     lines = w(repo, "work", "product")[1]
     heads = [index for index, line in enumerate(lines) if line.split(" (")[0] in ("discover", "design", "build")]
     assert lines[heads[0]].startswith("discover (")  # the why: discover, the first type
     end = heads[1] if len(heads) > 1 else len(lines)
     assert any(line.startswith(f"no-reason: {BARE}") for line in lines[heads[0] : end])
+    code, lines = w(repo, "answer", WHY, "share", "--said", "Yes", "--where", "ai:claude/1")
+    assert code == cli.OK, lines
+    assert _owed(repo) == {BARE}  # answered: the goal it sets and the goal that cites it have their reason
+
+
+def _owed(repo: Path) -> set[str]:
+    return {item.address for item in ops.run_work(Target(repo), "product").value if str(item.status) == "no-reason"}

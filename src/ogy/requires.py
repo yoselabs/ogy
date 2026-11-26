@@ -8,7 +8,7 @@ from ogy.kinds import ANY, Holds, Requirement, where
 from ogy.links import LinkItem, resolve
 from ogy.model import Address, link_values
 from ogy.paths import kept
-lazy from ogy.settle import decisions, set_by
+lazy from ogy.settle import answered, decisions
 lazy from ogy.snapshot import Snapshot
 
 if TYPE_CHECKING:
@@ -69,7 +69,8 @@ def satisfied(
     """Whether the entry (or the item of kind `kind` held by `origin`) meets what the requirement asks."""
     if need.needs_field is not None:
         return fields.get(need.needs_field) is not None
-    if need.or_settled and str(origin) in set_by(decisions(snapshot)):
+    done = answered(decisions(snapshot)) if need.or_answered else None
+    if done is not None and str(origin) in done[1]:
         return True
     if not need.path:
         return kind in need.kinds and _bare(fields, need.without)
@@ -77,8 +78,16 @@ def satisfied(
     if need.same:
         return origin in reached and snapshot.kind_of(origin).kind in need.kinds
     return any(
-        (ANY in need.kinds or address.kind in need.kinds) and _bare(snapshot.entries[address].fields, need.without) for address in reached
+        (ANY in need.kinds or address.kind in need.kinds)
+        and _bare(snapshot.entries[address].fields, need.without)
+        and (done is None or address in done[0] or address.kind != _settling(snapshot))
+        for address in reached
     )
+
+
+def _settling(snapshot: Snapshot) -> str | None:
+    kind = snapshot.ontology.settling_kind()
+    return kind.kind if kind else None
 
 
 def has_part(snapshot: Snapshot, address: Address, kind: str) -> bool:
