@@ -12,7 +12,9 @@ lazy from collections.abc import Mapping
 from ogy import built, evidence, removed
 from ogy.declared import Reader
 from ogy.flowcheck import unoffered
+from ogy.links import link_items
 from ogy.requires import unmet
+from ogy.settle import decisions, said_no
 lazy from ogy.built import Line
 lazy from ogy.snapshot import Snapshot
 
@@ -26,6 +28,7 @@ class Status(StrEnum):
     CODE_CHANGED = "code changed since captured"
     DOC_CHANGED = "document changed since captured"
     UNOFFERED = "unoffered"  # a serving interface lists `offers` and leaves out a choice of the step
+    SAID_NO = "links to an entry said no to"  # an answer took the target away: re-point the link or remove the entry
 
 
 @dataclass(frozen=True)
@@ -99,14 +102,28 @@ def _unoffered(snapshot: Snapshot) -> list[Work]:
     ]
 
 
+def _said_no(snapshot: Snapshot) -> list[Work]:
+    """An entry that still links to one an answer said no to: work until re-pointed or removed (decision
+    software/writes/decision/answer-that-removes-used-entries)."""
+    gone = said_no(decisions(snapshot))
+    return [
+        Work(str(address), Status.SAID_NO, "", None, f"{item.field}: {item.text} (no in {gone[item.text]})")
+        for address in sorted(snapshot.entries)
+        for item in link_items(snapshot.ontology, snapshot.entries[address])
+        if item.text in gone and snapshot.resolve(item.text) is None
+    ]
+
+
 def work_left(
     snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read, ledger: Mapping[str, removed.Item] | None = None
 ) -> list[Work]:
-    """Unbuilt and changed entries, unmet requirements that are work, removal work, and sources that changed since capture."""
+    """Unbuilt and changed entries, unmet requirements that are work, links to an entry said no to, removal work, and sources that
+    changed since capture."""
     return [
         *_unbuilt(snapshot, record),
         *_unmet(snapshot),
         *_unoffered(snapshot),
+        *_said_no(snapshot),
         *_gone(record, snapshot, ledger or {}),
         *_sourced(record, snapshot, read),
     ]

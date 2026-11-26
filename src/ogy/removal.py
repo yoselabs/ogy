@@ -108,10 +108,11 @@ def _inside(address: Address, root: Address) -> bool:
     return address.home == root.home and address.path[: len(root.path)] == root.path
 
 
-def refusals(snapshot: Snapshot, address: Address) -> list[str]:
-    """Why the address cannot be removed: a live link names it or a part of it, or a decision in force gives it fields."""
+def refusals(snapshot: Snapshot, address: Address, *, links_stay: bool = False) -> list[str]:
+    """Why the address cannot be removed: a live link names it or a part of it (unless the links stay, as work), or a decision
+    in force gives it fields."""
     found: list[str] = []
-    for origin, entry in snapshot.entries.items():
+    for origin, entry in snapshot.entries.items() if not links_stay else ():
         for item in link_items(snapshot.ontology, entry):
             target = resolve(snapshot.ontology, snapshot.entries, origin, item).target
             if target is not None and _inside(target, address) and not _inside(origin, address):
@@ -165,8 +166,10 @@ def remove(
     now: dt.datetime,
     last_seen: str,
     base: Collection[Address],
+    links_stay: bool = False,
 ) -> Removed:
-    """Delete the entry at `text` from the worktree and append its ledger item when `base` had it; refuses before writing anything."""
+    """Delete the entry at `text` from the worktree and append its ledger item when `base` had it; refuses before writing anything.
+    `links_stay`: an answer said no to it, so what links to it stays and is work (decision answer-that-removes-used-entries)."""
     if not why or not why.strip():
         raise RemoveRefusedError(["why is required: the address of the decision that said so, or the reason in plain words"])
     editor = Editor(root, kb, ontology)
@@ -177,7 +180,7 @@ def remove(
     if (earlier := interrupted(root, kb, snapshot, address)) is not None:
         editor.remove(address)  # finish the removal that crashed after its ledger write
         return Removed(earlier, recorded=True)
-    reasons = refusals(snapshot, address)
+    reasons = refusals(snapshot, address, links_stay=links_stay)
     if snapshot.kind_of(address).holding is Holds.ONE and address.parent() is not None:
         reasons.append(f"{address} is the single {address.kind} of its parent: change it, or remove the parent")
     item = build_item(snapshot, address, why, to, at=now, last_seen=last_seen, ontology=name)

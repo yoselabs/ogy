@@ -229,8 +229,8 @@ def _apply(target: Target, editor: Editor, decision: Decision, option: str, now:
 
 
 def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Clock) -> list[str]:
-    """Remove every entry of `doomed`, in passes: one still linked to by another of them waits for the next pass; a pass
-    that removes nothing refuses with the reasons."""
+    """Remove every entry of `doomed`, in passes; a pass that removes nothing refuses with the reasons. An entry that still
+    links to one of them stays: it is work until re-pointed or removed (decision answer-that-removes-used-entries)."""
     gone: list[str] = []
     base = removal_base(target)
     while doomed:
@@ -249,6 +249,7 @@ def _remove_all(target: Target, decision: Decision, doomed: list[str], now: Cloc
                     now=now(),
                     last_seen=last_seen(target.repo),
                     base=base,
+                    links_stay=True,
                 )
             except (RemoveRefusedError, LookupError) as error:
                 refused += error.reasons if isinstance(error, RemoveRefusedError) else [str(error)]

@@ -182,6 +182,11 @@ def settles(decision: Decision) -> tuple[dict[str, set[str]], set[str]]:
     return fields, absent
 
 
+def said_no(found: list[Decision]) -> dict[str, Address]:
+    """Each address an option in force says no to (`null` in its `sets`), with the decision that says so."""
+    return {text: d.address for d in found if (force := d.in_force) for text, given in force.sets.items() if given is None}
+
+
 def slot_index(found: list[Decision]) -> dict[tuple[str, str | None], list[Address]]:
     """(address, field) -> the decisions that set it; (address, None) is an address a decision may set absent."""
     index: dict[tuple[str, str | None], list[Address]] = {}

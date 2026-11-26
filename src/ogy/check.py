@@ -18,7 +18,7 @@ from ogy.links import link_items, resolve
 from ogy.lints import check_lints
 from ogy.model import Entry, Finding, Problem, parse_address
 from ogy.requires import applies, reaching, satisfied, unmet
-from ogy.settle import check_decisions, decisions
+from ogy.settle import check_decisions, decisions, said_no
 from ogy.snapshot import Snapshot, load
 from ogy.source import Source
 from ogy.terms import check_proposed_terms, check_term_agreement, check_terms
@@ -32,6 +32,7 @@ class Checker:
     def __init__(self, snapshot: Snapshot) -> None:
         self.snapshot = snapshot
         self.findings: list[Finding] = []
+        self.said_no = said_no(decisions(snapshot))  # a link to one of them is work, not a finding (`receipts`)
 
     def run(self) -> list[Finding]:
         for entry in self.snapshot.entries.values():
@@ -96,6 +97,8 @@ class Checker:
         declared = self.snapshot.ontology.declared
         for item in link_items(self.snapshot.ontology, entry):
             found = resolve(self.snapshot.ontology, self.snapshot.entries, entry.address, item)
+            if found.problem is Problem.DANGLING_LINK and item.text in self.said_no:
+                continue
             if found.problem is not None:
                 self._add(found.problem, entry, found.detail)
             elif (target := found.target) is not None and declared.reversed_link(entry.address.layer, target.layer):
