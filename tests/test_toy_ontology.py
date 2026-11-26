@@ -94,7 +94,7 @@ def read(repo: Path, rel: str) -> object:
 def test_the_toy_ontology_shares_no_name_with_the_software_one() -> None:
     toy = named(str(TOY), Path())
     assert _names(toy) & _names(packaged()) == set()
-    assert toy.layers == ("business", "tech") and toy.roles.agreed == "accepted" and toy.declared.asked_alone == ("layout",)
+    assert toy.layers == ("business", "tech") and toy.roles.agreed == "accepted"
 
 
 def test_check_and_the_glossary_read_the_toy_names(toy: Path) -> None:
@@ -145,14 +145,12 @@ def test_answer_writes_a_verdict_and_the_boss_accepts_what_it_gives(toy: Path) -
     assert norm["tells"] == "A basket holds at most twenty things." and set(norm["accepted"]) == {"moment", "place", "gist", "hash"}
 
 
-def test_review_asks_the_layout_ruling_alone_and_reply_answers_it(toy: Path) -> None:
+def test_review_asks_the_layout_ruling_first_and_yes_all_answers_it(toy: Path) -> None:
     code, lines = w(toy, "review")
     text = "\n".join(lines)
     assert code == cli.OK and "Q1. question  business/shop/ruling/folders  (layout)" in text and "Why it comes up: Shops differ." in text
-    assert "Structural, not covered by yes or yes all: Q1; each needs its own letter." in text
-    code, lines = w(toy, *said("reply", "yes all"))
-    assert code == cli.OK and "business/shop/ruling/folders is structural" in lines[0]
-    assert w(toy, *said("reply", "Q1 a"))[0] == cli.OK
+    assert "not covered by yes or yes all" not in text  # a harm only ranks the queue; nothing is asked alone
+    assert w(toy, *said("reply", "yes all"))[0] == cli.OK
     folders = read(toy, "business/shop/ruling/folders.yml")
     assert isinstance(folders, dict) and folders["verdicts"][0]["picked"] == "flat"
     boss = read(toy, "business/common/people.yml")

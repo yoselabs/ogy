@@ -1,7 +1,6 @@
 title: A short printed trace from product to software
 question: Does ogy print, for one workflow or area, each step with who acts, where it is reached, what each row changes, which handler performs it and its proof?
 context: No command prints it; the board composes it in its own code. An agent reads many files to learn what one screen of text can say. The paths are serves, offers, performs, uses and proof.
-structure: false
 options:
   show-prints:
     label: ogy show <workflow> and ogy show <layer>/<area> print the trace; no new command

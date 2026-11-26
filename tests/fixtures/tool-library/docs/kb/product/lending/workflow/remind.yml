@@ -21,7 +21,7 @@ steps:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
-      hash: fc3c99bb3732
+      hash: bdf9339fef25
 ends:
   done:
     says: Every late member was reminded.

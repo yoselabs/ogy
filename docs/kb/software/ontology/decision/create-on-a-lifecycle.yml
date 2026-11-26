@@ -1,5 +1,4 @@
 title: What brings an entity into being
-structure: true
 question: The effect guidance says a transition without `from` creates an entity with a lifecycle and a create is only for an entity without one, yet never-written counts only a create as writing the attributes. Which one brings an entity into being?
 context: 'Found 2026-11-24 (second review, F7): the fixture creates loan with both a create and a transition without `from`, and remove-entry deletes `entry`, which has a lifecycle; no check holds the guidance.'
 options:

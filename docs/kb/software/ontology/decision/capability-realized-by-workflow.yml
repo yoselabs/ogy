@@ -1,4 +1,3 @@
-structure: true
 question: Is a capability that no workflow realizes work left, or does the capability guidance stay prose?
 context: "Prose-rules sweep 2026-11-20 (docs/reviews/2026-11-20-prose-rules.md, B2): the capability guidance said a workflow realizes it, and no check read it. Built as work (no-workflow) in cea25d2; on ogy's own KB 7 capabilities read no-workflow."
 options:

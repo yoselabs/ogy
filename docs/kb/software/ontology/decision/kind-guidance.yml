@@ -1,5 +1,4 @@
 question: Where does an agent read how to decide between kinds (when a variation is a new actor, an attribute or a lifecycle state), and what does `ogy intro` print of it?
-structure: true
 options:
   in-kind-files:
     label: Every kind file carries a short `guidance:`; `ogy kinds <kind>` prints it; `ogy intro` prints pointers to it

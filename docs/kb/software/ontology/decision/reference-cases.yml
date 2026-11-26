@@ -1,7 +1,6 @@
 title: Reference cases for ontology design
 question: Does the repository keep one knowledge base per product ogy must describe, written before ogy is adopted there, and where?
 context: "tests/fixtures/taskloop-fit holds 31 files of two task loop areas (land, claim) with no workflow, interface or handler; tests/test_examples.py pins its exact findings, so it may not change freely. smaller-next-step chose examples first; judged-as-new names reference cases that do not exist. The task loop has a CLI and a dashboard server today; its MCP server and outside triggers are planned. The healthcare code is not at hand: that case is a sketch from the owner's description."
-structure: true
 options:
   examples-dir:
     label: A top-level folder examples/ with one knowledge base per case (task-loop, a2kay, healthcare as a sketch), written through ogy, and ogy's own docs/kb counted as the fourth. Each case lists what the ontology could not hold. One fixed list of competency questions sits beside them; every design pass answers each question per case. A sketch raises a question but proves no need alone

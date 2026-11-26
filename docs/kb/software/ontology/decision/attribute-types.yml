@@ -1,4 +1,3 @@
-structure: true
 question: Which types does an attribute take?
 context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): `time` becomes `datetime` (date, time and offset, as SQL says), and `one` and `list` give way to `of` (what it holds, an entity or an enum) and the flag `many`, so a list of plain values is a type with `many`. Exactly one of `type` and `of` is set; the decision list-attr-of gets the option that says so."
 options:

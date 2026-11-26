@@ -58,7 +58,6 @@ class Card:
     then: tuple[tuple[str, ...], ...] = ()  # a decision card: what each option (same order as `options`) makes true
     earlier: str = ""  # a delegated card: the owner's own earlier answer, which the agent's answer replaced
     members: tuple[tuple[Address, str, str], ...] = ()  # a parent's card: each waiting entry, sentence, fingerprint
-    alone: bool = False  # its harm is asked alone (`asked_alone`): its own letter, never inside a bulk accept
     changes: tuple[str, ...] = ()  # a `changed` card: what changed since the person's yes, `field: old -> new` (`ogy.since`)
 
 
@@ -157,11 +156,6 @@ def harm(snapshot: Snapshot, address: Address) -> str | None:
     return min(found, default=None, key=snapshot.ontology.declared.rank)
 
 
-def asked_alone(snapshot: Snapshot, tag: str | None) -> bool:
-    """A card of this harm is asked on its own, never inside a bulk accept."""
-    return tag is not None and tag in snapshot.ontology.declared.asked_alone
-
-
 def dependants(snapshot: Snapshot) -> dict[Address, int]:
     """How many other entries link to each entry."""
     sources: dict[Address, set[Address]] = {}
@@ -219,7 +213,6 @@ def _asked(snapshot: Snapshot, decision: Decision, count: dict[Address, int], ki
         context=decision.entry.text(names.context) or "",
         then=tuple(_then(snapshot, snapshot.entries[address].fields.get(names.sets)) for address in addresses),
         earlier=_earlier(decision) if kind == "delegated" else _kept(snapshot, decision) if again else "",
-        alone=again or asked_alone(snapshot, tags[0] if tags else None),
     )
 
 
@@ -294,7 +287,6 @@ def entry_card(snapshot: Snapshot, kind: str, address: Address, count: dict[Addr
         tag,
         count.get(address, 0),
         _says(snapshot, address),
-        alone=asked_alone(snapshot, tag),
         fingerprint=snapshot.agreed_print(address),
         evidence=evidence(snapshot, address),
         word=word,
@@ -361,7 +353,6 @@ def _by_parent(snapshot: Snapshot, cards: list[Card], count: dict[Address, int])
                 count.get(top, 0),
                 _says(snapshot, top),
                 fingerprint=snapshot.agreed_print(top),
-                alone=asked_alone(snapshot, worst),
                 evidence=evidence(snapshot, top),
                 members=tuple((card.address, card.text, card.fingerprint) for card in members),
             )

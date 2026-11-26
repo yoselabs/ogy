@@ -1,5 +1,4 @@
 title: No answer from an outside system is a failure end with a no-answer path
-structure: true
 question: A row tells a system we do not own and no answer comes back. Is that a third end result (unknown), or a failure end the row owes a path to?
 context: "Misfit M4 (bead ogy-yy9.29), from capturing task-loop's land area: every operation has an 'unavailable, a rerun is safe' end. A review found it is no third result but a negative case; the rule lived only in the capture skill's hazard pass."
 options:

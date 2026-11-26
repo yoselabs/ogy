@@ -1,5 +1,4 @@
 title: Showing why a workflow exists on the board
-structure: true
 question: For the question what problem a workflow solves, does ogy first show the chain it already has (goal text, capability, workflow) on the board, add an optional pain text to a goal, or add a new problem kind?
 context: 'Owner, 2026-11-21: looking at a workflow it makes sense, but what problem does it solve. Codex read: goal says, goal for, capability realizes and workflow realizes express outcome and beneficiary; pain can live in the goal sentence; a problem kind is premature without a check that needs it; a missing chain must read purpose not recorded, not useless.'
 options:

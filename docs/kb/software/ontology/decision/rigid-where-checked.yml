@@ -1,5 +1,4 @@
 title: Rigid where checked
-structure: true
 question: Which facts of an entry are rigid (a field or a link) and which are text on the entry?
 context: 'Owner discussion on 2026-11-18 about environments, permissions, SLOs and stores: an all-rigid model grows as detailed as code and lags it (like UML round-trip); a hybrid risks text becoming a second, unchecked spec.'
 options:

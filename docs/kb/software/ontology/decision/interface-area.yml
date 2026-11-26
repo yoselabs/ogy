@@ -1,7 +1,6 @@
 title: The area of an interface that serves two areas
 question: In which area does an interface live, and what happens when it serves steps of two areas?
 context: '4 of 26 interfaces serve steps of two product areas: reply (review, capture), check (checks, review), history and show (capture, inspection). Each has one invocation for both steps, so no flag separates them; check --landing already exists where behaviour differs. Today all live in software/cli, an area named after a form.'
-structure: true
 options:
   steps-area:
     label: 'An interface lives in the area of the steps it serves; one that serves steps of two areas is work left (shared step): one workflow calls the other, so the step exists once'

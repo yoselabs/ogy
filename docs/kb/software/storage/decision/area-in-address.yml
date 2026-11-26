@@ -1,5 +1,4 @@
 title: The area stays in the address
-structure: true
 question: Does an address keep its area?
 context: Dropping the area would make an id unique per layer and stop a move from changing addresses.
 options:

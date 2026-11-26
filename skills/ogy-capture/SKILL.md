@@ -112,7 +112,7 @@ for the owner. If the owner delegates ("decide on my behalf"), that is their ans
    - Before recommending to remove or change structure, search the owner's earlier answers (`ogy find <words>`,
      `ogy history`). A conflict goes into the proposal's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....".
    - "Unused in captures" is never by itself a reason to remove structure the owner asked for.
-   - Ask a structural decision (`structure: true`) on its own card, never in an accept-all (`yes`, `yes all`, `decide`).
+   - A decision asked again is answered with its own letter, never in an accept-all (`yes`, `yes all`, `decide`).
 
 ## 7. Read back
 Read entries back with `ogy review` (at most 7 cards, with a count per area), in plain language, in three groups: what

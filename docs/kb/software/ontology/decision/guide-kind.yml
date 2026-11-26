@@ -1,5 +1,4 @@
 question: An SOP or runbook is a workflow whose steps an operator actor performs. What serves such a step, and how is it proved built?
-structure: true
 options:
   rendered:
     label: A guide, rendered deterministically from the workflows it serves by a separate tool or extension

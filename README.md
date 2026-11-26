@@ -165,8 +165,8 @@ entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.
-- A decision with `structure: true` (harm tag `structure`: layout, layers, kinds, paths) is asked on its own card: `yes`, `yes all` and
-  `decide` leave it, and `review` says it needs its own letter.
+- A decision asked again (a proposal newer than its newest answer) is asked on its own card: `yes`, `yes all` and `decide`
+  leave it, and `review` says it needs its own letter.
 
 ### Kind changes
 

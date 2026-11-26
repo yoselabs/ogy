@@ -1,5 +1,4 @@
 question: 'Which layer holds an actor: is it a party the business deals with (a customer, a payment provider), or does it exist only because of how the product is built (a scheduler, CI, an MCP client)?'
-structure: true
 options:
   by-layer:
     label: Business actors in the product layer, technical actors in the software layer; no new field

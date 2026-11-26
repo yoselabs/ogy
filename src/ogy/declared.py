@@ -76,7 +76,6 @@ class Declared(BaseModel):
     renamed: dict[str, str] = {}  # old common field name -> new: an entry written before holds the old one until `ogy migrate`
     roles: Roles
     harms: tuple[str, ...] = ()  # what a wrong sentence costs, in the order the review asks them
-    asked_alone: tuple[str, ...] = ()  # harm tags asked on their own card, never inside a bulk accept
     evidence: dict[str, Scheme] = {}
     proof: Proof
     reserved: Reserved = Reserved()
@@ -99,13 +98,12 @@ class Declared(BaseModel):
 
 
 def problems(declared: Declared) -> list[str]:
-    """Each role names a common field; every tag asked alone is a harm; every scheme and the proof name file suffixes."""
+    """Each role names a common field; every scheme and the proof name file suffixes."""
     found = [
         f"roles: {role} names no common field {name}" for role, name in declared.roles.model_dump().items() if name not in declared.common
     ]
     found += [
         f"renamed: {old} is now {new}, which is no common field" for old, new in declared.renamed.items() if new not in declared.common
     ]
-    found += [f"asked_alone: {tag} is no harm" for tag in declared.asked_alone if tag not in declared.harms]
     found += [f"evidence: {name} reads no files" for name, scheme in declared.evidence.items() if not scheme.files]
     return found + ([] if declared.proof.files else ["proof: names no file suffix"])

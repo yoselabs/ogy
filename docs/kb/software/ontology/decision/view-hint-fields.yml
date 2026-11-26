@@ -1,4 +1,3 @@
-structure: true
 question: Which exact optional presentation hints may kind and link definitions publish?
 context: The answered view-contract selects shared hints but the current kind loader forbids unknown keys. Proposed kind hints are view.icon, view.tone, view.attention, view.compact_fields and view.family; link hints are view.labels.forward, view.labels.inverse and view.explanation. Symbolic names and existing field paths are validated; renderers, executable actions, pixels and layout remain in the viewer. A descriptor envelope carries the contract version. This proposal is not an ontology edit.
 because:

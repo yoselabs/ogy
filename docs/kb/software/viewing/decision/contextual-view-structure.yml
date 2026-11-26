@@ -1,4 +1,3 @@
-structure: true
 question: How are situation-specific representations of entries built?
 context: The earlier design dispatches by kind, context, detail and mode. A complete set of independent renderers would repeat fact selection and identity logic.
 because:

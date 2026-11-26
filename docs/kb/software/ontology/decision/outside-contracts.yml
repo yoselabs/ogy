@@ -1,7 +1,6 @@
 title: Interfaces whose contract we do not own
 question: How does ogy hold a contract another party owns (a published standard, a vendor's queue, an event feed we receive), and a ready-made list of such contracts with their guarantees?
 context: "0 interfaces have form http, mcp or message; 0 of ogy's 5 dependencies realize an actor (1 in the tool library). Today: a dependency with a pin, its workarounds, quantities for limits, and a rule an interface or handler satisfies. No link runs from an interface to a dependency; no check compares our limit with theirs."
-structure: true
 options:
   as-today:
     label: "Nothing new now: a dependency with its pin (the standard's version), a rule the interface satisfies, quantities for limits. Asked again with the first real interface built to an outside contract"

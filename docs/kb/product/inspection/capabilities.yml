@@ -19,7 +19,7 @@
     at: '2026-11-21T22:32:21+01:00'
     where: ai:claude/f6fcc5ed
     said: 'Approved the verdict table: preview a new requirement as a ghost with impact advice.'
-    hash: 8f8b0aaabe0f
+    hash: 4eb9cd1c1cea
   realizes:
   - product/inspection/goal/understand-recorded-product
 - id: walk-the-product
@@ -28,7 +28,7 @@
     at: '2026-11-21T22:32:25+01:00'
     where: ai:claude/f6fcc5ed
     said: 'Approved the verdict table: walk-through mode, history replay deferred.'
-    hash: 572dabea49e2
+    hash: 0ab3e0fc445c
   realizes:
   - product/inspection/goal/understand-recorded-product
 - id: see-what-limits-the-product

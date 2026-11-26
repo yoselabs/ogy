@@ -1,4 +1,3 @@
-structure: true
 question: Is the shape of a kind whose entries live one per file called `file`, not `entity`?
 context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19): the shape `entity` shared its name with the kind entity, so `shape: entity` on a rule or a workflow read as a claim that it is an entity. The shape says where entries live: one file each."
 options:

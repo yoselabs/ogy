@@ -1,4 +1,3 @@
-structure: true
 question: May a product entry link to a software entry?
 context: 'Bead ogy-yy9.75, D5 (harmony review finding 2): ontology.yml orders the layers and declares link_direction later-to-earlier; the check layer-direction reads every link field and every decision sets key. Found: docs/kb 7 links (2 conditions and 2 tells naming software dependencies, 3 answers delegated under software decisions) and 5 sets keys (product/capture/decision/every-reply-is-a-message setting software entries), tool-library 1, taskloop-fit 52 links (all in the land workflow, cut) and 2 sets keys. The delegation decisions and their rules moved to product/review; every-reply-is-a-message moved to software/writes; init and capture refusals that read git and claude-code wait on decision software/ontology/decision/technical-refusal.'
 options:

@@ -1,4 +1,3 @@
-structure: true
 question: Are view and command one kind, interface, in the ArchiMate sense?
 context: 'Harmony review finding 5: view and command both serve actor steps and offer choices; no check tells them apart. Bead ogy-yy9.75, interface option A.'
 options:

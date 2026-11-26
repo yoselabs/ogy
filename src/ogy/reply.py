@@ -5,11 +5,11 @@ with `at` and `where` on each answer and each agreement it writes (`from: human`
 item applies, nothing is written.
 
     yes all | decide  accept every recommendation of the round: each question gets its recommended option (the proposal), each card is
-                      agreed to, except a structural decision (harm `structure`), which needs its own letter (`Q1 a`);
+                      agreed to, except a decision asked again, which needs its own letter (`Q1 a`);
                       a card that changed since shown stays in the queue and is reported. Allowed in an --all round
     yes | yes 1 3     agree to the sentences as shown (all of them, or those cards); a bare yes is refused for a round shown with --all.
                       It also confirms every question that says "You said (paraphrased): .... Read as B.": the answer is what
-                      the owner said earlier, read as that option, except a structural decision. `yes Q2` confirms one
+                      the owner said earlier, read as that option, except a decision asked again. `yes Q2` confirms one
     2: <sentence>     the owner's own sentence replaces card 2's and is agreed
     no 4              card 4 becomes a question (why, paraphrased, goes in --said); nothing is built new on it until it is answered
     Q1 b              the owner chose option B of question 1 (or its key)
@@ -180,10 +180,9 @@ def _yes(target: Target, found: Round, words: Said, group: str | None) -> str:
         raise WriteRefusedError([f"round {found.id} was shown with --all: name the cards (yes 1 3), or reply to a round of 7"])
     labels = re.findall(r"Q?\d+", group, re.IGNORECASE) if group else [c.label for c in found.cards]
     wanted = [label for label in labels if label.upper().startswith("Q")]
-    if not group:  # a bare yes confirms a "You said" reading, never a structural decision
-        wanted = [
-            label for label in wanted if not _card(found, label, entry=False).structure and _heard(target, _card(found, label, entry=False))
-        ]
+    if not group:  # a bare yes confirms a "You said" reading, never a decision asked again
+        shown = {label: _card(found, label, entry=False) for label in wanted}
+        wanted = [label for label in wanted if shown[label].kind != "again" and _heard(target, shown[label])]
     if again := [label for label in wanted if _card(found, label, entry=False).kind == "again"]:
         raise WriteRefusedError([f"{label} is asked again: choose its letter ({label} a), never yes" for label in again])
     cards = [_card(found, label, entry=True) for label in labels if not label.upper().startswith("Q")]
@@ -225,8 +224,6 @@ def _accept_all(target: Target, found: Round, words: Said) -> str:
             fresh.append(card)
         elif card.kind == "again":
             kept.append(f"{card.address} is asked again: it needs its own letter ({card.label} a), not yes all")
-        elif card.structure:
-            kept.append(f"{card.address} is structural: it needs its own letter ({card.label} a), not yes all")
         else:
             snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
             found_decision = next((d for d in decisions(snapshot) if str(d.address) == card.address), None)

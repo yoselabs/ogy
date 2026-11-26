@@ -1,4 +1,3 @@
-structure: true
 question: Must every dependency link a decision that chose it, or is "choosing a dependency is a decision" guidance only?
 context: 'Prose-rules review 2026-11-20 (L9): the dependency guidance says choosing it is a decision; work for a dependency with no because to a decision is expressible today, but nobody agreed every dependency needs one.'
 options:

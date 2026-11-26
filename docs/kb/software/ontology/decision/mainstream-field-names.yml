@@ -1,4 +1,3 @@
-structure: true
 question: Do the fields take mainstream names too?
 context: "Bead ogy-yy9.75, the owner's 'Yes, all' (2026-11-19). Each field with its source: the common `by` becomes `satisfies` (SysML satisfy: this entry is held to that rule); capability `serves` becomes `realizes` (ArchiMate realization from a capability to a goal, as workflow realizes capability; recalled from the ArchiMate 3 specification, not re-read in this session); setting `binds` becomes `default` (the quantity a setting falls back to); area `distinct` becomes `unlike` (text for now; a link to the neighbouring area comes later). `ogy migrate` renames them (`renamed:` in the kind files and in ontology.yml)."
 options:

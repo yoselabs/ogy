@@ -1,7 +1,6 @@
 title: A decision shows its pain on one example
 question: Does a decision show, in plain words, the pain it answers on one real example, and what each option makes possible or impossible on that example?
 context: "Today a decision's context lists counts and addresses. Example: the owner read earned-entry-evidence on 2026-11-24 and could not tell what it changes. The same decision with an example: 'a review wants an mcp-tool kind for the task loop's MCP server, which is not built yet; with the old words it is refused, with the new words the planned server counts if its source is named.'"
-structure: true
 options:
   example-field:
     label: 'A decision gains an optional field example: one real case in plain words, with what each option does to it. ogy review prints it first. ogy check requires it on a structural decision'

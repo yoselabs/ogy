@@ -1,5 +1,4 @@
 question: 'Terms already have a home rule (product/language/decision/glossary-per-layer). Does the same hold for every shared thing, a term or an actor: where does it live, and who enforces it?'
-structure: true
 options:
   a:
     label: 'One area uses it: it lives in that area; two use it: it lives at the layer root; ogy check enforces it'

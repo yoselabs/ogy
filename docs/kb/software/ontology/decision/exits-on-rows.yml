@@ -1,4 +1,3 @@
-structure: true
 question: Do a step's exits live only on its rows?
 context: "Harmony review finding 10: a step's own then cannot hold effects, so a step that acts needs a row anyway (checkout: charge card then create the order)."
 options:

@@ -1,5 +1,4 @@
 title: Whether a knowledge base groups areas into contexts so one repository holds several systems
-structure: true
 question: Does a knowledge base group its areas into named contexts (for example the engine, the default ontology and the viewer) so that one repository holds several systems, or does it keep areas only, or one knowledge base folder per system?
 context: 'Owner, 2026-11-21: the viewer is effectively a separate product from the engine and the default ontology; one repository should hold several without a pile of areas, and people cannot hold many contexts at once, so foreign systems should appear as boundary stubs. Codex read: an area is a topic and the area kind says it is not a DDD bounded context; a context is a model and language boundary, not necessarily a service; contexts as optional metadata keep addresses unchanged; risks are word-clash and avoid checks, the shared area, ogy move and the fixed knowledge base root. The business versus software split and nesting (C4 system, container, component) are undecided.'
 options:

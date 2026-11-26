@@ -1,5 +1,4 @@
 title: Where the UI style rules live in ogy
-structure: true
 question: 'Where do the many small UI decisions made while building the board (arrows hop over arrows, colour carries meaning, anything named is a link, icons per kind, hover then pin) live: as principles, rules and decisions in the knowledge base, as viewer configuration only, or in a new kind?'
 context: "Owner, 2026-11-21: the micro decisions together are a brand or style book and need a home; areas group topics but are not a style book. Candidates: constitution principles for the few big rules; rule entries satisfied by the viewer's interfaces; one decision per micro decision; design tokens as viewer data; a new kind only if none fits."
 options:

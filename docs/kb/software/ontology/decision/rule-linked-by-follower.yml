@@ -1,5 +1,4 @@
 title: A rule is linked by what follows it
-structure: true
 question: Which file holds the link between a rule and the entry that follows it?
 context: 'A reader of a rule asks where it is used; a reader of a step asks why it exists. Two copies of one link drift. Today no entry names a rule with `by`, and eight kinds accept it (the in-force text lists seven: timeout is missing).'
 options:

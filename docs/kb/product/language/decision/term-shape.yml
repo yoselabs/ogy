@@ -1,5 +1,4 @@
 title: A term is compressed
-structure: true
 question: What does a term hold?
 context: The glossary is loaded by every agent before work; every field it carries costs tokens.
 options:

@@ -1,7 +1,6 @@
 title: Where the infrastructure view comes from
 question: How does ogy hold which deployed units build a workflow, and does it hold cloud resources at all?
 context: 'The owner listed cloud compute, microservices, service composition, and repositories and routers inside one service. ogy and the fixture each ship one unit. A workflow has no single order: review-and-reply runs cli, writes, cli, writes, which is 2 boxes and 3 crossings.'
-structure: true
 options:
   computed:
     label: Computed from performs, serves and uses; nothing stored

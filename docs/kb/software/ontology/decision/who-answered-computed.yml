@@ -1,4 +1,3 @@
-structure: true
 question: Is who answered computed from `delegated`, dropping `answer.from` and `agreed.from`?
 context: 'Harmony review finding 7: a check forces from ai exactly when delegated is set; agreed.from has one legal value.'
 options:

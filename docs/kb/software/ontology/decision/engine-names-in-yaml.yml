@@ -1,4 +1,3 @@
-structure: true
 question: Does the engine stop knowing the software ontology by name, every kind, field, harm tag and path declared in YAML, tested by a toy ontology with every name changed?
 context: 'Harmony review 2026-11-19 finding 4 (docs/reviews/2026-11-19-harmony.md): about 15 places in Python name kinds, fields, harms, evidence schemes and init paths.'
 options:

@@ -1,5 +1,4 @@
 question: May a repository define its own kinds in its ontology?
-structure: true
 options:
   not-now:
     label: No custom kinds for now; perhaps later

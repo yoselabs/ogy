@@ -1,5 +1,4 @@
 question: Which mailer sends the reminders?
-structure: true
 options:
   smtp:
     label: Plain SMTP

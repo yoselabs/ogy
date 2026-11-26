@@ -1,7 +1,6 @@
 title: A contract between two of our own parts
 question: How does ogy hold the point where one part we own calls another (a backend API for our own frontend, a library seam, a call between two of our services)?
 context: "1 case today: software/viewing/interface/inspection-data, form library, feeding the board and the commands; its serves repeats the board's 4 steps and handler derive-inspection says nearly the same sentence. No actor is on its other side. A code base of many services would have many such points. Related: infrastructure-view."
-structure: true
 options:
   none-yet:
     label: 'No entry of its own: the handler that answers the call holds it in its sentence, rules and proof. Asked again with three real cases'

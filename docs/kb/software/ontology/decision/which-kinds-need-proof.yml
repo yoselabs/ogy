@@ -1,4 +1,3 @@
-structure: true
 question: Which kinds need a proof?
 context: 'Bead ogy-yy9.75, D15 (harmony finding 14): rows (choice, case, timeout), rule, interface, setting and workaround need a proof; an entity only while it has transitions, declared in YAML as needs_proof {if_part: transition}; not step, handler, quantity. One owner: Snapshot.needs_proof per entry, Kind.proves per kind. A built line on a live entry that needs no proof is removal work and ogy migrate deletes it. The handler uses pin input no longer counts; a dependency pin still reaches the rules it is held to (rule input_from satisfies pin). docs/kb work left 174 to 130; fixtures: the late-fee proof moved from the quantity to its rule.'
 options:

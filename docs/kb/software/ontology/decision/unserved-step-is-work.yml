@@ -1,4 +1,3 @@
-structure: true
 question: Is an actor step that no interface serves a finding or work left?
 context: "Bead ogy-yy9.75, interface option A: the step's serving requirement becomes work left. A requirement declares `work: true`; check skips it and ogy work lists it."
 options:

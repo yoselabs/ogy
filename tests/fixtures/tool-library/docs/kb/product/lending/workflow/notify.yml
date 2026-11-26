@@ -24,7 +24,7 @@ steps:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
-      hash: 31a831a5e197
+      hash: 23987a5cd632
 ends:
   sent:
     says: The message went out.

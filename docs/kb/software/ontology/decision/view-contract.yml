@@ -1,5 +1,4 @@
 title: Whether the ontology publishes presentation defaults for kinds
-structure: true
 question: Does the ontology publish presentation defaults (icon, colour token, display modes, click action) on a kind, or does the viewer own all presentation?
 context: 'Owner, 2026-11-21: a systematic way to render entities and arrows, ideally described in the ontology. Codex read: an optional view block on a kind fits as shared defaults while renderers, layout, interaction and arrow routing stay in the viewer; every property optional; the exporter emits a versioned ontology descriptor; older engines reject the new key; view data is outside entry fingerprints so no entry migration; the tool library completeness test must be extended. The existing no-views decision must be reconciled.'
 options:

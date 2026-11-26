@@ -20,8 +20,7 @@ common:
   agreed: {type: agreed, note: true}
 roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what
 # What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in.
-harms: [structure, tells-outside, irreversible, authorization]
-asked_alone: [structure]                             # the layout, layers, kinds or paths: its own card, never inside a bulk accept
+harms: [tells-outside, irreversible, authorization]
 evidence:                                            # the schemes of `src` items
   code: {reads: symbol, files: [.py]}                # code:<path>#<symbol>
   doc: {reads: section, files: [.md], pinned: true}  # doc:<commit>:<path>#<anchor>

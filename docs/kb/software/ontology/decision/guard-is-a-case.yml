@@ -1,4 +1,3 @@
-structure: true
 question: Does the guard kind stay, or is a refusal a case that leads to a failure end?
 context: "Harmony review 2026-11-19 finding 3: a guard, a case and a choice's when overlap; all 9 real guards sit on steps and read as cases; guard on a workflow is broken. The owner asked that a case relying on an undescribed state be found deterministically."
 options:

@@ -1,4 +1,3 @@
-structure: true
 question: Do the kinds take the names mainstream modelling uses (UML and SysML, ISO 80000, ADR), so an agent's prior knowledge points the right way?
 context: "Harmony review 2026-11-19 (docs/reviews/2026-11-19-harmony.md), decision 13, widened by the owner's 'Yes, all' to the mainstream renames (bead ogy-yy9.75). Each kind with its source: value to quantity (ISO 80000 quantity value: a number times a unit); set to enum (UML enumeration, the enum of a JSON type); operation to handler (a command or event handler; a UML or OpenAPI operation is a signature); external to dependency (a package or service dependency); config_key to setting (a configuration setting, Django, VS Code); attr to attribute (ER and UML attribute); deviation to workaround (a known issue with its workaround, as release notes say); guess to proposal (ADR status proposed). `ogy migrate` moves the entries (`was:` in each kind file); the glossary term guess becomes proposal."
 options:

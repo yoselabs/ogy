@@ -1,5 +1,4 @@
 question: Must an attribute of type list name what it holds in `of`, when its items are plain texts (sources, hashes, answers, cards) that no entity or set describes?
-structure: true
 context: 'Bead ogy-yy9.53 asked for `type: one|list` needs `of`; seven list attributes of this knowledge base hold plain texts and have nothing to name, so only `type: one` is declared for now.'
 options:
   one-only:

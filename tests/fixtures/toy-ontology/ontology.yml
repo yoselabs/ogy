@@ -14,7 +14,6 @@ common:
   accepted: {type: agreed, note: true}
 roles: {title: heading, src: source, because: reason, proof: tests, agreed: accepted}
 harms: [layout, cash]
-asked_alone: [layout]
 evidence:
   py: {reads: symbol, files: [.py]}
   md: {reads: section, files: [.md], pinned: true}

@@ -1,4 +1,3 @@
-structure: true
 question: May a handler perform a row that has no effect, or only rows with an effect?
 context: 'Prose-rules review 2026-11-20 (L8): the handler about and guidance say it performs the rows that have an effect, yet the check handler performs rows with none; the unhandled work asks for a handler only on rows with an effect.'
 options:

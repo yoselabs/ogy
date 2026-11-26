@@ -1,7 +1,6 @@
 title: What evidence lets a concept enter
 question: The ontology-designer skill admits a term only with a real case that exists today. What does that law read once the cases are named reference cases, some of them planned or sketched?
 context: "The law made reviews count ogy's own entries, the only data at hand, and left no place for a product that is planned. The skill serves other ontologies too, so a record in the data must stay valid evidence. Proposed text: L5 Earned entry. A term enters only with a competency question that fails today and a case behind it. A case is a record that exists in the data today, given with its id, or a record quoted from a reference case: a product the owner has named as one the ontology must describe, with the source it was read from (code, a document, the owner's description). A reference case may be built, half built or planned. One the designer could not read raises a question but carries no growth verdict alone. Counts taken from the ontology's own data say what a change moves (R4); they never show that a concept is needed or not needed. A growth verdict with no case is blocked with that one demand."
-structure: true
 options:
   record-or-reference-case:
     label: 'The proposed text: a record in the data today, or a record quoted from a named reference case with its source'

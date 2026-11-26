@@ -42,8 +42,8 @@ your layer and hand over with `ogy work <your layer>` (what it still owes) and `
   same thing. Add an option to the old decision; do not open a second one (untested).
 - Structure (layout, layers, kinds, paths): before recommending to remove or change it, search the owner's earlier answers
   (`ogy find`, `ogy history`); a conflict goes into the proposal's `heard` (a paraphrase), so the card shows "You said (paraphrased): ....". "Unused in captures" is never by
-  itself a reason to remove structure the owner asked for. A structural decision (`structure: true`) is asked on its own
-  card, never in an accept-all (`yes`, `yes all`, `decide`).
+  itself a reason to remove structure the owner asked for. A decision asked again is answered with its own
+  letter, never in an accept-all (`yes`, `yes all`, `decide`).
 
 ## 4. Rank and pick the round
 - The frontier is every decision whose parents are settled (from grilling).

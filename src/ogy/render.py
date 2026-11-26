@@ -149,8 +149,6 @@ def _card(label: str, card: Card) -> list[str]:
         lines.append(f"   {card.earlier}")
     if card.kind == "again":
         lines.append(f"   Asked again: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
-    elif card.alone:
-        lines.append(f"   Structural: answer with its own letter ({label} {string.ascii_lowercase[0]}); yes and yes all leave it.")
     if card.kind == "question" and not card.options:
         lines.append(f"   Answer in words: {label}: <your words>")
     keys = [key for key, _ in card.options]
@@ -176,7 +174,7 @@ def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
     confirms = [
         f"{label} as {string.ascii_uppercase[keys[label].index(card.proposal)]}"
         for label, card in cards
-        if card.kind not in rounds.ENTRY_CARDS and not card.alone and card.heard and card.proposal in keys[label]
+        if card.kind not in (*rounds.ENTRY_CARDS, "again") and card.heard and card.proposal in keys[label]
     ]
     agrees = [label for label, card in cards if card.kind in rounds.ENTRY_CARDS]
     will = [
@@ -184,8 +182,8 @@ def bare_yes(cards: list[tuple[str, Card]]) -> list[str]:
         *([f"agree to {len(agrees)} sentence(s) ({', '.join(agrees)})"] if agrees else []),
     ]
     lines = [f"A bare `yes` will: {'; '.join(will)}." if will else "A bare `yes` changes nothing."]
-    own = [label for label, card in cards if card.alone]
-    return lines + ([f"Structural, not covered by yes or yes all: {', '.join(own)}; each needs its own letter."] if own else [])
+    own = [label for label, card in cards if card.kind == "again"]
+    return lines + ([f"Asked again, not covered by yes or yes all: {', '.join(own)}; each needs its own letter."] if own else [])
 
 
 def render_review(found: Review) -> list[str]:

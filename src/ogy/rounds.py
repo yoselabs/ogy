@@ -30,7 +30,6 @@ class Shown(BaseModel):
     shown: str
     fingerprint: str
     options: tuple[str, ...] = ()
-    structure: bool = False  # a structural decision: it needs its own letter, a bare `yes` and `yes all` leave it
     members: tuple[tuple[str, str], ...] = ()  # a parent's card: the address and fingerprint of each entry one yes agrees to
 
 
@@ -58,7 +57,6 @@ def make(cards: list[Card], *, everything: bool) -> Round:
             shown=card.text,
             fingerprint=card.fingerprint,
             options=tuple(key for key, _ in card.options),
-            structure=card.alone,
             members=tuple((str(address), fingerprint) for address, _, fingerprint in card.members),
         )
         for label, card in labelled(cards)

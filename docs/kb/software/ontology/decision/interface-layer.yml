@@ -1,7 +1,6 @@
 title: Which layer holds an interface
 question: Is an interface a software entry, a product entry, two kinds (what a person meets and how it is built), or an entry of a third design layer?
 context: 26 interfaces, all software; 22 carry invoked_as, 1 a proof. 8 of 19 actor steps are served by two or more interfaces, one by 11 in 3 forms. The owner argued twice that what the client sees in a design is product. Shown content has no product home today; interface-shows-accepts asks that.
-structure: true
 options:
   software:
     label: 'Stays a software kind: one built point of reach in one form'

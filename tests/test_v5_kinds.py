@@ -183,11 +183,8 @@ def test_the_ontology_file_declares_the_layers() -> None:
 
 def test_the_ontology_file_names_what_the_engine_reads() -> None:
     found = packaged().declared
-    assert found.roles.agreed in found.common and found.harms[0] == "structure" and found.rank(None) == len(found.harms)
-    for change, why in (
-        ({"asked_alone": ("nope",)}, "asked_alone: nope is no harm"),
-        ({"roles": found.roles.model_copy(update={"src": "source"})}, "roles: src names no common field source"),
-    ):
+    assert found.roles.agreed in found.common and found.harms[0] == "tells-outside" and found.rank(None) == len(found.harms)
+    for change, why in (({"roles": found.roles.model_copy(update={"src": "source"})}, "roles: src names no common field source"),):
         with pytest.raises(OntologyError, match=why):
             parse_kinds({"kinds/actor.yml": ACTOR}, found.model_copy(update=change))
     with pytest.raises(OntologyError, match="harm late is no harm"):

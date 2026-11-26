@@ -1,4 +1,3 @@
-structure: true
 question: Is a goal that no capability realizes work left, or does the goal guidance stay prose?
 context: 'Prose-rules review 2026-11-20 (docs/reviews/2026-11-20-prose-rules.md, L10), the sibling of B2 (capability-realized-by-workflow, answered work): no prose said a goal must be realized; work unused on goal was built in cea25d2 and taken out in f57602d for want of a decision.'
 options:

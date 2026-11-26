@@ -1,15 +1,11 @@
 """The layout is the ontology's: guards against structure being dropped, bundled or left empty without notice."""
 
-import json
 import shutil
 from collections.abc import Callable, Mapping
 lazy from pathlib import Path
 
-import any_yaml
-import pytest
 from tests.conftest import Kb, ogy
-from tests.test_reply import r, round_of
-from tests.test_writes import OPTIONS, put, w
+from tests.test_writes import w
 
 from ogy import cli
 from ogy.coverage import product_areas, uncovered
@@ -17,63 +13,13 @@ from ogy.model import Problem
 from ogy.ontology import packaged
 
 type MakeKb = Callable[[Mapping[str, str | None] | None], Kb]
-RULE = "product/app/rule/layers-are-folders"
-LAYERS = {
-    "keep": {"label": "Keep the folders", "sets": {RULE: {"says": "Every entry lives under a layer folder."}}},
-    "drop": {"label": "Drop them", "sets": {RULE: None}},
-}
-LAYOUT = "product/app/decision/keep-the-layers"
 
 
-@pytest.fixture
-def structural(repo: Path) -> Path:
-    """A capability nobody agreed to (card 1), a question whose proposal rests on what the owner said and a structural one that does too."""
-    assert put(repo, "product/app/capability/borrow", says="A member can borrow.", src=["code:app.py#lend"])[0] == cli.OK
-    cited = {"chose": "two", "why": "the owner leaned to two", "heard": "Two euros seem plenty"}
-    assert put(repo, "product/app/decision/fee-amount", question="How much?", options=any_yaml.load(OPTIONS), proposal=cited)[0] == cli.OK
-    kept = {**cited, "chose": "keep"}
-    decision = {"address": LAYOUT, "question": "Keep the layer folders?", "structure": True, "options": LAYERS, "proposal": kept}
-    code, lines = w(repo, "put", json.dumps([decision, {"address": RULE, "says": "Every entry lives under a layer folder."}]))
-    assert code == cli.OK, lines
-    return repo
-
-
-def test_the_structure_tag_is_a_harm_of_the_decision_kind() -> None:
+def test_a_decision_has_no_structure_flag() -> None:
+    """Dropped (software/ontology/decision/flexibility-needs-evidence): no product needed it; a migration takes it out."""
     ontology = packaged()
-    assert "structure" in ontology.declared.asked_alone and ontology.kinds["decision"].fields["structure"].harm == ("structure",)
-
-
-def test_review_says_a_structural_question_needs_its_own_letter_and_what_a_bare_yes_changes(structural: Path) -> None:
-    lines = w(structural, "review")[1]
-    text = "\n".join(lines)
-    assert "Q1. question  product/app/decision/keep-the-layers  (structure)" in text
-    assert "Structural: answer with its own letter (Q1 a)" in text
-    assert "Structural, not covered by yes or yes all: Q1; each needs its own letter." in text
-    bare = next(line for line in lines if line.startswith("A bare `yes`"))
-    assert bare.startswith("A bare `yes` will: confirm Q2 as A; agree to ") and "Q1" not in bare  # the structural question is not in it
-    assert lines.index(bare) < next(i for i, line in enumerate(lines) if line.startswith("Reply:"))
-
-
-def test_a_bare_yes_leaves_a_structural_decision_and_confirms_the_rest(structural: Path) -> None:
-    lines = w(structural, "review")[1]
-    code, done = r(structural, "yes", "--round", round_of(lines))
-    assert code == cli.OK and "fee-amount answered: two" in done[0] and "keep-the-layers" not in done[0], done
-    assert "answers" not in (structural / f"docs/kb/{LAYOUT}.yml").read_text()
-
-
-@pytest.mark.parametrize("words", ["yes all", "decide"])
-def test_yes_all_and_decide_leave_a_structural_decision_and_say_why(structural: Path, words: str) -> None:
-    code, done = r(structural, words, "--round", round_of(w(structural, "review")[1]))
-    assert code == cli.OK and "not done: product/app/decision/keep-the-layers is structural" in done[0], done
-    assert "Q1 a" in done[0] and "answers" not in (structural / f"docs/kb/{LAYOUT}.yml").read_text()
-    assert "fee-amount answered: two" in done[0]  # the rest of the round is accepted
-
-
-def test_a_structural_decision_is_answered_with_its_own_letter(structural: Path) -> None:
-    lines = w(structural, "review")[1]
-    code, done = r(structural, "Q1 b", "--round", round_of(lines))
-    assert code == cli.OK and done == ["Q1 b: product/app/decision/keep-the-layers answered: drop"], done
-    assert "chose: drop" in (structural / f"docs/kb/{LAYOUT}.yml").read_text()
+    assert "structure" not in ontology.kinds["decision"].fields and "structure" in ontology.kinds["decision"].dropped
+    assert "structure" not in ontology.declared.harms
 
 
 def test_status_coverage_lists_the_kinds_with_no_entry_per_layer(repo: Path) -> None:

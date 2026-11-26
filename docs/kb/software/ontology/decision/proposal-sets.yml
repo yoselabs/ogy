@@ -1,5 +1,4 @@
 title: A guess gives its values with sets
-structure: true
 question: A guess with no option gives its values with `value`, an option gives the same shape with `sets`. Is the guess's field renamed to `sets`?
 options:
   sets:

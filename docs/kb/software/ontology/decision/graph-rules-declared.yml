@@ -1,5 +1,4 @@
 question: 'Where are the rules about the graph (which links, parts and fields an entry needs) written: in Python checks, or declared in the kind files?'
-structure: true
 options:
   declared:
     label: Declared in the kind files, derived from field types where possible; custom validators only as named parameters in the ontology YAML

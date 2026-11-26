@@ -22,7 +22,7 @@ settling:                                            # makes it the kind that se
   context: context                                   # field of the decision: why the question comes up
   why: why                                           # field of the proposal: its reason
 # `null` for an address in an option's or the proposal's `sets` is how an option says no, not now or removed: under that option the entry does not exist.
+dropped: [structure]                                 # no product needs it (decision software/ontology/decision/flexibility-needs-evidence)
 fields:
   question: {required: true}
-  structure: {type: flag, harm: [structure]}   # the question changes the layout, layers, kinds or paths: it is asked on its own card, never in `yes` or `yes all`
   context: {note: true}

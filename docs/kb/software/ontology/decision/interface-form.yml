@@ -1,4 +1,3 @@
-structure: true
 question: How does an interface say how it is reached?
 context: 'Bead ogy-yy9.75: interface `as` became `form`, fingerprinted, not a note. A check reads it (a cli interface says invoked_as), so it is an enum.'
 options:

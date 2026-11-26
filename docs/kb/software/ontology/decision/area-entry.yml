@@ -1,5 +1,4 @@
 question: Does each area get an entry of its own, and what does it hold?
-structure: true
 options:
   area-yml:
     label: 'An area.yml per area: says (what the area covers) and distinct (what belongs in a neighbouring area)'

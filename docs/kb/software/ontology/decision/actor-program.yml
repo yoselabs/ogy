@@ -1,5 +1,4 @@
 title: A third-party system is an actor of nature program
-structure: true
 question: A step's actor may link to an actor or an external, so `mcp-clients` is an external that acts. What is a third-party system that invokes a workflow, and what may a step's actor link to?
 options:
   program:

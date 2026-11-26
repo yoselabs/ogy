@@ -1,7 +1,6 @@
 title: How a kind file names its reasons
 question: How does a kind file say which decision or principle is behind a kind, its layers and each of its fields?
 context: "Today the kind file of interface says it lives in software and nothing says why, so three reviews moved it back and forth. With a because key, interface.yml says layers: [product] and because: software/ontology/decision/interface-layer; a reviewer reads that decision instead of guessing. A kind or field with no reason lands on a list UNJUSTIFIED, which is the worklist of the judged-as-new test. It points at a decision, not a proposal: a proposal is the AI's suggestion inside a decision, and only the answer makes a reason. 29 kind files hold 96 fields; 4 comments name a decision today."
-structure: true
 options:
   because-key:
     label: "A kind file gains `because`: addresses of decisions or principles in ogy's own knowledge base, for the kind, for `layers` and for a field. A test in ogy's repository reads them: each address exists, and a kind or field with none sits in a list UNJUSTIFIED with one line of why, as UNEXERCISED does today. A link only, no reason text; other repositories ignore the key"
