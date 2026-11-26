@@ -163,3 +163,11 @@ ok I rely on you
 4 - I don't get what option is. maybe i need some vizualisation
 
 5 - agree with fable
+
+## 2026-11-26: follow-up on 4, 2 and 1 of the Fable review
+
+oh, so for 4, it is a question, are we storing pain point as a question, with list of options yes/no, and selected option, VS we keep options as a list of pain points and select which we accept or what?
+
+2 - probably i see a few states: proposed by ai, by human, approved by ai, by human. then approved by ai (on behalf of human?) can be xtracted to get more reinforcement from a human to convert to approved by human or something. anyway consult fable
+
+1 - so fable says to keep technical requiements to be like an area or what? Like we build a storefront and it has to have a good code quality (best - ruff, pyrefly, etc). where does it go? Especialy since product ppl won't require it on their own.
