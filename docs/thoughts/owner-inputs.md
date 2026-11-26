@@ -139,3 +139,11 @@ cmon, worth thru stuff autnonmously and emrge on my behalf
 ## 2026-11-26: the two principles
 
 Yes, agree both
+
+## 2026-11-26: the three decisions (work grouping, options with steps, built in a case)
+
+1 - yes, but I start to think... what if every entry which should be proven is an entry which should have "because" as a mandatory field or something? but it should not be like "that is the way code is written" - when reversing requiremetns because should be empty until someone will provide "becase"
+
+2 - ok, a
+
+3 - are you asking about like new elements added to KB, but not implemented yet? Like, what should we do if we didn't build something yet or what?

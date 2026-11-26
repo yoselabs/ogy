@@ -1,0 +1,14 @@
+title: A reason nobody gave is work
+question: Which entries owe a because, and does a missing one show as work in ogy work?
+context: "Owner, 2026-11-26, answering work-cause-reads-because: every entry that must be proven might need a because; read from code, it stays empty until someone gives the reason, never 'the code does it'. Today because is optional everywhere and may cite only a principle or a decision (because-narrowed), so code can never be the reason. Justification is derived along workflow, capability, goal (derive-justification, answered 2026-11-21: no reason stored on every item). A goal citing nothing reads 'purpose not recorded' on the board (why-chain-on-board) but is no row in ogy work: examples/task-loop has goals read from code with no because and no work for them."
+options:
+  goal-owes:
+    label: A goal with no because is discover work ('reason not given'); every other entry takes its reason from its chain to a goal, and an entry with no chain is already work
+  every-proven:
+    label: Every entry that carries a proof owes its own because; an empty one is work. Reopens derive-justification
+  board-only:
+    label: 'As today: a missing reason shows only on the board'
+proposal:
+  chose: goal-owes
+  why: One reason per chain, at its top, where a person must give it; the rest is derived as decided on 2026-11-21. A goal read from code starts empty and stays owed until someone says why.
+  heard: Every proven entry should have a because; read from code it stays empty until someone gives one.

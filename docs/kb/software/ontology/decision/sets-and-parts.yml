@@ -9,3 +9,8 @@ options:
 proposal:
   chose: fields-only
   why: 'It works today in both directions: the option brings the workflow and not-now takes it away with its parts. One case so far, and no flexibility until a case needs it.'
+answers:
+- chose: fields-only
+  said: "A: the option sets the workflow's own fields; its steps come in the same write"
+  at: '2026-11-26T16:54:36+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -9,3 +9,8 @@ options:
 proposal:
   chose: because-too
   why: Both say which decision a row comes from; a reader asking why this work exists finds it under that decision instead of under by no decision.
+answers:
+- chose: because-too
+  said: Yes, group a row under the decision it cites with because
+  at: '2026-11-26T16:54:30+01:00'
+  where: ai:claude/ontology-review-session-749f16
