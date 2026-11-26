@@ -1,0 +1,11 @@
+title: A workflow that belongs to nothing
+question: Is a product workflow that realizes no capability and is part of no other flow work to do?
+context: 'Found by the ontology-designer review on Fable (2026-11-26) of reason-is-owed: a goal owes its reason and everything below takes it from the goal, but a workflow may realize nothing, so the chain breaks with no row. In ogy: pre-commit-check, call-a-tool and hand-over, with 12 proven entries under them, show only as unbuilt. A start by schedule or event says how a flow starts, not why it exists. Not judged alone before: it sat inside two options of why-chain-on-board, which chose others.'
+options:
+  unrealized-work:
+    label: "Yes: a workflow that realizes no capability and that no step calls, no row's then names and no step details is design work, status unrealized; never a finding"
+  as-today:
+    label: 'No: a workflow may realize nothing without a row'
+proposal:
+  chose: unrealized-work
+  why: "Fixes the class: every break in the why chain becomes a row (3 in ogy, 0 in the examples), and reason-is-owed's own premise that an entry with no chain is already work becomes true."

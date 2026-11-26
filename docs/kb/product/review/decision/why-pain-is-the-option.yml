@@ -1,0 +1,11 @@
+title: Where a why question holds its pain
+question: In a decision that asks why a goal exists, is the pain the option's own label, so the owner's yes covers its words?
+context: The five why-* decisions of 2026-11-26 hold the guessed pain in context, a note outside the fingerprint, and the option reads 'Yes, that is the pain'; the pain could be reworded later with no new question. Found by the Fable review.
+options:
+  pain-is-label:
+    label: "Yes: the option's label is the pain; a different pain the owner gives becomes another option with the paraphrase"
+  context-holds-it:
+    label: 'No: the pain stays in context, as written'
+proposal:
+  chose: pain-is-label
+  why: The yes then covers the sentence it agrees to, and the five are reshaped once, before anyone answers.

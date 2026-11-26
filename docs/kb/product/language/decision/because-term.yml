@@ -1,0 +1,11 @@
+title: The word because
+question: Does the glossary line for because change to say what the field means since because-narrowed?
+context: "The term was agreed on 2026-11-19: 'Links to the entries a sentence was concluded from; the chain must reach evidence.' A day later because-narrowed made because a principle or a decision, never a source (ontology.yml). The glossary is printed first to every agent and still teaches the older meaning. An agreed term changes only with the owner's yes to the new line. Found by the Fable review."
+options:
+  the-reason:
+    label: 'Change it to: The reason an entry exists: a principle or a decision it cites; never a source.'
+  as-agreed:
+    label: Keep the agreed line
+proposal:
+  chose: the-reason
+  why: 'One name, one meaning: the line agrees with the field.'

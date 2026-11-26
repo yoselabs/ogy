@@ -1,0 +1,11 @@
+title: Answering why questions in bulk
+question: Is a question that asks why a goal exists answered only by its own letter, never by yes all?
+context: yes all accepts every proposal of a round; one word would turn five AI-guessed pains into recorded reasons. re-ask-conditions already keeps re-asked cards out of yes all. Found by the Fable review.
+options:
+  own-letter:
+    label: 'Yes: a why question needs its own letter, as a re-asked card does'
+  yes-all-ok:
+    label: 'No: yes all may answer it'
+proposal:
+  chose: own-letter
+  why: A reason is the one thing the AI cannot supply; a bulk yes would let it.

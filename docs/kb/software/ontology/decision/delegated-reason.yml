@@ -1,0 +1,11 @@
+title: Whether a delegated answer is a reason
+question: Does an answer an agent gave under the owner's delegation count as a goal's reason?
+context: "Built on 2026-11-26 (ogy-3nv): a goal's reason is a cited principle or an answered decision, and a delegated answer counts. The Fable review points out that capture-judgement lets an agent decide while reading a product from code, so code could become a reason with no person speaking; reason-is-owed heard: empty until someone gives one. Goals resting on a delegated answer today: 0."
+options:
+  person-only:
+    label: "No: only the owner's own answer or a principle the owner agreed is a goal's reason"
+  delegated-counts:
+    label: 'Yes, as built: a delegated answer counts, and ogy dropped lists it for veto'
+proposal:
+  chose: person-only
+  why: The owner asked that a reason come from someone who knows why, not from what the code does; an agent under delegation is the one who read the code.
