@@ -1,0 +1,11 @@
+title: A pain as its own kind
+question: Is a pain its own kind now, or does it stay inside the decision it raised, with goals citing that decision?
+context: 'Owner, 2026-11-26: pains might be separate entities, added to goals, and one pain might lead to several goals; nothing is ruled out if it makes sense. Fable, final validation: today every pain lives in a decision and a goal cites it with because, which already allows one pain for several goals and several pains for one goal. Counted: goals citing two or more decisions 0, decisions cited by two or more goals 0, pains kept with nothing to decide 0, checks that read who suffers 0. The kind is added when the first of these appears, or when the owner wants ogy to list all pains; its name would be pain.'
+options:
+  not-yet:
+    label: 'Not yet: a pain stays in its decision until a real case needs more'
+  now:
+    label: 'Now: a pain kind with its own entries, cited by goals'
+proposal:
+  chose: not-yet
+  why: Every real case fits a decision; fields chosen now would have nothing to test them against (no-flexibility-until-needed). The decisions written until then keep their addresses, so a later pain kind can point at them.
