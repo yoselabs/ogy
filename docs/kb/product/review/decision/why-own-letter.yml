@@ -9,3 +9,8 @@ options:
 proposal:
   chose: own-letter
   why: A reason is the one thing the AI cannot supply; a bulk yes would let it.
+answers:
+- chose: own-letter
+  said: 'Agrees with Fable: a why question needs its own letter, never yes all'
+  at: '2026-11-26T20:46:58+01:00'
+  where: ai:claude/ontology-review-session-749f16

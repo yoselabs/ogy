@@ -151,3 +151,15 @@ Yes, agree both
 ## 2026-11-26: picks on case-built-record and reason-is-owed
 
 ok I rely on you
+
+## 2026-11-26: on the five decisions from the Fable review
+
+1 - I could imagine that would happen again. Like, reconcoliation process or like daily recheck that all financials are clean - otherwise send a message. But probably those can also stem (and maybe everything should stem) from business? Back to ogy: pre-commit checks are essential, but provided by another product. it is actually an interesting matter... because... I mean, we will have a "blueprint" which is a product - technical one, which enforses static code analysis, code style and other stuff. does it mean that essentially all pre-commit hooks, sast, and stuff requirements could be replced wiht a requriement of complying with blueprint or really we should keep all requirements and mark that we implement it by using blue tprint, moreover should it be product requriements or software requiremetns - but then it means we have 2 sides of products... gosh I'm overhwhelmed. What fable thinks?
+
+2 - I mean it is totally possible that I should be able to tell AI to design some initial product vision - and it will make some decisions. Which I may decide to review later. But decisions should be possible to be considered accepted by AI or proposed by AI or whatever - not blocking us
+
+3 - agree with fable
+
+4 - I don't get what option is. maybe i need some vizualisation
+
+5 - agree with fable

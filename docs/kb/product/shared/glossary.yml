@@ -55,7 +55,7 @@
     hash: a257fac816cd
 - id: because
   word: because
-  says: Links to the entries a sentence was concluded from; the chain must reach evidence.
+  says: 'The reason an entry exists: a principle or decision it cites, never a source.'
   agreed:
     at: '2026-11-19T20:31:30+01:00'
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
