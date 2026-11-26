@@ -1,11 +1,12 @@
 title: A pain as its own kind
 question: Is a pain its own kind now, or does it stay inside the decision it raised, with goals citing that decision?
-context: 'Owner, 2026-11-26: pains might be separate entities, added to goals, and one pain might lead to several goals; nothing is ruled out if it makes sense. Fable, final validation: today every pain lives in a decision and a goal cites it with because, which already allows one pain for several goals and several pains for one goal. Counted: goals citing two or more decisions 0, decisions cited by two or more goals 0, pains kept with nothing to decide 0, checks that read who suffers 0. The kind is added when the first of these appears, or when the owner wants ogy to list all pains; its name would be pain.'
+context: "Owner, 2026-11-26: pains might be separate entities, added to goals, and one pain might lead to several goals; nothing is ruled out if it makes sense; no shortcuts. Fable, second look with an independent reviewer: real cases exist in the words, not the links. Pet shop stock-goal holds two pains in one context (the assistant cannot keep up with calls; customers drive an hour for a pet already sold) and the owner's answer covers only the first; the second appears again in hold-online. The five why-* decisions are sentences waiting for a yes, carried as fake options. Known methods keep the pain apart and upstream of the goal: Value Proposition Canvas (pains), ArchiMate (assessment), Opportunity Solution Tree (opportunity), Jobs To Be Done (the struggle). Waiting costs more: the why-* reshaped now and again later, and each goal read from code adds one. If now: decision-raised-by-pain, from-pain-to-built and why-chain-on-board are asked again; the five why-* decisions are removed into
+  pains; why-pain-is-the-option becomes moot."
 options:
   not-yet:
     label: 'Not yet: a pain stays in its decision until a real case needs more'
   now:
-    label: 'Now: a pain kind with its own entries, cited by goals'
+    label: "Now, minimal: a product kind pain, one sentence (what goes wrong for the people the product serves), no options and no other field; a goal or a decision cites it with because; a goal's reason may be a pain a person agreed to, each by its own card, never yes all"
 proposal:
-  chose: not-yet
-  why: Every real case fits a decision; fields chosen now would have nothing to test them against (no-flexibility-until-needed). The decisions written until then keep their addresses, so a later pain kind can point at them.
+  chose: now
+  why: 'Fable, second look: three real cases the decision cannot hold (two pains confirmed apart, one pain behind two entries, five sentences waiting for a yes); the kind stays one field, so no flexibility is added beyond them. Before: not-yet, from counting links instead of reading the words.'
