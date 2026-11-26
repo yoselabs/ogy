@@ -7,5 +7,6 @@ options:
   delegated-counts:
     label: 'Yes, as built: a delegated answer counts, and ogy dropped lists it for veto'
 proposal:
-  chose: person-only
-  why: The owner asked that a reason come from someone who knows why, not from what the code does; an agent under delegation is the one who read the code.
+  chose: delegated-counts
+  why: "Fable, second read: a delegated answer already shows as 'AI, for you', waits as a card in ogy review and is listed by ogy dropped; a no-reason row too would list the same gap twice, and no agent could clear it. The reason stays empty unless the owner delegated it."
+  heard: 'There are states: proposed by AI or by me, approved by AI or by me; an AI approval can later get my yes, and none of it should block work.'

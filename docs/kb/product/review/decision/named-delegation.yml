@@ -1,0 +1,11 @@
+title: Asking the AI to draft a first vision
+question: When the owner asks the AI to design a first product vision and decide for now, is that request recorded as a delegation that names what it covers?
+context: "Owner, 2026-11-26: the AI may design an initial product vision and make decisions the owner reviews later, without blocking work. A delegated answer is in force, shows as 'AI, for you', waits as a card and is listed by ogy dropped; the owner's yes makes it his. Fable review: an agent answers a why for the owner only under a delegation that names it; capture-judgement does not name giving reasons."
+options:
+  named:
+    label: 'Yes: one decision per such request names what it covers (for example: decide the goals and their reasons for me; I review later)'
+  free:
+    label: 'No: the agent decides under capture-judgement as today'
+proposal:
+  chose: named
+  why: The owner sees what he handed over, and a reason is given for him only where he said so.
