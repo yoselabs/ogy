@@ -10,3 +10,8 @@ proposal:
   chose: delegated-counts
   why: "Fable, second read: a delegated answer already shows as 'AI, for you', waits as a card in ogy review and is listed by ogy dropped; a no-reason row too would list the same gap twice, and no agent could clear it. The reason stays empty unless the owner delegated it."
   heard: 'There are states: proposed by AI or by me, approved by AI or by me; an AI approval can later get my yes, and none of it should block work.'
+answers:
+- chose: delegated-counts
+  said: "Ok to Fable's pick: a delegated answer counts; it waits as a card for my yes"
+  at: '2026-11-26T21:37:22+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -6,6 +6,9 @@ options:
     label: "Yes: the option's label is the pain; a different pain the owner gives becomes another option with the paraphrase"
   context-holds-it:
     label: 'No: the pain stays in context, as written'
+  pain-is-question:
+    label: 'One decision per pain: the pain is the question (yes, we solve it / not now); a goal cites with because every pain it answers; pains that say the same thing are merged into one'
 proposal:
-  chose: pain-is-label
-  why: The yes then covers the sentence it agrees to, and the five are reshaped once, before anyone answers.
+  chose: pain-is-question
+  why: "An answer picks one option, so pains as options force one pain per goal; a goal often answers several. One pain per decision: each yes covers that pain's words, one text with ten pains becomes ten questions grouped under their goals, and four that lead to one goal are four reasons, not four rivals."
+  heard: If one text holds ten pains and four lead to the same thing, I should not be forced to pick one of the four.

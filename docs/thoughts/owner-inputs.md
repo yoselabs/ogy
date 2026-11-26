@@ -171,3 +171,9 @@ oh, so for 4, it is a question, are we storing pain point as a question, with li
 2 - probably i see a few states: proposed by ai, by human, approved by ai, by human. then approved by ai (on behalf of human?) can be xtracted to get more reinforcement from a human to convert to approved by human or something. anyway consult fable
 
 1 - so fable says to keep technical requiements to be like an area or what? Like we build a storefront and it has to have a good code quality (best - ruff, pyrefly, etc). where does it go? Especialy since product ppl won't require it on their own.
+
+## 2026-11-26: delegated-reason, named-delegation, and 4 again
+
+ok
+
+4 - but hold on, where we pick list of options from? Also, what if I will tell you like 1 text where you will find 10 pain points, where 4 lead to the same thing, will you keep 4 as options and I'll be forced to pick 1 or what?
