@@ -4,3 +4,5 @@
   - product/shared/actor/owner
   src:
   - code:src/ogy/review.py#dropped
+  because:
+  - product/removal/pain/silent-drops

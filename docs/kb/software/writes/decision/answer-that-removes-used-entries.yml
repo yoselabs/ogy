@@ -1,6 +1,6 @@
 title: An answer that takes away an entry others link to
 question: When the owner's new answer sets an entry to null and other entries link to it, is the answer recorded?
-context: "Pain, on an invented pet shop: the owner first said yes to the goal 'a customer knows before a visit whether a pet can still be bought', a capability was written, then the owner said drop it. ogy answer refused because the capability links to the goal, and the no was kept nowhere."
+context: "Problem, on an invented pet shop: the owner first said yes to the goal 'a customer knows before a visit whether a pet can still be bought', a capability was written, then the owner said drop it. ogy answer refused because the capability links to the goal, and the no was kept nowhere."
 options:
   record-then-work:
     label: The answer is recorded at once; each entry that still links to the absent one prints as work until removed or re-pointed

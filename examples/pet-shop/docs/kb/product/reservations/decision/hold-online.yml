@@ -1,6 +1,6 @@
 title: Holding a pet online
 question: May a customer hold a pet online before coming in, and for how long?
-context: 'Pain (the shop owner, invented): a customer sees a puppy on the list, drives over, and someone else bought it on the way.'
+context: 'The pain: product/catalog/pain/wasted-drive, when someone else buys the pet on the way.'
 options:
   two-days:
     label: Yes, for 2 days
@@ -28,3 +28,5 @@ answers:
   said: Two days, so a weekend visit works
   at: '2026-11-26T09:05:00+01:00'
   where: ai:example/pet-shop#owner
+because:
+- product/catalog/pain/wasted-drive

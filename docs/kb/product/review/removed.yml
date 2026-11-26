@@ -162,3 +162,59 @@ items:
       else: product/review/workflow/review-and-reply/end/refused
       src:
       - code:src/ogy/reply.py#_yes
+  - id: product/review/decision/why-fewest-questions
+    kind: decision
+    parent:
+    title: 'Why: fewest-questions'
+    said: Why ask the owner only what the sources do not answer, a few cards at a time?
+    why: product/capture/decision/pain-kind
+    replaced_by:
+    at: 2026-11-26 22:19:20+00:00
+    last_seen: 4ae9493648e9362d6316cab909e1d29d2303c56c
+    hash: 587d25424b75
+    ontology: software
+    snapshot:
+      title: 'Why: fewest-questions'
+      question: Why ask the owner only what the sources do not answer, a few cards at a time?
+      context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): The owner was flooded with questions, many already answered by the code or the docs, and long lists went unanswered."
+      options:
+        this-pain:
+          label: 'Yes, that is the pain: keep the goal'
+          sets:
+            product/review/goal/fewest-questions:
+              says: The owner is asked only what the sources do not answer, a few cards at a time, each with a recommended answer.
+        drop:
+          label: Not a goal of ogy
+          sets:
+            product/review/goal/fewest-questions:
+      proposal:
+        chose: this-pain
+        why: A guess from what the code does; the owner's words replace it.
+  - id: product/review/decision/why-requirements-agreed
+    kind: decision
+    parent:
+    title: 'Why: requirements-agreed'
+    said: Why must every requirement name its source and wait for the owner's yes?
+    why: product/capture/decision/pain-kind
+    replaced_by:
+    at: 2026-11-26 22:19:22+00:00
+    last_seen: 4ae9493648e9362d6316cab909e1d29d2303c56c
+    hash: ec1d711bf949
+    ontology: software
+    snapshot:
+      title: 'Why: requirements-agreed'
+      question: Why must every requirement name its source and wait for the owner's yes?
+      context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): Requirements written by AI looked decided though no person had agreed to them, so nobody could tell a choice from a guess."
+      options:
+        this-pain:
+          label: 'Yes, that is the pain: keep the goal'
+          sets:
+            product/review/goal/requirements-agreed:
+              says: Every requirement of a product is an entry that names where it came from, and the owner has agreed to it or can still answer it.
+        drop:
+          label: Not a goal of ogy
+          sets:
+            product/review/goal/requirements-agreed:
+      proposal:
+        chose: this-pain
+        why: A guess from what the code does; the owner's words replace it.

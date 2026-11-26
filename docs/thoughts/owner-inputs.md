@@ -177,3 +177,9 @@ oh, so for 4, it is a question, are we storing pain point as a question, with li
 ok
 
 4 - but hold on, where we pick list of options from? Also, what if I will tell you like 1 text where you will find 10 pain points, where 4 lead to the same thing, will you keep 4 as options and I'll be forced to pick 1 or what?
+
+## 2026-11-26: the skill, and the pain kind
+
+I'd like to adjust /iorlas-wip:ontology-designer so next time I won't need to push again. ask fable to get it adjusted. thenrelease it on  my behalf.
+
+(to "Add the pain kind now, as Fable proposes, or not yet?") yes

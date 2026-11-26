@@ -1,6 +1,6 @@
 title: Finding and merging decisions that ask the same thing
 question: How does ogy find two decisions that ask the same thing, and how is one merged into the other?
-context: 'Pain: structure-flag-meaning was written on 2026-11-24 and taken out the same day, because flexibility-needs-evidence already answered it; nothing had shown the overlap. Counted on 204 decisions: no pair sets one address (ogy refuses that already, two-homes); 126 set nothing, so no link can be compared; matching question texts gives 2 pairs, both wrong. A decision about a field of a kind is found from the kind file once kind-reasons gives every field its decision.'
+context: 'Problem: structure-flag-meaning was written on 2026-11-24 and taken out the same day, because flexibility-needs-evidence already answered it; nothing had shown the overlap. Counted on 204 decisions: no pair sets one address (ogy refuses that already, two-homes); 126 set nothing, so no link can be compared; matching question texts gives 2 pairs, both wrong. A decision about a field of a kind is found from the kind file once kind-reasons gives every field its decision.'
 options:
   links-only:
     label: "Only links are compared: two-homes as today; a decision about a field of a kind is found from the kind file (kind-reasons); otherwise the agent runs ogy find. Merge: the kept decision gains the other's option, because links are re-pointed, then ogy remove --why --to; removing a duplicate decision is allowed. An answered duplicate whose answer differs is asked again, never merged"

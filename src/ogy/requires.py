@@ -10,6 +10,7 @@ from ogy.model import Address, link_values
 from ogy.paths import kept
 lazy from ogy.settle import answered, decisions
 lazy from ogy.snapshot import Snapshot
+lazy from ogy.status import agreed_of
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -80,14 +81,18 @@ def satisfied(
     return any(
         (ANY in need.kinds or address.kind in need.kinds)
         and _bare(snapshot.entries[address].fields, need.without)
-        and (done is None or address in done[0] or address.kind != _settling(snapshot))
+        and (done is None or _vouched(snapshot, address, done[0]))
         for address in reached
     )
 
 
-def _settling(snapshot: Snapshot) -> str | None:
+def _vouched(snapshot: Snapshot, address: Address, answered: set[Address]) -> bool:
+    """A person stands behind the entry: a decision with an answer, or any other entry agreed to as it reads now."""
     kind = snapshot.ontology.settling_kind()
-    return kind.kind if kind else None
+    if kind is not None and address.kind == kind.kind:
+        return address in answered
+    agreed = agreed_of(snapshot, address)
+    return agreed is not None and agreed.hash == snapshot.agreed_print(address)
 
 
 def has_part(snapshot: Snapshot, address: Address, kind: str) -> bool:

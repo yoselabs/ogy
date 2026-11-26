@@ -1,0 +1,13 @@
+kind: pain
+about: what goes wrong for the people the product serves, one sentence; a statement with no options, which a person agrees to; goals and decisions cite it with `because`
+guidance: "What goes wrong today for the people the product serves, one sentence: the reason behind a goal or a decision. A statement, not a choice: each pain gets its own yes, never `yes all`. A goal cites every pain it relieves; one pain may serve several entries, so write it once. A cost of one choice stays in that decision."
+like: "a Value Proposition Canvas pain; an ArchiMate assessment"
+unlike: "a goal, the result wanted; a decision, a choice; a principle, a value"
+shape: list
+sentence: says
+file: pains.yml
+layers: [product]
+own_card: true                                       # decision pain-kind: each pain gets its own yes
+evidence: none                                       # a pain is a statement: its evidence is a person's yes
+fields:
+  says: {required: true}

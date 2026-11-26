@@ -15,7 +15,7 @@ shared:                                              # the reserved area of ever
 common:
   title: {note: true}
   src: {type: texts, note: true}
-  because: {type: links, to: [principle, decision], input: none}   # the reason: a principle or a decision, never a source
+  because: {type: links, to: [principle, decision, pain], input: none}   # the reason: a principle, a decision or a pain, never a source
   proof: {type: texts}
   agreed: {type: agreed, note: true}
 roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what

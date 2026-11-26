@@ -7,3 +7,6 @@
     where: ai:example/pet-shop#owner
     said: "Yes, put it on the site: I'm tired of the phone"
     hash: 1b111e0464ea
+  because:
+  - product/catalog/pain/phone-calls
+  - product/catalog/pain/wasted-drive

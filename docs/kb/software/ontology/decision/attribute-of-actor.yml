@@ -1,6 +1,6 @@
 title: An attribute that names an actor
 question: How does an entity say which actor it belongs to?
-context: "Pain: in the tool-library fixture a loan is 'one tool lent to one member', yet loan has no attribute for the member, because an attribute's of takes an enum or an entity and member is an actor. On an invented pet shop the same refusal met 'reserved by which customer'."
+context: "Problem: in the tool-library fixture a loan is 'one tool lent to one member', yet loan has no attribute for the member, because an attribute's of takes an enum or an entity and member is an actor. On an invented pet shop the same refusal met 'reserved by which customer'."
 options:
   of-actor:
     label: of may also name an actor

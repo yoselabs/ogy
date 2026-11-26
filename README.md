@@ -234,7 +234,10 @@ The packaged ontology (`src/ogy/ontologies/software`) describes a software produ
   nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires; a goal no
   capability realizes. Each kind
   declares it as a work requirement with `status: unused`.
-- Why: `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A capability `realizes` a
+- Why: `pain`, `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A `pain` is
+  what goes wrong for the people the product serves, one sentence; a goal cites the pains it relieves with `because`, and
+  owes its reason (`no-reason` in `ogy work`) until it cites a pain a person agreed to by its own card, a principle, or an
+  answered decision. A capability `realizes` a
   goal; one that realizes none is work left (`unrealized` in `ogy work`) until the goal is written, not a finding. A
   workflow `realizes` a capability; a capability no workflow realizes is work left (`no-workflow`).
 - What it does: `workflow` with its `step`s, `choice`s, `case`s, `timeout`s, `effect`s and `end`s; `interface`

@@ -4,9 +4,13 @@
   - product/shared/actor/owner
   src:
   - code:src/ogy/status.py#status
+  because:
+  - product/review/pain/guesses-look-decided
 - id: fewest-questions
   says: The owner is asked only what the sources do not answer, a few cards at a time, each with a recommended answer.
   for:
   - product/shared/actor/owner
   src:
   - code:src/ogy/status.py#queue
+  because:
+  - product/review/pain/flooded-with-questions

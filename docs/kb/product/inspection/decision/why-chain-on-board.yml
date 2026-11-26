@@ -14,9 +14,12 @@ options:
     label: No new top kind. A goal holds a list pains; each pain is a short paraphrase with when and where it was heard, added and never rewritten. A goal with no pain is work; a product workflow realizing no capability is work. The board shows pains, goal, capability, workflow
   because-decisions:
     label: 'No new field. A pain lives in the context of the decision it raised; the goal cites that decision with because. The board shows, under a goal, each cited decision with its title, date and place, then capability and workflow. A goal citing none reads: purpose not recorded'
+  pain-entries:
+    label: 'A pain is its own entry; a goal cites with because every pain it relieves. The board shows, under a goal, its pains with whether a person agreed, then the decisions, capability and workflow. A goal citing none reads: purpose not recorded'
 proposal:
-  chose: because-decisions
-  why: "from-pain-to-built writes each pain as a decision, so a pains list on the goal is a second home for the same sentence (one-owner-per-fact), and a pain answered not now has no goal to hold it. because on a goal already takes many decisions; each keeps its own date and place. No check reads a pain's time or place (rigid-where-checked). Before: pains-list."
+  chose: pain-entries
+  why: 'Decision product/capture/decision/pain-kind, answered now (2026-11-26): a pain is its own entry, one sentence, agreed by its own card. Before: because-decisions.'
+  at: '2026-11-26T23:21:02+01:00'
 answers:
 - chose: expose-existing
   said: 'Approved the verdict table: show the existing why-chain on the board.'

@@ -212,14 +212,22 @@ def _recommended(decision: Decision | None) -> object:
     return decision.proposal.fields.get(decision.names.chose) if decision.proposal else None
 
 
+def _own_card(snapshot: Snapshot, text: str) -> bool:
+    address = snapshot.resolve(text)
+    return address is not None and snapshot.kind_of(address).own_card
+
+
 def _accept_all(target: Target, found: Round, words: Said) -> str:
     """`yes all` / `decide`: the recommended option of every question and agreement to every card, with the one paraphrase."""
     done: list[str] = []
     kept: list[str] = []
     fresh = []
+    snapshot = Editor(target.repo, target.kb, target.kinds()).snapshot()
     for card in found.cards:
         if (why := _stale(target, card)) is not None:
             kept.append(why)
+        elif card.kind in rounds.ENTRY_CARDS and _own_card(snapshot, card.address):
+            kept.append(f"{card.address} is agreed only by its own card ({card.label}, or {card.label}: <your words>), not yes all")
         elif card.kind in rounds.ENTRY_CARDS:
             fresh.append(card)
         elif card.kind == "again":

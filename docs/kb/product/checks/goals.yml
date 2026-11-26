@@ -4,3 +4,5 @@
   - product/shared/actor/owner
   src:
   - code:src/ogy/init.py#HOOK
+  because:
+  - product/checks/pain/kb-drifts-from-code

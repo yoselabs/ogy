@@ -139,7 +139,7 @@ class Requirement(BaseModel):
     kinds: tuple[str, ...] = ()
     without: tuple[str, ...] = ()
     same: bool = False
-    or_answered: bool = False  # a decision counts only once answered (never a proposal); one whose answer sets the entry meets it
+    or_answered: bool = False  # a decision counts once answered, any other entry once agreed; one whose answer sets the entry meets it
     work: bool = False  # set by hand for work in the same layer; a requirement a later layer owes is made work on load
     status: str | None = None  # the work status an unmet `work` requirement is listed under
     error: str
@@ -300,6 +300,7 @@ class Kind(BaseModel):
     every_area: bool = False  # every area of the kind's layers holds an entry of it; an area without one is `missing-entry`
     needs_proof: bool | ProofWhen = False  # entries count as work until built; `{if_part: <kind>}`: only those holding one
     must_be_agreed: bool = False
+    own_card: bool = False  # agreed only by its own card number or the owner's own sentence, never by `yes all`
     asked: bool = True  # false: its sentence is never put to the owner, so it gets no review card and needs no agreement
     harm: tuple[str, ...] = ()  # what a wrong sentence of this kind costs (tags of `harms`); read by the review queue
     append_only: bool = False

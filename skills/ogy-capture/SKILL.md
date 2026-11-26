@@ -31,10 +31,14 @@ Read the sources:
   (decision `code-facts-are-read-by-area`).
 
 ## 2. Capture (evaluated: E8-E10)
-- Write each entry with evidence: `src` (`code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`) or `because` (a principle
-  or a decision: the reason, never a source) or a decision that settles it, or the owner's yes in a review round. What the owner said
+- Write each entry with evidence: `src` (`code:<path>#<symbol>` or `doc:<commit>:<path>#<anchor>`) or `because` (a principle,
+  a decision or a pain: the reason, never a source) or a decision that settles it, or the owner's yes in a review round. What the owner said
   becomes an entry through a decision they answer: read the sentence aloud first; if it would not make the owner say
   "yes, that is what I meant", ask.
+- A pain (what goes wrong for the people the product serves) is its own entry, one sentence, written once (`ogy find`
+  first): a goal cites every pain it relieves, a decision the pain that raised it. Several pains in one text are several
+  entries. Read from code, write the guessed pain as a pain, never as a decision: the goal owes its reason until the owner
+  agrees to that pain by its own card (decision product/capture/decision/pain-kind).
 - Never fill an optional slot without evidence. If you do not know a slot, leave it out and ask.
 - Keep operational facts (labels, commands, what a person sees), not only structure (E6).
 - Write with `ogy put`: a record or an array of records, one atomic, checked write per

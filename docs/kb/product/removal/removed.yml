@@ -120,3 +120,31 @@ items:
     snapshot:
       type: text
       says: The address of the decision that said so, or plain words.
+  - id: product/removal/decision/why-nothing-silently-dropped
+    kind: decision
+    parent:
+    title: 'Why: nothing-silently-dropped'
+    said: Why must nothing leave the knowledge base without a recorded reason?
+    why: product/capture/decision/pain-kind
+    replaced_by:
+    at: 2026-11-26 22:19:18+00:00
+    last_seen: 4ae9493648e9362d6316cab909e1d29d2303c56c
+    hash: 7a48d4ff87b7
+    ontology: software
+    snapshot:
+      title: 'Why: nothing-silently-dropped'
+      question: Why must nothing leave the knowledge base without a recorded reason?
+      context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): Agents dropped requirements and answers without telling anyone, and the owner found out only when something was missing."
+      options:
+        this-pain:
+          label: 'Yes, that is the pain: keep the goal'
+          sets:
+            product/removal/goal/nothing-silently-dropped:
+              says: Nothing leaves the knowledge base without a recorded reason, and what no person has seen is listed.
+        drop:
+          label: Not a goal of ogy
+          sets:
+            product/removal/goal/nothing-silently-dropped:
+      proposal:
+        chose: this-pain
+        why: A guess from what the code does; the owner's words replace it.

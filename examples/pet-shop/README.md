@@ -9,7 +9,10 @@ Read it with `just ogy --repo examples/pet-shop status`, `... work product`, `..
 ## What is in it
 
 Every area starts from a pain written as a decision (decision `product/capture/decision/from-pain-to-built`, decision-first);
-the answer writes the goal or the value, and the rest cites that decision with `because`.
+the answer writes the goal or the value, and the rest cites that decision with `because`. Since decision
+`product/capture/decision/pain-kind` (2026-11-26) each pain is also its own entry: `catalog/pain/phone-calls`,
+`catalog/pain/wasted-drive` (cited by the goal `know-before-visit` and by the decision `hold-online`) and
+`sales/pain/leave-for-cash`; none is agreed yet.
 
 | area | pain (decision) | what the answer wrote | what follows |
 |---|---|---|---|

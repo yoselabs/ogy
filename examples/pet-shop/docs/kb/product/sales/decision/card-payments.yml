@@ -1,6 +1,6 @@
 title: Cards at the counter
 question: Does the counter take cards, or cash only?
-context: 'Pain (the shop owner, invented): buyers leave to find a cash machine and some do not come back.'
+context: 'The pain: product/sales/pain/leave-for-cash. A card reader costs a fee per sale.'
 options:
   cards:
     label: Cards, through a payment provider
@@ -20,3 +20,5 @@ answers:
   said: Cards, obviously
   at: '2026-11-26T09:10:00+01:00'
   where: ai:example/pet-shop#owner
+because:
+- product/sales/pain/leave-for-cash

@@ -32,7 +32,7 @@ def load(*texts: str) -> None:
 
 def test_software_kinds_load() -> None:
     ontology = packaged()
-    assert len(ontology.kinds) == 29 and "message" not in ontology.kinds
+    assert len(ontology.kinds) == 30 and "message" not in ontology.kinds
     assert ontology.kinds["term"].area is None and ontology.kinds["principle"].area == "constitution"
     assert {name for name, kind in ontology.kinds.items() if kind.shared} == {"term", "actor", "enum", "area"}
     assert ontology.settling_kind() is ontology.kinds["decision"]
@@ -152,7 +152,7 @@ def test_any_target_accepts_every_kind_and_no_kind_is_named_any() -> None:
 def test_list_kind_declares_its_file_once() -> None:
     ontology = packaged()
     files = [kind.file for kind in ontology.kinds.values() if kind.shape is Shape.LIST]
-    assert len(files) == len(set(files)) == 8
+    assert len(files) == len(set(files)) == 9
     assert ontology.file_kind("quantities.yml") is ontology.kinds["quantity"]
 
 

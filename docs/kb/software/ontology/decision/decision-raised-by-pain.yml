@@ -1,6 +1,6 @@
 title: A decision names the pain that raised it
 question: How does a decision link to the pain that made someone ask it?
-context: "Pain: a goal now holds pains (why we do things), and a decision also says why (why this way); nothing connects them. Example: the pain 'the owner cannot read a decision plainly' (2026-11-24) raised decision-reads-plain; today only its context text says so. A pain is something that happened: no options, no choice. A decision is a choice among options. One pain can raise several decisions, and a pain may need none. Asked only if why-chain-on-board is answered pains-list."
+context: "Problem: a goal now holds pains (why we do things), and a decision also says why (why this way); nothing connects them. Example: the pain 'the owner cannot read a decision plainly' (2026-11-24) raised decision-reads-plain; today only its context text says so. A pain is something that happened: no options, no choice. A decision is a choice among options. One pain can raise several decisions, and a pain may need none. Asked only if why-chain-on-board is answered pains-list."
 options:
   raised-by:
     label: A decision gains an optional link raised_by to the pains that raised it. An entry's because still names the decision, so entry -> decision -> pain -> goal reads as one chain
@@ -9,8 +9,9 @@ options:
   context-only:
     label: "As today: the decision's context names the pain in words"
 proposal:
-  chose: context-only
-  why: "Asked only under pains-list, which is withdrawn. The decision is the pain's home; the entry -> because -> decision chain already reaches it. Before: raised-by."
+  chose: because-pain
+  why: 'Decision product/capture/decision/pain-kind, answered now (2026-11-26): a pain is its own entry, one sentence, agreed by its own card. A decision cites the pain that raised it with because, as a goal does; nothing else is needed. Before: context-only.'
+  at: '2026-11-26T23:21:02+01:00'
 answers:
 - chose: context-only
   said: Yes to all 9 of Fable's picks, read on the pet shop cards

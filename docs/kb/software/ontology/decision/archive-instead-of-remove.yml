@@ -1,6 +1,6 @@
 title: Archive instead of remove
 question: When a built workflow or its data is dropped, is it removed, or archived or disabled?
-context: 'Pain, on a pet shop: the owner drops reservations; today the button, the Reserved status and the 2-day expiry become work to remove, and the reservations already stored would be deleted with them. Archiving or disabling would keep the data and let the shop switch reservations back on. No product case needs that yet.'
+context: 'Problem, on a pet shop: the owner drops reservations; today the button, the Reserved status and the 2-day expiry become work to remove, and the reservations already stored would be deleted with them. Archiving or disabling would keep the data and let the shop switch reservations back on. No product case needs that yet.'
 options:
   not-now:
     label: 'Not now: a dropped thing is removed, and its removal is build work'

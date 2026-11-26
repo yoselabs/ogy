@@ -10,3 +10,8 @@ options:
 proposal:
   chose: now
   why: 'Fable, second look: three real cases the decision cannot hold (two pains confirmed apart, one pain behind two entries, five sentences waiting for a yes); the kind stays one field, so no flexibility is added beyond them. Before: not-yet, from counting links instead of reading the words.'
+answers:
+- chose: now
+  said: Yes, add the pain kind now, as Fable proposes
+  at: '2026-11-26T23:17:25+01:00'
+  where: ai:claude/ontology-review-session-749f16
