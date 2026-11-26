@@ -1,0 +1,11 @@
+title: What the pre-commit check is for
+question: Does the pre-commit check realize the capability check-the-kb?
+context: "Found by the Fable review (2026-11-26): pre-commit-check realizes no capability, and check-the-kb has a no-workflow row. Every commit passing ogy check is ogy's own promise to its users (goal kb-checked-in-git); the hook runner is only how. Written as the proposal says; a no takes the link out."
+options:
+  link:
+    label: 'Yes: pre-commit-check realizes check-the-kb'
+  apart:
+    label: 'No: it realizes nothing'
+proposal:
+  chose: link
+  why: 'Closes two rows at once: the workflow gets its why and the capability its workflow.'

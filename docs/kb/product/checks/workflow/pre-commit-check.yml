@@ -49,3 +49,6 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
       hash: a0857d6020aa
+realizes: product/checks/capability/check-the-kb
+because:
+- product/checks/decision/pre-commit-realizes

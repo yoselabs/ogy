@@ -1,0 +1,13 @@
+title: Requirements another product provides
+question: "When another product provides requirements (blueprint: hooks, SAST, code style; a franchise's till and hygiene rules), what does this product's knowledge base hold?"
+context: "Owner, 2026-11-26: blueprint is a technical product that enforces static analysis and code style; should its requirements be replaced by one 'comply with blueprint', kept each and marked as implemented by blueprint, and in product or software? Fable review: the swap test, 'if we dropped the supplier tomorrow, would we still demand this?' Yes: ours, kept, the supplier is a software dependency a handler uses. No: the supplier's, written in the supplier's own knowledge base; here at most one dependency line with its pin and the decision that chose it. No second side of a product: a supplier is a product in its own knowledge base and a dependency in ours. ogy is developed under blueprint, which ogy the product does not depend on: recorded nowhere yet. Links between two knowledge bases: not now, no case."
+options:
+  swap-test:
+    label: 'The swap test: keep what we would demand anyway; the supplier is a dependency; its own rules stay in its own knowledge base'
+  one-line:
+    label: 'One requirement: comply with the supplier, nothing else'
+  copy-each:
+    label: Copy each requirement and mark it as implemented by the supplier
+proposal:
+  chose: swap-test
+  why: 'One owner per fact: copies fall behind every supplier release; one line alone hides what we would still demand without it.'
