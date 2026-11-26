@@ -1,0 +1,16 @@
+title: 'Why: fewest-questions'
+question: Why ask the owner only what the sources do not answer, a few cards at a time?
+context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): The owner was flooded with questions, many already answered by the code or the docs, and long lists went unanswered."
+options:
+  this-pain:
+    label: 'Yes, that is the pain: keep the goal'
+    sets:
+      product/review/goal/fewest-questions:
+        says: The owner is asked only what the sources do not answer, a few cards at a time, each with a recommended answer.
+  drop:
+    label: Not a goal of ogy
+    sets:
+      product/review/goal/fewest-questions:
+proposal:
+  chose: this-pain
+  why: The goal is what the code already does; this is the pain it answers, as the session history shows.

@@ -1,0 +1,16 @@
+title: 'Why: nothing-silently-dropped'
+question: Why must nothing leave the knowledge base without a recorded reason?
+context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): Agents dropped requirements and answers without telling anyone, and the owner found out only when something was missing."
+options:
+  this-pain:
+    label: 'Yes, that is the pain: keep the goal'
+    sets:
+      product/removal/goal/nothing-silently-dropped:
+        says: Nothing leaves the knowledge base without a recorded reason, and what no person has seen is listed.
+  drop:
+    label: Not a goal of ogy
+    sets:
+      product/removal/goal/nothing-silently-dropped:
+proposal:
+  chose: this-pain
+  why: The goal is what the code already does; this is the pain it answers, as the session history shows.

@@ -1,0 +1,16 @@
+title: 'Why: kb-checked-in-git'
+question: Why keep the knowledge base in Git and check every commit?
+context: "Pain (proposed by AI, 2026-11-26; the goal was read from ogy's own code or docs and had no reason, decision reason-is-owed): Requirements kept apart from the code drift from it, and a broken knowledge base can be merged without anyone noticing."
+options:
+  this-pain:
+    label: 'Yes, that is the pain: keep the goal'
+    sets:
+      product/checks/goal/kb-checked-in-git:
+        says: The knowledge base lives in Git next to the code, and every commit that changes it passes ogy check.
+  drop:
+    label: Not a goal of ogy
+    sets:
+      product/checks/goal/kb-checked-in-git:
+proposal:
+  chose: this-pain
+  why: The goal is what the code already does; this is the pain it answers, as the session history shows.
