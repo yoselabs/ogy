@@ -159,7 +159,7 @@ def test_list_kind_declares_its_file_once() -> None:
 def test_a_kind_names_the_layers_it_may_appear_in() -> None:
     kinds = packaged().kinds
     assert packaged().layers == ("product", "software")
-    assert kinds["actor"].layers == LAYERS and kinds["interface"].layers == ("software",) and kinds["decision"].layers == LAYERS
+    assert kinds["actor"].layers == kinds["interface"].layers == ("product",) and kinds["decision"].layers == LAYERS
     assert kinds["term"].layers == LAYERS and kinds["term"].moved_folder is None
 
 

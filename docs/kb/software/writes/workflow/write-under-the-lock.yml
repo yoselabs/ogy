@@ -1,20 +1,8 @@
 says: An ogy write takes the write lock in the Git directory before it changes a file.
 src:
 - code:src/ogy/writes.py#locked
-start: put
+start: lock
 steps:
-  put:
-    says: The agent writes the records with ogy put.
-    actor: product/shared/actor/agent
-    choices:
-      put:
-        label: Put the records
-        then: lock
-    agreed:
-      at: '2026-11-20T20:52:40+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: d21801595aa1
   lock:
     says: ogy takes the write lock.
     cases:
@@ -49,3 +37,4 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
       hash: f1a79792de9e
+details: product/capture/workflow/capture-entries/step/put

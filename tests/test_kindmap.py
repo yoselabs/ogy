@@ -32,7 +32,9 @@ def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> No
         "rules:",
         "kinds, like and unlike:",
     ]
-    assert "  workflow: satisfies->>rule !says schedule->quantity event->transition !start->step realizes->capability" in lines
+    assert (
+        "  workflow: satisfies->>rule !says schedule->quantity event->transition details->step !start->step realizes->capability" in lines
+    )
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
     assert "  attribute: exactly one of type, of" in lines
     assert "  case, choice, timeout: a row with an effect has a handler performing it" in lines

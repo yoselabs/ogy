@@ -5,7 +5,7 @@ like: "a screen or page that serves actor steps"
 unlike: "an MVC view template; a database view"
 shape: file
 sentence: says
-layers: [software]
+layers: [product]
 needs_proof: true
 fingerprint: {proofs: true}
 fields:

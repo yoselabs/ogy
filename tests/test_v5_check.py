@@ -183,11 +183,12 @@ def test_the_folder_is_the_layer_and_the_kind_says_which_layers_it_may_appear_in
     found = kb(
         {
             "software/app/goals.yml": goal,
-            "product/app/interface/page.yml": view,
+            "software/app/interface/page.yml": view,
             "software/app/actors.yml": "- {id: ci, says: The CI runner., nature: program}\n",
         }
     ).findings()
-    assert only(found, Problem.BAD_LAYER) == {"software/app/goal/lend", "product/app/interface/page"}  # an actor may be technical
+    # an interface and an actor are product entries only (decisions interface-layer, actor-layers)
+    assert only(found, Problem.BAD_LAYER) == {"software/app/goal/lend", "software/app/interface/page", "software/app/actor/ci"}
 
 
 def test_requirement_applies_when_part_present(kb: Make) -> None:
@@ -220,6 +221,15 @@ def calling(covers: str) -> dict[str, str | None]:
         f"      a: {{covers_ends: {covers}, then: done}}\nends:\n  done: {{result: success, says: D.}}\n"
     )
     return {"product/app/workflow/caller.yml": flow, "product/app/workflow/callee.yml": CALLEE}
+
+
+def test_a_software_workflow_that_details_a_product_step_is_started_through_it(kb: Make) -> None:
+    """Decision software-workflow-start: a software flow behind a product step has no actor step; `details` starts it."""
+    behind = "software/app/workflow/behind.yml"
+    alone = kb({behind: CALLEE}).findings(started=True, landing=True)
+    assert alone == {(Problem.NEVER_STARTED, "software/app/workflow/behind")}
+    detailed = CALLEE.replace("says: Callee.\n", "says: Callee.\ndetails: product/app/workflow/sign-in/step/ask\n")
+    assert kb({behind: detailed}).findings(started=True, landing=True) == set()
 
 
 def test_calling_step_covers_every_callee_end(kb: Make) -> None:

@@ -5,7 +5,7 @@ start: commit
 steps:
   commit:
     says: Git starts a commit of a person or an agent and runs the hook.
-    actor: software/checks/actor/committer
+    actor: product/checks/actor/committer
     choices:
       commit:
         label: Commit
@@ -14,7 +14,7 @@ steps:
       at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: 1f90afd2a0c1
+      hash: b5bbf3cec2d4
   check:
     says: The hook writes the staged tree as a commit and runs the shared check on it.
     calls: product/checks/workflow/check
@@ -31,7 +31,7 @@ steps:
       at: '2026-11-19T20:32:47+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-      hash: 534146a6aa04
+      hash: 368c52096f31
 ends:
   committed:
     result: success

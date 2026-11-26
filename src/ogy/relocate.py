@@ -7,7 +7,7 @@ Git keeps the record, and `ogy check --base` tells the move from a loss (`ogy.mo
 
 from dataclasses import dataclass
 
-from ogy import near, removed, removed_moves
+from ogy import built, near, removed, removed_moves
 from ogy.edit import Editor
 from ogy.kinds import NAME, Shape
 from ogy.model import Address, Entry, parse_address
@@ -75,6 +75,30 @@ def _taken(target: Target, snapshot: Snapshot, new: Address) -> list[str]:
     return [f"{new} was removed (it is in a removed.yml); an id is never reused"] if str(new) in gone else []
 
 
+def carry_built(ed: Editor, target: Target, before: Snapshot, table: Table) -> None:
+    """The built line of a moved entry (and of its parts) follows it to the built file of its new source file; one that was
+    current stays current, so a move is no build work."""
+    root, rename = target.repo / target.kb, renamer(table)
+    folder, after = root / built.BUILT, ed.snapshot()
+    carried: list[tuple[Address, built.Line]] = []
+    for file in sorted(folder.rglob("*.yml")) if folder.is_dir() else ():
+        source = file.relative_to(folder).as_posix()
+        lines = built.read(root, source)
+        gone = {text: line for text, line in lines.items() if rename(text) != text}
+        for text, line in gone.items():
+            del lines[text]
+            was, now = parse_address(text, before.ontology), parse_address(rename(text), after.ontology)
+            if was is None or now is None or now not in after.entries:
+                continue
+            current = was in before.entries and line.own == before.build_hash(was)
+            own = after.build_hash(now) if current else line.own
+            carried.append((now, built.Line(own, tuple(map(rename, line.covers)), line.sourced)))
+        if gone:
+            built.write(root, source, lines)
+    for address, line in carried:
+        built.stamp(root, after.entries[address].path, str(address), line)
+
+
 def rename_all(ed: Editor, target: Target, before: Snapshot, table: Table) -> None:
     """Every entry that names an old address (or one under it) names the new one, and every agreement that was current stays
     current; the removed items follow. `ogy move` and `ogy migrate` (an entry out of a fixed folder) call it after the files moved."""
@@ -114,5 +138,6 @@ def move(target: Target, text: str, area: str) -> Moved:
     def act(ed: Editor) -> None:
         ed.relocate(old, new.home, new.key if new.key != old.key else "")
         rename_all(ed, target, snapshot, {old: new})
+        carry_built(ed, target, snapshot, {old: new})
 
     return Moved(old, new, commit(target, lambda _: [new], act, renamer({old: new})))

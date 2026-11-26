@@ -130,17 +130,17 @@ def test_show_of_an_address_decided_no(kb: MakeKb) -> None:
 
 
 def test_work_reads_built_record_and_lists_removal_work(repo: Path) -> None:
-    page = ops.run_show(ops.Target(repo), "software/app/interface/page").value.build_hash
+    page = ops.run_show(ops.Target(repo), "product/app/interface/page").value.build_hash
     line = "{own: %s, covers: [], sourced: {}}\n"
-    (repo / "docs/kb/built/software/app/interface").mkdir(parents=True)
-    (repo / "docs/kb/built/software/app/interface/page.yml").write_text(f"software/app/interface/page: {line % page}")
-    (repo / "docs/kb/built/software/app/interface/gone.yml").write_text(f"software/app/interface/gone: {line % 'aaaaaaaaaaaa'}")
+    (repo / "docs/kb/built/product/app/interface").mkdir(parents=True)
+    (repo / "docs/kb/built/product/app/interface/page.yml").write_text(f"product/app/interface/page: {line % page}")
+    (repo / "docs/kb/built/product/app/interface/gone.yml").write_text(f"product/app/interface/gone: {line % 'aaaaaaaaaaaa'}")
     (repo / "docs/kb/built/software/app/handler").mkdir(parents=True)
     (repo / "docs/kb/built/software/app/handler/lend.yml").write_text(f"software/app/handler/lend: {line % 'bbbbbbbbbbbb'}")
     commit(repo, "built")
     _, lines = ogy(repo, "work")
-    assert not any("software/app/interface/page" in text for text in lines)
-    assert "removed: software/app/interface/gone (now -, built aaaaaaaaaaaa) no ledger item" in lines
+    assert not any("product/app/interface/page" in text for text in lines)
+    assert "removed: product/app/interface/gone (now -, built aaaaaaaaaaaa) no ledger item" in lines
     # D15: a handler needs no proof; its line is removal work until `ogy migrate` deletes it
     assert "removed: software/app/handler/lend (now -, built bbbbbbbbbbbb) needs no proof: `ogy migrate` deletes the line" in lines
     assert "deleted the built line of software/app/handler/lend: it needs no proof" in ogy(repo, "migrate")[1]

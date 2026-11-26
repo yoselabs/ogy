@@ -115,7 +115,7 @@ def test_a_batch_that_breaks_the_base_is_put_back(repo: Path) -> None:
             [
                 ok,
                 {
-                    "address": "software/app/interface/page2",
+                    "address": "product/app/interface/page2",
                     "says": "Another page.",
                     "form": "web",
                     "src": ["code:app.py#lend"],

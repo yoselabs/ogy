@@ -5,7 +5,7 @@ start: call
 steps:
   call:
     says: The client calls a tool with the command's arguments, and every tool also takes --repo, --rev and --ontology.
-    actor: software/mcp/actor/mcp-client
+    actor: product/mcp/actor/mcp-client
     choices:
       call:
         label: Call the tool
@@ -14,7 +14,7 @@ steps:
       at: '2026-11-19T19:00:55+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
-      hash: 953e39e5fc46
+      hash: 8a1b112cde34
   run:
     says: ogy runs the CLI command inside the MCP server's process and returns tables and records for an agent.
     cases:
@@ -23,7 +23,7 @@ steps:
         when:
           text: the command ends with a usage error, a refusal or not found (exit 2 to 4)
           reads:
-          - software/cli/enum/exit-codes
+          - product/mcp/enum/exit-codes
         then: tool-error
       otherwise:
         then: result
@@ -38,7 +38,7 @@ steps:
       at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: 85d6873f3b2b
+      hash: e1900bf7d62b
 ends:
   result:
     result: success

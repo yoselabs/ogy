@@ -1,0 +1,28 @@
+format: 1
+items:
+  - id: software/setup/workflow/init-reads-its-files/step/run
+    kind: step
+    parent:
+      address: software/setup/workflow/init-reads-its-files
+      key: steps
+      position: 0
+    title:
+    said: A person runs ogy init.
+    why: software/ontology/decision/software-workflow-start
+    replaced_by:
+    at: 2026-11-26 02:55:09+01:00
+    last_seen: d430e3772b77fb0c4d31c83e02fe0f94e7eae2ac
+    hash: 49c6238a80da
+    ontology: software
+    snapshot:
+      says: A person runs ogy init.
+      actor: product/shared/actor/owner
+      agreed:
+        at: '2026-11-21T01:42:56+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+        hash: b3bc836f5042
+      choices:
+        init:
+          label: Set up
+          then: read

@@ -5,7 +5,7 @@ like: "a command line or an API call that serves actor steps"
 unlike: "a CQRS command message; the handler behind a row"
 shape: file
 sentence: says
-layers: [software]
+layers: [product]
 needs_proof: true
 fingerprint: {proofs: true}
 fields:

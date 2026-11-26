@@ -127,3 +127,7 @@ Oh yeah, all right. Then it makes a lot of sense. By the way, I think we need to
 ## 2026-11-25, on suggesting a migration strategy when a dropped part holds data
 
 Yeah, I think probably when we have some part of solution which has some data, we need to automatically suggest migration strategy. Like, oh, it has some data. If we have some data, maybe we shouldn't remove this functionality entirely. Maybe we could disable it for now only. Or maybe we could change it. Or maybe we could archive the data somewhere or soft delete or something, right?
+
+## 2026-11-26: interfaces and actors in product (Fable picks on 3 decisions)
+
+ok

@@ -119,7 +119,7 @@ def test_migrate_rewrites_the_values_a_kind_reshaped(repo: Path) -> None:
     target, member = Target(repo), "product/app/entity/loan/attribute/member"
     (repo / "docs/kb/product/app/entity").mkdir(parents=True)
     (repo / "docs/kb/product/app/entity/loan.yml").write_text(LOAN)
-    (repo / "docs/kb/software/app/interface/desk.yml").write_text(DESK)  # what writes the loan's facts
+    (repo / "docs/kb/product/app/interface/desk.yml").write_text(DESK)  # what writes the loan's facts
     (repo / "docs/kb/product/app/decision").mkdir(parents=True)
     (repo / "docs/kb/product/app/decision/fee.yml").write_text(HEARD)
     writes.agree(target, writes.said("Yes", "ai:claude/1", None), [member])

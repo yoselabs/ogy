@@ -9,4 +9,4 @@ form: web
 shows:
 - product/lending/entity/tool
 includes:
-- software/lending/interface/leave-button
+- product/lending/interface/leave-button

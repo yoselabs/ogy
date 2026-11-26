@@ -1,0 +1,10 @@
+- id: exit-codes
+  says: How a command ends; over MCP the codes 2 to 4 are tool errors.
+  members:
+  - 0 ok
+  - 1 findings
+  - 2 usage
+  - 3 refused
+  - 4 not found
+  src:
+  - code:src/ogy/verdict.py#Verdict

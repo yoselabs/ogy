@@ -1,7 +1,7 @@
 says: The pre-commit hook that ogy init writes; it checks the knowledge base as staged.
 invoked_as: git commit (runs the prek entry `ogy hook pre-commit` when the repo has a prek config, else .githooks/pre-commit)
 serves:
-- software/checks/workflow/pre-commit-check/step/commit
+- product/checks/workflow/pre-commit-check/step/commit
 src:
 - code:src/ogy/init.py#HOOK
 - code:src/ogy/prek.py#merged
@@ -10,4 +10,4 @@ agreed:
   at: '2026-11-21T01:43:16+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-  hash: f5627dc93625
+  hash: 29b0a633f7ed

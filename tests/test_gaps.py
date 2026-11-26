@@ -79,12 +79,12 @@ def test_harm_may_be_declared_on_a_field(kb: MakeKb) -> None:
 
 
 def test_a_link_to_a_removed_address_is_one_finding(repo: Path) -> None:
-    ogy(repo, "--rev", ".", "remove", "software/app/interface/page", "--why", "not needed")
-    (repo / "docs/kb/software/app/interface/card.yml").write_text(
-        "says: A card.\nform: web\nsrc: ['code:app.py#lend']\nincludes: [software/app/interface/page]\n"
+    ogy(repo, "--rev", ".", "remove", "product/app/interface/page", "--why", "not needed")
+    (repo / "docs/kb/product/app/interface/card.yml").write_text(
+        "says: A card.\nform: web\nsrc: ['code:app.py#lend']\nincludes: [product/app/interface/page]\n"
     )
     _, lines = ogy(repo, "--rev", ".", "check")
-    assert [line.split(":")[0] for line in lines if "software/app/interface/page" in line] == ["dangling-link"]
+    assert [line.split(":")[0] for line in lines if "product/app/interface/page" in line] == ["dangling-link"]
 
 
 def test_history_has_the_built_rows_and_the_delivery_commit(repo: Path) -> None:

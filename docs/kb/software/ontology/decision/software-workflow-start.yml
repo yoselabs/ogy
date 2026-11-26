@@ -8,6 +8,13 @@ options:
     label: A software workflow gains a link to the product row it details and counts as started through it; no actor step
   as-today:
     label: 'As today: a software workflow repeats the actor step'
+  fold-two-detail-two:
+    label: 'Mixed: pre-commit-check and call-a-tool move to product with their interfaces (their actors are product now); init-reads-its-files and write-under-the-lock stay in software, lose their repeated actor step and gain a link to the product row they detail'
 proposal:
-  chose: fold-into-product
-  why: Every end of the four is visible to the actor, so each is a product outcome; no new field. A link is asked again with the first software flow that no actor can see.
+  chose: fold-two-detail-two
+  why: Two of the four reach an outside actor directly, so they are product; the other two read the Git and Claude Code dependencies, which product may not name, and technical-refusal keeps them in software. Two real cases of a detailing flow meet no-flexibility-until-needed. Fable, 2026-11-26.
+answers:
+- chose: fold-two-detail-two
+  said: Ok to Fable's pick on all three, read on the pet shop cards
+  at: '2026-11-26T02:53:26+01:00'
+  where: ai:claude/ontology-review-session-749f16

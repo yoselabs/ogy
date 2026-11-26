@@ -1,7 +1,7 @@
 question: How does an agent request the same semantic inspection data as the board?
 context: The existing show, find, diagram and impact operations expose the underlying facts but no shared contextual inspection envelope. The board delivery command remains outside MCP.
 because:
-- software/cli/decision/view-command-contract
+- product/inspection/decision/view-command-contract
 - constitution/principle/one-owner-per-fact
 options:
   show-mode:

@@ -1,31 +1,31 @@
 says: The reproducible transient inspection result computed from the requested knowledge base snapshot and its ontology.
-because:
-- software/viewing/decision/contextual-view-structure
 attributes:
   snapshot:
     type: text
     derived:
       text: The resolved knowledge base content identity, ontology content identity and inspection contract version.
       reads:
-      - software/viewing/entity/inspection-request
+      - product/inspection/entity/inspection-request
   models:
     type: text
     many: true
     derived:
       text: Serialized entry models with canonical identities, exact fields, parts, selected facts, availability and witness paths from the resolved snapshot.
       reads:
-      - software/viewing/entity/inspection-request
+      - product/inspection/entity/inspection-request
   relations:
     type: text
     many: true
     derived:
       text: Serialized typed relation facts and their ordered witnesses, including stable row and effect-index identities.
       reads:
-      - software/viewing/entity/inspection-request
+      - product/inspection/entity/inspection-request
   diagnostics:
     type: text
     many: true
     derived:
       text: Missing purpose and unavailable, filtered or unsupported data are reported separately from absence established by the complete snapshot.
       reads:
-      - software/viewing/entity/inspection-request
+      - product/inspection/entity/inspection-request
+src:
+- code:src/ogy/inspect.py#inspect

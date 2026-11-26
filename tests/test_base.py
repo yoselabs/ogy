@@ -50,19 +50,19 @@ def test_append_only_rejects_edit_and_removal(ontology: Ontology) -> None:
 
 
 def test_id_removed_is_removal_work(ontology: Ontology) -> None:
-    base = snap(ontology, {"software/app/interface/other.yml": "says: Other.\n"})
-    now = snap(ontology, {"software/app/interface/other.yml": None})
-    assert kinds(base, now) == {("removed-unrecorded", "software/app/interface/other")}
+    base = snap(ontology, {"product/app/interface/other.yml": "says: Other.\n"})
+    now = snap(ontology, {"product/app/interface/other.yml": None})
+    assert kinds(base, now) == {("removed-unrecorded", "product/app/interface/other")}
 
 
 def test_removal_without_item(ontology: Ontology) -> None:
     base = snap(ontology, {"product/app/workflow/sign-in.yml": None})
-    assert kinds(base, snap(ontology, {"product/app/workflow/sign-in.yml": None, "software/app/interface/sign-in-page.yml": None})) == {
-        ("removed-unrecorded", "software/app/interface/sign-in-page")
+    assert kinds(base, snap(ontology, {"product/app/workflow/sign-in.yml": None, "product/app/interface/sign-in-page.yml": None})) == {
+        ("removed-unrecorded", "product/app/interface/sign-in-page")
     }
     # a recorded removal, and a part covered by its entity's item, are fine
-    full, now = snap(ontology), snap(ontology, {"product/app/workflow/sign-in.yml": None, "software/app/interface/sign-in-page.yml": None})
-    ledger = Ledger("product/app", 1, (removal("product/app/workflow/sign-in"), removal("software/app/interface/sign-in-page")))
+    full, now = snap(ontology), snap(ontology, {"product/app/workflow/sign-in.yml": None, "product/app/interface/sign-in-page.yml": None})
+    ledger = Ledger("product/app", 1, (removal("product/app/workflow/sign-in"), removal("product/app/interface/sign-in-page")))
     assert kinds(full, now, app=ledger) == set()
 
 

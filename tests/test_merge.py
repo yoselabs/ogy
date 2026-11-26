@@ -18,8 +18,8 @@ from ogy.ontology import Ontology, OntologyError, packaged, parse_kinds
 from ogy.target import Target
 from ogy.writes import WriteRefusedError
 
-PAGE, CLI, OLD = "software/app/view/page", "software/app/command/lend", "software/app/view/old"
-NEW_PAGE, NEW_CLI = "software/app/interface/page", "software/app/interface/lend"
+PAGE, CLI, OLD = "product/app/view/page", "product/app/command/lend", "product/app/view/old"
+NEW_PAGE, NEW_CLI = "product/app/interface/page", "product/app/interface/lend"
 SERVES = "serves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
 BEFORE = Path(__file__).parent / "fixtures" / "before-interface"  # view.yml and command.yml as they were before the merge
 SHIPPED = files("ogy").joinpath("ontologies", "software", "kinds")
@@ -60,16 +60,16 @@ class Unmerged(Target):
 def before(repo: Path) -> str:
     """A view and a command agreed and built, a decision that sets the view, a removed view in the ledger: committed."""
     target, kb = Unmerged(repo), repo / "docs/kb"
-    (kb / "software/app/interface/page.yml").rename(kb / "software/app/interface/view.tmp")
-    (kb / "software/app/view").mkdir(parents=True)
-    (kb / "software/app/interface/view.tmp").rename(kb / f"{PAGE}.yml")
-    (kb / "software/app/interface").rmdir()
+    (kb / "product/app/interface/page.yml").rename(kb / "product/app/interface/view.tmp")
+    (kb / "product/app/view").mkdir(parents=True)
+    (kb / "product/app/interface/view.tmp").rename(kb / f"{PAGE}.yml")
+    (kb / "product/app/interface").rmdir()
     (kb / f"{PAGE}.yml").write_text((kb / f"{PAGE}.yml").read_text().replace("form: web\n", ""))
-    (kb / "software/app/command").mkdir(parents=True)
+    (kb / "product/app/command").mkdir(parents=True)
     (kb / f"{CLI}.yml").write_text(f"says: Lend from the command line.\ninvoked_as: ogy lend\n{SERVES}")
     (kb / f"{OLD}.yml").write_text(f"says: The old page.\n{SERVES}")
-    (kb / "software/app/decision").mkdir(parents=True)
-    (kb / "software/app/decision/page.yml").write_text(
+    (kb / "product/app/decision").mkdir(parents=True)
+    (kb / "product/app/decision/page.yml").write_text(
         f"question: Is the page plain?\noptions:\n  plain: {{label: Plain, sets: {{{PAGE}: {{says: The page.}}}}}}\n"
         "proposal: {chose: plain, why: Simple.}\n"
     )
@@ -86,12 +86,12 @@ def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path
     target, kb = Target(repo), repo / "docs/kb"
     found = {(item.problem, item.path) for item in ops.run_check(target).value}
     assert {(Problem.NEEDS_MIGRATION, f"{PAGE}.yml"), (Problem.NEEDS_MIGRATION, f"{CLI}.yml")} <= found
-    ledger = (kb / "software/app/removed.yml").read_text()
+    ledger = (kb / "product/app/removed.yml").read_text()
     lines = ops.run_migrate(target).value.lines()
     assert f"moved {CLI}.yml to {NEW_CLI}.yml (a kind was renamed)" in lines
-    assert not (kb / "software/app/view").exists() and not (kb / "software/app/command").exists()
-    assert NEW_PAGE in (kb / "software/app/decision/page.yml").read_text()  # the address follows the entry
-    assert (kb / "software/app/removed.yml").read_text() == ledger and OLD in ledger  # a ledger keeps the names its items had
+    assert not (kb / "product/app/view").exists() and not (kb / "product/app/command").exists()
+    assert NEW_PAGE in (kb / "product/app/decision/page.yml").read_text()  # the address follows the entry
+    assert (kb / "product/app/removed.yml").read_text() == ledger and OLD in ledger  # a ledger keeps the names its items had
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
     cli = entries[address_of(NEW_CLI, target.kinds())].fields
@@ -108,15 +108,15 @@ def test_migrate_merges_two_kinds_and_keeps_what_was_agreed_and_built(repo: Path
 
 def test_a_view_and_a_command_of_one_id_are_refused_until_one_moves(repo: Path, before: str) -> None:
     kb = repo / "docs/kb"
-    (kb / "software/app/command/page.yml").write_text(f"says: The page as a command.\ninvoked_as: ogy page\n{SERVES}")
+    (kb / "product/app/command/page.yml").write_text(f"says: The page as a command.\ninvoked_as: ogy page\n{SERVES}")
     commit(repo, "a command of the view's id")
     why = (
-        f"software/app/command/page and {PAGE} would both become {NEW_PAGE}: `ogy move` one of them to a new id first, "
+        f"product/app/command/page and {PAGE} would both become {NEW_PAGE}: `ogy move` one of them to a new id first, "
         "with the ogy version (its kinds) from before the merge"
     )
     found = {(item.problem, item.path, item.detail) for item in ops.run_check(Target(repo)).value}
     assert (Problem.NEEDS_MIGRATION, f"{PAGE}.yml", why) in found
-    assert (Problem.NEEDS_MIGRATION, "software/app/command/page.yml", why) in found
+    assert (Problem.NEEDS_MIGRATION, "product/app/command/page.yml", why) in found
     with pytest.raises(WriteRefusedError) as refused:
         ops.run_migrate(Target(repo))
     assert refused.value.reasons == [f"needs-migration: {why}"]
@@ -127,7 +127,7 @@ def test_a_view_and_a_command_of_one_id_are_refused_until_one_moves(repo: Path, 
 HOW = """\
 question: How is a tool lent from the command line?
 options:
-  lend: {label: ogy lend, sets: {software/app/command/lend: {invoked_as: ogy lend}}}
+  lend: {label: ogy lend, sets: {product/app/command/lend: {invoked_as: ogy lend}}}
 proposal: {chose: lend, why: Short.}
 """
 
@@ -135,25 +135,25 @@ proposal: {chose: lend, why: Short.}
 def test_a_removed_command_is_read_under_the_merged_kind(repo: Path, before: str) -> None:
     """The ledger keeps `command/gone`; read as `interface/gone` it covers its removal since an older base and still forbids
     the id. A decision's `sets` gives the command's fields under the interface's names."""
-    kb, gone = repo / "docs/kb", "software/app/command/gone"
+    kb, gone = repo / "docs/kb", "product/app/command/gone"
     (kb / f"{gone}.yml").write_text(f"says: Gone.\ninvoked_as: ogy gone\n{SERVES}")
-    (kb / "software/app/decision/how.yml").write_text(HOW)
+    (kb / "product/app/decision/how.yml").write_text(HOW)
     early = commit(repo, "a command that goes")
     ops.run_remove(Unmerged(repo), gone, why="not needed")
     commit(repo, "removed")
     ops.run_migrate(Target(repo))
     commit(repo, "merged")
-    how = any_yaml.load((kb / "software/app/decision/how.yml").read_text())
+    how = any_yaml.load((kb / "product/app/decision/how.yml").read_text())
     assert isinstance(how, dict) and how["options"]["lend"]["sets"] == {NEW_CLI: {"invoked_as": "ogy lend"}}
-    assert gone in (kb / "software/app/removed.yml").read_text()
+    assert gone in (kb / "product/app/removed.yml").read_text()
     assert not ops.run_check(Target(repo, rev="HEAD"), base=early).value
-    decided = kb / "software/app/decision/page.yml"
-    decided.write_text(decided.read_text().replace(NEW_PAGE, "software/app/interface/gone"))
+    decided = kb / "product/app/decision/page.yml"
+    decided.write_text(decided.read_text().replace(NEW_PAGE, "product/app/interface/gone"))
     found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
-    assert found == {(Problem.NOT_IN_FORCE, "software/app/decision/page")}  # as a sets key to any removed entry, one finding
-    (kb / "software/app/interface/gone.yml").write_text(f"says: Back.\nform: cli\ninvoked_as: ogy gone\n{SERVES}")
+    assert found == {(Problem.NOT_IN_FORCE, "product/app/decision/page")}  # as a sets key to any removed entry, one finding
+    (kb / "product/app/interface/gone.yml").write_text(f"says: Back.\nform: cli\ninvoked_as: ogy gone\n{SERVES}")
     found = {(item.problem, str(item.address or item.path)) for item in ops.run_check(Target(repo, rev=".")).value}
-    assert (Problem.ID_REUSED, "software/app/interface/gone") in found
+    assert (Problem.ID_REUSED, "product/app/interface/gone") in found
 
 
 def test_a_merge_keeps_one_file_per_entry_and_renames_into_fields() -> None:

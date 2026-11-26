@@ -2,7 +2,6 @@ says: Set the repository up, or with --check say what is not set up; it is no MC
 invoked_as: ogy init [--ontology <name>] [--land <branch>] [--check]
 serves:
 - product/setup/workflow/init-repository/step/run
-- software/setup/workflow/init-reads-its-files/step/run
 src:
 - code:src/ogy/cli.py#_writes
 form: cli

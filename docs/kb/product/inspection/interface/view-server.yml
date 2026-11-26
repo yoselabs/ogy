@@ -8,11 +8,11 @@ agreed:
   said: 'Approved the verdict table: delivery by a local server.'
   hash: e7d6566f721d
 includes:
-- software/viewing/interface/board
+- product/inspection/interface/board
 shows:
-- software/viewing/entity/inspection-projection
+- product/inspection/entity/inspection-projection
 satisfies:
-- software/viewing/rule/agent-inspection-parity
+- product/inspection/rule/agent-inspection-parity
 because:
-- software/cli/decision/view-delivery
-- software/cli/decision/viewer-is-an-interface
+- product/inspection/decision/view-delivery
+- product/inspection/decision/viewer-is-an-interface

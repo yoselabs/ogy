@@ -35,12 +35,12 @@ UNBUILT = [  # D15: no step, handler or quantity, and an entity only with transi
     f"{P}/workflow/notify/step/send/case/otherwise",
     f"{P}/workflow/remind/step/call/case/otherwise",
     f"{P}/workflow/remind/step/call/case/sent",
-    f"{S}/interface/borrow-cli",
+    f"{P}/interface/borrow-cli",
     f"{S}/setting/remind-every",
     f"{S}/rule/one-reminder-a-day",
     f"{S}/dependency/mailer/workaround/slow-at-night",
-    f"{S}/interface/leave-button",
-    f"{S}/interface/loans-report",
+    f"{P}/interface/leave-button",
+    f"{P}/interface/loans-report",
 ]
 WORK = {
     *((address, Status.UNBUILT) for address in UNBUILT),
@@ -48,7 +48,7 @@ WORK = {
     (f"{P}/rule/late-fee-is-per-day", Status.CHANGED),
     (f"{P}/rule/late-fee-is-per-day", Status.CODE_CHANGED),  # late_fee() changed since the rule was captured from it
     (f"{BORROW}/ask/choice/borrow", Status.CHANGED),  # the rule it is held to (`by`) changed
-    (f"{S}/interface/borrow-page", Status.CHANGED),  # held to that rule (`satisfies`, a content input)
+    (f"{P}/interface/borrow-page", Status.CHANGED),  # held to that rule (`satisfies`, a content input)
     (f"{S}/setting/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
     # it tells the mail relay, a program: its failed case is the no-answer path, no rule says whether a repeat is safe
@@ -68,6 +68,7 @@ WORK = {
 # kind.field -> why this knowledge base leaves it empty
 UNEXERCISED: dict[str, str] = {
     "proposal.at": "stamped only on a proposal written to an answered decision; the fixture asks none again (test_reply.py does)",
+    "workflow.details": "the fixture has no software workflow behind a product step (test_v5_check.py starts one through it)",
 }
 
 

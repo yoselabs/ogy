@@ -1,0 +1,11 @@
+says: Show the same selected entry details in tooltip and pinned contexts, with exact facts and openable mentions.
+form: web
+allows:
+- product/shared/actor/owner
+- product/shared/actor/agent
+shows:
+- product/inspection/entity/inspection-projection/attribute/models
+satisfies:
+- product/inspection/rule/one-mention-path
+because:
+- product/inspection/decision/board-is-product

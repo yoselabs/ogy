@@ -7,11 +7,11 @@ agreed:
   at: '2026-11-22T15:05:25+01:00'
   where: ai:claude/f6fcc5ed
   said: The command should be named ogy serve; it runs a server, it does not render a page.
-  hash: 0171df5de38a
+  hash: 111ff936c9d1
 proof:
 - tests/test_view.py::test_view_writes_the_page_where_asked_and_changes_no_entry
 shows:
-- software/viewing/entity/inspection-projection
+- product/inspection/entity/inspection-projection
 because:
 - product/inspection/decision/product-map
-- software/cli/decision/view-command-contract
+- product/inspection/decision/view-command-contract

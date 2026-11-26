@@ -4,22 +4,22 @@ options:
   follow-the-repo:
     label: "A prek config in the repo: init merges one pre-commit `ogy hook` entry and leaves core.hooksPath alone (pre-push stays in the gate's own entry, since a gate kit allows no other pre-push hook); no prek config: init writes `.githooks` as today and refuses when core.hooksPath already points elsewhere"
     sets:
-      software/checks/interface/pre-commit-hook:
+      product/checks/interface/pre-commit-hook:
         invoked_as: git commit (runs the prek entry `ogy hook pre-commit` when the repo has a prek config, else .githooks/pre-commit)
   githooks-only:
     label: 'Keep today: always `.githooks` and core.hooksPath'
     sets:
-      software/checks/interface/pre-commit-hook:
+      product/checks/interface/pre-commit-hook:
         invoked_as: git commit (runs .githooks/pre-commit)
   prek-only:
     label: Always write the prek entry; a repo with no prek config gets one
     sets:
-      software/checks/interface/pre-commit-hook:
+      product/checks/interface/pre-commit-hook:
         invoked_as: git commit (runs the prek entry `ogy hook pre-commit`)
   print-only:
     label: Init writes no hook and prints the entry to add
     sets:
-      software/checks/interface/pre-commit-hook:
+      product/checks/interface/pre-commit-hook:
 proposal:
   chose: follow-the-repo
   why: Init promises to merge and never clobber, yet it overwrites core.hooksPath; a repo with no hook manager still needs a dependency-free hook because the check runs on every commit.

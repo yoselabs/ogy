@@ -7,8 +7,8 @@ shape: list
 sentence: says
 file: actors.yml
 evidence: none          # who uses the product, not a claim
-layers: [product, software]   # a party the business deals with in product, whatever its nature; one that exists only because of how
-                              # the product is built (a scheduler, CI, a git hook, an MCP client) in software
+layers: [product]             # an actor is always outside the product, whatever its nature; the product's own clock is a schedule,
+                              # its own reaction an event (decision actor-layers)
 shared: true                  # an actor two areas use lives in <layer>/shared/actors.yml
 fields:
   says: {required: true}

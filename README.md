@@ -154,14 +154,14 @@ is an area no more.
   may live there; any other is `bad-path`, and `ogy move` into `shared` refuses it. Which shared entry fewer than two areas use is
   not checked yet.
 The folder is the layer's only home: an entry has no `layer` field, each kind lists the layers it may appear in (`layers:`), and an
-entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. A business actor lives in product, a technical one
-(CI, a scheduler, a git hook, an MCP client) in software.
+entry in another one is `bad-layer`. An address is `<layer>/<area>/<kind>/<id>`. An actor and an interface live in product only:
+an actor is always outside the product (CI, Git, an MCP client that calls us included), an interface is where it reaches the product.
 - The layers are in order and `ontology.yml` says which way a link may cross them (`link_direction: later-to-earlier`): a link
   stays in its layer or names an earlier one, so software names product and product never names software (`layer-direction`,
   any link field, `delegated` of an answer included, and a decision's `sets` keys: a decision lives in the layer it sets or a
-  later one; the constitution is outside the layers). A party the business deals with is a product actor whatever its nature (a
-  payment provider), named by its role; an actor that exists only because of how the product is built (CI, an MCP client) is
-  a software one. In software the handler `uses` the dependency that `realizes` such an actor.
+  later one; the constitution is outside the layers). An actor is named by its role (a payment provider), whatever its nature; the
+  product's own clock is a workflow `schedule`, its own reaction an `event`. In software the handler `uses` the dependency that
+  `realizes` such an actor, and a software workflow behind a product step names it with `details` instead of repeating its actor step.
 - `doc:` evidence pins a Git revision (`doc:<commit>:<path>#<anchor>`): the file may be deleted later, history stays. An unpinned one is `bad-src`.
 - `ogy status --coverage` lists, per layer, the kinds with no entry. An area named like the repository is the finding `product-area`
   (name a topic, not the product). Every finding is an error: ogy prints no warnings.

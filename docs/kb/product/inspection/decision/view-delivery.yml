@@ -5,11 +5,11 @@ options:
   file:
     label: A page file only; nothing runs after ogy view
     sets:
-      software/cli/interface/view-server:
+      product/inspection/interface/view-server:
   server:
     label: 'A local server as well: ogy view --serve prints its address; the page and its data are read from the knowledge base on each reload; --out still writes a file'
     sets:
-      software/cli/interface/view-server:
+      product/inspection/interface/view-server:
         says: Serve the product view from a local server the owner opens in a browser; each reload reads the knowledge base again.
         form: web
         serves:

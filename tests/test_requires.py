@@ -37,7 +37,7 @@ ends:
 """
 PAGE = "says: The page.\nform: web\nserves: [product/app/workflow/ask/step/ask]\naccepts: [product/app/entity/loan]\n"
 SERVED = {
-    "software/app/interface/ask-page.yml": PAGE,
+    "product/app/interface/ask-page.yml": PAGE,
     "software/app/handler/write.yml": "says: Writes.\nperforms: [product/app/workflow/ask/step/ask/choice/stay]\n",
     "product/app/entity/loan.yml": LOAN,
 }
@@ -91,10 +91,10 @@ def test_an_attribute_has_a_type_or_names_what_it_holds(kb: Make) -> None:
 
 def test_an_attribute_nothing_writes_or_accepts_is_never_written(kb: Make) -> None:
     page = PAGE.replace("accepts: [product/app/entity/loan]\n", "")
-    flow = {**SERVED, "software/app/interface/ask-page.yml": page, "product/app/workflow/ask.yml": STEP}
+    flow = {**SERVED, "product/app/interface/ask-page.yml": page, "product/app/workflow/ask.yml": STEP}
     assert left(kb, flow, "unwritten") == {"product/app/entity/loan/attribute/member"}  # days is written, late derived
     accepted = page + "accepts: [product/app/entity/loan/attribute/member]\n"
-    assert left(kb, {**flow, "software/app/interface/ask-page.yml": accepted}, "unwritten") == set()
+    assert left(kb, {**flow, "product/app/interface/ask-page.yml": accepted}, "unwritten") == set()
     created = STEP.replace(
         '"on": product/app/entity/loan/attribute/days}',
         '"on": product/app/entity/loan/attribute/days}, {do: create, "on": product/app/entity/loan}',
@@ -140,9 +140,8 @@ def test_a_row_that_tells_a_program_actor_is_performed_by_a_handler_using_a_depe
 
 
 def test_a_product_entry_never_names_a_software_one(kb: Make) -> None:
-    flow = SIGN_IN.replace("actor: product/app/actor/member", "actor: software/app/actor/bot")
-    bot = {"software/app/actors.yml": "- {id: bot, says: A scheduler., nature: program}\n", "product/app/workflow/sign-in.yml": flow}
-    assert (Problem.LAYER_DIRECTION, "product/app/workflow/sign-in/step/ask") in kb(bot).findings()
+    bot = {"software/app/actors.yml": "- {id: bot, says: A scheduler., nature: program}\n"}  # an actor is outside the product
+    assert (Problem.BAD_LAYER, "software/app/actor/bot") in kb(bot).findings()  # decision actor-layers: product only
     told = PAY.replace("product/app/actor/provider", "software/app/dependency/cards")  # a product row never tells a dependency
     found = kb({**PAYING, "product/app/workflow/pay.yml": told, "software/app/dependency/cards.yml": CARDS}).findings()
     assert (Problem.LAYER_DIRECTION, "product/app/workflow/pay/step/charge/case/otherwise") in found
@@ -196,20 +195,20 @@ def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, mess
         ("says: P.\nform: web\noffers: [product/app/workflow/ask/step/ask/choice/go]\n", Problem.UNMET),
         ("says: P.\nform: web\nserves: [product/app/workflow/ask/step/ask]\nallows: [product/app/actor/member]\n", Problem.UNMET),
         ("says: P.\nform: web\nserves: []\n", Problem.WRONG_TYPE),  # an empty list would read as set
-        ("says: P.\nform: web\nincludes: [software/app/interface/card]\n", Problem.LINK_CYCLE),
+        ("says: P.\nform: web\nincludes: [product/app/interface/card]\n", Problem.LINK_CYCLE),
     ],
 )
 def test_an_interface_is_checked_by_its_form_and_what_it_serves(kb: Make, page: str, problem: Problem) -> None:
-    card = "says: A card.\nform: web\nshows: [product/app/entity/loan]\nincludes: [software/app/interface/extra]\n"
+    card = "says: A card.\nform: web\nshows: [product/app/entity/loan]\nincludes: [product/app/interface/extra]\n"
     flow = {
         **SERVED,
         "product/app/workflow/ask.yml": STEP,
-        "software/app/interface/card.yml": card,
-        "software/app/interface/extra.yml": page,
+        "product/app/interface/card.yml": card,
+        "product/app/interface/extra.yml": page,
     }
-    assert (problem, "software/app/interface/extra") in kb(flow).findings()
+    assert (problem, "product/app/interface/extra") in kb(flow).findings()
     shows = "says: The loans.\nform: file\nshows: [product/app/entity/loan]\nallows: [product/app/actor/member]\n"
-    assert kb({**flow, "software/app/interface/extra.yml": shows}).findings() == set()  # only shows: it may serve no step
+    assert kb({**flow, "product/app/interface/extra.yml": shows}).findings() == set()  # only shows: it may serve no step
 
 
 def _no_file(path: str, rev: str | None = None) -> str | None:

@@ -38,3 +38,29 @@ items:
     else: product/capture/workflow/capture-entries/end/refused
     src:
     - code:src/ogy/writes.py#locked
+- id: software/writes/workflow/write-under-the-lock/step/put
+  kind: step
+  parent:
+    address: software/writes/workflow/write-under-the-lock
+    key: steps
+    position: 0
+  title:
+  said: The agent writes the records with ogy put.
+  why: software/ontology/decision/software-workflow-start
+  replaced_by:
+  at: 2026-11-26 02:55:09+01:00
+  last_seen: d430e3772b77fb0c4d31c83e02fe0f94e7eae2ac
+  hash: ec2c8216e696
+  ontology: software
+  snapshot:
+    says: The agent writes the records with ogy put.
+    actor: product/shared/actor/agent
+    agreed:
+      at: '2026-11-20T20:52:40+01:00'
+      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
+      hash: d21801595aa1
+    choices:
+      put:
+        label: Put the records
+        then: lock

@@ -11,17 +11,15 @@ offers:
 - product/inspection/workflow/walk-product/step/walk/choice/walk
 - product/inspection/workflow/preview-requirement/step/preview/choice/preview
 accepts:
-- software/viewing/entity/inspection-request
+- product/inspection/entity/inspection-request
 shows:
-- software/viewing/entity/inspection-projection
+- product/inspection/entity/inspection-projection
 includes:
-- software/viewing/interface/entry-details
+- product/inspection/interface/entry-details
 satisfies:
-- software/viewing/rule/one-mention-path
-- software/viewing/rule/ontology-derived-detail
-- software/viewing/rule/typed-relation-conservation
-- software/viewing/rule/context-composition
-- software/viewing/rule/agent-inspection-parity
+- product/inspection/rule/one-mention-path
+- product/inspection/rule/typed-relation-conservation
+- product/inspection/rule/agent-inspection-parity
 because:
-- software/cli/decision/viewer-is-an-interface
+- product/inspection/decision/viewer-is-an-interface
 - product/inspection/decision/product-map

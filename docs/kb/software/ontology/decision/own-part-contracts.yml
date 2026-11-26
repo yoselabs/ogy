@@ -13,3 +13,8 @@ options:
 proposal:
   chose: none-yet
   why: One real case, and it duplicates a handler; three cases before an abstraction.
+answers:
+- chose: none-yet
+  said: Ok to Fable's pick on all three, read on the pet shop cards
+  at: '2026-11-26T02:53:36+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -9,7 +9,7 @@
   - walk
   - legend
   because:
-  - software/viewing/decision/contextual-view-structure
+  - product/inspection/decision/board-is-product
 - id: inspection-detail
   says: The local detail profiles selected over ontology structure, independently of layer and context.
   members:
@@ -19,4 +19,4 @@
   - parts
   - contract
   because:
-  - software/viewing/decision/contextual-view-structure
+  - product/inspection/decision/board-is-product

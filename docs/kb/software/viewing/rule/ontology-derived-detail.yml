@@ -1,5 +1,5 @@
 says: Local detail follows declared parts and typed motivation or flow projections; layer, call depth, context and layout rank remain independent, hidden parts retain inspectable summaries, and hidden geometry has no interaction targets.
 constrains:
-- software/viewing/enum/inspection-detail
+- product/inspection/enum/inspection-detail
 because:
 - software/viewing/decision/contextual-view-structure

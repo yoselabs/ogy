@@ -1,4 +1,4 @@
 says: The board and agent inspection return the same semantic models for the same snapshot and request; layout and camera state are local, previews use the same pure change planner, and no board delivery command is exposed as a read-only MCP tool.
 because:
-- software/cli/decision/viewer-is-an-interface
-- software/cli/decision/view-command-contract
+- product/inspection/decision/viewer-is-an-interface
+- product/inspection/decision/view-command-contract

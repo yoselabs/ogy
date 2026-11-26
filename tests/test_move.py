@@ -8,7 +8,7 @@ lazy from pathlib import Path
 import pytest
 from tests.conftest import commit, ogy
 
-from ogy import cli
+from ogy import built, cli
 from ogy.mcp_server import build
 from ogy.model import parse_address
 from ogy.moves import detect
@@ -80,8 +80,8 @@ def test_move_rewrites_every_address_and_no_words(repo: Path) -> None:
     assert w(repo, "move", "product/app/workflow/borrow", "product/loans")[0] == cli.OK
     after = tree(repo)
     assert not any("product/app/workflow" in text for text in after.values())  # every link: one write
-    assert "product/loans/workflow/borrow/step/ask" in after[f"{KB}/software/app/interface/page.yml"]
-    page = f"{KB}/software/app/interface/page.yml"  # its link and the hash of its agreement changed, no word
+    assert "product/loans/workflow/borrow/step/ask" in after[f"{KB}/product/app/interface/page.yml"]
+    page = f"{KB}/product/app/interface/page.yml"  # its link and the hash of its agreement changed, no word
     assert [line for line in after[page].splitlines() if "said" in line] == [line for line in before[page].splitlines() if "said" in line]
 
 
@@ -128,12 +128,12 @@ def test_a_decision_moves_and_what_cites_it_follows(repo: Path) -> None:
         "proposal": {"chose": "keep", "why": "g"},
     }
     assert w(repo, "put", json.dumps(decision))[0] == cli.OK
-    code, lines = w(repo, "remove", "software/app/interface/page", "--why", "product/app/decision/fee")
+    code, lines = w(repo, "remove", "product/app/interface/page", "--why", "product/app/decision/fee")
     assert code == cli.OK, lines
     commit(repo, "removed")
     findings = w(repo, "check")  # the step no view serves now: the move adds nothing to it
     assert w(repo, "move", "product/app/decision/fee", "product/people")[0] == cli.OK
-    assert "why: product/people/decision/fee" in (repo / KB / "software/app/removed.yml").read_text()  # the ledger follows
+    assert "why: product/people/decision/fee" in (repo / KB / "product/app/removed.yml").read_text()  # the ledger follows
     assert w(repo, "check") == findings and base_findings(repo) == findings[1]
 
 
@@ -147,7 +147,7 @@ def test_the_layer_may_change_when_the_kind_allows_it_and_is_refused_when_it_doe
     before = tree(repo)
     code, lines = w(repo, "move", "product/app/goal/lend", "software/app")
     assert code == cli.REFUSED and "goal may live in the layers" in lines[0] and tree(repo) == before
-    assert w(repo, "move", "software/app/interface/page", "product/app")[0] == cli.REFUSED  # a view is software only
+    assert w(repo, "move", "product/app/interface/page", "product/app")[0] == cli.REFUSED  # a view is software only
     assert w(repo, "move", "product/app/quantity/fee", "software/app")[0] == cli.REFUSED  # a product timeout waits on it
     assert w(repo, "move", "product/app/quantity/spare", "software/app")[0] == cli.OK
     assert (repo / KB / "software/app/quantities.yml").exists() and w(repo, "check") == (cli.OK, ["ok"])
@@ -235,3 +235,19 @@ def test_a_rename_gives_a_new_id_every_link_follows_and_check_base_tells_it_from
     assert not list((repo / KB).rglob("removed.yml"))
     assert w(repo, "check") == (cli.OK, ["ok"]) and base_findings(repo) == ["ok"]
     assert w(repo, "move", "product/app/actor/borrower", "product/app/workflow/borrower")[0] != cli.OK  # the kind stays
+
+
+def test_a_built_line_follows_the_entry_and_stays_current(repo: Path) -> None:
+    """A move is no build work: the line goes to the built file of the new source file, current as it was."""
+    target, page = Target(repo), "product/app/interface/page"
+    snapshot = target.read()[1]
+    address = parse_address(page, snapshot.ontology)
+    assert address is not None
+    built.stamp(repo / KB, snapshot.entries[address].path, page, built.Line(snapshot.build_hash(address)))
+    commit(repo, "built")
+    assert not any(page in line for line in w(repo, "work")[1])
+    assert w(repo, "move", page, "product/other")[0] == cli.OK
+    moved = "product/other/interface/page"
+    assert built.read_all(repo / KB) == {moved: built.Line(target.read()[1].build_hash(parse_address(moved, snapshot.ontology)))}  # pyrefly: ignore
+    assert not (repo / KB / "built/product/app/interface/page.yml").exists()
+    assert not any("interface/page" in line for line in w(repo, "work")[1])

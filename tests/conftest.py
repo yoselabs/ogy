@@ -47,7 +47,7 @@ GOOD: dict[str, str] = {
     **AREAS,
     "product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human}\n",
     "product/app/workflow/sign-in.yml": SIGN_IN,
-    "software/app/interface/sign-in-page.yml": (
+    "product/app/interface/sign-in-page.yml": (
         "says: The sign-in page.\nform: web\nserves: [product/app/workflow/sign-in/step/ask]\nbecause: [product/app/decision/sign-in]\n"
     ),
     "product/app/decision/sign-in.yml": (
@@ -113,7 +113,7 @@ FILES = {
     "app.py": CODE,
     "docs/kb/product/app/actors.yml": "- {id: member, says: A person who borrows., nature: human, src: ['code:app.py#lend']}\n",
     "docs/kb/product/app/quantities.yml": "- {id: fee, says: The fee., is: 2, unit: EUR, src: ['code:app.py#lend']}\n",
-    "docs/kb/software/app/interface/page.yml": (
+    "docs/kb/product/app/interface/page.yml": (
         "says: The page.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\nsrc: ['code:app.py#lend']\n"
     ),
     "docs/kb/product/app/workflow/borrow.yml": """\

@@ -1,20 +1,8 @@
 says: ogy init reads every file it merges into before it writes any.
 src:
 - code:src/ogy/init.py#init
-start: run
+start: read
 steps:
-  run:
-    says: A person runs ogy init.
-    actor: product/shared/actor/owner
-    choices:
-      init:
-        label: Set up
-        then: read
-    agreed:
-      at: '2026-11-21T01:42:56+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: b3bc836f5042
   read:
     says: ogy init reads ogy.yml, AGENTS.md, CLAUDE.md, .mcp.json, .claude/settings.json, the prek config, core.hooksPath and the flags.
     cases:
@@ -50,3 +38,4 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
       hash: 1e958a7ae5f6
+details: product/setup/workflow/init-repository/step/run

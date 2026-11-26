@@ -5,7 +5,7 @@ options:
   view:
     label: ogy view
     sets:
-      software/cli/interface/view:
+      product/inspection/interface/view:
         says: "Render the product's areas as one web page: a sitemap to dive into, a narrative per area, later a mock per workflow."
         invoked_as: ogy view
         form: cli
@@ -14,11 +14,11 @@ options:
   map:
     label: ogy map
     sets:
-      software/cli/interface/view:
+      product/inspection/interface/view:
   view-board:
     label: Keep ogy view and describe its answered canvas purpose
     sets:
-      software/cli/interface/view:
+      product/inspection/interface/view:
         says: Deliver the product canvas and its entry details using the shared inspection data.
         invoked_as: ogy view
         form: cli
@@ -27,7 +27,7 @@ options:
   serve:
     label: 'Rename to ogy serve: a command that runs the board server'
     sets:
-      software/cli/interface/view:
+      product/inspection/interface/view:
         says: "Run the local board server: the product canvas, its entry details and the owner's answer page, over one API."
         invoked_as: ogy serve
         form: cli

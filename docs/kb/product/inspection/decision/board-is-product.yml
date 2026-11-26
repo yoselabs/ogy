@@ -11,3 +11,8 @@ options:
 proposal:
   chose: product
   why: 'The product layer already describes it: 3 workflows and 13 decisions. It shares handlers with the commands, so it is not a second shipped thing.'
+answers:
+- chose: product
+  said: Ok to Fable's pick on all three, read on the pet shop cards
+  at: '2026-11-26T02:53:31+01:00'
+  where: ai:claude/ontology-review-session-749f16
