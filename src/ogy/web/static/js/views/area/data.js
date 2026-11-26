@@ -67,6 +67,19 @@ function groupOthers(top) {
     .sort((a, b) => b.nodes.length - a.nodes.length || a.kind.localeCompare(b.kind));
 }
 
+// Why a goal exists: each decision it cites with `because`, with the date and place of its newest answer
+// (decision product/inspection/decision/why-chain-on-board); none reads "purpose not recorded".
+function reasonsOf(model, goal) {
+  return (Array.isArray(goal.because) ? goal.because : [])
+    .map((address) => model.byId.get(address))
+    .filter((found) => found?.kind === "decision")
+    .map((decision) => {
+      const dated = (Array.isArray(decision.answers) ? decision.answers : []).filter((answer) => answer?.at);
+      const newest = dated.sort((a, b) => String(a.at).localeCompare(String(b.at))).at(-1) || null;
+      return { decision, at: newest ? String(newest.at).slice(0, 10) : null, where: newest?.where || null };
+    });
+}
+
 // The why-chain: one row per goal, its capabilities, and the workflows of this area each capability's workflows realize.
 // A capability that realizes several goals lists its workflows under the first goal only; the others point to it.
 function chainOf(model, scope, hasGoals, here, links) {
@@ -108,7 +121,7 @@ function chainOf(model, scope, hasGoals, here, links) {
   };
   const goalRows = [...goals.values()].sort(byKey).map((goal) => {
     const caps = [...capabilities.values()].filter((capability) => goalsOf(capability).some((found) => found.id === goal.id));
-    return { goal, capabilities: caps.sort(byKey).map((capability) => row(capability, goal)) };
+    return { goal, reasons: reasonsOf(model, goal), capabilities: caps.sort(byKey).map((capability) => row(capability, goal)) };
   });
   const orphans = [...capabilities.values()].filter((capability) => !placed.has(capability.id)).sort(byKey);
   const noGoal = {

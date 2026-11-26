@@ -5,6 +5,8 @@ export const words = {
   entities: "Entities",
   others: "Everything else",
   noGoal: "No goal recorded",
+  purposeNotRecorded: "Purpose not recorded",
+  because: "Because",
   noCapability: "No capability realizes this goal",
   noWorkflow: "No workflow realizes this capability",
   looseWorkflow: "This workflow realizes no capability",

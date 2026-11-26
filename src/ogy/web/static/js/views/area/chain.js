@@ -62,6 +62,18 @@ function looseRow(view, facts, workflows) {
   );
 }
 
+// Under a goal: the decisions it cites, each with its date and place, or the gap that none is cited.
+function reasonsList(reasons) {
+  if (!reasons.length) return gap(words.purposeNotRecorded);
+  return h(
+    "ul",
+    { class: "reasons", "data-part": "reasons" },
+    reasons.map(({ decision, at, where }) =>
+      h("li", {}, `${words.because} `, mention(decision), at ? ` · ${at}` : "", where ? ` · ${where}` : ""),
+    ),
+  );
+}
+
 function group(goalCell, rows, extra = {}) {
   return h(
     "article",
@@ -74,9 +86,9 @@ function group(goalCell, rows, extra = {}) {
 // The why-chain table: goal | capability | workflow, one group per goal, gaps shown as owed work.
 function table(view, facts) {
   const { goalRows, noGoal } = view.chain;
-  const groups = goalRows.map(({ goal, capabilities }) =>
+  const groups = goalRows.map(({ goal, reasons, capabilities }) =>
     group(
-      [head(goal, facts), says(goal)],
+      [head(goal, facts), says(goal), reasonsList(reasons)],
       capabilities.length
         ? capabilities.map((row) => capabilityRow(view, facts, row))
         : h("div", { class: "chain-row" }, h("div", { class: "cell cap-cell span", "data-cell": "capability" }, gap(words.noCapability))),
