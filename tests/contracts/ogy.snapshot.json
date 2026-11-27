@@ -1961,6 +1961,18 @@
             }
           ],
           "default": null
+        },
+        "tracker": {
+          "anyOf": [
+            {
+              "description": "the whole work left as JSON items a tracker runner reads: key (address), title, fingerprint, brief (default False)",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "type": "object"

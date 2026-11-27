@@ -40,6 +40,7 @@ from ogy.since import card_changes
 from ogy.source import Source, open_source
 from ogy.target import Target, last_seen, merge_base, removal_base
 from ogy.terms import waiting
+from ogy.tracker import Item, items
 from ogy.verdict import NotFoundError, RefusalError, Verdict
 from ogy.view import render as render_view
 from ogy.writes import Answered, WriteRefusedError
@@ -202,6 +203,14 @@ def run_brief(target: Target, text: str) -> Run[list[Row]] | None:
     record = _record(source)
     found = brief(snapshot, address, work_left(snapshot, record, source.repo_file, _ledger(source)), record)
     return Run(rows(snapshot, found), source.reads, Verdict.FINDINGS if found.work else Verdict.OK)
+
+
+def run_tracker(target: Target) -> Run[list[Item]]:
+    """The whole work left as items a tracker can hold."""
+    source, snapshot = target.read()
+    record = _record(source)
+    found = items(snapshot, work_left(snapshot, record, source.repo_file, _ledger(source)), record)
+    return Run(found, source.reads, Verdict.FINDINGS if found else Verdict.OK)
 
 
 def run_show(target: Target, text: str) -> Run[Shown]:

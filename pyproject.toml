@@ -48,10 +48,12 @@ dev = [
     "codespell==2.4.3",
     "deptry==0.25.1",
     "import-linter==2.15",
+    "beads-client",  # tools/ogy_beads.py: the runner that syncs bd from ogy work --tracker
 ]
 
 [tool.uv.sources]
 static-page-check = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/static-page-check", tag = "blueprint-v0.12.1" }
+beads-client = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/beads-client", tag = "blueprint-v0.12.1" }
 asgi-token-gate = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/asgi-token-gate", tag = "blueprint-v0.12.1" }
 any-local-service = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/any-local-service", tag = "blueprint-v0.12.1" }
 async-scope = { git = "https://github.com/yoselabs/shelf", subdirectory = "packages/async-scope", tag = "blueprint-v0.12.1" }
@@ -88,6 +90,7 @@ test-file = 800
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]  # tools/ (the bd runner) is imported by its tests
 # the fixtures are other products, with tests of their own that only their proofs name
 norecursedirs = [".*", "*.egg", "build", "dist", "venv", "fixtures"]
 addopts = "--import-mode=importlib -p no:cacheprovider"
@@ -233,6 +236,8 @@ known_first_party = ["ogy"]
 DEP003 = ["starlette", "uvicorn", "async_scope"]
 # LocalService owns the token gate; it remains a direct pin until the shelf boundary release.
 DEP002 = ["asgi-token-gate"]
+# tools/ogy_beads.py (the bd runner beside ogy, not the package) uses beads-client from the dev group.
+DEP004 = ["beads_client"]
 
 [tool.codespell]
 # bench/corpus (source PDFs, binary) + bench/outputs (raw engine output, incl.

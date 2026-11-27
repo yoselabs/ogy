@@ -6,6 +6,8 @@ lazy import argparse
 
 from ogy import ops, put, render, wire
 from ogy.model import home_of
+from ogy.tracker import items_json
+from ogy.verdict import Verdict
 from ogy.workcause import typed
 lazy from ogy.target import Target
 
@@ -76,6 +78,11 @@ def _diff(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
 
 
 def _work(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
+    if args.tracker:  # always the whole list: a scoped one would make every item outside it look gone
+        if args.area is not None:
+            return Verdict.USAGE, ["usage: ogy work --tracker takes no area: a runner reads the whole work left"]
+        listed = ops.run_tracker(target)
+        return listed.verdict, items_json(listed.value)
     if args.area is not None and (found := ops.run_brief(target, args.area)) is not None:  # one entry's address: its brief
         return found.verdict, wire.brief(found.value) if agent else render.render_brief(found.value)
     done = ops.run_work(target, args.area)

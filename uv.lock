@@ -158,6 +158,14 @@ wheels = [
 ]
 
 [[package]]
+name = "beads-client"
+version = "0.6.0"
+source = { git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fbeads-client&tag=blueprint-v0.12.1#4dec258b6c8824ebd1163b5b6e1e7ea4a312e221" }
+dependencies = [
+    { name = "child-env" },
+]
+
+[[package]]
 name = "beartype"
 version = "0.23.1"
 source = { registry = "https://pypi.org/simple" }
@@ -862,6 +870,7 @@ dependencies = [
 dev = [
     { name = "any-gate" },
     { name = "any-gate-python", extra = ["pytest"] },
+    { name = "beads-client" },
     { name = "blueprint" },
     { name = "codespell" },
     { name = "deptry" },
@@ -899,6 +908,7 @@ requires-dist = [
 dev = [
     { name = "any-gate", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate&tag=blueprint-v0.12.1" },
     { name = "any-gate-python", extras = ["pytest"], git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fany-gate-python&tag=blueprint-v0.12.1" },
+    { name = "beads-client", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fbeads-client&tag=blueprint-v0.12.1" },
     { name = "blueprint", git = "https://github.com/yoselabs/shelf?subdirectory=packages%2Fblueprint&tag=blueprint-v0.12.1" },
     { name = "codespell", specifier = "==2.4.3" },
     { name = "deptry", specifier = "==0.25.1" },

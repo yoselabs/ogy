@@ -110,14 +110,20 @@ def _reads(commands: Adder) -> None:
 
 
 def _asks(commands: Adder) -> None:
-    _verb(
+    work = _verb(
         commands,
         "work",
         "what is built against the entries and what is left",
         "Exit 1 when work is left. Takes a layer or an area; with one entry's address, that work item's brief: the why above it, "
         "the decisions that set it and what it links to.",
-    ).add_argument(
+    )
+    work.add_argument(
         "area", nargs="?", help="only this layer (product, software), <layer>/<area>, an area in every layer, or an entry's address"
+    )
+    work.add_argument(
+        "--tracker",
+        action="store_true",
+        help="the whole work left as JSON items a tracker runner reads: key (address), title, fingerprint, brief",
     )
     _verb(
         commands,

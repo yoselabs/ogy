@@ -19,6 +19,11 @@ ogy *args:
 stamp *args:
     uv run --frozen --no-sync pytest --ogy-stamp "$@"
 
+# Sync bd from `ogy work --tracker` (tools/ogy_beads.py): shows the plan; --apply writes it. Reads the work left from HEAD.
+[positional-arguments]
+beads *args:
+    uv run --frozen --no-sync python -I tools/ogy_beads.py "$@"
+
 # Import edges (import-linter contracts in pyproject.toml): the MCP libraries stay in the server module, the layers point one way, no cycles.
 [group('gate')]
 arch:

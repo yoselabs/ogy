@@ -8,7 +8,8 @@ lazy from pathlib import Path
 from tests.conftest import SOURCE
 from tests.test_writes import w
 
-from ogy import cli
+from ogy import cli, ops
+from ogy.target import Target
 
 A = "product/app"
 PAIN, GOAL, CAP, WF = f"{A}/pain/tools-sit-idle", f"{A}/goal/tools-shared", f"{A}/capability/lend-tools", f"{A}/workflow/lend"
@@ -82,3 +83,15 @@ def test_an_area_still_lists_the_work_and_a_missing_address_says_what_is_near(re
     code, lines = w(repo, "work", f"{A}/capability/lend-tool")
     assert code == cli.NOT_FOUND, lines
     assert CAP in "\n".join(lines)
+
+
+def test_the_tracker_items_are_the_whole_work_left_keyed_by_address(repo: Path) -> None:
+    """Decision software/cli/decision/work-to-tracker: one item per address, with its entry's fingerprint and its brief."""
+    _chain(repo)
+    code, lines = w(repo, "work", "--tracker")
+    assert code == cli.FINDINGS, lines
+    found = {item["key"]: item for item in json.loads("\n".join(lines))}
+    assert set(found) == {item.address for item in ops.run_work(Target(repo)).value}  # every address, once
+    assert ROW in found
+    assert found[ROW]["fingerprint"] and found[ROW]["brief"].startswith(f"brief of {ROW}")
+    assert w(repo, "work", "--tracker", A)[0] == cli.USAGE  # a scoped list would make every other item look gone
