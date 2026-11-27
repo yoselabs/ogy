@@ -1,4 +1,4 @@
 - id: one-checked-door
-  says: Every read and write goes through ogy, which checks it.
+  says: An agent reaches the knowledge base only through ogy, which checks every read and write.
   because:
   - product/capture/pain/hand-edits-break-the-kb

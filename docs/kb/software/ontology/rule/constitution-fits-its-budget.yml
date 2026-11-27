@@ -1,0 +1,5 @@
+says: The constitution as printed stays within its word budget.
+constrains:
+- software/ontology/quantity/constitution-budget
+because:
+- product/capture/pain/too-much-to-read-first

@@ -1,0 +1,12 @@
+title: A principle is agreed by its own card
+question: Is a principle agreed only by its own card, never by yes all, as a pain is?
+context: 'Owner, 2026-11-27: every new principle is weighed against the existing ones. A principle binds every decision after it; one agreed in a batch is the costliest mistake.'
+options:
+  own-card:
+    label: 'Yes: the principle kind gains own_card'
+  as-today:
+    label: 'No: yes all agrees principles too'
+proposal:
+  chose: own-card
+  why: A principle judges every decision after it; the owner should agree to each one alone.
+  heard: Every time we create a new principle, we should assess it against the ones we have.

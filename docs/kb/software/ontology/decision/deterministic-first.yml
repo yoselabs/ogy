@@ -1,0 +1,14 @@
+title: A program before a prompt
+question: Does the constitution gain the principle that what a program can compute, check or render is done by the program, and does it take the place of missing-is-computed?
+context: "Owner, 2026-11-27: prefer deterministic logic over skills and prompts. missing-is-computed is the same value applied to data. Proposed sentence: 'What a program can compute, check or render is done by the program: nothing it can know is marked by hand, and a skill or a prompt carries only what needs judgement.' Why: a program does the same thing every time and can be tested; a prompt is followed more or less. Applied already: guide-kind answered rendered."
+options:
+  one-principle:
+    label: One principle deterministic-first with the sentence above; missing-is-computed is removed with this decision as its reason
+  two-principles:
+    label: A second principle only about skills and prompts; missing-is-computed stays
+  no-principle:
+    label: No principle; the note on skill-is-an-interface stays
+proposal:
+  chose: one-principle
+  why: 'One value, one sentence: fewer principles for every agent to read first, as the owner asked.'
+  heard: We should prefer deterministic logic rather than skills and prompts.

@@ -1,0 +1,12 @@
+title: A command line beside MCP
+question: Does ogy keep a command line beside MCP?
+context: 'Owner, 2026-11-27: argparse-mcp is used only because it is the shortest path to deliver both the CLI and MCP; if the CLI were dropped, ogy would fall back to plain fastmcp. Today people, the Git hook and the gate run ogy as a command; the MCP tools are generated from it (decision mcp-is-a-subcommand).'
+options:
+  kept:
+    label: 'Kept: people, hooks and the gate run ogy as a command, and the MCP tools are generated from it'
+  mcp-only:
+    label: 'MCP only: the command line goes, and the MCP server is written on fastmcp directly'
+proposal:
+  chose: kept
+  why: The pre-commit hook, the gate and the owner's terminal run ogy as a command today; dropping it would remove them.
+  heard: If the CLI is no longer necessary we won't need argparse-mcp and fall back to fastmcp.

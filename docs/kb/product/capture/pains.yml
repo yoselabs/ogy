@@ -1,2 +1,4 @@
 - id: hand-edits-break-the-kb
-  says: An agent that edits the files by hand can write an entry that breaks the rules, and nobody is warned.
+  says: 'An agent that works on the knowledge base files directly has no proper interface: nothing checks or guides it, and it can break them.'
+- id: too-much-to-read-first
+  says: Every agent reads the whole constitution and glossary first, so each addition makes every session slower and less exact.

@@ -8,6 +8,6 @@
     said: Yes, every ogy command as an MCP tool makes sense, as long as it is tied to the pains and goals behind it
     hash: a59ed3b660ba
 - id: one-process-serves-all
-  says: Starting ogy for an agent also starts the board and the API in the same process on a free port, and the agent can give the owner the link.
+  says: One service, started by an agent over stdio or by a person in a terminal, serves the tools, the board and the API from one process, and the agent can give the owner the board link.
   realizes:
   - product/mcp/goal/one-service

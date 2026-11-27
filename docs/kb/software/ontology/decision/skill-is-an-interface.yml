@@ -8,10 +8,13 @@ options:
     label: A skill is a handler in the software layer
   outside:
     label: Skills stay outside the knowledge base; workflows an agent performs are never proven
+  rendered-then-eval:
+    label: An interface of form skill that serves workflow steps is rendered from those steps and proved by the render check; an eval proves only its hand-written parts; a guide is an interface of form skill, one concept
 proposal:
-  chose: interface-proved-by-eval
-  why: An interface is where an actor reaches the product; a skill is what the product gives an AI actor. It is shipped and can be checked by an eval, so it is work until one passes. A handler is code that runs; a skill is read. Then product/review/interface/hand-over-skill is written.
-  heard: Maybe the implementation of that workflow is an AI skill; or it is work which still needs proofs.
+  chose: rendered-then-eval
+  why: 'Decision guide-kind was answered rendered: a guide for steps an actor performs is rendered from the workflow. A rendered skill is built when the file equals the render, a plain test; an eval checks only whether an agent follows it. Before (2026-11-27): interface-proved-by-eval, which missed guide-kind.'
+  heard: Prefer deterministic logic over skills and prompts.
+  at: '2026-11-27T20:15:04+01:00'
 answers:
 - chose: interface-proved-by-eval
   said: Likes describing a skill as an interface of form skill; an implementation may be a skill or deterministic logic

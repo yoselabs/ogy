@@ -1,0 +1,16 @@
+title: How an AI agent reaches ogy
+question: How does an AI agent reach the knowledge base?
+because:
+- product/capture/pain/hand-edits-break-the-kb
+context: "Owner, 2026-11-27: the ontology's files must be isolated from the AI agent, which needs a proper interface; that leads to adopting MCP one way or another. Today agents call ogy over MCP (.mcp.json) and over the CLI; the files are also readable."
+options:
+  mcp:
+    label: Over MCP, the native interface of AI agents; the files are never edited by hand
+  command-line-only:
+    label: Only through the command line
+  files-directly:
+    label: By editing the files, checked afterwards
+proposal:
+  chose: mcp
+  why: It answers the pain hand-edits-break-the-kb through goal one-checked-door; MCP is what agents call natively.
+  heard: The agent needs a proper interface to the knowledge base, and that should be MCP.

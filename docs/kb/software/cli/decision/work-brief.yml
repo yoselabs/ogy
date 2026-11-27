@@ -8,10 +8,13 @@ options:
     label: Yes, as a mode of ogy show
   no-brief:
     label: 'No: the agent reads the entries itself'
+  work-address:
+    label: "The brief is ogy work <address>: with a layer or area ogy work lists the work items, with one entry's address it prints that item's context; no second command"
 proposal:
-  chose: brief-command
-  why: Nothing loads what a work item rests on; a computed brief reaches the global rules by their home (rule-constrains split-and-home). A mode of show mixes one entry with its whole context.
-  heard: 'A work item is compiled from the context of the feature: decisions, rules, objectives, especially global ones.'
+  chose: work-address
+  why: 'The owner expected ogy work to be exactly that, and was unsure of a new name; one command with an address adds none. Before (2026-11-27): brief-command.'
+  heard: My expectation was that ogy work is really that; maybe ogy work compile, ogy compile or ogy prepare.
+  at: '2026-11-27T20:15:04+01:00'
 answers:
 - chose: brief-command
   said: "Likes the work brief: ogy work gives the list, the brief gives one item's whole context"

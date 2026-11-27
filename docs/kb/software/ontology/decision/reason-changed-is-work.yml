@@ -1,0 +1,12 @@
+title: A changed reason asks again
+question: When a decision is answered differently, are the entries and decisions that cite it with because asked again?
+context: 'Owner, 2026-11-27: if we drop the CLI, it should show which dependency choices to revisit. Today ogy impact lists what cites a decision, but only when someone asks; 5 decisions cite a decision, none re-answered after. Computed from answer times; nothing stored.'
+options:
+  computed-row:
+    label: 'Yes: a decision answered before a decision it cites was answered with another option is a work item to ask again, computed from the two answer times'
+  impact-only:
+    label: 'No: ogy impact lists them when someone asks'
+proposal:
+  chose: computed-row
+  why: It is what the owner asked for and stores nothing (principle missing-is-computed); it lists 0 rows today.
+  heard: If the CLI is dropped, we should see which dependency choices to revisit.

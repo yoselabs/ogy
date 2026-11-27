@@ -1,0 +1,14 @@
+title: What ogy history prints
+question: Does ogy history print a decision's turns (what was proposed and why, what was answered and said) and any other entry's changes, with commit lines behind a flag, or does the command go?
+context: "Owner, 2026-11-27: ogy history prints commit lines like git log; do we need it? Most entries sit in list files, so git log on a file cannot follow one entry, a move or a removal; proposal-history (answered proposal-list) now keeps a decision's turns."
+options:
+  turns-first:
+    label: "Keep it: a decision's turns first, newest on top; for other entries when they changed; commit lines behind a flag"
+  remove-the-command:
+    label: "Remove it: ogy show prints a decision's turns, and Git the rest"
+  as-today:
+    label: 'As today: commit lines'
+proposal:
+  chose: turns-first
+  why: Git cannot follow one entry inside a list file or across a move; the turns answer the owner's pain of not recalling why a choice was made.
+  heard: ogy history prints commit lines like git log; do we need it?

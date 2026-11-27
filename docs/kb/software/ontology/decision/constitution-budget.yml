@@ -1,0 +1,28 @@
+title: A word budget for the constitution
+question: Does the constitution have a word budget that a test checks, so a new principle must replace or sharpen one instead of being appended?
+because:
+- product/capture/pain/too-much-to-read-first
+context: 'Owner, 2026-11-27: care about context size; principles must not be append only. Today ogy glossary prints 1677 words, 417 of them the constitution (9 principles). 350 would hold after the two merges proposed (deterministic-first, judged-as-new merged).'
+options:
+  budget:
+    label: 'Yes: a quantity holds the budget and a tested rule keeps the printed constitution within it'
+    sets:
+      software/ontology/quantity/constitution-budget:
+        says: The most words the printed constitution may hold.
+        is: 350
+        unit: words
+      software/ontology/rule/constitution-fits-its-budget:
+        says: The constitution as printed stays within its word budget.
+        constrains:
+        - software/ontology/quantity/constitution-budget
+        because:
+        - product/capture/pain/too-much-to-read-first
+  no-budget:
+    label: No budget; each new principle is checked by judgement
+    sets:
+      software/ontology/quantity/constitution-budget:
+      software/ontology/rule/constitution-fits-its-budget:
+proposal:
+  chose: budget
+  why: With a number a test counts, appending is refused deterministically; a check by judgement is what failed before (principle deterministic-first).
+  heard: We should care about context size; I don't want principles to be append only.

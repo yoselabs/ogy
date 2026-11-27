@@ -1,4 +1,6 @@
-says: The MCP server library that ogy's stdio server runs on, through shelf's argparse-mcp.
-pin: fastmcp >=3.4,<4; argparse-mcp 0.1.0
+says: The MCP server library that ogy's stdio server runs on.
+pin: fastmcp >=3.4,<4
 src:
 - code:src/ogy/mcp_server.py#build
+because:
+- software/mcp/decision/agents-reach-ogy-over-mcp

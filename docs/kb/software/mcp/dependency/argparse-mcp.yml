@@ -1,0 +1,7 @@
+says: The shelf package that turns ogy's command-line parser into MCP tools, so each command is a tool with no edit.
+pin: argparse-mcp 0.1.0
+src:
+- code:src/ogy/mcp_server.py#build
+because:
+- software/mcp/decision/mcp-is-a-subcommand
+- software/packaging/decision/technical-code-in-shelf

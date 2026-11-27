@@ -1,19 +1,28 @@
 title: The MCP server also serves the board
-question: When an agent starts ogy from .mcp.json (ogy mcp, over stdio), does the same process also serve the board and the API on a free port?
-context: 'Owner, 2026-11-27: one service serves it all; starting the MCP server starts the board too, on a random port, so the agent can send the owner a link; one process means no locking or two-way sync between board, agent and other programs. Today ogy mcp serves only the tools; ogy serve runs the board with its own MCP server (decision serve-includes-mcp, answered one-process). Not checked: whether a process started from .mcp.json may listen on a port.'
+question: When an agent starts ogy from .mcp.json, and when a person starts the board, is it one service or two commands?
+context: 'Owner, 2026-11-27: one service serves it all, on a free port, so the agent can send a board link; two commands that duplicate work confuse agents. Today ogy mcp serves only the tools over stdio and ogy serve the board, the API and the tools over HTTP (decision serve-includes-mcp, answered one-process). One process holds what lives only in memory (spotlight, sketch); the files and the write lock stay the truth, so two agent sessions on one worktree still meet at the files. Not checked: whether a process started over stdio from .mcp.json may listen on a port.'
 options:
-  yes-free-port:
-    label: 'Yes: ogy mcp also serves the board and the API on a free port and gives the agent the link'
+  one-service:
+    label: 'One service: started by an agent over stdio or by a person in a terminal, it serves tools, board and API from one process; ogy mcp is its stdio spelling; a second start on the same worktree joins the running one or prints its link'
     sets:
       product/mcp/capability/one-process-serves-all:
-        says: Starting ogy for an agent also starts the board and the API in the same process on a free port, and the agent can give the owner the link.
+        says: One service, started by an agent over stdio or by a person in a terminal, serves the tools, the board and the API from one process, and the agent can give the owner the board link.
         realizes:
         - product/mcp/goal/one-service
-  no-two-commands:
-    label: 'No: ogy mcp serves the tools and ogy serve the board, as today'
+  flag:
+    label: ogy mcp --board adds the board and the API; without the flag, tools only
+    sets:
+      product/mcp/capability/one-process-serves-all:
+        says: ogy mcp --board serves the board and the API beside the tools from one process, and the agent can give the owner the board link.
+        realizes:
+        - product/mcp/goal/one-service
+  two-commands:
+    label: 'Two commands, as today: ogy mcp serves the tools, ogy serve the board'
     sets:
       product/mcp/capability/one-process-serves-all:
 proposal:
-  chose: yes-free-port
-  why: It is the owner's one-service idea and capability one-process-serves-all; two commands leave two processes that must stay in step.
-  heard: 'One service serves it all: starting the MCP server also starts the board on a random port.'
+  chose: one-service
+  why: "A flag keeps two behaviours for an agent to choose between, the owner's worry; one service answers the pain copies-disagree through goal one-service. Before (2026-11-27, earlier today): yes-free-port, the same idea before the owner asked about ogy serve."
+  heard: I don't want two commands which duplicate the work and confuse the AI agent; maybe ogy serve is really ogy mcp, or a flag.
+because:
+- product/mcp/pain/copies-disagree
