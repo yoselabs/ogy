@@ -8,10 +8,13 @@ options:
     label: An agent stamps a built line by a command after running the tests
   no-record:
     label: 'No built record: an entry with a proof counts as built'
+  test-run-writes-fingerprint:
+    label: 'As test-run-writes, built as: the line holds the build hash and the src receipts; the commit is the one that adds the line, read from Git, since a line cannot name the commit that holds it'
 proposal:
-  chose: test-run-writes
-  why: Only a passed test written down by the tool guarantees anything; an agent's stamp is a mark by hand, against missing-is-computed; without a record a changed entry never shows as work.
-  heard: The proof system is not tested and does not guarantee that it works.
+  chose: test-run-writes-fingerprint
+  why: 'Built 2026-11-27 (ogy-3ud): a line written before its commit cannot name that commit; Git already says which commit added it. Everything else of test-run-writes is built. Before (2026-11-27): test-run-writes.'
+  heard: Good with the proof design; the agent gives the test ids and says whether it is built.
+  at: '2026-11-27T21:56:31+01:00'
 answers:
 - chose: test-run-writes
   said: Good with the proof design

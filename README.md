@@ -103,8 +103,14 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
   `address` is allowed there on any common field, as no common field is in the meaning), and reads what links to it with `input_from:` (`input_from: {satisfies: {fields:
   [pin]}}`: the pin of each entry held to it, only where set). `ogy kinds` prints each input. A changed content input reads
   `changed` in `ogy work`, as a changed meaning does: the build hash is one hash, and a built line keeps only it (`own`), what
-  the proof covers and the sources it was captured from. Input staleness is never re-stamped automatically: an agent re-proves
-  the entry and stamps its line. A built line that still holds the old `deps` key is `needs-migration`; `ogy migrate` drops it.
+  the proof covers and the sources it was captured from. Input staleness is never re-stamped automatically: the entry is
+  proved again and the test run writes its line.
+- The test run writes the built lines; no command does (decision built-line-writer). ogy ships a pytest plugin: `pytest
+  --ogy-stamp` (`just stamp` here) reads the knowledge base before the tests run and, at the end, writes the line of every
+  entry that needs a proof and whose every proof item passed in that run: its build hash from before the run and the receipts
+  of its `src`. A proof that failed, was skipped, was expected to fail, failed for one parameter or did not run leaves its entry
+  as it was; a partial run deletes no line. A proof item must name a test that exists: the file is in the repository and
+  defines the function (`Class::method` for a method). A built line that still holds the old `deps` key is `needs-migration`; `ogy migrate` drops it.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.
 - A proposal that rests on what the owner said carries a paraphrase: `proposal.heard`, one line, never a quote. The review card reads

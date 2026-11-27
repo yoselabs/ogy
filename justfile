@@ -14,6 +14,11 @@ install:
 ogy *args:
     uv run --frozen --no-sync python -I -m ogy "$@"
 
+# Run the tests and write the built line of every knowledge base entry whose proofs all passed (src/ogy/stamping.py).
+[positional-arguments]
+stamp *args:
+    uv run --frozen --no-sync pytest --ogy-stamp "$@"
+
 # Import edges (import-linter contracts in pyproject.toml): the MCP libraries stay in the server module, the layers point one way, no cycles.
 [group('gate')]
 arch:

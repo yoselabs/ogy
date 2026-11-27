@@ -61,9 +61,17 @@ def test_proof_is_path_and_function(kb: MakeKb) -> None:
     def actor(proof: str) -> dict[str, str]:
         return {"product/app/actors.yml": ACTOR.format("member", "A person.", f", src: [{SOURCE}], proof: {proof}")}
 
-    ok = kb(actor("[tests/test_a.py::test_a, tests/test_a.py::TestA::test_b]")).findings()
+    tests = {"tests/test_a.py": "def test_a(): ...\nclass TestA:\n    def test_b(self): ...\n"}  # a proof names a test that exists
+    ok = kb({**actor("[tests/test_a.py::test_a, tests/test_a.py::TestA::test_b]"), **tests}).findings()
     assert (Problem.MISSING_PROOF, "product/app/actor/member") not in ok
-    for bad in ("[test_a]", "[tests/test_a.py]", "['{test: t, from: x}']", "[/etc/x.py::f]"):
+    for bad in (
+        "[test_a]",
+        "[tests/test_a.py]",
+        "['{test: t, from: x}']",
+        "[/etc/x.py::f]",
+        "[tests/test_a.py::test_gone]",
+        "[tests/none.py::test_a]",
+    ):
         assert (Problem.MISSING_PROOF, "product/app/actor/member") in kb(actor(bad)).findings(), bad
 
 

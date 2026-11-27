@@ -158,9 +158,10 @@ def test_common_fields(kb: Make) -> None:
     changed = {
         "product/app/actors.yml": "- {id: member, title: Member, says: x, nature: human, src: [], agreed: "
         + stamp()
-        + ", because: [product/app/decision/sign-in], proof: [tests/t.py::test_a]}\n"
+        + ", because: [product/app/decision/sign-in], proof: [test_t.py::test_a]}\n",
+        "test_t.py": "def test_a(): ...\n",  # a proof names a test that exists
     }
-    assert kb(changed).findings() == set()
+    assert kb(changed).findings() == {(Problem.BAD_PATH, "test_t.py")}  # this fixture's knowledge base is its root: the file lies in it
     wrong = {
         "product/app/actors.yml": (
             "- {id: member, says: x, nature: human, src: one, because: [product/app/decision/nothing], layer: product}\n"
@@ -172,6 +173,7 @@ def test_common_fields(kb: Make) -> None:
         Problem.DANGLING_LINK,
         Problem.UNKNOWN_FIELD,
         Problem.BAD_SRC,
+        Problem.BAD_PATH,  # the test file of the case above is still in the folder
     }  # `layer` is no field: the folder is the layer
 
 

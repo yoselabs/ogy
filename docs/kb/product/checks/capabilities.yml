@@ -10,3 +10,9 @@
   - code:src/ogy/check.py#LANDING
   realizes:
   - product/checks/goal/kb-checked-in-git
+- id: test-run-writes-built
+  says: The test run writes a built line for each entry whose proofs all passed in it, and a proof must name a test that exists.
+  src:
+  - code:src/ogy/stamping.py#stamp_passed
+  realizes:
+  - product/checks/goal/built-is-proven

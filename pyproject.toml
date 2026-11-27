@@ -30,6 +30,9 @@ dependencies = [
 [project.scripts]
 ogy = "ogy.entry:main"
 
+[project.entry-points.pytest11]
+ogy = "ogy.stamping"  # inert until --ogy-stamp: the test run writes the built lines
+
 [dependency-groups]
 dev = [
     "static-page-check",
@@ -85,6 +88,8 @@ test-file = 800
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# the fixtures are other products, with tests of their own that only their proofs name
+norecursedirs = [".*", "*.egg", "build", "dist", "venv", "fixtures"]
 addopts = "--import-mode=importlib -p no:cacheprovider"
 
 [tool.uv]
@@ -271,6 +276,8 @@ exclude_lines = [
 preset = "strict"
 use-ignore-files = false
 search-path = [".", "tests"]
+# the fixtures are other products: their own tests import their own code, which is not on the path
+project-excludes = ["tests/fixtures/**"]
 
 [tool.pyrefly.errors]
 deprecated = "error"

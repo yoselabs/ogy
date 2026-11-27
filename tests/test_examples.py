@@ -16,17 +16,19 @@ V5 = Path(__file__).parent / "fixtures"
 
 
 CODE_LINK = re.compile(r"code:([^#\"\]\s]+)#(\w+)(?:\.(\w+))?")
+PROOF_LINK = re.compile(r"([\w./-]+\.py)::(\w+)(?:::(\w+))?")  # a proof names a test: path::function or path::Class::method
 
 
 class Stand(WorktreeSource):
     """An example captured from another repository (the task loop) names code this one does not hold: every `code:` link
-    names a stand-in file that defines its symbol, so the links are read as they were when the example was written."""
+    names a stand-in file that defines its symbol, and every proof a stand-in test, so the links are read as they were when the
+    example was written."""
 
     @override
     def repo_file(self, path: str, rev: str | None = None) -> str | None:
         symbols: dict[str, set[str]] = {}
         for text in self.root_texts().values():
-            for found in CODE_LINK.finditer(text):
+            for found in (*CODE_LINK.finditer(text), *PROOF_LINK.finditer(text)):
                 if found[1] == path:
                     symbols.setdefault(found[2], set()).update([found[3]] if found[3] else [])
         methods = {name: "".join(f"    def {m}(self): ...\n" for m in sorted(members)) for name, members in symbols.items()}

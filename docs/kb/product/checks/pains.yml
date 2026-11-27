@@ -5,3 +5,5 @@
     where: ai:claude/ontology-review-session-749f16
     said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
     hash: b280ec61343c
+- id: built-is-unknown
+  says: 'Nobody can tell which requirements are built: nothing records that a test proved one, so everything reads not done.'
