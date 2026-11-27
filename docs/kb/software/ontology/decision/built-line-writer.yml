@@ -9,12 +9,11 @@ options:
   no-record:
     label: 'No built record: an entry with a proof counts as built'
   test-run-writes-fingerprint:
-    label: 'As test-run-writes, built as: the line holds the build hash and the src receipts; the commit is the one that adds the line, read from Git, since a line cannot name the commit that holds it'
+    label: 'As test-run-writes, built with two differences: the lines are written by a test run asked for with --ogy-stamp (just stamp), not by every gate run, because the gate runs in the Git hooks and writing there would leave files uncommitted; and a line holds the build hash and the src receipts, while the commit that adds it is read from Git, since a line cannot name the commit that holds it. A failed proof deletes its line'
 proposal:
   chose: test-run-writes-fingerprint
-  why: 'Built 2026-11-27 (ogy-3ud): a line written before its commit cannot name that commit; Git already says which commit added it. Everything else of test-run-writes is built. Before (2026-11-27): test-run-writes.'
-  heard: Good with the proof design; the agent gives the test ids and says whether it is built.
-  at: '2026-11-27T21:56:31+01:00'
+  why: 'Built 2026-11-27 (ogy-3ud) and run on this knowledge base: 3 lines written. Writing in the hooks would dirty the tree after a push; a line cannot name the commit that holds it. Before (2026-11-27): test-run-writes.'
+  at: '2026-11-27T22:11:43+01:00'
 answers:
 - chose: test-run-writes
   said: Good with the proof design

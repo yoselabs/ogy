@@ -1,1 +1,1 @@
-product/checks/interface/stamp: {own: 92fe0aa79157, covers: [], sourced: {code:src/ogy/stamping.py#stamp_passed: 134eb20bc8aa}}
+product/checks/interface/stamp: {own: 5d6782c0ce26, covers: [], sourced: {code:src/ogy/stamping.py#stamp_passed: bf997484a60b}}

@@ -108,8 +108,9 @@ Agents change the knowledge base only through these commands (CLI or MCP tool of
 - The test run writes the built lines; no command does (decision built-line-writer). ogy ships a pytest plugin: `pytest
   --ogy-stamp` (`just stamp` here) reads the knowledge base before the tests run and, at the end, writes the line of every
   entry that needs a proof and whose every proof item passed in that run: its build hash from before the run and the receipts
-  of its `src`. A proof that failed, was skipped, was expected to fail, failed for one parameter or did not run leaves its entry
-  as it was; a partial run deletes no line. A proof item must name a test that exists: the file is in the repository and
+  of its `src`. A proof that failed (for any parameter) deletes its entry's line, so a red test never leaves the entry built;
+  one that was skipped, was expected to fail or did not run leaves the entry as it was, so a partial run deletes no line. Under
+  pytest-xdist only the controller writes. A proof item must name a test that exists: the file is in the repository and
   defines the function (`Class::method` for a method). A built line that still holds the old `deps` key is `needs-migration`; `ogy migrate` drops it.
 - Once a decision has an answer, its proposal is inert: nothing compares it with the answer and nobody rewrites it. A decision an
   agent answered under delegation is a card of its own (`delegated`) that marks the option in force, for the owner to confirm or veto.

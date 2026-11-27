@@ -7,4 +7,5 @@ src:
 - code:src/ogy/stamping.py#stamp_passed
 proof:
 - tests/test_stamping.py::test_the_run_writes_a_line_only_for_an_entry_whose_proofs_all_passed
-- tests/test_stamping.py::test_without_the_flag_or_for_a_proof_that_did_not_run_nothing_is_written
+- tests/test_stamping.py::test_a_run_without_the_flag_writes_nothing_and_a_partial_run_keeps_the_lines
+- tests/test_stamping.py::test_a_proof_that_fails_deletes_the_line_of_its_entry

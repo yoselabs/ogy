@@ -3,8 +3,9 @@
 A pytest plugin, registered as `ogy` (entry point `pytest11`) and inert until `--ogy-stamp` is given. Before the tests run it
 reads the knowledge base of the repository pytest runs in; at the end it writes a built line for every entry that needs a
 proof and whose every proof item passed in this run: its build hash as read before the tests ran and the receipts of its `src`
-now. An entry with a proof that failed, was skipped, was expected to fail or did not run is left as it is: a partial run never
-deletes a line. No command writes a line, so a line always comes from a run.
+now; it deletes the line of an entry one of whose proofs failed, so a red test never leaves its entry built. An entry whose
+proof was skipped, was expected to fail or did not run is left as it is: a partial run deletes no line. No command writes a
+line, so a line always comes from a run. Under pytest-xdist only the controller writes.
 """
 
 from dataclasses import dataclass, field
@@ -25,7 +26,7 @@ if TYPE_CHECKING:
 
 OPTION = "--ogy-stamp"
 
-__all__ = ["OPTION", "Outcomes", "Run", "passed_proofs", "stamp_passed"]
+__all__ = ["OPTION", "Outcomes", "Run", "failed_proofs", "passed_proofs", "stamp_passed"]
 
 
 # The parts of pytest's objects the hooks read: ogy does not import pytest, which only loads this module as a plugin.
@@ -33,6 +34,7 @@ class _Report(Protocol):
     nodeid: str
     when: str
     passed: bool
+    failed: bool
 
 
 @runtime_checkable
@@ -66,13 +68,20 @@ class Outcomes:
 
     passed: set[str] = field(default_factory=set)
     failed: set[str] = field(default_factory=set)
+    skipped: set[str] = field(default_factory=set)  # skipped or expected to fail: neither proves nor breaks
 
-    def add(self, nodeid: str, *, ok: bool) -> None:
-        (self.passed if ok else self.failed).add(nodeid.split("[", 1)[0])
+    def add(self, report: _Report) -> None:
+        test = report.nodeid.split("[", 1)[0]
+        if report.failed:
+            self.failed.add(test)
+        elif not report.passed or hasattr(report, "wasxfail"):
+            self.skipped.add(test)
+        elif report.when == "call":
+            self.passed.add(test)
 
     def green(self) -> set[str]:
-        """Tests that passed and never failed, skipped or were expected to fail, in any phase or parameter."""
-        return self.passed - self.failed
+        """Tests that passed and never failed, were skipped or were expected to fail, in any phase or parameter."""
+        return self.passed - self.failed - self.skipped
 
 
 def passed_proofs(snapshot: Snapshot, green: set[str]) -> list[Address]:
@@ -94,15 +103,28 @@ def _line(snapshot: Snapshot, source: Source, address: Address) -> built.Line:
     return built.Line(snapshot.build_hash(address), (), {link: hash_ for link, hash_ in receipts.items() if hash_ is not None})
 
 
-def stamp_passed(target: Target, before: tuple[Source, Snapshot], green: set[str]) -> list[Address]:
-    """Write the line of every entry whose proofs all passed, under the write lock; returns their addresses."""
+def failed_proofs(snapshot: Snapshot, red: set[str]) -> list[Address]:
+    """The entries that need a proof and one of whose proof items failed in this run."""
+    name = snapshot.ontology.roles.proof
+    return [
+        address
+        for address in sorted(snapshot.entries)
+        if snapshot.needs_proof(address) and any(item in red for item in link_values(snapshot.entries[address].fields.get(name)))
+    ]
+
+
+def stamp_passed(target: Target, before: tuple[Source, Snapshot], outcomes: Outcomes) -> tuple[list[Address], list[Address]]:
+    """Under the write lock, write the line of every entry whose proofs all passed and delete the line of every entry one of
+    whose proofs failed: a red test never leaves its entry built. Returns both lists."""
     source, snapshot = before
-    done = passed_proofs(snapshot, green)
+    done, broken = passed_proofs(snapshot, outcomes.green()), failed_proofs(snapshot, outcomes.failed)
     root = target.repo / target.kb
     with locked(target, "stamp"):
         for address in done:
             built.stamp(root, snapshot.entries[address].path, str(address), _line(snapshot, source, address))
-    return done
+        for address in broken:
+            built.unstamp(root, snapshot.entries[address].path, str(address))
+    return done, broken
 
 
 @dataclass
@@ -114,14 +136,13 @@ class Run:
     outcomes: Outcomes = field(default_factory=Outcomes)
 
     def pytest_runtest_logreport(self, report: _Report) -> None:
-        if report.when == "call" or not report.passed:  # a failed or skipped setup or teardown fails the test too
-            self.outcomes.add(report.nodeid, ok=report.passed and not hasattr(report, "wasxfail"))
+        self.outcomes.add(report)  # a failed setup or teardown fails the test too
 
     def pytest_sessionfinish(self, session: _Session) -> None:
-        done = stamp_passed(self.target, self.before, self.outcomes.green())
+        done, broken = stamp_passed(self.target, self.before, self.outcomes)
         reporter = session.config.pluginmanager.get_plugin("terminalreporter")
         if isinstance(reporter, _Reporter):
-            reporter.write_line(f"ogy: wrote {len(done)} built line(s)")
+            reporter.write_line(f"ogy: wrote {len(done)} built line(s), deleted {len(broken)} of entries whose proof failed")
 
 
 def pytest_addoption(parser: _Parser) -> None:
@@ -129,7 +150,8 @@ def pytest_addoption(parser: _Parser) -> None:
 
 
 def pytest_configure(config: _Config) -> None:
-    if config.getoption(OPTION):
+    # Under pytest-xdist only the controller records and writes: it receives every worker's reports; a worker has `workerinput`.
+    if config.getoption(OPTION) and not hasattr(config, "workerinput"):
         root = Path(config.rootpath)
         target = Target(root, ontology=config_ontology(root))
         config.pluginmanager.register(Run(target, target.read()), "ogy-stamp-run")
