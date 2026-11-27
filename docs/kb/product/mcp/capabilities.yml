@@ -10,7 +10,7 @@
 - id: one-process-serves-all
   says: One service, started by an agent over stdio or by a person in a terminal, serves the tools, the board and the API from one process, and the agent can give the owner the board link.
   realizes:
-  - product/mcp/goal/one-service
+  - product/capture/goal/one-checked-door
   agreed:
     at: '2026-11-27T20:45:48+01:00'
     where: ai:claude/ontology-review-session-749f16

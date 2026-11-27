@@ -3,4 +3,4 @@ pin: fastmcp >=3.4,<4
 src:
 - code:src/ogy/mcp_server.py#build
 because:
-- software/mcp/decision/agents-reach-ogy-over-mcp
+- product/mcp/decision/mcp-door-home

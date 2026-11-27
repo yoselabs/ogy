@@ -1,4 +1,4 @@
 - id: constitution-budget
-  says: The most words the printed constitution may hold.
-  is: 350
+  says: The most words the sentences of the printed constitution may hold.
+  is: 300
   unit: words

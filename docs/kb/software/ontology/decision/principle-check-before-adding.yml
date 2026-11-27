@@ -1,0 +1,12 @@
+title: Check before adding a principle
+question: 'Do the capture skill and AGENTS.md say how a principle is proposed: one decision whose options are add, replace a named one, sharpen a named one, or none; and a conflict between two principles on a real decision cites both and proposes a sharper sentence for each?'
+context: "Owner, 2026-11-27: every new principle is checked against the existing ones (similar, upgrade, absorb, overwrite, conflicts); a conflict may be a reason to make both more concrete, not only to ask the human. The same lines for the ontology-designer skill are the owner's plugin to release. The lines would be untested (evals/ledger.md)."
+options:
+  skill-lines:
+    label: 'Yes: the lines go into skills/ogy-capture/SKILL.md and AGENTS.md, marked untested in the eval ledger'
+  no-lines:
+    label: 'No: the word budget alone forces it'
+proposal:
+  chose: skill-lines
+  why: The budget refuses an append but does not say what to do instead; the lines say it. Free to write, no build needed.
+  heard: 'Every time we create a new principle, we should assess: do we have a similar one, upgrade, absorb, overwrite, conflicts.'

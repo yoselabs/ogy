@@ -1,4 +1,5 @@
 - id: one-checked-door
-  says: An agent reaches the knowledge base only through ogy, which checks every read and write.
+  says: Agents, the board and other programs reach the knowledge base only through one ogy service, which checks every read and write and shows them all the same state.
   because:
   - product/capture/pain/hand-edits-break-the-kb
+  - product/mcp/pain/copies-disagree

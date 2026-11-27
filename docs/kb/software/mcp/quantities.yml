@@ -1,0 +1,4 @@
+- id: service-idle-stop
+  says: How long the ogy service of a worktree runs with no session and no browser before it stops.
+  is: 15
+  unit: minutes

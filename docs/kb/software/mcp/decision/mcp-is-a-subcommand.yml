@@ -20,5 +20,5 @@ answers:
   at: '2026-11-17T20:09:24.780+00:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157#7054
 because:
-- software/mcp/decision/agents-reach-ogy-over-mcp
+- product/mcp/decision/mcp-door-home
 - software/cli/decision/cli-is-kept

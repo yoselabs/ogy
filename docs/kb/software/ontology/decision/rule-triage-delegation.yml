@@ -1,0 +1,12 @@
+title: The rule triage under a delegation
+question: May the agent triage the 74 rules under proof-or-decision for you, each answer listed for your veto, or is each re-ask a card of its own?
+context: 'Decision rules-need-a-check was answered proof-or-decision (2026-11-27): a rule stays when a test can prove it and no kind file declares it; the rest go, each through its own decision asked again. 61 rules are set by an answer; one card each would flood the owner (pain flooded-with-questions). Already found to go: the rule that repeats principle rigid-where-checked and two delegations written as rules. 15 areas hold rules.'
+options:
+  delegated:
+    label: 'Delegated: the agent answers each re-ask under this decision, area by area, and ogy dropped lists every one for your veto'
+  one-by-one:
+    label: 'One by one: each re-ask is a card for you'
+proposal:
+  chose: delegated
+  why: The re-asks follow one rule you already answered; listing them for veto keeps every one visible without a flood of cards.
+  heard: Likes the rules design and its clean-up.

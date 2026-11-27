@@ -8,14 +8,14 @@ options:
       product/mcp/capability/one-process-serves-all:
         says: One service, started by an agent over stdio or by a person in a terminal, serves the tools, the board and the API from one process, and the agent can give the owner the board link.
         realizes:
-        - product/mcp/goal/one-service
+        - product/capture/goal/one-checked-door
   flag:
     label: ogy mcp --board adds the board and the API; without the flag, tools only
     sets:
       product/mcp/capability/one-process-serves-all:
         says: ogy mcp --board serves the board and the API beside the tools from one process, and the agent can give the owner the board link.
         realizes:
-        - product/mcp/goal/one-service
+        - product/capture/goal/one-checked-door
   two-commands:
     label: 'Two commands, as today: ogy mcp serves the tools, ogy serve the board'
     sets:
@@ -24,8 +24,6 @@ proposal:
   chose: one-service
   why: "A flag keeps two behaviours for an agent to choose between, the owner's worry; one service answers the pain copies-disagree through goal one-service. Before (2026-11-27, earlier today): yes-free-port, the same idea before the owner asked about ogy serve."
   heard: I don't want two commands which duplicate the work and confuse the AI agent; maybe ogy serve is really ogy mcp, or a flag.
-because:
-- product/mcp/pain/copies-disagree
 answers:
 - chose: one-service
   said: 'Joining the running one would be best: in the same worktree reuse the process and its port and collaborate'

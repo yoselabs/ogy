@@ -1,28 +1,41 @@
 title: A word budget for the constitution
-question: Does the constitution have a word budget that a test checks, so a new principle must replace or sharpen one instead of being appended?
+question: Does the constitution have a word budget that a test checks, so a new principle must replace or sharpen one instead of being appended, and what does it count?
 because:
 - product/capture/pain/too-much-to-read-first
-context: 'Owner, 2026-11-27: care about context size; principles must not be append only. Today ogy glossary prints 1677 words, 417 of them the constitution (9 principles). 350 would hold after the two merges proposed (deterministic-first, judged-as-new merged).'
+context: 'Owner, 2026-11-27: care about context size; principles must not be append only. Counted 2026-11-27: the constitution is 394 words, about 405 after the two merges proposed (missing-is-computed absorbed, judged-as-new merged): the merges alone do not shrink it. The sentences are about 285 words after the merges, the reasons (why) about 120; the reasons can be read with ogy show instead of printed to every agent. Asked after missing-is-computed and judged-as-new.'
 options:
-  budget:
-    label: 'Yes: a quantity holds the budget and a tested rule keeps the printed constitution within it'
-    sets:
-      software/ontology/quantity/constitution-budget:
-        says: The most words the printed constitution may hold.
-        is: 350
-        unit: words
-      software/ontology/rule/constitution-fits-its-budget:
-        says: The constitution as printed stays within its word budget.
-        constrains:
-        - software/ontology/quantity/constitution-budget
-        because:
-        - product/capture/pain/too-much-to-read-first
   no-budget:
     label: No budget; each new principle is checked by judgement
     sets:
       software/ontology/quantity/constitution-budget:
       software/ontology/rule/constitution-fits-its-budget:
+  sentences-only-300:
+    label: "Yes: ogy prints only the principles' sentences to every agent (the reasons with ogy show), within 300 words, checked by a test"
+    sets:
+      software/ontology/quantity/constitution-budget:
+        says: The most words the sentences of the printed constitution may hold.
+        is: 300
+        unit: words
+      software/ontology/rule/constitution-fits-its-budget:
+        says: The sentences of the constitution, as printed to every agent, stay within the word budget.
+        constrains:
+        - software/ontology/quantity/constitution-budget
+        because:
+        - product/capture/pain/too-much-to-read-first
+  with-reasons-420:
+    label: 'Yes: sentences and reasons printed together, within 420 words, checked by a test'
+    sets:
+      software/ontology/quantity/constitution-budget:
+        says: The most words the printed constitution, sentences and reasons, may hold.
+        is: 420
+        unit: words
+      software/ontology/rule/constitution-fits-its-budget:
+        says: The constitution as printed, sentences and reasons, stays within its word budget.
+        constrains:
+        - software/ontology/quantity/constitution-budget
+        because:
+        - product/capture/pain/too-much-to-read-first
 proposal:
-  chose: budget
-  why: With a number a test counts, appending is refused deterministically; a check by judgement is what failed before (principle deterministic-first).
+  chose: sentences-only-300
+  why: 'The merges alone leave about 405 words, so the saving comes from printing the sentences only; a number a test counts refuses appending deterministically (principle deterministic-first). Before (2026-11-27): budget 350, counted as if the merges would shrink it.'
   heard: We should care about context size; I don't want principles to be append only.

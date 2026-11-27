@@ -1,0 +1,23 @@
+title: The one ogy service of a worktree
+question: Which process is the one ogy service of a worktree, and what happens when the session that started it ends?
+context: 'Owner, 2026-11-27: join the running one in the same worktree, reuse the process and its port, collaborate; a session per agent would spread many ports. a2kay: one owning process per vault, held by an exclusive lock the kernel frees when it dies (shelf process-lock); every other client is a stdio bridge that forwards to it, starts it when it is down, and holds no lock or state; a fixed port and a login item keep it alive. ogy needs one per worktree, a free port, nothing installed. shelf any-local-service already publishes the bound address for the serving lifetime; ogy serve uses it. A stdio process may also listen on a port as long as stdout carries only MCP.'
+options:
+  detached-owner:
+    label: 'A detached owner: the first ogy mcp finds no owner of the worktree and starts one on a free port; every session is a stdio bridge to it; the owner outlives the session and stops after an idle time with no bridge and no browser; ogy serve starts or joins it and prints the link'
+    sets:
+      software/mcp/quantity/service-idle-stop:
+        says: How long the ogy service of a worktree runs with no session and no browser before it stops.
+        is: 15
+        unit: minutes
+  first-session-hosts:
+    label: The first session's process serves; later sessions bridge to it; when it ends another takes over
+    sets:
+      software/mcp/quantity/service-idle-stop:
+  per-session:
+    label: Each session its own process and port
+    sets:
+      software/mcp/quantity/service-idle-stop:
+proposal:
+  chose: detached-owner
+  why: One port per worktree answers the many ports; a board that dies with whoever started first does not. It is a2kay's shape (lock, bridge) with a free port and an idle stop instead of a login item; the bridge and the one-owner-per-root piece move to shelf, as serve-includes-mcp asked. It refines capability one-process-serves-all, which realizes goal one-checked-door.
+  heard: Joining, reusing processes in the same worktree to reuse the same port and collaborate, would be awesome.
