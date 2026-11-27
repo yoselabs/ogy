@@ -1,4 +1,21 @@
 - id: flooded-with-questions
-  says: The owner was flooded with questions, many already answered by the code or the docs, and long lists went unanswered.
+  says: The owner was asked too much at once, in long pasted lists, and many questions stayed without an answer.
+  agreed:
+    at: '2026-11-27T02:08:40+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
+    hash: b1e3b1e62802
 - id: guesses-look-decided
   says: Requirements written by AI looked decided though no person had agreed to them, so nobody could tell a choice from a guess.
+  agreed:
+    at: '2026-11-27T02:08:40+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
+    hash: 7823cd2c63c6
+- id: question-not-alone
+  says: 'The owner could not answer a question as written: its words and options made no sense without the chat around it.'
+  agreed:
+    at: '2026-11-27T02:09:51+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's added pain: a question could not be answered without the chat around it"
+    hash: 2e906f7b2d32

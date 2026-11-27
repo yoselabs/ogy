@@ -1,2 +1,7 @@
 - id: kb-drifts-from-code
-  says: Requirements kept apart from the code drift from it, and a broken knowledge base can be merged without anyone noticing.
+  says: A change in the code could break the knowledge base, and nobody saw it until much later.
+  agreed:
+    at: '2026-11-27T02:08:40+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
+    hash: b280ec61343c

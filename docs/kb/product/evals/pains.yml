@@ -1,2 +1,7 @@
 - id: changes-made-on-feel
   says: 'Changes to the ontology and the skills were made on feel: nobody could tell whether one helped agents or made them worse.'
+  agreed:
+    at: '2026-11-27T02:08:40+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
+    hash: 436c14d439e4

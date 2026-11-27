@@ -14,3 +14,4 @@
   - code:src/ogy/status.py#queue
   because:
   - product/review/pain/flooded-with-questions
+  - product/review/pain/question-not-alone

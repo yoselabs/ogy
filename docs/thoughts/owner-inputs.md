@@ -183,3 +183,13 @@ ok
 I'd like to adjust /iorlas-wip:ontology-designer so next time I won't need to push again. ask fable to get it adjusted. thenrelease it on  my behalf.
 
 (to "Add the pain kind now, as Fable proposes, or not yet?") yes
+
+## 2026-11-27: the pain term, the five pains
+
+Yes, agree it
+
+ok, take my hand and walk me
+
+consult fable
+
+yes, send it and both additions

@@ -1,2 +1,7 @@
 - id: silent-drops
-  says: Agents dropped requirements and answers without telling anyone, and the owner found out only when something was missing.
+  says: A refused idea or a removed entry left no trace, and the owner had to search old chats to find it.
+  agreed:
+    at: '2026-11-27T02:08:40+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Sent Fable's evidence-based line: yes to 11 and 16, 10, 14 and 15 reworded as Fable wrote"
+    hash: b0df0fda4e53
