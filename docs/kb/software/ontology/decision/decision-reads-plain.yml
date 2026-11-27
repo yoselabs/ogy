@@ -8,7 +8,8 @@ options:
     label: Only the kind's guidance asks for it; no check reads it
   no:
     label: No; context as today
+  reach-printed:
+    label: ogy review prints, under each option, what it sets and what that reaches (computed, as the board's option reach already is); an example in words belongs in the context; no new field, no check
 proposal:
-  chose: example-field
-  why: Guidance no check reads is forgotten, as the 2026-11-24 decisions show. A structural decision is the one the owner must answer alone, so it is where the example is required.
-  heard: 'Every decision should be simpler and illustrative: an example of what it makes possible or impossible, and the pain it answers on a real case.'
+  chose: reach-printed
+  why: 'example-field asked an example on a structural decision, a mark dropped from the decision kind; what an option changes is computed (principle deterministic-first). Goal fewest-questions, pain question-not-alone. Before: example-field.'

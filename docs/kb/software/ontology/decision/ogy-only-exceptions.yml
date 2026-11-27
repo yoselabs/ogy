@@ -8,7 +8,8 @@ options:
     label: No principle; judged case by case
   clause:
     label: "No second principle. no-flexibility-until-needed gains one sentence: a case found only in ogy's own knowledge base counts when a decision shows that doing without is impossible or would take at least a year"
+  covered-by-earned:
+    label: "No clause and no second principle: ogy's own knowledge base is one case among the reference cases, judged by earned-on-a-real-case"
 proposal:
-  chose: clause
-  why: "One principle owns the bar; reference-cases counts ogy's own knowledge base as a case, so the principle alone does not stop an ogy-only field. Before: principle."
-  heard: flexibility-needs-evidence is the more generic and the most powerful one.
+  chose: covered-by-earned
+  why: 'judged-as-new was answered merged; no-flexibility-until-needed is gone and earned-on-a-real-case holds the test inside the 300-word budget. Before: clause.'

@@ -25,9 +25,9 @@ options:
       product/language/rule/shared-entries-home:
         says: 'A term, an actor or a set that one area uses lives in that area; one that two areas use lives in the reserved area `shared` of its layer (product/shared/actors.yml, product/shared/glossary.yml), so every address keeps its area; an entry with behaviour or a decision stays in its owning area and others link to it. Where an entry lives is guidance: ogy check reads only that `shared` holds the kinds marked shared, not how many areas use an entry.'
 proposal:
-  chose: c
-  why: Words, actors and sets are shared vocabulary; an entry with behaviour or a decision has one owning area, and moving it would split it from its area's flow.
-  heard: Recommended option fine.
+  chose: guidance
+  why: 'The answer in force is guidance (given under a delegation) and matches what is built: kinds marked shared, rule among them since split-and-home; the stored proposal still named c. Before: c.'
+  at: '2026-11-28T00:55:22+01:00'
 answers:
 - chose: a
   said: Agreed with option A

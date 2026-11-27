@@ -8,6 +8,8 @@ options:
     label: Revisit these, one by one
   ask-each:
     label: 'Neither here: each of the 13 is asked again on its own decision, by a dated proposal that names the answer in force; its own letter confirms or changes it; this decision records nothing more.'
+  hedges-stand:
+    label: A hedged answer is in force like any other; ogy dropped keeps listing it; it is asked again only when something new bears on it
 proposal:
-  chose: ask-each
-  why: This decision is the listing pattern the owner declined in ask-an-answered-decision-again; several of the 13 are being re-opened by this review.
+  chose: hedges-stand
+  why: 'ask-each would put 13 cards in front of the owner, against goal fewest-questions (pain flooded-with-questions); reason-changed-is-work (computed-row) already brings an answer back when what it rests on changes. Before: ask-each.'

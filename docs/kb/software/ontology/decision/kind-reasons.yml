@@ -10,7 +10,8 @@ options:
     label: ogy's knowledge base describes each kind and field as an entry of its own with `because`
   comments:
     label: 'As today: comments in the kind file, read by no check'
+  because-key-computed:
+    label: 'As because-key, with no hand-kept list: kinds and fields without a because are printed by a command, and an answered decision in software/ontology that no kind file names is listed as work'
 proposal:
-  chose: because-key
-  why: The list of kinds and fields with no reason becomes the worklist of the judged-as-new test. A link from the decision side needs kinds to have addresses; kinds as entries keeps each fact twice.
-  heard: The ontology should justify the way it is built with links, and sometimes text.
+  chose: because-key-computed
+  why: 'A kind-file answer leaves no entry, so ogy work cannot list it; once a kind file names the decision behind it, an answered ontology decision no kind file names is computable (principles deterministic-first, earned-on-a-real-case). Before: because-key.'

@@ -8,7 +8,8 @@ options:
     label: A new command, ogy trace
   board-only:
     label: Only the board composes it
+  covered-by-work-address:
+    label: ogy work <workflow or area> prints this trace; ogy show stays the plain read of one entry
 proposal:
-  chose: show-prints
-  why: show already prints an area as a map (area-map); a second command for the same read splits one fact over two outputs.
-  heard: The mapping should be a short text ogy prints, so an AI need not read the whole knowledge base.
+  chose: covered-by-work-address
+  why: 'The trace is the context needed to build the workflow, which ogy work <address> prints (work-brief, answered work-address): one print for one fact. Before: show-prints.'
