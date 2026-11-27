@@ -241,3 +241,9 @@ Yes, Fable's picks
 >
 > 4. ask fable, what to do and when etc
 > 5. ok
+
+## 2026-11-27: on the built-line writer (ogy-3ud)
+
+> Alright, I like it all. The only problem is that PyTest, I'm not sure. I don't think that we want to integrate with PyTest way too much because a lot of software will need to be proven by writing tests. And most of software which I do is Python, but there's a lot of TypeScript I do as well. And I tell you what, we will use Rust really soon, a lot, because, well, what is critical and important is that I want to rewrite OGY in Rust, but not now, later, all right? So essentially, stamping should, I don't know, we want to have stamping being deterministic later on, for sure. But for now, I wouldn't mind if we'll provide something like a skill how to build with OGY, right? Which will tell how stamping works and what stamping requires and what it means to prove the build.
+
+> But deterministic proofs would also be quite interesting, but I'm concerned that I'm not even sure what will be worse or better. So for now, skill it is.

@@ -20,3 +20,8 @@ answers:
   at: '2026-11-27T20:08:31+01:00'
   where: ai:claude/ontology-review-session-749f16
   note: the agent's duty is to give the test ids and say whether it is built; maybe a separate agent seals a provable entry
+- chose: test-run-writes-fingerprint
+  said: 'Likes it all, but does not want ogy tied too much to pytest: much of what is proven is TypeScript, and soon Rust'
+  at: '2026-11-27T22:22:10+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: deterministic stamping later for sure; for now a skill on how to build with ogy is fine

@@ -1,0 +1,19 @@
+title: Proving builds beyond Python
+question: Products proven with ogy are Python, TypeScript and soon Rust, and ogy itself will be rewritten in Rust; only a pytest plugin writes built lines today. How do builds in other languages get proven for now?
+context: 'Owner, 2026-11-27: do not tie ogy too much to pytest; deterministic stamping later for sure, but which way is better is not clear yet. Built: pytest --ogy-stamp (decision built-line-writer, answered test-run-writes-fingerprint). Ways known: a JUnit XML report that most runners write (pytest, vitest, jest, cargo nextest), read by one ogy command; a plugin per test runner.'
+options:
+  skill-now:
+    label: 'For now a skill, ogy-build, says how to build with ogy: what needs a proof, how a proof names a test, how stamping works and what it requires; the pytest plugin stays as the Python writer; a deterministic writer for every language is decided later'
+  junit-report:
+    label: 'Now: one ogy command reads a JUnit XML report any runner writes and stamps from it'
+  plugin-per-runner:
+    label: 'Now: a plugin per test runner (pytest, vitest, cargo)'
+proposal:
+  chose: skill-now
+  why: The owner is not sure yet which deterministic way is better; a skill costs nothing to change, and the pytest plugin already proves Python.
+  heard: For now, skill it is.
+answers:
+- chose: skill-now
+  said: Deterministic proofs for every language are interesting, but it is not clear which way is better; for now a skill
+  at: '2026-11-27T22:22:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

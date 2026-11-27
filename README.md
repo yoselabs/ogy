@@ -7,7 +7,7 @@ AI agents, and the eval suite that tests every change to them.
 |---|---|---|
 | Ontology | the shapes: kinds, origin marks, decisions, hazards, receipts | [docs/spec-v4.md](https://github.com/yoselabs/ogy/blob/979df808f576/docs/spec-v4.md) (draft); kinds as data in `src/ogy/ontologies/` |
 | Library and CLI | read a knowledge base from Git or the worktree; check, show, impact, diff, work left | `src/ogy`; [docs/mvp-report.md](https://github.com/yoselabs/ogy/blob/979df808f576/docs/mvp-report.md) |
-| Skills | `elicit` (generic: find gaps, derive, ask the fewest questions with a recommended answer each, read back) and `ogy-capture` (words, docs or code into entries, hazard pass, uses `elicit`) | [skills/elicit](skills/elicit/SKILL.md), [skills/ogy-capture](skills/ogy-capture/SKILL.md); a Claude plugin (`.claude-plugin/plugin.json`), listed in iorlas-marketplace |
+| Skills | `elicit` (generic: find gaps, derive, ask the fewest questions with a recommended answer each, read back) `ogy-capture` (words, docs or code into entries, hazard pass, uses `elicit`) and `ogy-build` (build a work item, prove it, let the test run write its built line) | [skills/elicit](skills/elicit/SKILL.md), [skills/ogy-capture](skills/ogy-capture/SKILL.md), [skills/ogy-build](skills/ogy-build/SKILL.md); a Claude plugin (`.claude-plugin/plugin.json`), listed in iorlas-marketplace |
 | Eval suite | protocol, what every metric told us, every eval run | [evals/](evals/README.md): [metrics](evals/metrics.md), [ledger](evals/ledger.md) |
 | Research | consults and probes behind the design | [docs/consults](https://github.com/yoselabs/ogy/blob/979df808f576/docs/consults), [docs/probes](https://github.com/yoselabs/ogy/blob/979df808f576/docs/probes) |
 

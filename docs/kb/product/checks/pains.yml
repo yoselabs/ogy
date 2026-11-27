@@ -7,3 +7,8 @@
     hash: b280ec61343c
 - id: built-is-unknown
   says: 'Nobody can tell which requirements are built: nothing records that a test proved one, so everything reads not done.'
+  agreed:
+    at: '2026-11-27T22:22:16+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: 'Likes it all: the pain that nobody can tell what is built, and the goal that built means a passed test'
+    hash: c9e694cee306
