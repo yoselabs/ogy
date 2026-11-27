@@ -26,3 +26,7 @@ answers:
   said: Yes to all 9 of Fable's picks, read on the pet shop cards
   at: '2026-11-25T19:56:43+01:00'
   where: ai:claude/ontology-review-session-749f16
+- chose: start-anywhere
+  said: "Yes to Fable's picks: start with what you have, pains under each goal on the board, a decision cites its pain with because; measured results not yet"
+  at: '2026-11-27T03:26:57+01:00'
+  where: ai:claude/ontology-review-session-749f16

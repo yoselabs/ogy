@@ -197,3 +197,14 @@ yes, send it and both additions
 ## 2026-11-27: how products get built
 
 It starts to feel like we are talking about the way we will not just work with OGY, but how we will.. build products. What should we start with, should I start with idea, pain point, decision, or what? ask fable how that process should be modelled. I bet we will find answers in there
+
+## 2026-11-27: on Fable's product-building process
+
+How known methods do it: Opportunity Solution Tree, Jobs To Be Done, Lean Startup, Double Diamond, Shape Up, Impact Mapping, Value Proposition Canvas, ArchiMate. Where they agree, and which one ogy already matches.  & Opportunity Solution Tree, Impact Mapping, Double Diamond, Value Proposition Canvas and Shape Up all put the problem above the solution, and none forces one entry point. ogy's discover, design and build stages are Double Diamond's cut. - we may need to keep this list stored in a note or something... can we please? 
+
+* for example an idea with no pain behind it. -awesome. it means idea is nothing if we don't know which problem it solves, I like it
+* "we'll know it worked when calls drop by half" (a measured result, an experiment). Five of the eight methods have it. No product in ogy has such a number yet, so Fable proposes adding it when the first real one appears (measured-outcome). - aggree. put it in beads with a full context
+* A pain nobody acted on isn't listed (question pain-owes-a-follower, new). - what? ask fable
+* A routine that belongs to nothing isn't listed (workflow-owes-capability, waiting since Tuesday). - what? ask fable
+
+for rest - yes, fable picks
