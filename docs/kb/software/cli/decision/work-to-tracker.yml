@@ -1,0 +1,26 @@
+title: How the work left reaches a tracker
+question: How does the work left reach a tracker such as bd, so a recalculated work list creates, rewrites or closes its tasks?
+context: "Owner, 2026-11-27: the flow is knowledge base, ogy work, beads, work; a bead should follow its work item, regenerated when it changes and removed when it is gone. Today 20 beads were filed by hand and tied to nothing (friction ledger item 19). A tracker item names the entry's address and fingerprint (bd create --external-ref, --metadata); nothing is stored in the knowledge base (questions-live-in-decisions: a tracker only mirrors). A work item with no tracker item is created, one whose fingerprint differs is rewritten from the fresh brief (ogy work <address>), one whose entry left the work list is closed. Items with no ogy reference are never touched."
+options:
+  print-and-runner:
+    label: ogy work prints the items a tracker should hold (address, title, status, fingerprint, brief); a runner outside ogy applies them; for bd a just recipe until the task loop hosts it
+    sets:
+      product/inspection/capability/work-as-tracker-items:
+        says: ogy prints the work left as items a tracker can hold, each with its entry's address, fingerprint and context; a runner outside ogy creates, rewrites and closes them.
+        realizes:
+        - product/inspection/goal/work-follows-the-kb
+  adapter-in-ogy:
+    label: ogy talks to each tracker itself
+    sets:
+      product/inspection/capability/work-as-tracker-items:
+        says: ogy creates, rewrites and closes the tracker's items itself, through an adapter per tracker.
+        realizes:
+        - product/inspection/goal/work-follows-the-kb
+  by-hand:
+    label: 'As today: tasks are written by hand'
+    sets:
+      product/inspection/capability/work-as-tracker-items:
+proposal:
+  chose: print-and-runner
+  why: "Computed and tool-neutral: ogy prints, a script applies (principle deterministic-first); another tracker needs only another runner, and the README's ogy has no tracker adapters stands. Capability work-as-tracker-items realizes goal work-follows-the-kb, which answers pain tasks-drift."
+  heard: Mark which bead is the task for which work, so that when work is recalculated the bead is regenerated or removed.

@@ -11,3 +11,9 @@
     where: ai:claude/f6fcc5ed
     said: Fine with recording one common inspection goal.
     hash: 46ee8424c70d
+- id: work-follows-the-kb
+  says: Every task that builds the product comes from a work item and follows it.
+  for:
+  - product/shared/actor/owner
+  because:
+  - product/inspection/pain/tasks-drift

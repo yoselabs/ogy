@@ -38,3 +38,7 @@
     where: ai:claude/f6fcc5ed
     said: 'Approved the verdict table: two layer views with stated limits.'
     hash: 5a05817bd8f0
+- id: work-as-tracker-items
+  says: ogy prints the work left as items a tracker can hold, each with its entry's address, fingerprint and context; a runner outside ogy creates, rewrites and closes them.
+  realizes:
+  - product/inspection/goal/work-follows-the-kb

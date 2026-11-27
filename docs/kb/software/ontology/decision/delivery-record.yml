@@ -8,6 +8,9 @@ options:
     label: A delivered block stored on each entry
   task-field:
     label: As computed, plus a stored task field
+  tracker-names-the-entry:
+    label: "Nothing new stored in the entry: a tracker item names the entry's address and fingerprint; show prints proof, built and the Git facts"
 proposal:
-  chose: computed
-  why: Every asked fact but the task already has one owner (proof, built line, Git); a stored copy would drift, and an entry has many tasks over time.
+  chose: tracker-names-the-entry
+  why: "What a task is for is a fact about the task, so the tracker holds it, keyed by the entry's permanent address; a bead id on the entry would be one fact in two homes and name one tracker (principle one-owner-per-fact). Decision work-to-tracker builds on it. Before: computed."
+  heard: Mark in the ontology which bead is a task for which work.
