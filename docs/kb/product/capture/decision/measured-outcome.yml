@@ -1,0 +1,11 @@
+title: Whether a built thing worked
+question: Does ogy hold the result measured after release (calls drop by half), a hypothesis to test or an experiment?
+context: "Fable, the product-building process (2026-11-27): five of eight known methods hold a measured result (Opportunity Solution Tree outcome, ArchiMate outcome, Lean Startup validated learning); ogy holds none. Counted: no metric, target or test in any field of the three knowledge bases, so fields chosen now would have nothing to test them on. It comes in when a product described in ogy is released and its owner names a number to watch, or a decision's context says how success will be seen."
+options:
+  not-yet:
+    label: 'Not yet: added when the first real number to watch or test appears'
+  now:
+    label: 'Now: a goal carries the result that says whether its pains were relieved'
+proposal:
+  chose: not-yet
+  why: No real case in structure or words; waiting costs no migration (0 records written in a shape to change).

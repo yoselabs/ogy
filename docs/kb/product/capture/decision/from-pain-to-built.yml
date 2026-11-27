@@ -14,10 +14,13 @@ options:
     label: As decision-first, and a later pain about a goal that a decision already wrote is asked again on that decision as a new option, each pain kept as its own dated line
   pain-first:
     label: A pain is written first as a pain entry, one sentence the owner agrees to by its own card; a decision is written when there is a choice and cites the pain with because; the goal cites every pain it relieves. Capability, workflow, interface and handler follow as ogy work lists them
+  start-anywhere:
+    label: 'Start with what you have, written as what it is: a pain as a pain entry agreed by its own card, an idea as a decision whose options set what it would build with not now among them, a goal as a goal, code as entries with their source. Nothing has to come first; ogy work lists what is missing above and below'
 proposal:
-  chose: pain-first
-  why: 'Decision product/capture/decision/pain-kind, answered now (2026-11-26): a pain is its own entry, one sentence, agreed by its own card. The decision-first order kept pains in a context, where two pains could not be confirmed apart and one pain was written twice. Before: decision-first.'
-  at: '2026-11-26T23:21:02+01:00'
+  chose: start-anywhere
+  why: 'Fable, the product-building process (2026-11-27): the known methods (Opportunity Solution Tree, Impact Mapping, Double Diamond, Value Proposition Canvas, Shape Up) agree the problem sits above the solution and the chain is read both ways, and none forces one entry point. ogy already has a kind for each start and a work row for each missing link. pain-first covered pains only. Before: pain-first.'
+  at: '2026-11-27T02:36:02+01:00'
+  heard: Should I start with an idea, a pain point, a decision, or what? This is how we will build products, not just work with ogy.
 answers:
 - chose: decision-first
   said: Yes to all 9 of Fable's picks, read on the pet shop cards

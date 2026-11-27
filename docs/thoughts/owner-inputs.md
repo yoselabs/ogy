@@ -193,3 +193,7 @@ ok, take my hand and walk me
 consult fable
 
 yes, send it and both additions
+
+## 2026-11-27: how products get built
+
+It starts to feel like we are talking about the way we will not just work with OGY, but how we will.. build products. What should we start with, should I start with idea, pain point, decision, or what? ask fable how that process should be modelled. I bet we will find answers in there
