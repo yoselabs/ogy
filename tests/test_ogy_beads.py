@@ -2,11 +2,16 @@
 `ogy work --tracker` and the open beads labelled ogy-work, never touches a bead without the label, and writes only with --apply."""
 
 import json
+lazy from pathlib import Path
 
 import pytest
 from beads_client import Bd, Bead
 from beads_client.testing import Script
-from tools.ogy_beads import ADDRESS, FINGERPRINT, LABEL, Action, Item, apply, plan
+from tests.conftest import SOURCE, commit
+from tests.test_writes import w
+from tools.ogy_beads import ADDRESS, FINGERPRINT, LABEL, Action, Item, apply, main, plan, read_items
+
+from ogy import cli
 
 A, B, C = "product/app/rule/a", "product/app/rule/b", "product/app/rule/c"
 
@@ -28,8 +33,9 @@ def _bead(id_: str, key: str, fingerprint: str = "f1", labels: tuple[str, ...] =
         ([], [_bead("t-1", A)], [("close", A, "t-1")]),  # built or removed: the work left no longer lists it
         ([], [_bead("t-9", B, labels=("other",))], []),  # a bead without the label is never touched
         ([_item(A), _item(C)], [_bead("t-2", B)], [("create", A, ""), ("create", C, ""), ("close", B, "t-2")]),
+        ([_item(A)], [_bead("t-1", A), Bead("t-3", labels=(LABEL,))], [("close", "", "t-3")]),  # its metadata write failed
     ],
-    ids=["create", "rewrite", "current", "close", "unlabelled", "mixed"],
+    ids=["create", "rewrite", "current", "close", "unlabelled", "mixed", "no-address"],
 )
 def test_the_plan_makes_the_open_ogy_beads_match_the_work_left(
     items: list[Item], beads: list[Bead], wanted: list[tuple[str, str, str]]
@@ -45,3 +51,28 @@ def test_apply_creates_with_the_label_then_writes_the_address_and_fingerprint() 
     assert create[0] == "create" and LABEL in create
     assert update[:2] == ["update", "t-5"] and json.loads(update[update.index("--metadata") + 1]) == {ADDRESS: A, FINGERPRINT: "f1"}
     assert close[:2] == ["close", "t-2"]
+
+
+def test_main_shows_the_plan_and_writes_only_with_apply(repo: Path) -> None:
+    rule = {"address": A, "says": "It holds.", "src": [SOURCE]}
+    assert w(repo, "put", json.dumps([rule]))[0] == cli.OK
+    commit(repo, "a rule")  # the runner reads HEAD
+    shown = Script().say("[]")  # bd list: no ogy beads yet
+    assert main(["--repo", str(repo)], Bd("test", exe="bd", run=shown)) == 0
+    assert [call[3] for call in shown.calls] == ["list"]  # show only: nothing written
+    creates = len(plan(read_items(repo, "HEAD"), []))
+    applied = Script().say("[]")
+    for index in range(creates):
+        applied.say(json.dumps({"id": f"t-{index}"})).say()  # create answers its id, the metadata update nothing
+    assert main(["--repo", str(repo), "--apply"], Bd("test", exe="bd", run=applied)) == 0
+    assert [call[3] for call in applied.calls] == ["list", *["create", "update"] * creates]
+
+
+def test_the_runner_answers_help_and_refuses_an_unknown_flag(capsys: pytest.CaptureFixture[str]) -> None:
+    """ADR 0025: `tools/ogy_beads.py --help` prints its usage and changes nothing; an unknown flag exits 2."""
+    with pytest.raises(SystemExit) as helped:
+        main(["--help"], Bd("test", exe="bd", run=Script()))
+    assert helped.value.code == 0 and "--apply" in capsys.readouterr().out
+    with pytest.raises(SystemExit) as refused:
+        main(["--no-such-flag"], Bd("test", exe="bd", run=Script()))
+    assert refused.value.code == 2

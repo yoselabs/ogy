@@ -55,6 +55,9 @@ def plan(items: list[Item], beads: list[Bead]) -> list[Action]:
             actions.append(Action("rewrite", item.key, bead.id, item))
     keys = {item.key for item in items}
     actions += [Action("close", key, bead.id) for key, bead in sorted(held.items()) if key not in keys]
+    # A labelled bead with no address (its metadata write failed after the create) would be duplicated forever: close it.
+    lost = [bead for bead in beads if LABEL in bead.labels and not bead.metadata.get(ADDRESS)]
+    actions += [Action("close", "", bead.id) for bead in sorted(lost, key=lambda bead: bead.id)]
     return actions
 
 
@@ -62,7 +65,8 @@ def apply(actions: list[Action], bd: Bd) -> None:
     for action in actions:
         item = action.item
         if action.kind == "close":
-            bd.close(action.bead, f"ogy work no longer lists {action.key}: built or removed")
+            why = f"ogy work no longer lists {action.key}: built or removed" if action.key else "an ogy-work bead with no address"
+            bd.close(action.bead, why)
             continue
         if item is None:
             continue
@@ -85,8 +89,10 @@ def main(argv: list[str] | None = None, bd: Bd | None = None) -> int:
     parser.add_argument("--repo", type=Path, default=Path.cwd())
     parser.add_argument("--rev", default="HEAD", help="the commit to read the work left from (default HEAD: what is committed)")
     parser.add_argument("--apply", action="store_true", help="make the changes in bd; without it nothing is written")
+    parser.add_argument("--tracker-dir", type=Path, help="the folder whose bd to sync (default: the repository)")
     args = parser.parse_args(argv)
-    bd = bd or Bd("ogy-beads", cwd=str(args.repo), env=os.environ)  # find bd on the PATH of the shell that ran it
+    where = str(args.tracker_dir or args.repo)
+    bd = bd or Bd("ogy-beads", cwd=where, env=os.environ)  # find bd on the PATH of the shell that ran it
     actions = plan(read_items(args.repo, args.rev), bd.find(label=LABEL))
     counts = {kind: sum(1 for action in actions if action.kind == kind) for kind in ("create", "rewrite", "close")}
     for action in actions:
