@@ -42,3 +42,8 @@
   says: ogy prints the work left as items a tracker can hold, each with its entry's address, fingerprint and context; a runner outside ogy creates, rewrites and closes them.
   realizes:
   - product/inspection/goal/work-follows-the-kb
+  agreed:
+    at: '2026-11-27T23:16:53+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: ogy work prints the tracker items and a runner applies them, the tracker names the entry, and the pain and goal of tasks that drift"
+    hash: 0b9661e5ebd6

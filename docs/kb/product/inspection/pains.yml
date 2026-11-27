@@ -7,3 +7,8 @@
     hash: ea01c5e4454b
 - id: tasks-drift
   says: 'A task written by hand from a decision is tied to nothing: it stays on the list after the work is built or the answer changed.'
+  agreed:
+    at: '2026-11-27T23:17:09+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: ogy work prints the tracker items and a runner applies them, the tracker names the entry, and the pain and goal of tasks that drift"
+    hash: 417c4edcae67

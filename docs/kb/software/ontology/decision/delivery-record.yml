@@ -14,3 +14,8 @@ proposal:
   chose: tracker-names-the-entry
   why: "What a task is for is a fact about the task, so the tracker holds it, keyed by the entry's permanent address; a bead id on the entry would be one fact in two homes and name one tracker (principle one-owner-per-fact). Decision work-to-tracker builds on it. Before: computed."
   heard: Mark in the ontology which bead is a task for which work.
+answers:
+- chose: tracker-names-the-entry
+  said: "Yes to Fable's picks: ogy work prints the tracker items and a runner applies them, the tracker names the entry, and the pain and goal of tasks that drift"
+  at: '2026-11-27T23:17:03+01:00'
+  where: ai:claude/ontology-review-session-749f16

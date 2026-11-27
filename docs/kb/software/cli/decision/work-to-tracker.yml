@@ -24,3 +24,8 @@ proposal:
   chose: print-and-runner
   why: "Computed and tool-neutral: ogy prints, a script applies (principle deterministic-first); another tracker needs only another runner, and the README's ogy has no tracker adapters stands. Capability work-as-tracker-items realizes goal work-follows-the-kb, which answers pain tasks-drift."
   heard: Mark which bead is the task for which work, so that when work is recalculated the bead is regenerated or removed.
+answers:
+- chose: print-and-runner
+  said: "Yes to Fable's picks: ogy work prints the tracker items and a runner applies them, the tracker names the entry, and the pain and goal of tasks that drift"
+  at: '2026-11-27T23:16:53+01:00'
+  where: ai:claude/ontology-review-session-749f16
