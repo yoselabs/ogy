@@ -62,3 +62,8 @@
 - id: earned-on-a-real-case
   says: 'Everything in the ontology earns its place on a real case, whether proposed today or already there: nothing is added on the chance it is wanted, and what would not be added today is rebuilt or dropped, whatever the change costs.'
   why: Unproven flexibility costs every writer a choice and every reader a branch; work already done and the size of a change are no reason to keep what would not be added today.
+  agreed:
+    at: '2026-11-27T21:29:09+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Agrees to the principle earned-on-a-real-case
+    hash: 915f530749c3
