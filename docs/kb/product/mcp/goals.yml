@@ -1,0 +1,4 @@
+- id: one-service
+  says: One running service gives the agent, the board and other programs the same knowledge base.
+  because:
+  - product/mcp/pain/copies-disagree

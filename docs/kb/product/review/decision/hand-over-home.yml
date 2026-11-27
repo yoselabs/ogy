@@ -1,0 +1,26 @@
+title: What the end-of-session hand-over is for
+question: The hand-over at the end of a session belongs to no capability. Which one does it deliver?
+context: Found 2026-11-27 by the new rule that a workflow realizes a capability (decision workflow-owes-capability). The hand-over ends with 'The owner has the waiting count, the dropped list and the answers they may veto'.
+options:
+  list-dropped:
+    label: 'It delivers list-dropped: ogy lists what no person has seen'
+    sets:
+      product/review/workflow/hand-over:
+        realizes: product/removal/capability/list-dropped
+  ask-the-owner:
+    label: 'It delivers ask-the-owner: the question cards'
+    sets:
+      product/review/workflow/hand-over:
+        realizes: product/review/capability/ask-the-owner
+  remove:
+    label: 'No: the hand-over is dropped'
+    sets:
+      product/review/workflow/hand-over:
+proposal:
+  chose: list-dropped
+  why: Its end shows the owner what no person has seen, which is what list-dropped says; it also clears list-dropped's no-workflow row. ask-the-owner is about question cards, which the hand-over does not show.
+answers:
+- chose: list-dropped
+  said: Likes Fable's suggestions on the hand-over and skills
+  at: '2026-11-27T20:07:57+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -1,0 +1,2 @@
+- id: copies-disagree
+  says: When the board, the agent and other programs each hold their own copy, they must lock and merge, and they show different things.

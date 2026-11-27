@@ -1,0 +1,31 @@
+title: What calling ogy over MCP is for
+question: Calling an ogy tool over MCP belongs to no capability. What does it deliver?
+context: Found 2026-11-27 by the new rule that a workflow realizes a capability (decision workflow-owes-capability). The area product/mcp has no capability and no goal; the MCP door carries reads and writes alike. Removing it would strand the interface product/mcp/interface/mcp and its 4 proven rows.
+options:
+  new-capability:
+    label: 'A new capability: a program calls every ogy command as an MCP tool; the reason is yours to give later'
+    sets:
+      product/mcp/capability/tools-over-mcp:
+        says: A program calls every ogy command as an MCP tool and gets what the command line returns.
+      product/mcp/workflow/call-a-tool:
+        realizes: product/mcp/capability/tools-over-mcp
+  write-entries:
+    label: It delivers write-entries only
+    sets:
+      product/mcp/capability/tools-over-mcp:
+      product/mcp/workflow/call-a-tool:
+        realizes: product/capture/capability/write-entries
+  remove:
+    label: 'No: the MCP door is dropped'
+    sets:
+      product/mcp/capability/tools-over-mcp:
+      product/mcp/workflow/call-a-tool:
+proposal:
+  chose: new-capability
+  why: The door carries reads and writes alike, so write-entries is too narrow. No pain or goal says why it exists, so the new capability will show under 'the why is missing' until the owner gives the reason.
+answers:
+- chose: new-capability
+  said: Yes, every ogy command as an MCP tool makes sense, as long as it is tied to the pains and goals behind it
+  at: '2026-11-27T20:07:49+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: wants each new entry named with the pain or goal it comes from

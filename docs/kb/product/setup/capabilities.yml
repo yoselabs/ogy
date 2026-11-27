@@ -2,7 +2,11 @@
   says: A person sets a repository up for ogy with ogy init; running it again creates what is missing, updates what is outdated and never re-adds what was removed.
   src:
   - code:src/ogy/init.py#init
+  realizes:
+  - product/setup/goal/at-hand-on-clone
 - id: doctor
   says: ogy init --check says what is not set up, one line each with how to mend it, and writes nothing.
   src:
   - code:src/ogy/init.py#doctor
+  realizes:
+  - product/setup/goal/at-hand-on-clone

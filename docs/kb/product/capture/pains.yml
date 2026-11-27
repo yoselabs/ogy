@@ -1,0 +1,2 @@
+- id: hand-edits-break-the-kb
+  says: An agent that edits the files by hand can write an entry that breaks the rules, and nobody is warned.

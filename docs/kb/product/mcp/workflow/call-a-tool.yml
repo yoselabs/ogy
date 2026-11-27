@@ -56,3 +56,9 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: Owner delegated this round to Fable's judgment; Fable approved 1, 6 and 7 and reworded 2 and 3
       hash: 4a70b6c2543d
+realizes: product/mcp/capability/tools-over-mcp
+agreed:
+  at: '2026-11-27T20:07:49+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  said: Yes, every ogy command as an MCP tool makes sense, as long as it is tied to the pains and goals behind it
+  hash: f75bd704de29

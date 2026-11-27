@@ -11,12 +11,19 @@ options:
     label: A new kind for requirements that hold for a whole area or system; rule stays for one part
   split-whole-product-by-proof:
     label: '`split` stays: `constrains` for data kinds, `satisfies` from behaviour kinds only. A rule that holds for the whole product names nothing and carries a `proof`; the unused check reads a proof like a satisfier. An area or a system is no satisfier; ask again when three rules are each linked from every behaviour entry of one area.'
+  split-and-home:
+    label: constrains for data kinds, satisfies from behaviour kinds; a rule that names nothing holds for its area, or for the whole layer when it lives in shared, and stands by its proof; rule joins the kinds that may live in shared
 proposal:
-  chose: split-whole-product-by-proof
-  why: No system kind is proposed, so an area or system cannot be a satisfier; a whole-product rule stands by its proof.
-  at: '2026-11-25T20:31:04+01:00'
+  chose: split-and-home
+  why: 'The two links run opposite ways for a reason: a changed rule makes the behaviour held to it work, changed data makes the rule work. A global rule needs a home that a work brief can reach: its area, or shared for the layer. Before (2026-11-25): split-whole-product-by-proof, which gave a global rule no home.'
+  at: '2026-11-27T19:53:10+01:00'
+  heard: Some rules are global and apply to everything; how would we find a rule linked to nothing?
 answers:
 - chose: split
   said: 'Yes, all: constrains for data kinds, satisfies only for behaviour kinds'
   at: '2026-11-20T03:09:26+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: split-and-home
+  said: 'Likes it: more constraints on the systems we build, documented properly in the knowledge base'
+  at: '2026-11-27T20:08:18+01:00'
+  where: ai:claude/ontology-review-session-749f16

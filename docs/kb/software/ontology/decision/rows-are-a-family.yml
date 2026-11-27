@@ -3,11 +3,20 @@ question: Choice, case and timeout share satisfies, then, effects and a performi
 context: "Found 2026-11-24 by the ontology review (docs/research/2026-11-24-ontology-review.md, finding N4). The redesign proposed only the term `row`. The three differ in their trigger (a button, a condition, a clock) and each has its own required field (label; order and when; after), so a merge would make three fields optional and move the step's checks onto a value. A family keeps the kinds and writes the triple once. Whether the engine can declare a family is not checked: a kind-file change that needs engine work is a cost the owner should see."
 options:
   family:
-    label: A named family of the three kinds in the kind system; links and checks name `row` once instead of the triple
+    label: '`row` names the three kinds the flow already declares (choice, case, timeout); a link or a rule may name `row` once; the word enters the glossary. No merge into one kind'
   term-only:
     label: '`row` is a glossary word only; the triple stays written out where it is used'
   one-kind:
     label: One kind `row` with a `trigger` value (choice, case, timeout) and the fields optional by trigger
+  set-in-flow:
+    label: The workflow kind's flow block names the set of its three row kinds once (choice, case, timeout); that name is accepted wherever kinds are listed; the 4 rules that are the same on all three are written once for it, the 2 that differ stay; fields stay on each kind; no parent kind; `row` is the glossary word, and a line of ogy work is a work item
 proposal:
-  chose: term-only
-  why: The engine has no family concept (kind lists are checked name by name); no question fails today and no fourth row kind exists; a glossary word removes the confusion.
+  chose: set-in-flow
+  why: 'The three are processed differently (which may sit on which step; each has its own required field), so they stay three kinds. The flow block already owns them; naming the set there once removes the triple from 9 kind files with one owner. A parent kind would give the set two owners. Before (2026-11-27, earlier today): family.'
+  heard: 'Semantics is king: if choice, case and timeout are separate they are processed differently; keep the engine generic.'
+answers:
+- chose: set-in-flow
+  said: 'Row is the flow word, like polymorphism: different kinds of rows behave differently but are all rows; takes whatever Fable agrees with'
+  at: '2026-11-27T20:08:13+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: defers the exact form to Fable

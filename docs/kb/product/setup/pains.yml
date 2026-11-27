@@ -1,0 +1,2 @@
+- id: setup-before-use
+  says: After cloning a project, a person must set tools up before an agent can use the knowledge base.

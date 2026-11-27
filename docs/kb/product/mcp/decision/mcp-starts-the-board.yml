@@ -1,0 +1,19 @@
+title: The MCP server also serves the board
+question: When an agent starts ogy from .mcp.json (ogy mcp, over stdio), does the same process also serve the board and the API on a free port?
+context: 'Owner, 2026-11-27: one service serves it all; starting the MCP server starts the board too, on a random port, so the agent can send the owner a link; one process means no locking or two-way sync between board, agent and other programs. Today ogy mcp serves only the tools; ogy serve runs the board with its own MCP server (decision serve-includes-mcp, answered one-process). Not checked: whether a process started from .mcp.json may listen on a port.'
+options:
+  yes-free-port:
+    label: 'Yes: ogy mcp also serves the board and the API on a free port and gives the agent the link'
+    sets:
+      product/mcp/capability/one-process-serves-all:
+        says: Starting ogy for an agent also starts the board and the API in the same process on a free port, and the agent can give the owner the link.
+        realizes:
+        - product/mcp/goal/one-service
+  no-two-commands:
+    label: 'No: ogy mcp serves the tools and ogy serve the board, as today'
+    sets:
+      product/mcp/capability/one-process-serves-all:
+proposal:
+  chose: yes-free-port
+  why: It is the owner's one-service idea and capability one-process-serves-all; two commands leave two processes that must stay in step.
+  heard: 'One service serves it all: starting the MCP server also starts the board on a random port.'

@@ -1,0 +1,19 @@
+title: When a workflow, capability or goal is done
+question: Is a workflow, a capability or a goal done when every entry under it that needs a proof is built, computed, or does it carry a proof of its own?
+context: "Owner, 2026-11-27: almost everything could be proven, even a capability; workflows and their cases for sure; a pain no; a decision maybe not. A capability's own proof beside the proofs of the parts under it would be a second home for the same fact (principle one-owner-per-fact)."
+options:
+  computed:
+    label: 'Done is computed: a workflow, capability or goal is done when every provable entry under it is built, and ogy work shows it'
+  own-proof:
+    label: Each carries its own proof, such as an end-to-end test
+  not-shown:
+    label: Done is not shown above the provable entries
+proposal:
+  chose: computed
+  why: It follows missing-is-computed and one-owner-per-fact; an end-to-end test is still a proof of an interface or a rule under it.
+  heard: Isn't everything provable, even a capability? Workflows and cases for sure.
+answers:
+- chose: computed
+  said: Good with the proof design
+  at: '2026-11-27T20:08:35+01:00'
+  where: ai:claude/ontology-review-session-749f16

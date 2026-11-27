@@ -2,6 +2,8 @@
   says: An agent adds and changes entries in one checked write that is made whole or not at all.
   src:
   - code:src/ogy/put.py#put
+  realizes:
+  - product/capture/goal/one-checked-door
 - id: store-words
   says: When the owner speaks, the agent records the answer at once with a short paraphrase of what they said, and shows that paraphrase to the owner in the read-back.
   src:

@@ -1,0 +1,4 @@
+- id: one-checked-door
+  says: Every read and write goes through ogy, which checks it.
+  because:
+  - product/capture/pain/hand-edits-break-the-kb

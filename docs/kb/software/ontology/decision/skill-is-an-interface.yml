@@ -1,0 +1,20 @@
+title: A skill the product ships for an AI actor
+question: A workflow such as hand-over is done by an agent following a skill, not by ogy's code. What is that skill in the knowledge base, and what proves it?
+context: "Owner, 2026-11-27: a workflow that does not exist in the software is either not in the knowledge base or work that needs a proof; maybe its implementation is an AI skill. Today: ogy's commands serve hand-over's steps (check, status, dropped); the skill section skills/ogy-capture/SKILL.md section 8 is what makes the agent do it, and nothing records it. Skill headings already name evals in prose ('evaluated: E8-E10', 'untested'). A proof today must be path.py::function, so an eval cannot be named."
+options:
+  interface-proved-by-eval:
+    label: A skill is an interface of form skill, sourced from its skill section; a proof may name an eval record as well as a test, so an unproven skill is unbuilt work
+  handler:
+    label: A skill is a handler in the software layer
+  outside:
+    label: Skills stay outside the knowledge base; workflows an agent performs are never proven
+proposal:
+  chose: interface-proved-by-eval
+  why: An interface is where an actor reaches the product; a skill is what the product gives an AI actor. It is shipped and can be checked by an eval, so it is work until one passes. A handler is code that runs; a skill is read. Then product/review/interface/hand-over-skill is written.
+  heard: Maybe the implementation of that workflow is an AI skill; or it is work which still needs proofs.
+answers:
+- chose: interface-proved-by-eval
+  said: Likes describing a skill as an interface of form skill; an implementation may be a skill or deterministic logic
+  at: '2026-11-27T20:08:04+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: adds that deterministic logic should be preferred over skills and prompts

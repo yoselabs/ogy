@@ -1,0 +1,20 @@
+title: A brief for one work item
+question: 'When an agent takes one work item from ogy work, does ogy print its whole context: its step and workflow, the capability, goal and pains above, the decisions that set or are cited by them, the rules it is held to, the rules of its area and of shared that name nothing, the data it reads and their rules, its interface and handler, and its proof and built state?'
+context: 'Owner, 2026-11-27: a build item becomes a work item compiled from its context, most of all decisions, rules, goals and the global rules. Today ogy show and ogy impact print one hop (fields, parents, then, the handler) and no goal, pain, decision or rule; 66 of 74 rules are linked to nothing and never loaded. Near decision trace-print asks a printed trace for a workflow or area, not for one work item.'
+options:
+  brief-command:
+    label: 'Yes: one command prints the brief for an address, computed, never stored; a ticket in a tracker is a print of it'
+  show-prints-brief:
+    label: Yes, as a mode of ogy show
+  no-brief:
+    label: 'No: the agent reads the entries itself'
+proposal:
+  chose: brief-command
+  why: Nothing loads what a work item rests on; a computed brief reaches the global rules by their home (rule-constrains split-and-home). A mode of show mixes one entry with its whole context.
+  heard: 'A work item is compiled from the context of the feature: decisions, rules, objectives, especially global ones.'
+answers:
+- chose: brief-command
+  said: "Likes the work brief: ogy work gives the list, the brief gives one item's whole context"
+  at: '2026-11-27T20:08:27+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: 'unsure of the name: ogy work compile, ogy compile or ogy prepare'

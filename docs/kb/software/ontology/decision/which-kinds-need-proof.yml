@@ -9,12 +9,18 @@ options:
     label: Keep the 13 kinds
   behaviour-and-built-decisions:
     label: 'As behaviour, and an answered decision marked `structure` whose option in force sets nothing is work until it carries a `proof`: a test that reads the kind files and fails when they stop matching that answer; a new answer makes the proof out of date.'
+  behaviour-rule-carries-it:
+    label: 'As behaviour. A decision proves nothing by itself: when its answer must stay true in the code, its option sets a rule, and the rule needs the proof'
 proposal:
-  chose: behaviour-and-built-decisions
-  why: 41 answered structure decisions set nothing and nothing reports one unbuilt (context-form area-field); needs engine work, built after the re-asks.
-  at: '2026-11-25T20:30:57+01:00'
+  chose: behaviour-rule-carries-it
+  why: 'The mark `structure` was dropped from the decision kind, and a mark saying a decision needs a proof would be set by hand, against principle missing-is-computed. A rule the option sets carries the proof, and a missing proof is computed as an unbuilt rule. Which answers need a rule is judged with rules-need-a-check. Before (2026-11-25): behaviour-and-built-decisions.'
+  at: '2026-11-27T16:27:36+01:00'
 answers:
 - chose: behaviour
   said: 'Yes, all: D15, proof on rows, rule, interface, setting, workaround; entity only with transitions; not step, handler, quantity'
   at: '2026-11-20T03:33:40+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: behaviour-rule-carries-it
+  said: Good with the proof design
+  at: '2026-11-27T20:08:40+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -1,0 +1,20 @@
+title: Who writes a built line
+question: "A built line records that an entry was as it is when its proof passed. Today no command writes one: only a move and the tests call it, ogy's own knowledge base has 0 built files and 82 unbuilt rows, and a proof is checked only for its spelling. Who writes a built line?"
+context: 'Owner, 2026-11-27: worried that the proof and built system is untested and guarantees nothing. Found: built.stamp is called only by relocate.py; evidencecheck.py reads only that a proof looks like path.py::function; the task-loop case read unbuilt for all 52 rows though the code exists.'
+options:
+  test-run-writes:
+    label: The test run in the gate reports which proofs passed and ogy writes their built lines, with fingerprint and commit; a proof must name a test that exists
+  agent-command:
+    label: An agent stamps a built line by a command after running the tests
+  no-record:
+    label: 'No built record: an entry with a proof counts as built'
+proposal:
+  chose: test-run-writes
+  why: Only a passed test written down by the tool guarantees anything; an agent's stamp is a mark by hand, against missing-is-computed; without a record a changed entry never shows as work.
+  heard: The proof system is not tested and does not guarantee that it works.
+answers:
+- chose: test-run-writes
+  said: Good with the proof design
+  at: '2026-11-27T20:08:31+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: the agent's duty is to give the test ids and say whether it is built; maybe a separate agent seals a provable entry
