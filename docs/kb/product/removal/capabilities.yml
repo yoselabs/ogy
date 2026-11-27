@@ -1,5 +1,5 @@
 - id: remove-with-reason
-  says: An agent deletes an entry only with a reason; an entry the base commit had is kept in its area's removed ledger so its id is never reused.
+  says: An agent deletes an entry only with a reason; an entry the base commit had, one a person agreed to, a decision with an answer or an option of one is kept in its area's removed ledger so its id is never reused.
   src:
   - code:src/ogy/removal.py#remove
   realizes:

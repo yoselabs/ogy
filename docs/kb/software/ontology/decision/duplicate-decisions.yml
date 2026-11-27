@@ -10,7 +10,8 @@ options:
     label: A new command merges one decision into another
   no:
     label: As today; merging is not written down
+  shown-on-put:
+    label: When a decision is put, ogy prints the decisions that name the same addresses or share the main words of its question; the agent says for each whether it is the same question
 proposal:
-  chose: links-only
-  why: Every text rule tried flagged only wrong pairs; the removed ledger already keeps the answers.
-  heard: Can ogy find decisions about the same thing deterministically and merge them, maybe through the ontology?
+  chose: shown-on-put
+  why: '126 decisions set nothing, so links alone could not have caught Q16 (it asked what mcp-door-home answered). The program shows the candidates, the agent only judges (principle deterministic-first). Capability ask-the-owner realizes goal fewest-questions, which answers pain design-errors-pass-checks. Before: links-only.'

@@ -1,0 +1,13 @@
+title: How a reply names its card
+because:
+- product/review/pain/guesses-look-decided
+question: Does a reply name a card only by its number in the round, or also by its address?
+context: 'Friction ledger item 7 (2026-11-27): the round id is a hash of its content (rounds.py), so card numbers move whenever the queue changes, and review and review --all number differently; the agent re-reads numbers before every reply. A yes that lands on the wrong card is an agreement nobody gave.'
+options:
+  address-or-number:
+    label: A reply names a card by its number or by its address (yes 3, or yes product/review/pain/x; a question by its decision address)
+  number-only:
+    label: 'As today: numbers in the round only'
+proposal:
+  chose: address-or-number
+  why: A number is a position that moves when the queue changes; an address does not. Capability apply-a-reply realizes goal requirements-agreed, which answers pain guesses-look-decided.

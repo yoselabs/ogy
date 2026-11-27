@@ -1,0 +1,13 @@
+title: A later answer that changes an earlier decision's entry
+because:
+- constitution/principle/one-owner-per-fact
+question: When a new answer means an entry set by an earlier decision should change or go, how is that written?
+context: 'Friction ledger item 6 (2026-11-27): one address has one deciding decision (two-homes), so removing missing-is-computed and no-flexibility-until-needed after deterministic-first and judged-as-new needed a re-ask card each.'
+options:
+  re-ask-with-heard:
+    label: The earlier decision is asked again with a new option, and its proposal carries what the owner just said, so a plain yes confirms it
+  takeover:
+    label: A later decision may name an address an earlier one set; the newer answer wins
+proposal:
+  chose: re-ask-with-heard
+  why: One address keeps one owning decision (principle one-owner-per-fact); the cost is one card a plain yes clears, held down for goal fewest-questions. Two cases this week.

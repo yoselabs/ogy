@@ -1,0 +1,22 @@
+title: What a removal records
+question: Is a removal recorded in the removed ledger only when the pushed land branch had the entry, or also when a person had seen it?
+context: "Friction ledger items 10 and 2 (2026-11-27): the base is the land branch as the remote holds it, so a session that merges locally and pushes later records nothing it removes ('not recorded: the base never had it'), and an option dropped by a put vanishes the same way. Seen is computed from the entry's own fields."
+options:
+  landed-only:
+    label: 'As today: only what the pushed land branch had'
+    sets:
+      product/removal/capability/remove-with-reason:
+        says: An agent deletes an entry only with a reason; an entry the base commit had is kept in its area's removed ledger so its id is never reused.
+  landed-or-seen:
+    label: Also an entry a person agreed to, a decision with an answer, or an option of one
+    sets:
+      product/removal/capability/remove-with-reason:
+        says: An agent deletes an entry only with a reason; an entry the base commit had, one a person agreed to, a decision with an answer or an option of one is kept in its area's removed ledger so its id is never reused.
+  every-commit:
+    label: Everything any commit had
+    sets:
+      product/removal/capability/remove-with-reason:
+        says: An agent deletes an entry only with a reason; an entry any commit had is kept in its area's removed ledger so its id is never reused.
+proposal:
+  chose: landed-or-seen
+  why: "Capability remove-with-reason realizes goal nothing-silently-dropped, which answers pain silent-drops: an option is a refused idea. Every commit would fill the ledger with the agent's own drafts."
