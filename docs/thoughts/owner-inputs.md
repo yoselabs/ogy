@@ -251,3 +251,7 @@ Yes, Fable's picks
 ## 2026-11-27: on the flow from the knowledge base to beads
 
 > I think flow should be - add stuff to ontology, use ogy work, create beads, do stuff. Maybe mark in ontology which bead is a task for which work so when we recalc work and decide something is changed we will regenerate the bead as well, or remove it
+
+## 2026-11-28: on the first tracker sync and resolving decisions first
+
+> You know what? I think it's not that we need to prevent it, but probably it is a much smarter idea to resolve decisions because decisions could lead to the cases where the work would be not just adjusted but changed. I mean, like, if work will be just added, that's fine, right? But sometimes some decisions might lead to us to kind of change how we build and what we build, so that the tasks become unsynced, incorrect, right? By the way, talking about beads, hope that we didn't wrote much code around beads interaction, because I think we need to use something like tasks abstraction, ideal, right? Because we might work with Jira tickets instead or something. But anyway, what I'm saying is that let's blast through all the remaining decisions and then check up how our work will change. Probably you could make a snapshot of what OGY tells right now work is. And then we compare to find some potential problems in the way our calculations or logic works.

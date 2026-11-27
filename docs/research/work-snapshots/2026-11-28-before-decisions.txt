@@ -1,0 +1,271 @@
+discover (3): the why is missing (nothing above it)
+by product/inspection/decision/map-layers, for nothing realized (1):
+unrealized: product/inspection/capability/see-what-limits-the-product (now -, built -) a capability realizes a goal
+by software/writes/decision/every-reply-is-a-message, for nothing realized (1):
+unrealized: product/capture/capability/store-words (now -, built -) a capability realizes a goal
+by no decision, for nothing realized (1):
+unrealized: product/capture/capability/answer-under-delegation (now -, built -) a capability realizes a goal
+design (91): the description has a gap (nothing below it yet)
+by product/capture/decision/live-answer-is-in-force, for nothing realized (1):
+unused: product/capture/rule/live-answer-is-in-force (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/inspection/decision/view-command-contract, for nothing realized (1):
+unused: software/mcp/rule/init-and-mcp-are-no-tools (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/area-word, for nothing realized (1):
+unused: product/language/rule/area-is-the-word (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/glossary-is-in-the-ontology, for nothing realized (1):
+unused: product/language/rule/glossary-is-an-ontology-kind (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/glossary-per-layer, for nothing realized (1):
+unused: product/language/rule/glossary-homes (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/shared-entries-home, for nothing realized (1):
+unused: product/language/rule/shared-entries-home (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/term-shape, for nothing realized (1):
+unused: product/language/rule/term-is-compressed (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/term-sources, for nothing realized (1):
+unused: product/language/rule/term-use-is-computed (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/language/decision/terms-are-types, for nothing realized (1):
+unused: product/language/rule/glossary-holds-types (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/mcp/decision/mcp-starts-the-board, for nothing realized (1):
+no-workflow: product/mcp/capability/one-process-serves-all (now -, built -) a workflow realizes the capability
+by product/ontology/decision/software-ontology-name, for nothing realized (1):
+unused: product/ontology/rule/shipped-ontology-is-named-software (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/removal/decision/remove-needs-a-reason, for nothing realized (1):
+unused: product/removal/rule/remove-needs-a-reason (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/review/decision/code-facts-are-read-by-area, for nothing realized (1):
+unused: product/review/rule/code-facts-are-read-by-area (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/review/decision/no-n-keeps-the-sentence-built, for nothing realized (1):
+unused: product/review/rule/no-n-keeps-the-sentence-built (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/review/decision/one-card-per-parent, for nothing realized (1):
+unused: product/review/rule/one-card-per-parent (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/review/decision/review-delegation, for nothing realized (1):
+unused: product/review/rule/review-delegation (now -, built -) a rule nothing satisfies and that constrains nothing
+by product/review/decision/structural-delegation, for nothing realized (1):
+unused: product/review/rule/structural-delegation (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/checks/decision/glossary-agreed-by-page, for nothing realized (1):
+unused: software/checks/rule/glossary-agreed-by-page (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/checks/decision/no-plugin-system, for nothing realized (1):
+unused: software/checks/rule/ogy-has-no-plugin-system (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/checks/decision/old-names-hang-on-a-term, for nothing realized (1):
+unused: software/checks/rule/old-names-hang-on-a-term (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/checks/decision/proposed-word-blocks-its-change, for nothing realized (1):
+unused: software/checks/rule/proposed-word-blocks-its-change (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/cli/decision/area-intro, for nothing realized (1):
+unused: software/cli/rule/intro-prints-an-area (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/cli/decision/area-map, for nothing realized (1):
+unused: software/cli/rule/show-area-is-a-map (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/cli/decision/message-and-answer-are-public, for nothing realized (1):
+unused: software/cli/rule/answer-and-reply-are-public (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/cli/decision/no-why-command, for nothing realized (1):
+unused: software/cli/rule/no-why-command (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/mcp/decision/mcp-is-a-subcommand, for nothing realized (2):
+unused: software/mcp/dependency/argparse-mcp (now -, built -) a dependency nothing links to
+unused: software/mcp/rule/mcp-is-the-ogy-mcp-command (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/mcp/decision/service-owner, for nothing realized (1):
+unused: software/mcp/quantity/service-idle-stop (now -, built -) a quantity nothing links to
+by software/ontology/decision/actor-layers, for nothing realized (1):
+unused: software/ontology/rule/actors-split-by-layer (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/actor-program, for nothing realized (1):
+unused: software/ontology/rule/actor-program (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/area-entry, for nothing realized (1):
+unused: software/ontology/rule/area-entry (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/constitution-home, for nothing realized (1):
+unused: software/ontology/rule/constitution-is-one-folder (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/graph-rules-declared, for nothing realized (1):
+unused: software/ontology/rule/graph-rules-declared (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/guide-kind, for nothing realized (1):
+unused: software/ontology/rule/guide-is-rendered (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/harm-names, for nothing realized (1):
+unused: product/review/enum/harm-tags (now -, built -) a enum nothing links to
+by software/ontology/decision/kind-guidance, for nothing realized (1):
+unused: software/ontology/rule/kind-guidance (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/list-attr-of, for nothing realized (1):
+unused: software/ontology/rule/list-attr-of (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/no-answer-path, for nothing realized (1):
+unused: software/ontology/rule/no-answer-is-a-failure-end (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/ontology-by-reference, for nothing realized (1):
+unused: software/ontology/rule/repository-names-its-ontology (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/ontology-shipped-with-ogy, for nothing realized (1):
+unused: software/ontology/rule/software-ontology-ships-with-ogy (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/proposal-sets, for nothing realized (1):
+unused: software/ontology/rule/proposal-sets (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/repository-kinds, for nothing realized (1):
+unused: software/ontology/rule/no-repository-kinds (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/rigid-where-checked, for nothing realized (1):
+unused: software/ontology/rule/rigid-where-checked (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/rule-linked-by-follower, for nothing realized (1):
+unused: software/ontology/rule/rule-is-linked-by-its-follower (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/smaller-next-step, for nothing realized (1):
+unused: software/ontology/rule/examples-before-kinds (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/ontology/decision/trigger-computed, for nothing realized (1):
+unused: software/ontology/rule/workflow-start-is-computed (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/packaging/decision/one-package-now, for nothing realized (1):
+unused: software/packaging/rule/ogy-is-one-package-for-now (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/packaging/decision/technical-code-in-shelf, for nothing realized (2):
+unused: software/packaging/rule/ogy-holds-business-logic-only (now -, built -) a rule nothing satisfies and that constrains nothing
+unused: software/storage/dependency/shelf (now -, built -) a dependency nothing links to
+by software/setup/decision/init-adapts, for nothing realized (1):
+unused: software/setup/rule/init-adapts (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/area-in-address, for nothing realized (1):
+unused: software/storage/rule/address-keeps-the-area (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/glossary-yaml-only, for nothing realized (1):
+unused: software/storage/rule/glossary-is-yaml-only (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/moving-entries, for nothing realized (1):
+unused: software/storage/rule/move-keeps-history (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/no-axis-above-area, for nothing realized (1):
+unused: software/storage/rule/layers-are-mandatory (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/permanent-ids, for nothing realized (1):
+unused: software/storage/rule/id-is-permanent (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/questions-live-in-decisions, for nothing realized (1):
+unused: software/storage/rule/a-question-lives-in-its-decision (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/receipts-in-built, for nothing realized (1):
+unused: software/storage/rule/built-record-lives-under-built (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/removed-ledger-content, for nothing realized (1):
+unused: software/storage/rule/removed-item-keeps-snapshot (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/storage/decision/removed-ledger-store, for nothing realized (1):
+unused: software/storage/rule/removed-id-is-recorded (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/capture-judgement, for nothing realized (1):
+unused: software/writes/rule/capture-judges-critically (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/edits-only-through-ogy, for nothing realized (1):
+unused: software/writes/rule/agents-edit-only-through-ogy (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/every-reply-is-a-message, for nothing realized (2):
+unused: product/capture/rule/no-stored-words (now -, built -) a rule nothing satisfies and that constrains nothing
+unused: software/writes/rule/agreement-lives-on-the-entry (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/no-restore-command, for nothing realized (1):
+unused: software/writes/rule/removed-entry-is-restored-by-proposal (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/null-means-no, for nothing realized (1):
+unused: software/writes/rule/null-in-sets-is-no (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/one-write-path, for nothing realized (1):
+unused: software/writes/rule/one-write-path (now -, built -) a rule nothing satisfies and that constrains nothing
+by software/writes/decision/who-may-say-yes, for nothing realized (1):
+unused: software/writes/rule/who-may-say-yes (now -, built -) a rule nothing satisfies and that constrains nothing
+by no decision, for nothing realized (24):
+unused: product/capture/entity/entry/transition/change (now -, built -) a transition no effect fires
+no-workflow: product/evals/capability/eval-suite (now -, built -) a workflow realizes the capability
+unused: product/evals/quantity/runs-per-arm (now -, built -) a quantity nothing links to
+unused: product/evals/quantity/runs-per-arm-per-group (now -, built -) a quantity nothing links to
+no-workflow: product/review/capability/ask-the-owner (now -, built -) a workflow realizes the capability
+no-workflow: product/review/capability/page-captured-facts (now -, built -) a workflow realizes the capability
+unused: product/review/enum/reply-items (now -, built -) a enum nothing links to
+unused: product/review/quantity/cards-per-page (now -, built -) a quantity nothing links to
+no-workflow: product/setup/capability/doctor (now -, built -) a workflow realizes the capability
+unused: software/checks/enum/checks (now -, built -) a enum nothing links to
+unused: software/checks/enum/landing-checks (now -, built -) a enum nothing links to
+unused: software/checks/rule/area-named-like-the-product-is-an-error (now -, built -) a rule nothing satisfies and that constrains nothing
+unused: software/cli/enum/where-schemes (now -, built -) a enum nothing links to
+unused: software/cli/setting/config-file (now -, built -) a setting nothing links to
+unused: software/cli/setting/land (now -, built -) a setting nothing links to
+unused: software/cli/setting/ontology (now -, built -) a setting nothing links to
+unused: software/cli/setting/rev (now -, built -) a setting nothing links to
+unused: software/storage/enum/layers (now -, built -) a enum nothing links to
+unused: software/storage/quantity/history-limit (now -, built -) a quantity nothing links to
+unused: software/storage/quantity/near-addresses (now -, built -) a quantity nothing links to
+unused: software/storage/quantity/rounds-kept (now -, built -) a quantity nothing links to
+unused: software/storage/rule/kb-is-docs-kb (now -, built -) a rule nothing satisfies and that constrains nothing
+unused: software/storage/rule/rename-is-a-move (now -, built -) a rule nothing satisfies and that constrains nothing
+unused: software/writes/rule/write-is-put-back-on-a-new-error (now -, built -) a rule nothing satisfies and that constrains nothing
+build (81): to implement or prove
+by product/checks/decision/one-check-workflow, for nothing realized (2):
+unbuilt: product/checks/workflow/check/step/judge/case/findings (now f8777d1a7218, built -)
+unbuilt: product/checks/workflow/check/step/judge/case/otherwise (now 8303b6911d0f, built -)
+by product/checks/decision/pre-commit-realizes, for product/checks/capability/check-the-kb (3):
+unbuilt: product/checks/workflow/pre-commit-check/step/check/case/blocked (now ef57dcd96269, built -)
+unbuilt: product/checks/workflow/pre-commit-check/step/check/case/clean (now 1be3f9f3696a, built -)
+unbuilt: product/checks/workflow/pre-commit-check/step/commit/choice/commit (now 787b6b6b8e43, built -)
+by product/inspection/decision/board-is-product, for nothing realized (3):
+unbuilt: product/inspection/interface/entry-details (now 657dca5988c4, built -)
+unbuilt: product/inspection/rule/one-mention-path (now a0bdc37cc4cb, built -)
+unbuilt: product/inspection/rule/typed-relation-conservation (now 65fde5eb5def, built -)
+by product/inspection/decision/inspect-without-workflow, for product/inspection/capability/inspect (1):
+unbuilt: product/inspection/workflow/inspect-kb/step/read/choice/read (now 48615bf281c1, built -)
+by product/inspection/decision/map-modes, for product/inspection/capability/walk-the-product (1):
+unbuilt: product/inspection/workflow/walk-product/step/walk/choice/walk (now 46b03eed940c, built -)
+by product/inspection/decision/map-modes, for nothing realized (1):
+unbuilt: product/inspection/rule/inspection-preserves-declarations (now 40871b130c63, built -)
+by product/inspection/decision/preview-a-new-requirement, for product/inspection/capability/preview-a-new-requirement (1):
+unbuilt: product/inspection/workflow/preview-requirement/step/preview/choice/preview (now 2d4ace38ee52, built -)
+by product/inspection/decision/product-map, for product/inspection/capability/see-the-product-map (1):
+unbuilt: product/inspection/workflow/inspect-map/step/inspect/choice/inspect (now cf9487475b37, built -)
+by product/inspection/decision/product-map, for nothing realized (1):
+unbuilt: product/inspection/interface/board (now a8fec39c6f02, built -)
+by product/inspection/decision/view-command-contract, for nothing realized (1):
+unbuilt: product/inspection/rule/agent-inspection-parity (now 65ca58f79af4, built -)
+by product/inspection/decision/view-delivery, for nothing realized (1):
+unbuilt: product/inspection/interface/view-server (now 750e846c647e, built -)
+by product/inspection/decision/why-chain-on-board, for nothing realized (1):
+unbuilt: software/viewing/rule/typed-reasons (now b304bf08ff74, built -)
+by product/mcp/decision/mcp-door-home, for product/mcp/capability/tools-over-mcp (4):
+unbuilt: product/mcp/workflow/call-a-tool/step/call/choice/call (now ea155891452d, built -)
+unbuilt: product/mcp/workflow/call-a-tool/step/run/case/error (now cb5ad5dd420a, built -)
+unbuilt: product/mcp/workflow/call-a-tool/step/run/case/otherwise (now 7413bd410a8f, built -)
+unbuilt: product/mcp/workflow/call-a-tool/step/run/case/unnamed-round (now 1d156d8bda16, built -)
+by product/review/decision/decision-entity, for nothing realized (1):
+unbuilt: product/review/entity/decision (now 5798b7ba6870, built -)
+by product/review/decision/hand-over-home, for product/removal/capability/list-dropped (2):
+unbuilt: product/review/workflow/hand-over/step/check/choice/clean (now d070d6d88491, built -)
+unbuilt: product/review/workflow/hand-over/step/list/choice/read-back (now 748a938bc901, built -)
+by software/ontology/decision/constitution-budget, for nothing realized (1):
+unbuilt: software/ontology/rule/constitution-fits-its-budget (now 5d097821e33b, built -)
+by software/setup/decision/init-hook-owner, for nothing realized (1):
+unbuilt: product/checks/interface/pre-commit-hook (now efc8987a485f, built -)
+by software/viewing/decision/contextual-view-structure, for nothing realized (3):
+unbuilt: software/viewing/rule/context-composition (now 224244e00334, built -)
+unbuilt: software/viewing/rule/ontology-derived-detail (now d8baca9ce627, built -)
+unbuilt: software/viewing/rule/projection-contract (now 945597a0ac72, built -)
+by no decision, for product/capture/capability/store-words (4):
+unbuilt: product/capture/workflow/store-owner-words/step/keep/case/not-relayed (now a0d534220fc9, built -)
+unbuilt: product/capture/workflow/store-owner-words/step/keep/case/otherwise (now 7efd3a345007, built -)
+unbuilt: product/capture/workflow/store-owner-words/step/keep/case/twice (now fa279287ef3e, built -)
+unbuilt: product/capture/workflow/store-owner-words/step/store/choice/stored (now b59353dc2a4e, built -)
+by no decision, for product/capture/capability/write-entries (5):
+unbuilt: product/capture/workflow/capture-entries/step/check/case/otherwise (now 9ec053dfd9f6, built -)
+unbuilt: product/capture/workflow/capture-entries/step/check/case/refused (now fdeadd61fae1, built -)
+unbuilt: product/capture/workflow/capture-entries/step/put/choice/put (now ee2a02f82126, built -)
+unbuilt: product/capture/workflow/capture-entries/step/read-glossary/choice/read (now 18da89bfae53, built -)
+unbuilt: product/capture/workflow/capture-entries/step/search/choice/searched (now 32177a57f25e, built -)
+by no decision, for product/checks/capability/check-a-land (3):
+unbuilt: product/checks/workflow/check-and-land/step/judge/case/blocked (now 8c299ac7090b, built -)
+unbuilt: product/checks/workflow/check-and-land/step/judge/case/clean (now b0617638a153, built -)
+unbuilt: product/checks/workflow/check-and-land/step/run/choice/run (now f22ad7209c61, built -)
+by no decision, for product/removal/capability/remove-with-reason (7):
+unbuilt: product/removal/workflow/remove-entry/step/ask/choice/remove (now efe7cdb7295d, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/agreed-without-address (now bbea7122d0f9, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/bad-why (now eaf28e28fa01, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/blank-why (now 56ab88005653, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/linked (now daf89353b149, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/otherwise (now 5e0c777dcb20, built -)
+unbuilt: product/removal/workflow/remove-entry/step/check/case/single-part (now 3119fefcb6de, built -)
+by no decision, for product/review/capability/apply-a-reply (5):
+unbuilt: product/review/workflow/review-and-reply/step/apply/case/bare-yes-on-all (now 2f1d0d601dc5, built -)
+unbuilt: product/review/workflow/review-and-reply/step/apply/case/changed (now bd1a77de97c7, built -)
+unbuilt: product/review/workflow/review-and-reply/step/apply/case/otherwise (now 3d8ccd434c4c, built -)
+unbuilt: product/review/workflow/review-and-reply/step/reply/choice/replied (now c636b4bb0443, built -)
+unbuilt: product/review/workflow/review-and-reply/step/show/choice/shown (now 469162c4bf57, built -)
+by no decision, for product/setup/capability/set-up-a-repository (4):
+unbuilt: product/setup/workflow/init-repository/step/report/case/otherwise (now c66795186209, built -)
+unbuilt: product/setup/workflow/init-repository/step/run/choice/ask (now 41dd41ca0aab, built -)
+unbuilt: product/setup/workflow/init-repository/step/run/choice/init (now 890e5128d612, built -)
+unbuilt: product/setup/workflow/init-repository/step/write/case/otherwise (now 37dbb2107938, built -)
+by no decision, for nothing realized (24):
+unbuilt: product/capture/entity/entry (now 403d182677ff, built -)
+unbuilt: product/capture/interface/answer (now c392688b0431, built -)
+unbuilt: product/capture/interface/find (now 3f5fdd20eab5, built -)
+unbuilt: product/capture/interface/glossary (now 9140fe2f6ffa, built -)
+unbuilt: product/capture/interface/kinds (now 1e3e6eb9063d, built -)
+unbuilt: product/capture/interface/put (now 503e4058ac06, built -)
+unbuilt: product/checks/interface/check (now 2e98dd43ce21, built -)
+unbuilt: product/inspection/interface/anchors (now 8f55940bfeb1, built -)
+unbuilt: product/inspection/interface/diagram (now 5446a9655bc1, built -)
+unbuilt: product/inspection/interface/diff (now 54d8de30aaf8, built -)
+unbuilt: product/inspection/interface/history (now 5396980e567b, built -)
+unbuilt: product/inspection/interface/impact (now cb2962625b5c, built -)
+unbuilt: product/inspection/interface/show (now 393691f8818d, built -)
+unbuilt: product/mcp/interface/mcp (now b8cb5c07b029, built -)
+unbuilt: product/removal/interface/remove (now d33be44cc4a4, built -)
+unbuilt: product/review/interface/dropped (now 4d0ea669f408, built -)
+unbuilt: product/review/interface/reply (now a9cbfa54ec04, built -)
+unbuilt: product/review/interface/review (now cc076188fde8, built -)
+unbuilt: product/review/interface/status (now 1de1114a880c, built -)
+unbuilt: product/setup/interface/init (now 9b9201cf112e, built -)
+unbuilt: software/setup/workflow/init-reads-its-files/step/read/case/otherwise (now 41e16d5624e1, built -)
+unbuilt: software/setup/workflow/init-reads-its-files/step/read/case/unreadable (now 6f801cbcfffb, built -)
+unbuilt: software/writes/workflow/write-under-the-lock/step/lock/case/locked (now c6b7cb836b2c, built -)
+unbuilt: software/writes/workflow/write-under-the-lock/step/lock/case/otherwise (now e0a51ddfaeae, built -)
