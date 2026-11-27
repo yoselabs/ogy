@@ -21,3 +21,8 @@
     hash: 2e906f7b2d32
 - id: design-errors-pass-checks
   says: A proposal from the AI can repeat a question already answered or count wrong, and no check catches it before the owner does.
+  agreed:
+    at: '2026-11-27T22:48:37+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks on the friction triage: record removals a person had seen, replies may name a card by address, re-ask the earlier decision with what was heard, show likely duplicate decisions on put, and the pain that design errors pass checks"
+    hash: 4c3ba36584a2

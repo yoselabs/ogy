@@ -11,3 +11,8 @@ options:
 proposal:
   chose: re-ask-with-heard
   why: One address keeps one owning decision (principle one-owner-per-fact); the cost is one card a plain yes clears, held down for goal fewest-questions. Two cases this week.
+answers:
+- chose: re-ask-with-heard
+  said: "Yes to Fable's picks on the friction triage: record removals a person had seen, replies may name a card by address, re-ask the earlier decision with what was heard, show likely duplicate decisions on put, and the pain that design errors pass checks"
+  at: '2026-11-27T22:48:23+01:00'
+  where: ai:claude/ontology-review-session-749f16

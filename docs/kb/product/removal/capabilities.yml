@@ -4,6 +4,11 @@
   - code:src/ogy/removal.py#remove
   realizes:
   - product/removal/goal/nothing-silently-dropped
+  agreed:
+    at: '2026-11-27T22:48:07+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks on the friction triage: record removals a person had seen, replies may name a card by address, re-ask the earlier decision with what was heard, show likely duplicate decisions on put, and the pain that design errors pass checks"
+    hash: 5b42531a81b4
 - id: list-dropped
   says: 'ogy lists what no person has seen: proposals that say no, removals whose reason is plain words, proposals that differ from the answer, answers with a hedge and answers given under a delegation.'
   src:

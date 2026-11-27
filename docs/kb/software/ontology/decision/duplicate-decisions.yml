@@ -15,3 +15,8 @@ options:
 proposal:
   chose: shown-on-put
   why: '126 decisions set nothing, so links alone could not have caught Q16 (it asked what mcp-door-home answered). The program shows the candidates, the agent only judges (principle deterministic-first). Capability ask-the-owner realizes goal fewest-questions, which answers pain design-errors-pass-checks. Before: links-only.'
+answers:
+- chose: shown-on-put
+  said: "Yes to Fable's picks on the friction triage: record removals a person had seen, replies may name a card by address, re-ask the earlier decision with what was heard, show likely duplicate decisions on put, and the pain that design errors pass checks"
+  at: '2026-11-27T22:48:31+01:00'
+  where: ai:claude/ontology-review-session-749f16
