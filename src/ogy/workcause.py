@@ -4,6 +4,7 @@ container's `flow.group` link). Display only: nothing routes on it, and the agen
 
 lazy from collections.abc import Iterable
 
+from ogy.brief import why_fields
 from ogy.kinds import where
 from ogy.receipts import Status, Work
 from ogy.settle import Decision, decision_of, decisions
@@ -51,8 +52,7 @@ def work_type(snapshot: Snapshot, item: Work) -> str:
     address = snapshot.resolve(item.address)
     if address is None or address not in snapshot.entries:
         return "design"
-    kinds = snapshot.ontology.kinds.values()
-    why = {snapshot.ontology.roles.because} | {kind.flow.group for kind in kinds if kind.flow and kind.flow.group}
+    why = why_fields(snapshot)  # the same set the brief walks up by
     need = next((need for need in snapshot.kind_of(address).requires if str(need.status) == str(item.status)), None)
     return "discover" if need is not None and need.path and where(need.path[0])[0] in why else "design"
 

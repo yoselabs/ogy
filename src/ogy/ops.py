@@ -13,6 +13,7 @@ from process_lock import LockHeldError, ProcessLock
 
 from ogy import affected, hooks, near, put, removal, removed, reply, rounds, writes
 from ogy.base import read_ledgers
+from ogy.brief import Row, brief, rows
 from ogy.built import Line, read_source
 from ogy.check import check
 from ogy.constitution import printed_lines
@@ -188,6 +189,19 @@ def run_work(target: Target, scope: str | None = None, loaded: Loaded | None = N
         item for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source)) if _owes(item, scope, snapshot.ontology)
     ]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
+
+
+def run_brief(target: Target, text: str) -> Run[list[Row]] | None:
+    """One work item's brief when `text` is an entry's address, None when it is not (a layer or an area)."""
+    source, snapshot = target.read()
+    address = snapshot.resolve(text)
+    if address is None or address not in snapshot.entries:
+        if parse_address(text, snapshot.ontology) is not None:  # an entry's address that names nothing: say what is near
+            raise UnknownEntryError(near.no_entry(snapshot, text))
+        return None
+    record = _record(source)
+    found = brief(snapshot, address, work_left(snapshot, record, source.repo_file, _ledger(source)), record)
+    return Run(rows(snapshot, found), source.reads, Verdict.FINDINGS if found.work else Verdict.OK)
 
 
 def run_show(target: Target, text: str) -> Run[Shown]:

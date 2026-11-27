@@ -41,6 +41,10 @@ def work(found: list[Work]) -> list[str]:
     )
 
 
+def brief(found: list[tuple[str, str, str, str]]) -> list[str]:
+    return _table([{"part": p, "field": f, "address": a, "says": s} for p, f, a, s in found], ["part", "field", "address", "says"])
+
+
 def anchors(found: list[tuple[str, str, int]]) -> list[str]:
     return _table([{"anchor": a, "heading": h, "level": str(n)} for a, h, n in found], ["anchor", "heading", "level"])
 

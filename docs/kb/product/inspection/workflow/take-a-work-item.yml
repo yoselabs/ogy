@@ -1,0 +1,22 @@
+says: An agent takes one work item and reads, in one print, everything it rests on before building it.
+because:
+- product/inspection/pain/tasks-drift
+realizes: product/inspection/capability/work-as-tracker-items
+start: read
+steps:
+  read:
+    says: "The agent runs ogy work with the entry's address and reads its brief: the entry and its work, the why above it (its parents and every because and realizes link up), the decisions that set any of them, and what links to it or that it links to, one hop, by field."
+    actor: product/shared/actor/agent
+    choices:
+      read:
+        label: Read the brief
+        then: briefed
+        proof:
+        - tests/test_brief.py::test_the_brief_of_a_row_reads_the_why_above_the_decision_and_one_hop_around
+        - tests/test_brief.py::test_an_area_still_lists_the_work_and_a_missing_address_says_what_is_near
+ends:
+  briefed:
+    result: success
+    says: The agent knows what the item is for, what was decided and what it touches, without reading the files.
+src:
+- code:src/ogy/brief.py#brief

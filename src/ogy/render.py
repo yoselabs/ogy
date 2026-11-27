@@ -266,3 +266,18 @@ def render_status(found: Overview) -> list[str]:
 def render_history(found: History) -> list[str]:
     lines = [f"{row.when:%Y-%m-%d}  {row.who}  {row.what}   {row.where}" for row in found.rows]
     return [*lines, *found.notes, *([found.in_force] if found.in_force else [])] or ["no history"]
+
+
+def render_brief(found: list[tuple[str, str, str, str]]) -> list[str]:
+    """One work item's brief for a person: the entry, then a heading per part and a line per row."""
+    lines: list[str] = []
+    now = ""
+    for part, field, address, says in found:
+        if part == "entry":
+            lines += [f"brief of {address} ({field})", *([f"  {says}"] if says else [])]
+            continue
+        if part != now:
+            lines += ["", f"{part}:"]
+            now = part
+        lines.append("  " + "  ".join(bit for bit in (field, address, says) if bit))
+    return lines

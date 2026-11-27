@@ -76,6 +76,8 @@ def _diff(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
 
 
 def _work(target: Target, args: argparse.Namespace, *, agent: bool) -> Result:
+    if args.area is not None and (found := ops.run_brief(target, args.area)) is not None:  # one entry's address: its brief
+        return found.verdict, wire.brief(found.value) if agent else render.render_brief(found.value)
     done = ops.run_work(target, args.area)
     if agent:  # the agents' table stays flat: the cause is for a person to read
         return done.verdict, wire.work(done.value)

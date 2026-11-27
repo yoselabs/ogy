@@ -1,7 +1,12 @@
-says: What the built record says is still to do; exit 1 when work is left.
-invoked_as: ogy work [area]
+says: What the built record says is still to do, for a layer or an area, or one work item's brief for an entry's address; exit 1 when work is left.
+invoked_as: ogy work [area | address]
 serves:
 - product/inspection/workflow/inspect-kb/step/read
+- product/inspection/workflow/take-a-work-item/step/read
 src:
 - code:src/ogy/cli.py#_asks
+- code:src/ogy/brief.py#brief
 form: cli
+proof:
+- tests/test_brief.py::test_the_brief_of_a_row_reads_the_why_above_the_decision_and_one_hop_around
+- tests/test_brief.py::test_an_area_still_lists_the_work_and_a_missing_address_says_what_is_near

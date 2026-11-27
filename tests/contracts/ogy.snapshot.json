@@ -1910,14 +1910,14 @@
       "openWorldHint": false,
       "readOnlyHint": true
     },
-    "description": "what is built against the entries and what is left. Exit 1 when work is left. Takes a layer or an area.",
+    "description": "what is built against the entries and what is left. Exit 1 when work is left. Takes a layer or an area; with one entry's address, that work item's brief: the why above it, the decisions that set it and what it links to.",
     "inputSchema": {
       "additionalProperties": false,
       "properties": {
         "area": {
           "anyOf": [
             {
-              "description": "only this layer (product, software), <layer>/<area>, or an area in every layer",
+              "description": "only this layer (product, software), <layer>/<area>, an area in every layer, or an entry's address",
               "type": "string"
             },
             {
