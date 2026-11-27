@@ -11,10 +11,15 @@ options:
     label: 'No principle: each such rule is asked'
     sets:
       constitution/principle/missing-is-computed:
+  absorbed:
+    label: Absorbed into principle deterministic-first, which says the same for data and for prompts
+    sets:
+      constitution/principle/missing-is-computed:
 proposal:
-  chose: principle
-  why: The rule the owner stated, kept where every agent reads it first; later rules of this shape cite it with because instead of reaching the owner.
-  heard: All of the cases when some data is missing should be possible to be calculated based off ontology data, based on field rules.
+  chose: absorbed
+  why: 'Decision deterministic-first was answered one-principle (2026-11-27): one sentence holds what a program can know and what a prompt carries; the constitution stays small. Before (2026-11-27): principle.'
+  heard: OK to deterministic first.
+  at: '2026-11-27T20:47:34+01:00'
 answers:
 - chose: principle
   said: "Yes to Fable's picks: the principle that what is missing is computed, row type from its rule, no-capability for goals, both to-do rules, card 13 as reworded, the because line as shortened"

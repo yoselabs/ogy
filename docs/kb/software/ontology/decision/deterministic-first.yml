@@ -4,11 +4,26 @@ context: "Owner, 2026-11-27: prefer deterministic logic over skills and prompts.
 options:
   one-principle:
     label: One principle deterministic-first with the sentence above; missing-is-computed is removed with this decision as its reason
+    sets:
+      constitution/principle/deterministic-first:
+        says: 'What a program can compute, check or render is done by the program: nothing it can know is marked by hand, and a skill or a prompt carries only what needs judgement.'
+        why: A program does the same thing every time and can be tested; a prompt is followed more or less.
   two-principles:
     label: A second principle only about skills and prompts; missing-is-computed stays
+    sets:
+      constitution/principle/deterministic-first:
+        says: What a skill or a prompt carries is only what needs judgement; a program does the rest.
+        why: A program does the same thing every time and can be tested; a prompt is followed more or less.
   no-principle:
     label: No principle; the note on skill-is-an-interface stays
+    sets:
+      constitution/principle/deterministic-first:
 proposal:
   chose: one-principle
   why: 'One value, one sentence: fewer principles for every agent to read first, as the owner asked.'
   heard: We should prefer deterministic logic rather than skills and prompts.
+answers:
+- chose: one-principle
+  said: OK to deterministic first
+  at: '2026-11-27T20:46:17+01:00'
+  where: ai:claude/ontology-review-session-749f16

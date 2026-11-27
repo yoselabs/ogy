@@ -21,3 +21,7 @@ answers:
   at: '2026-11-27T20:08:04+01:00'
   where: ai:claude/ontology-review-session-749f16
   note: adds that deterministic logic should be preferred over skills and prompts
+- chose: rendered-then-eval
+  said: OK to deterministic first
+  at: '2026-11-27T20:46:25+01:00'
+  where: ai:claude/ontology-review-session-749f16

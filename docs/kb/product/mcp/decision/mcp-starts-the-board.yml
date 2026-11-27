@@ -26,3 +26,9 @@ proposal:
   heard: I don't want two commands which duplicate the work and confuse the AI agent; maybe ogy serve is really ogy mcp, or a flag.
 because:
 - product/mcp/pain/copies-disagree
+answers:
+- chose: one-service
+  said: 'Joining the running one would be best: in the same worktree reuse the process and its port and collaborate'
+  at: '2026-11-27T20:45:48+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: not sure a2kay does it right; a session or browser per agent would spread many ports

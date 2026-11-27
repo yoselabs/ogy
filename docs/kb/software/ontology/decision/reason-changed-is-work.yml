@@ -10,3 +10,8 @@ proposal:
   chose: computed-row
   why: It is what the owner asked for and stores nothing (principle missing-is-computed); it lists 0 rows today.
   heard: If the CLI is dropped, we should see which dependency choices to revisit.
+answers:
+- chose: computed-row
+  said: OK to the MCP chain down to the library
+  at: '2026-11-27T20:46:08+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -10,3 +10,8 @@ proposal:
   chose: kept
   why: The pre-commit hook, the gate and the owner's terminal run ogy as a command today; dropping it would remove them.
   heard: If the CLI is no longer necessary we won't need argparse-mcp and fall back to fastmcp.
+answers:
+- chose: kept
+  said: OK to the MCP chain down to the library
+  at: '2026-11-27T20:46:00+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -11,3 +11,8 @@
   says: One service, started by an agent over stdio or by a person in a terminal, serves the tools, the board and the API from one process, and the agent can give the owner the board link.
   realizes:
   - product/mcp/goal/one-service
+  agreed:
+    at: '2026-11-27T20:45:48+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: 'Joining the running one would be best: in the same worktree reuse the process and its port and collaborate'
+    hash: 2ccf4687bb30

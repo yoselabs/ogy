@@ -12,3 +12,8 @@ proposal:
   chose: turns-first
   why: Git cannot follow one entry inside a list file or across a move; the turns answer the owner's pain of not recalling why a choice was made.
   heard: ogy history prints commit lines like git log; do we need it?
+answers:
+- chose: turns-first
+  said: OK to the small ones
+  at: '2026-11-27T20:46:33+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -21,3 +21,7 @@ answers:
   at: '2026-11-27T20:08:27+01:00'
   where: ai:claude/ontology-review-session-749f16
   note: 'unsure of the name: ogy work compile, ogy compile or ogy prepare'
+- chose: work-address
+  said: OK to the small ones
+  at: '2026-11-27T20:46:42+01:00'
+  where: ai:claude/ontology-review-session-749f16
