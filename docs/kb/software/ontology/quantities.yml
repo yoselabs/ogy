@@ -2,3 +2,8 @@
   says: The most words the sentences of the printed constitution may hold.
   is: 300
   unit: words
+  agreed:
+    at: '2026-11-27T21:20:30+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+    hash: 3638914afaaf

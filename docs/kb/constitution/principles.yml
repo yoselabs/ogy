@@ -43,14 +43,6 @@
     where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
     said: 'Owner: I agree those (the two new principles)'
     hash: a101fa87c7fd
-- id: no-flexibility-until-needed
-  says: 'The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it.'
-  why: Unproven flexibility costs every writer a choice and every reader a branch, and taking a freedom back is harder than giving one.
-  agreed:
-    at: '2026-11-26T03:36:02+01:00'
-    where: ai:claude/ontology-review-session-749f16
-    said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
-    hash: 8ed78ae20b8a
 - id: words-from-known-tools
   says: ogy takes its words from vocabularies people already know from popular tools and methods, such as GitHub, Figma and Domain-Driven Design, each for its own domain; a word none of them uses needs a decision.
   why: Most readers know technical or business English, not native English.
@@ -59,14 +51,14 @@
     where: ai:claude/ontology-review-session-749f16
     said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
     hash: 6d17a80b2132
-- id: missing-is-computed
-  says: What is missing is computed from the entries and their rules, never marked by hand.
-  why: 'The owner, 2026-11-27: all the cases when some data is missing should be calculated from the ontology data and its field rules; he was asked six times, one kind at a time, whether a gap is work.'
-  agreed:
-    at: '2026-11-27T04:36:54+01:00'
-    where: ai:claude/ontology-review-session-749f16
-    said: "Yes to Fable's picks: the principle that what is missing is computed, row type from its rule, no-capability for goals, both to-do rules, card 13 as reworded, the because line as shortened"
-    hash: 154a71f176b8
 - id: deterministic-first
   says: 'What a program can compute, check or render is done by the program: nothing it can know is marked by hand, and a skill or a prompt carries only what needs judgement.'
   why: A program does the same thing every time and can be tested; a prompt is followed more or less.
+  agreed:
+    at: '2026-11-27T21:21:35+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+    hash: 9a1f193a2190
+- id: earned-on-a-real-case
+  says: 'Everything in the ontology earns its place on a real case, whether proposed today or already there: nothing is added on the chance it is wanted, and what would not be added today is rebuilt or dropped, whatever the change costs.'
+  why: Unproven flexibility costs every writer a choice and every reader a branch; work already done and the size of a change are no reason to keep what would not be added today.

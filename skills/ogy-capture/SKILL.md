@@ -81,6 +81,11 @@ options a reasonable owner might choose. What the code does and nobody would cho
 - **`answer`**, only when the owner chose, with `said` (one short line, your paraphrase) and, when the owner hedged
   ("for now", "probably", "on condition that..."), a `note`, paraphrased too.
 Words that fit two options, or a bare `no`, are not an answer: ask at once, while the owner is there.
+A new principle (untested as a skill step) is checked against every principle first (`ogy glossary`): one that says the same
+is sharpened, not repeated; one it covers is absorbed and removed with the decision as its reason. Its decision has one option
+per fate: add it, replace a named principle, sharpen a named principle, or none (`null`). The printed sentences stay within the
+budget `software/ontology/quantity/constitution-budget`. Two principles that pull apart on a real decision are a reason to make
+both more concrete: that decision cites both and proposes a sharper sentence for each, not only a question to the owner.
 
 ## 5. Live capture (P1, untested)
 When the owner speaks, record the answer with a short paraphrase at once, before your next action, and show it to the

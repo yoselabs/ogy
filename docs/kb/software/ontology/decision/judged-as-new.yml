@@ -4,13 +4,28 @@ context: "Today nothing says that work already done is no reason to keep a conce
 options:
   principle:
     label: Add the principle; the costly test of a whole concept runs only when zero-base-when says
+    sets:
+      constitution/principle/earned-on-a-real-case:
   skill-only:
     label: No principle; only the ontology-designer skill gains the test
+    sets:
+      constitution/principle/earned-on-a-real-case:
   no:
     label: No; a concept that exists stays unless it breaks a law
+    sets:
+      constitution/principle/earned-on-a-real-case:
   merged:
     label: "No tenth principle: no-flexibility-until-needed becomes earned-on-a-real-case: 'Everything in the ontology earns its place on a real case, whether proposed today or already there: nothing is added on the chance it is wanted, and what would not be added today is rebuilt or dropped, whatever the change costs.'"
+    sets:
+      constitution/principle/earned-on-a-real-case:
+        says: 'Everything in the ontology earns its place on a real case, whether proposed today or already there: nothing is added on the chance it is wanted, and what would not be added today is rebuilt or dropped, whatever the change costs.'
+        why: Unproven flexibility costs every writer a choice and every reader a branch; work already done and the size of a change are no reason to keep what would not be added today.
 proposal:
   chose: merged
   heard: You introduced another principle which is quite similar; review our principles and merge what we could.
   why: 'The owner said it is close to a principle they already have: no-flexibility-until-needed is the entry test, judged-as-new the same test for what exists; one sentence holds both, and the constitution stays small. Before (2026-11-24): principle.'
+answers:
+- chose: merged
+  said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+  at: '2026-11-27T21:20:59+01:00'
+  where: ai:claude/ontology-review-session-749f16

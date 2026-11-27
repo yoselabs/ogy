@@ -132,6 +132,9 @@ there; everything else lives in the area that owns it. Change it only through og
 - Before you create an entry of a kind, read `just ogy kinds <kind>`: what it is, its guidance (when to use it rather than its
   neighbours: an actor, a lifecycle state or an attribute; `satisfies` holds an entry to a rule, `because` cites a principle or a decision
   as the reason) and its fields. `just ogy kinds --map` prints the whole ontology on one screen, with its rules.
+- The constitution is small and never only grows: a new principle comes as one decision whose options add it, replace a named
+  principle, sharpen a named principle, or set it `null`. When two principles pull apart on a real decision, that decision cites
+  both and proposes a sharper sentence for each.
 - Add and change entries with ONE command, `just ogy put`: one or many records, JSON or YAML, as arguments, `--file` or standard input
   (`just ogy put '[{"address": "<layer>/<area>/<kind>/<id>", "says": "..."}]'`). An address that exists is changed (`"field": null` removes a
   field), a new one is added; the whole call is checked together (a decision may come with the entries its options set) and written whole

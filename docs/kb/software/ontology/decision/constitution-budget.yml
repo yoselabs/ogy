@@ -39,3 +39,8 @@ proposal:
   chose: sentences-only-300
   why: 'The merges alone leave about 405 words, so the saving comes from printing the sentences only; a number a test counts refuses appending deterministically (principle deterministic-first). Before (2026-11-27): budget 350, counted as if the merges would shrink it.'
   heard: We should care about context size; I don't want principles to be append only.
+answers:
+- chose: sentences-only-300
+  said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+  at: '2026-11-27T21:20:30+01:00'
+  where: ai:claude/ontology-review-session-749f16

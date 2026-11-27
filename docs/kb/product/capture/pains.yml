@@ -1,4 +1,14 @@
 - id: hand-edits-break-the-kb
   says: 'An agent that works on the knowledge base files directly has no proper interface: nothing checks or guides it, and it can break them.'
+  agreed:
+    at: '2026-11-27T21:21:35+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+    hash: 46c9eafc9b57
 - id: too-much-to-read-first
   says: Every agent reads the whole constitution and glossary first, so each addition makes every session slower and less exact.
+  agreed:
+    at: '2026-11-27T21:21:35+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+    hash: 02c2f5f6c4ee

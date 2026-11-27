@@ -10,3 +10,8 @@ proposal:
   chose: own-card
   why: A principle judges every decision after it; the owner should agree to each one alone.
   heard: Every time we create a new principle, we should assess it against the ones we have.
+answers:
+- chose: own-card
+  said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+  at: '2026-11-27T21:21:21+01:00'
+  where: ai:claude/ontology-review-session-749f16

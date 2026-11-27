@@ -21,3 +21,8 @@ proposal:
   chose: detached-owner
   why: One port per worktree answers the many ports; a board that dies with whoever started first does not. It is a2kay's shape (lock, bridge) with a free port and an idle stop instead of a login item; the bridge and the one-owner-per-root piece move to shelf, as serve-includes-mcp asked. It refines capability one-process-serves-all, which realizes goal one-checked-door.
   heard: Joining, reusing processes in the same worktree to reuse the same port and collaborate, would be awesome.
+answers:
+- chose: detached-owner
+  said: "Yes to Fable's picks: one budget of 300 words for the sentences, one detached service per worktree, the principle merges, check before adding, principles on their own card, the rule triage delegated, and the eight cards"
+  at: '2026-11-27T21:20:45+01:00'
+  where: ai:claude/ontology-review-session-749f16

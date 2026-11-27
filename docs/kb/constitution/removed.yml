@@ -1,0 +1,40 @@
+format: 1
+items:
+  - id: constitution/principle/missing-is-computed
+    kind: principle
+    parent:
+    title:
+    said: What is missing is computed from the entries and their rules, never marked by hand.
+    why: software/ontology/decision/missing-is-computed
+    replaced_by:
+    at: 2026-11-27 21:21:10+01:00
+    last_seen: d2842d936cd45e08b6044f42b9186cdf4597a6ff
+    hash: 154a71f176b8
+    ontology: software
+    snapshot:
+      says: What is missing is computed from the entries and their rules, never marked by hand.
+      why: 'The owner, 2026-11-27: all the cases when some data is missing should be calculated from the ontology data and its field rules; he was asked six times, one kind at a time, whether a gap is work.'
+      agreed:
+        at: '2026-11-27T04:36:54+01:00'
+        where: ai:claude/ontology-review-session-749f16
+        said: "Yes to Fable's picks: the principle that what is missing is computed, row type from its rule, no-capability for goals, both to-do rules, card 13 as reworded, the because line as shortened"
+        hash: 154a71f176b8
+  - id: constitution/principle/no-flexibility-until-needed
+    kind: principle
+    parent:
+    title:
+    said: 'The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it.'
+    why: software/ontology/decision/judged-as-new
+    replaced_by:
+    at: 2026-11-27 20:22:30+00:00
+    last_seen: d2842d936cd45e08b6044f42b9186cdf4597a6ff
+    hash: 8ed78ae20b8a
+    ontology: software
+    snapshot:
+      says: 'The ontology gains no flexibility until a real case shows it is needed: no field, option or way to change the ontology ships on the chance a product may want it.'
+      why: Unproven flexibility costs every writer a choice and every reader a branch, and taking a freedom back is harder than giving one.
+      agreed:
+        at: '2026-11-26T03:36:02+01:00'
+        where: ai:claude/ontology-review-session-749f16
+        said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
+        hash: 8ed78ae20b8a
