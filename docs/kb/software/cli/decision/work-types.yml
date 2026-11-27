@@ -12,10 +12,13 @@ options:
     label: 'Three types named meaning (the why is missing), design (the description has a gap: a rule nothing checks, a state with no handler) and build (to implement or prove)'
   discover-design-build:
     label: 'Three types named discover (the why is missing: a capability with no goal or no workflow, a goal no capability realizes, a workflow that realizes no capability), design (the description has a gap) and build (to implement or prove)'
+  type-from-rule:
+    label: "Each row's type comes from its rule, not from a list of kinds: why missing when the unmet rule follows a why link upward (because, realizes), design for any other gap below, build for a missing proof; the list discover is dropped"
 proposal:
-  chose: discover-design-build
-  why: 'A verb like design and build, known from the Double Diamond (discover, define, develop, deliver) and product discovery; no entry uses it. define sounds like design; ask reads as a card for the owner while an AI may do the work. Before: meaning-design-build.'
-  heard: Rename meaning to a word in the same theme as design and build; clarification is long, maybe ask.
+  chose: type-from-rule
+  why: "Fable audit (2026-11-27): the heading 'the why is missing' is chosen by a hand list of kinds and 7 of its 13 rows in ogy are not about a missing why (no-workflow on a capability). The owner's split, upward and downward missing links, sorts them from the rule itself, as requirements traceability does (orphans upward, uncovered downward)."
+  heard: There are upward and downward missing dependencies; everything missing should be calculated from the ontology data and its field rules.
+  at: '2026-11-27T04:23:50+01:00'
 answers:
 - chose: discover-design-build
   said: Yes to all 9 of Fable's picks, read on the pet shop cards

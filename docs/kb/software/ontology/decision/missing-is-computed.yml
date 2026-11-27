@@ -1,0 +1,17 @@
+title: What is missing is computed
+question: Does the constitution gain the principle that what is missing is computed from the entries and their rules, never marked by hand, so a later rule of the shape 'X without Y is a to-do' is written without asking the owner one kind at a time?
+context: 'The owner, 2026-11-27 (paraphrased): every missing piece should be calculated from the ontology data and field rules; downward gaps are design in progress, upward gaps appear when reading old code or when something was written without a reason. Fable audit: no hand-kept marks exist today, but the owner was asked six times per kind (work-status-unserved, unserved-step-is-work, goal-realized-by-capability, capability-realized-by-workflow, workflow-owes-capability, pain-owes-a-follower).'
+options:
+  principle:
+    label: What is missing is computed from the entries and their rules, never marked by hand.
+    sets:
+      constitution/principle/missing-is-computed:
+        says: What is missing is computed from the entries and their rules, never marked by hand.
+  no:
+    label: 'No principle: each such rule is asked'
+    sets:
+      constitution/principle/missing-is-computed:
+proposal:
+  chose: principle
+  why: The rule the owner stated, kept where every agent reads it first; later rules of this shape cite it with because instead of reaching the owner.
+  heard: All of the cases when some data is missing should be possible to be calculated based off ontology data, based on field rules.

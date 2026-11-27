@@ -1,0 +1,11 @@
+title: The word for a goal nothing delivers
+question: Does the to-do line for a goal that no capability delivers read no-capability instead of unused?
+context: "Fable audit (2026-11-27): unused means 'nothing uses it' on six kinds (enum, dependency, quantity, setting, rule, transition), but on goal it means 'nothing delivers it', which capability calls no-workflow. One word, two meanings in ogy work."
+options:
+  no-capability:
+    label: 'Yes: a goal nothing delivers reads no-capability'
+  unused:
+    label: 'No: keep unused'
+proposal:
+  chose: no-capability
+  why: One word, one meaning; the line says what is missing.

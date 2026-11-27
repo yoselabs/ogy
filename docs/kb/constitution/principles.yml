@@ -59,3 +59,6 @@
     where: ai:claude/ontology-review-session-749f16
     said: 'Yes, agree to both principles: no flexibility until needed, words from known tools'
     hash: 6d17a80b2132
+- id: missing-is-computed
+  says: What is missing is computed from the entries and their rules, never marked by hand.
+  why: 'The owner, 2026-11-27: all the cases when some data is missing should be calculated from the ontology data and its field rules; he was asked six times, one kind at a time, whether a gap is work.'
