@@ -72,7 +72,7 @@ def test_a_miss_offers_near_addresses(repo: Path) -> None:
 def test_status_counts_an_area_and_saves_nothing(repo: Path) -> None:
     code, lines = ogy(repo, "status")
     assert code == cli.OK and lines[0].startswith("product/app   ")
-    assert "findings: 0 (ogy check)" in lines and "work left: 3 (ogy work)" in lines  # D15: the row, the timeout and the page
+    assert "findings: 0 (ogy check)" in lines and "work left: 4 (ogy work)" in lines  # D15 and an unbound workflow
     assert ogy(repo, "status", "app") == (code, lines)
     assert ogy(repo, "status", "ap")[1] == ["no layer or area ap (did you mean app?)"]
     assert not (repo / ".git/ogy-rounds").exists()

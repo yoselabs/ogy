@@ -48,7 +48,11 @@ def render_impact(found: Impact) -> list[str]:
     return lines
 
 
-WORK_TYPES = {"discover": "the why is missing", "design": "the description has a gap", "build": "to implement or prove"}
+WORK_TYPES = {
+    "discover": "the why is missing (nothing above it)",
+    "design": "the description has a gap (nothing below it yet)",
+    "build": "to implement or prove",
+}
 
 
 def render_work(found: list[Work], types: list[Typed] | None = None) -> list[str]:

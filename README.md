@@ -42,7 +42,7 @@ Refusals and usage errors print to stderr. Over MCP codes 2 to 4 are tool errors
 | `find [words] [--kind] [--area] [--state] [--removed] [--parent <address>]` | live and removed entries by words and filters, as a table |
 | `impact`, `diagram <address>` | what a change reaches and what reaches it; the flow as Mermaid |
 | `diff <before> <after>` | what changed between two commits or the worktree, entry by entry |
-| `work [area]` | what the built record says is still to do, for a person in three types (discover: the why is missing, on the kinds `discover:` in ontology.yml names; design: the description has a gap; build: to implement or prove), each entry once under its earliest type, then grouped by cause: the decision that set the entry (or a parent), then what its workflow realizes (`flow.group`); display only, the agents' table stays flat |
+| `work [area]` | what the built record says is still to do, for a person in three types (discover: the why is missing, a rule that looks up a why link such as `because` or `realizes`; design: the description has a gap below; build: to implement or prove; the type comes from the rule, never from a list of kinds), each entry once under its earliest type, then grouped by cause: the decision that set the entry (or a parent), then what its workflow realizes (`flow.group`); display only, the agents' table stays flat |
 | `review [area] [--all]` | what you are asked (at most 7 cards); it **saves a round** and prints its id |
 | `dropped` | what no person has seen (end a session with it) |
 | `glossary [layer/area]`, `kinds [kind] [--readers \| --map]` | the constitution, then the terms of the product: the shared ones of each layer, then each area's (for one area: its terms and the shared ones it reads, a software area product's too), then for the whole glossary each kind's like and unlike line; the kinds of the ontology, or one: its about, its guidance (how to decide when to use it rather than its neighbours), what it is like and unlike, and its fields. `--map` prints the whole ontology as an indented tree, one line per kind grouped by layer (`!` required, `->` one link, `->>` many links, `[]` a list part, indentation = part of), then its declared rules as sentences, then each kind's like and unlike line. `--readers` lists for each field what reads it (the fingerprint, requires, a build input, flow, settling, links and impact, the review rank, a named check or printer) and ends with the fields nothing reads and those only the fingerprint reads |
@@ -231,9 +231,10 @@ repository. All routes validate Host and Origin. Ctrl-C stops the server and its
 The packaged ontology (`src/ogy/ontologies/software`) describes a software product; each kind is a file in `kinds/`.
 - Where: `area` (what one area covers).
 - Unused (work left `unused`, never a finding, computed from links): a rule nothing `satisfies` and that `constrains`
-  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires; a goal no
-  capability realizes. Each kind
-  declares it as a work requirement with `status: unused`.
+  nothing; a quantity, an enum, a setting or a dependency nothing links to (`<-*`); a transition no effect fires; a pain no
+  goal or decision cites. Each kind declares it as a work requirement with `status: unused`. A goal no capability realizes
+  is `no-capability`; a workflow that belongs to no capability and is part of no other flow is `unrealized`. What is
+  missing is computed, never marked (principle missing-is-computed).
 - Why: `pain`, `goal`, `actor`, `capability`, `rule`, `term` (the glossary), `principle` (the constitution). A `pain` is
   what goes wrong for the people the product serves, one sentence; a goal cites the pains it relieves with `because`, and
   owes its reason (`no-reason` in `ogy work`) until it cites a pain a person agreed to by its own card, a principle, or an

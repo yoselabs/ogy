@@ -9,3 +9,8 @@ options:
 proposal:
   chose: unrealized-work
   why: "Fixes the class: every break in the why chain becomes a row (3 in ogy, 0 in the examples), and reason-is-owed's own premise that an entry with no chain is already work becomes true."
+answers:
+- chose: unrealized-work
+  said: "Yes to Fable's picks: the principle that what is missing is computed, row type from its rule, no-capability for goals, both to-do rules, card 13 as reworded, the because line as shortened"
+  at: '2026-11-27T04:36:54+01:00'
+  where: ai:claude/ontology-review-session-749f16

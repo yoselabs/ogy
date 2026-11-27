@@ -220,13 +220,14 @@ def test_a_capability_that_realizes_no_goal_is_work_named_in_yaml(kb: Make) -> N
     lone = kb({"product/app/capabilities.yml": "- {id: lend, says: Members borrow.}\n"})
     assert lone.findings() == set()
     assert [(item.address, item.status) for item in work_left(lone.snapshot, {}, _no_file) if item.status == "unrealized"] == [
-        ("product/app/capability/lend", "unrealized")
+        ("product/app/capability/lend", "unrealized"),
+        ("product/app/workflow/sign-in", "unrealized"),  # the repository's workflow realizes no capability either
     ]
     goal = {
         "product/app/goals.yml": "- {id: tools, says: Members get tools.}\n",
         "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n",
     }
-    assert not [item for item in work_left(kb(goal).snapshot, {}, _no_file) if item.status == "unrealized"]
+    assert not [item for item in work_left(kb(goal).snapshot, {}, _no_file) if item.status == "unrealized" and "capability" in item.address]
 
 
 CONFIRM = """\
@@ -299,7 +300,7 @@ def test_a_goal_no_capability_realizes_is_work(kb: Make) -> None:
     """Decision goal-realized-by-capability (answer work, the sibling of no-workflow): a goal is written before the capabilities
     that realize it, so until one does it is work, never a finding."""
     goal = {"product/app/goals.yml": "- {id: tools, says: Members get tools.}\n"}
-    assert left(kb, goal, "unused") == {"product/app/goal/tools"}
+    assert left(kb, goal, "no-capability") == {"product/app/goal/tools"}
     lend = {**goal, "product/app/capabilities.yml": "- {id: lend, says: Members borrow., realizes: [product/app/goal/tools]}\n"}
     assert left(kb, lend, "unused") == set()
 

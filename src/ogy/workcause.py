@@ -4,6 +4,7 @@ container's `flow.group` link). Display only: nothing routes on it, and the agen
 
 lazy from collections.abc import Iterable
 
+from ogy.kinds import where
 from ogy.receipts import Status, Work
 from ogy.settle import Decision, decision_of, decisions
 lazy from ogy.model import Address
@@ -42,13 +43,18 @@ def _realized(snapshot: Snapshot, address: Address) -> str:
 
 
 def work_type(snapshot: Snapshot, item: Work) -> str:
-    """build: described, to implement or prove (the built record's statuses); discover: a requirement unmet on a kind that says
-    why (`discover:` in ontology.yml); design: any other gap in the description."""
+    """build: described, to implement or prove (the built record's statuses); discover: the unmet rule looks up a why link
+    (`because`, or a flow's group link such as `realizes`): the reason above is missing; design: any other gap, below
+    (decision software/cli/decision/work-types, type-from-rule)."""
     if item.status in BUILD:
         return "build"
     address = snapshot.resolve(item.address)
-    kind = snapshot.kind_of(address).kind if address is not None else ""
-    return "discover" if kind in snapshot.ontology.declared.discover else "design"
+    if address is None or address not in snapshot.entries:
+        return "design"
+    kinds = snapshot.ontology.kinds.values()
+    why = {snapshot.ontology.roles.because} | {kind.flow.group for kind in kinds if kind.flow and kind.flow.group}
+    need = next((need for need in snapshot.kind_of(address).requires if str(need.status) == str(item.status)), None)
+    return "discover" if need is not None and need.path and where(need.path[0])[0] in why else "design"
 
 
 def typed(snapshot: Snapshot, work: list[Work]) -> list[Typed]:

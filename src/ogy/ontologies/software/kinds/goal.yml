@@ -8,7 +8,7 @@ sentence: says
 file: goals.yml
 layers: [product]
 requires:                     # owner, delegated (decision goal-realized-by-capability): until a capability realizes it, a goal is work
-  - {path: ["<-realizes"], kinds: [capability], work: true, status: unused, error: "a goal no capability realizes"}
+  - {path: ["<-realizes"], kinds: [capability], work: true, status: no-capability, error: "a goal no capability realizes"}  # decision goal-status-word
   # owner (decisions reason-is-owed, pain-kind): a goal owes its reason: a principle or a pain it cites that a person agreed to,
   # or an answered decision it cites or that sets it; a proposal or an unagreed guess never is. Read from code it starts with none
   - {path: [because], kinds: [principle, decision, pain], or_answered: true, work: true, status: no-reason, error: "a goal cites its reason with because"}

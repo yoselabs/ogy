@@ -52,6 +52,10 @@ WORK = {
     (f"{S}/setting/smtp-host", Status.CHANGED),  # `ogy migrate` dropped its `default` and `used_by`
     (f"{P}/rule/old-reminder-rule", Status.REMOVED),
     (f"{P}/goal/tools-reach-members", "no-reason"),  # read from code: no principle or decision gives its reason yet
+    (f"{P}/pain/buying-rare-tools", "unused"),  # no goal or decision answers it yet
+    # they belong to no capability; notify is called
+    (f"{P}/workflow/close-loan", "unrealized"),
+    (f"{P}/workflow/remind", "unrealized"),
     # it tells the mail relay, a program: its failed case is the no-answer path, no rule says whether a repeat is safe
     (f"{P}/workflow/notify/step/send/case/ok", "no-answer-path"),
     # unused: nothing satisfies or is constrained by the rule; nothing links to the setting; no effect fires the transition

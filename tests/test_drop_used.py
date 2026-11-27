@@ -8,7 +8,8 @@ import pytest
 from tests.conftest import commit
 from tests.test_writes import w
 
-from ogy import cli
+from ogy import cli, ops
+from ogy.target import Target
 
 GOAL = "product/shop/goal/know-before-visit"
 OTHER = "product/shop/goal/find-a-pet"
@@ -49,9 +50,9 @@ def test_dropping_a_goal_a_capability_realizes_is_recorded_and_the_capability_is
         "chose: drop" in (shop / f"docs/kb/{DECISION}.yml").read_text()
         and "know-before-visit" not in (shop / "docs/kb/product/shop/goals.yml").read_text()
     )
-    lines = w(shop, "work", "product")[1]
-    row = next(line for line in lines if line.startswith(ROW))
-    assert row.endswith(f"realizes: {GOAL} (no in {DECISION})"), lines
+    flat = ops.run_work(Target(shop)).value  # the agents' table: the person's view shows the capability once, under its why
+    rows = [item for item in flat if item.address == CAPABILITY and str(item.status) == ROW.split(":", 1)[0]]
+    assert rows and rows[0].note.endswith(f"realizes: {GOAL} (no in {DECISION})"), flat
     assert w(shop, "check") == (cli.OK, ["ok"])  # work, not a finding: a hand over is not blocked
 
 

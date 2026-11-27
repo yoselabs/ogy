@@ -21,7 +21,6 @@ common:
 roles: {title: title, src: src, because: because, proof: proof, agreed: agreed}   # which common field the engine reads for what
 # What goes wrong if an entry's sentence is wrong; the order is the order the review asks them in.
 harms: [tells-outside, irreversible, authorization]
-discover: [goal, capability]                         # the why: their work is discover, before design and build (decision work-types)
 evidence:                                            # the schemes of `src` items
   code: {reads: symbol, files: [.py]}                # code:<path>#<symbol>
   doc: {reads: section, files: [.md], pinned: true}  # doc:<commit>:<path>#<anchor>

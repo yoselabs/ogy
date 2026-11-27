@@ -76,7 +76,6 @@ class Declared(BaseModel):
     renamed: dict[str, str] = {}  # old common field name -> new: an entry written before holds the old one until `ogy migrate`
     roles: Roles
     harms: tuple[str, ...] = ()  # what a wrong sentence costs, in the order the review asks them
-    discover: tuple[str, ...] = ()  # the kinds that say why: work on one is discover, before design and build (`ogy work`)
     evidence: dict[str, Scheme] = {}
     proof: Proof
     reserved: Reserved = Reserved()

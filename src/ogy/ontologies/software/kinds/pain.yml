@@ -9,5 +9,7 @@ file: pains.yml
 layers: [product]
 own_card: true                                       # decision pain-kind: each pain gets its own yes
 evidence: none                                       # a pain is a statement: its evidence is a person's yes
+requires:                     # owner (decision pain-owes-a-follower): something is done about a pain, or it is work
+  - {path: ["<-because"], kinds: [goal, decision], work: true, status: unused, error: "a goal or a decision answers the pain"}
 fields:
   says: {required: true}

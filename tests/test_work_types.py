@@ -8,6 +8,8 @@ from tests.test_writes import w
 
 from ogy import cli, ops
 from ogy.target import Target
+from ogy.workcause import work_type
+lazy from ogy.receipts import Work
 
 CAPABILITY = "product/app/capability/lend"
 RULE = "product/app/rule/one-loan"
@@ -45,3 +47,18 @@ def test_a_row_set_by_no_decision_goes_under_the_decision_it_cites(repo: Path) -
     lines = w(repo, "work", "product")[1]
     head = next(index for index, line in enumerate(lines) if line.startswith("by product/app/decision/loans"))
     assert lines[head + 1].startswith(f"unrealized: {CAPABILITY}"), lines[head : head + 3]
+
+
+def test_a_row_is_typed_by_the_direction_of_its_rule(repo: Path) -> None:
+    """Decision software/cli/decision/work-types, type-from-rule: a capability with no goal above is the why missing; the same
+    capability with no workflow below is design."""
+    code, lines = w(repo, "put", json.dumps([{"address": CAPABILITY, "says": "A member borrows a tool.", "src": ["code:app.py#lend"]}]))
+    assert code == cli.OK, lines
+    types = {(item.status, ops_type) for item, ops_type in _typed(repo) if item.address == CAPABILITY}
+    assert types == {("unrealized", "discover"), ("no-workflow", "design")}
+
+
+def _typed(repo: Path) -> list[tuple[Work, str]]:
+    target = Target(repo)
+    snapshot = target.read()[1]
+    return [(item, work_type(snapshot, item)) for item in ops.run_work(target, "product").value]
