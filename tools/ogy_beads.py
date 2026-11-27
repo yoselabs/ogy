@@ -11,6 +11,7 @@ Usage: `just beads [--rev HEAD] [--apply]`.
 
 import argparse
 import json
+import os
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -85,7 +86,7 @@ def main(argv: list[str] | None = None, bd: Bd | None = None) -> int:
     parser.add_argument("--rev", default="HEAD", help="the commit to read the work left from (default HEAD: what is committed)")
     parser.add_argument("--apply", action="store_true", help="make the changes in bd; without it nothing is written")
     args = parser.parse_args(argv)
-    bd = bd or Bd("ogy-beads", cwd=str(args.repo))
+    bd = bd or Bd("ogy-beads", cwd=str(args.repo), env=os.environ)  # find bd on the PATH of the shell that ran it
     actions = plan(read_items(args.repo, args.rev), bd.find(label=LABEL))
     counts = {kind: sum(1 for action in actions if action.kind == kind) for kind in ("create", "rewrite", "close")}
     for action in actions:
