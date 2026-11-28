@@ -18,11 +18,19 @@ ZERO = "0" * 40
 
 @pytest.fixture
 def fresh(tmp_path: Path) -> Path:
-    """A repository `ogy init` just set up: its starting principle waits for the owner's yes, so it is not ready to land."""
+    """A repository `ogy init` just set up, with one principle the agent proposed that waits for the owner's yes, so it is not
+    ready to land (init itself seeds no principle: decision what-a-new-kb-starts-with)."""
     run_git(tmp_path, "init", "-q", "-b", "main", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "main"])[0] == cli.OK
+    waits(tmp_path)
     run_git(tmp_path, "add", "-A", ambient=os.environ)
     return tmp_path
+
+
+def waits(repo: Path) -> None:
+    """Propose one principle; nobody agreed to it yet."""
+    record = '[{"address": "constitution/principle/plain-words", "says": "Plain words.", "why": "Readers."}]'
+    assert cli.run(["--repo", str(repo), "put", record])[0] == cli.OK
 
 
 def hook(repo: Path, monkeypatch: pytest.MonkeyPatch, name: str, stdin: str = "") -> tuple[int, list[str]]:
@@ -148,6 +156,7 @@ def test_the_land_branch_is_the_one_ogy_yml_names(tmp_path: Path, monkeypatch: p
     run_git(tmp_path, "init", "-q", "-b", "trunk", ambient=os.environ)
     assert cli.run(["--repo", str(tmp_path), "init", "--land", "trunk"])[0] == cli.OK
     assert "land: trunk" in (tmp_path / "ogy.yml").read_text()
+    waits(tmp_path)
     run_git(tmp_path, "add", "-A", ambient=os.environ)
     sha = first_commit(tmp_path)
     code, lines = hook(tmp_path, monkeypatch, "pre-push", f"refs/heads/trunk {sha} refs/heads/trunk {ZERO}\n")

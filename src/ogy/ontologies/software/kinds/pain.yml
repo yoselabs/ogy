@@ -1,4 +1,5 @@
 kind: pain
+because: [product/capture/decision/pain-kind, software/ontology/decision/pain-owes-a-follower]
 about: what goes wrong for the people the product serves, one sentence; a statement with no options, which a person agrees to; goals and decisions cite it with `because`
 guidance: "What goes wrong today for the people the product serves, one sentence: the reason behind a goal or a decision. A statement, not a choice: each pain gets its own yes, never `yes all`. A goal cites every pain it relieves; one pain may serve several entries, so write it once. A cost of one choice stays in that decision."
 like: "a Value Proposition Canvas pain; an ArchiMate assessment"

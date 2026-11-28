@@ -1,4 +1,5 @@
 kind: capability
+because: [software/ontology/decision/capability-realizes-goal]
 about: something the product can do, decided before its workflows
 guidance: "Something the product can do, named before its workflows. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
 like: "an ArchiMate capability: what the product can do, named before how"

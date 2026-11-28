@@ -9,4 +9,4 @@ part_of: decision
 key: options
 fields:
   label: {required: true}
-  sets: {type: sets}                                 # {address: {field: value} | null}; null: the entry does not exist (no, not now, removed); none: the chosen option is the record (decision software/ontology/decision/decision-stands-alone)
+  sets: {because: [software/ontology/decision/decision-stands-alone], type: sets}                                 # {address: {field: value} | null}; null: the entry does not exist (no, not now, removed); none: the chosen option is the record (decision software/ontology/decision/decision-stands-alone)

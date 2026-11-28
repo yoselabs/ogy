@@ -1,4 +1,5 @@
 kind: goal
+because: [software/ontology/decision/goal-realized-by-capability, software/ontology/decision/goal-status-word, software/ontology/decision/reason-is-owed, product/capture/decision/pain-kind]
 about: a result the product exists to reach
 guidance: "A result the product exists to reach, in the owner's words. What the product can do is a capability; how one result is reached is a workflow. Keep few goals."
 like: "an ArchiMate goal (motivation): a result the product exists to reach"

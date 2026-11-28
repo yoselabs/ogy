@@ -14,6 +14,6 @@ fields:
   sets: {type: sets}                                 # {address: {field: value} | null}, as in option.sets
   why: {note: true, required: true}
   heard: {note: true}                                # one short line: the AI's paraphrase of what the owner said, never a quote
-  at: {type: time}                                   # stamped by `put` when the decision has an answer; newer than the newest answer: asked again (decision re-ask-conditions)
+  at: {because: [software/ontology/decision/re-ask-conditions], type: time}                                   # stamped by `put` when the decision has an answer; newer than the newest answer: asked again (decision re-ask-conditions)
 renamed: {value: sets}
 folded: {heard: said}                                # the part heard {said} is now this text field (`ogy migrate`)

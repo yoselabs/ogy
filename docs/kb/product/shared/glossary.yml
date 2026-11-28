@@ -44,7 +44,7 @@
     hash: 917fc583e0bf
 - id: area
   word: area
-  says: A topic folder in one layer, never named like the product; not a kind.
+  says: A topic folder in one layer, never named like the product; kind area.
   avoid:
   - subject
   - product axis

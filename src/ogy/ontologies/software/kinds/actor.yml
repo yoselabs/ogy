@@ -1,4 +1,5 @@
 kind: actor
+because: [software/ontology/decision/actor-layers]
 about: "whoever uses or operates the product: a person, an AI or a third-party system that invokes a workflow; human: a librarian at the desk; ai: a model that implements a task; program: an MCP client calling a tool"
 guidance: "Different permitted actions make a new actor. A recorded move the product reacts to is an entity's state; a fact that changes the outcome is an attribute tested in a case. A threshold name (a large order) is never an actor. Name a product actor by its role (payment-provider, not a vendor), so swapping the vendor touches software only."
 like: "a UML actor"

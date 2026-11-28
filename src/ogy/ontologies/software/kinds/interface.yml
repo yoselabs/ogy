@@ -8,6 +8,7 @@ like: "ArchiMate application interface: the point where an actor reaches the pro
 unlike: "a UML, Java or TypeScript interface: a type contract with no user"
 shape: file
 sentence: says
+because: [software/ontology/decision/interface-layer, software/ontology/decision/own-part-contracts]
 layers: [product]                                    # where an actor outside the product reaches it; a contract between two of our own parts is not one (decisions interface-layer, own-part-contracts)
 needs_proof: true
 fingerprint: {proofs: true}

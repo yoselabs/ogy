@@ -1,4 +1,5 @@
 kind: decision
+because: [software/ontology/decision/flexibility-needs-evidence]
 evidence: none          # a decision is a question; its evidence is the answer
 about: one question, its options, the AI's proposal and the owner's answers; it settles the fields its options and proposal set, and whether an entry exists, and is never a source; business, technical and development (ADR) decisions alike; the only home of a question and its answers (a tracker may mirror them)
 guidance: "A question with options, the AI's proposal and the owner's answers: business, technical or an ADR. A suggestion becomes a decision before it is acted on; no and not now are options that set `null`. Search first (`ogy find`): a new option goes on the decision that already asks the question."

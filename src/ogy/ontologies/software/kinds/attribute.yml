@@ -1,4 +1,5 @@
 kind: attribute
+because: [software/ontology/decision/create-writes-attributes]
 was: {kind: attr, key: attrs}
 about: one fact kept about an entity
 guidance: "A fact kept about an entity: a plain value has a `type`; a link to an entity, an enum or an actor names it in `of`; `many` holds a list. A fact computed from others is `derived` and never written. A fact that changes the outcome is tested in a case; a move the product reacts to is a state."
@@ -17,7 +18,7 @@ requires:
 fields:
   says: {}
   type: {type: enum, of: [text, number, flag, money, date, datetime, duration]}
-  of: {type: link, to: [enum, entity, actor]}        # what it holds, when it holds an entry; an actor: who it was (decision attribute-of-actor)
+  of: {because: [software/ontology/decision/attribute-of-actor], type: link, to: [enum, entity, actor]}        # what it holds, when it holds an entry; an actor: who it was (decision attribute-of-actor)
   many: {type: flag}                                 # a list of values, or of entries named by `of`
   max: {type: link, to: [quantity]}
   optional: {type: flag}

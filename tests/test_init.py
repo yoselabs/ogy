@@ -24,7 +24,9 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
     assert code == cli.OK and lines[0] == "ogy is set up for the software ontology in docs/kb/"
     assert read(tmp_path, "ogy.yml") == "ontology: software\n"
     assert (tmp_path / "docs/kb/product/shared/area.yml").is_file()
-    assert "rigid-where-checked" in read(tmp_path, "docs/kb/constitution/principles.yml")
+    # decision what-a-new-kb-starts-with (actors-only): no principle of ogy's is seeded; the owner and the agent are
+    assert "rigid-where-checked" not in read(tmp_path, "docs/kb/constitution/principles.yml")
+    assert "product/shared/actor/owner" in "\n".join(cli.run(["--repo", str(tmp_path), "find", "owner"])[1])
     agents = read(tmp_path, "AGENTS.md")
     assert agents.startswith(AGENTS.rstrip()) and "<!-- BEGIN OGY -->" in agents and "ogy glossary" in agents
     assert "prints the constitution" in agents
@@ -34,7 +36,7 @@ def test_init_sets_everything_up(tmp_path: Path) -> None:
         "Edit(/docs/kb/**/*.yml)",
         "Write(/docs/kb/**/*.yml)",
     ]
-    waiting = (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])  # the starters wait for the owner
+    waiting = (cli.OK, ["ok"])  # the starters need no yes: actors are agreed by being used
     assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == waiting
 
 
@@ -120,11 +122,11 @@ def test_the_commands_the_agents_block_names_parse_and_bootstrap_the_first_actor
         assert parser.parse_args(shlex.split(snippet)[1:] if "<" not in snippet else ["--rev", "HEAD", "show", "x"])
     actor = next(snippet for snippet in block.split("`") if snippet.startswith('ogy put \'[{"address": "product/'))
     argv = shlex.split(actor.replace("<area>", "owner-area").replace("...", "A person."))[1:]
-    code, lines = cli.run(["--repo", str(tmp_path), *argv])  # an actor needs no evidence
-    assert code == cli.OK and lines == ["added product/owner-area/area/owner-area", "added product/owner-area/actor/human"], lines
+    code, lines = cli.run(["--repo", str(tmp_path), *argv])  # an area needs no evidence
+    assert code == cli.OK and lines == ["added product/owner-area/area/owner-area"], lines
     answer = next(snippet for snippet in block.split("`") if snippet.startswith("ogy answer <decision>"))
     assert parser.parse_args(shlex.split(answer.replace("<decision>", "d").replace("<option>", "o").replace("<", "").replace(">", ""))[1:])
-    assert cli.run(["--repo", str(tmp_path), "check"]) == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
+    assert cli.run(["--repo", str(tmp_path), "check"]) == (cli.OK, ["ok"])
 
 
 def test_init_denies_only_the_yaml_and_replaces_the_rule_an_earlier_init_wrote(tmp_path: Path) -> None:
@@ -232,7 +234,7 @@ def test_init_starts_with_the_ontologys_entries_and_never_re_adds_a_removed_one(
     assert "id: agent" not in read(repo, "docs/kb/product/shared/actors.yml")
     assert not any("actor/agent" in line for line in cli.run(["--repo", str(repo), "init", "--check"])[1])
     commit(repo, "init without the agent")
-    assert ogy(repo, "--rev", ".", "check") == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
+    assert ogy(repo, "--rev", ".", "check") == (cli.OK, ["ok"])
 
 
 def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -> None:
@@ -242,7 +244,7 @@ def test_a_starter_removed_before_the_first_commit_is_recorded(tmp_path: Path) -
     assert code == cli.OK and "recorded in product/shared/removed.yml" in lines[0], lines
     assert cli.run(["--repo", str(tmp_path), "init"])[0] == cli.OK
     assert "id: agent" not in read(tmp_path, "docs/kb/product/shared/actors.yml")
-    assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == (cli.OK, ["ok", "waiting for you: 1 (ogy review)"])
+    assert cli.run(["--repo", str(tmp_path), "--rev", ".", "check"]) == (cli.OK, ["ok"])
 
 
 @pytest.mark.parametrize(
