@@ -4,3 +4,8 @@
   - product/shared/actor/owner
   because:
   - product/ontology/decision/target-products
+  agreed:
+    at: '2026-11-28T02:33:49+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+    hash: f7da5f1b14ab

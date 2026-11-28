@@ -15,3 +15,8 @@ options:
 proposal:
   chose: no-field-yet
   why: Fixture write effects 0, KB 1 with no scalar; `to`, `becomes` and `value` each clash with an existing meaning; no real record yet (L5).
+answers:
+- chose: no-field-yet
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

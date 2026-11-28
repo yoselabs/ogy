@@ -60,3 +60,7 @@ answers:
   at: '2026-11-21T01:48:28+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
   delegated: product/review/decision/judgement-delegation
+- chose: kind-guidance-owns
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

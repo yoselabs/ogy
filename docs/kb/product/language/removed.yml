@@ -198,3 +198,18 @@ items:
           sets:
             product/shared/term/area:
               says: A topic folder in one layer, never named like the product; not a kind.
+  - id: product/language/rule/shared-entries-home
+    kind: rule
+    parent:
+    title:
+    said: 'A term, an actor or a set that one area uses lives in that area; one that two areas use lives in the reserved area `shared` of its layer (product/shared/actors.yml, product/shared/glossary.yml), so every address keeps its area; an entry with behaviour or a decision stays in its owning area and others link to it. Where an entry lives is guidance: ogy check reads only that `shared` holds the kinds marked shared, not how many areas use an entry.'
+    why: product/language/decision/shared-entries-home
+    replaced_by:
+    at: 2026-11-28 02:33:55+01:00
+    last_seen: 755cac31486fa0b8a58f5068779e105240ff89c8
+    hash: 26e2082e09a6
+    ontology: software
+    snapshot:
+      says: 'A term, an actor or a set that one area uses lives in that area; one that two areas use lives in the reserved area `shared` of its layer (product/shared/actors.yml, product/shared/glossary.yml), so every address keeps its area; an entry with behaviour or a decision stays in its owning area and others link to it. Where an entry lives is guidance: ogy check reads only that `shared` holds the kinds marked shared, not how many areas use an entry.'
+      because:
+      - product/language/decision/shared-entries-home

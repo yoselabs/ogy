@@ -9,3 +9,8 @@ options:
 proposal:
   chose: keep
   why: The definition is already neutral; only the name leans, and a rename moves every address for no question it lets ogy answer.
+answers:
+- chose: keep
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

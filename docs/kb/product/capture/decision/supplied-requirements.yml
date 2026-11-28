@@ -11,3 +11,8 @@ options:
 proposal:
   chose: swap-test
   why: 'One owner per fact: copies fall behind every supplier release; one line alone hides what we would still demand without it.'
+answers:
+- chose: swap-test
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -11,3 +11,8 @@ options:
 proposal:
   chose: not-now
   why: One real case does not justify a field or a per-system principle set (rule of three); the constitution cannot differ per system without changing what every agent reads first.
+answers:
+- chose: not-now
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16

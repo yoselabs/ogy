@@ -13,3 +13,8 @@ options:
 proposal:
   chose: inputs-folder-headings
   why: The only real input has one line per heading, so a line range is no finer than the heading anchor (L5).
+answers:
+- chose: inputs-folder-headings
+  said: A on the last fifteen, with the shared-entries rule dropped because the kind files already say where shared entries live
+  at: '2026-11-28T02:33:49+01:00'
+  where: ai:claude/ontology-review-session-749f16
