@@ -22,3 +22,8 @@ options:
 proposal:
   chose: computed-close
   why: 'Capability work-as-tracker-items realizes goal work-follows-the-kb, which answers pain tasks-drift: these tasks close themselves when the kind file names the decision. Listing every uncited answer would be 116 rows of noise; manual is the drift itself.'
+answers:
+- chose: computed-close
+  said: 'Yes: decision-named tasks close when a kind file cites the decision, and an answer that changes behaviour sets the entry that states it'
+  at: '2026-11-28T02:58:03+01:00'
+  where: ai:claude/ontology-review-session-749f16

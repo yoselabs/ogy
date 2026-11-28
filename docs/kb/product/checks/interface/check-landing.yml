@@ -1,0 +1,7 @@
+says: 'ogy check --landing: also what blocks a land only (terms nobody agreed, an end no step reaches, a workflow nothing starts).'
+invoked_as: ogy check --landing [--base <commit>]
+form: cli
+serves:
+- product/checks/workflow/check-and-land/step/run
+src:
+- code:src/ogy/check.py#LANDING

@@ -1,4 +1,4 @@
-says: Inspect the shared inspection data on a canvas and in entry details, walk declared paths and preview proposed changes.
+says: Inspect the shared inspection data on a canvas and in entry details, walk declared paths and preview proposed changes; an answer chosen on the board is recorded with where ui:board/<token>.
 form: web
 serves:
 - product/inspection/workflow/inspect-kb/step/read
@@ -17,9 +17,7 @@ shows:
 includes:
 - product/inspection/interface/entry-details
 satisfies:
-- product/inspection/rule/one-mention-path
-- product/inspection/rule/typed-relation-conservation
-- product/inspection/rule/agent-inspection-parity
+- product/inspection/rule/reverse-links-by-field-word
 because:
 - product/inspection/decision/viewer-is-an-interface
 - product/inspection/decision/product-map

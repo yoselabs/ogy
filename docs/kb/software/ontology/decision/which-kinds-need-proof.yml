@@ -27,3 +27,7 @@ answers:
   said: Good with the proof design
   at: '2026-11-27T20:08:40+01:00'
   where: ai:claude/ontology-review-session-749f16
+- chose: entry-carries-it
+  said: 'Yes: decision-named tasks close when a kind file cites the decision, and an answer that changes behaviour sets the entry that states it'
+  at: '2026-11-28T02:58:03+01:00'
+  where: ai:claude/ontology-review-session-749f16

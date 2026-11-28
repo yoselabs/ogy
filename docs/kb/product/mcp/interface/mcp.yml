@@ -5,3 +5,5 @@ serves:
 src:
 - code:src/ogy/cli.py#_asks
 form: mcp
+satisfies:
+- product/inspection/rule/reverse-links-by-field-word

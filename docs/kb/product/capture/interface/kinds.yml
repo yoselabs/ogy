@@ -1,4 +1,4 @@
-says: The kinds of the ontology, or one, with what each holds, links to and requires.
+says: The kinds of the ontology, or one, with what each holds, links to and requires; it prints the kinds and fields that cite no decision or principle.
 invoked_as: ogy kinds [kind]
 serves:
 - product/capture/workflow/capture-entries/step/read-glossary

@@ -6,3 +6,5 @@ serves:
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+satisfies:
+- product/inspection/rule/reverse-links-by-field-word
