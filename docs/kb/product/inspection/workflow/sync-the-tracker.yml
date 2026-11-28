@@ -7,7 +7,7 @@ realizes: product/inspection/capability/work-as-tracker-items
 start: sync
 steps:
   sync:
-    says: The agent runs just beads to see the plan (create, rewrite, close by entry address), and just beads --apply to write it.
+    says: The agent runs just beads to see the plan (create, rewrite and close by entry address; close an ogy-decision item once a kind file cites its decision), and just beads --apply to write it.
     actor: product/shared/actor/agent
     choices:
       sync:

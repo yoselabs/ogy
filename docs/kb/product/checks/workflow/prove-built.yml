@@ -5,7 +5,7 @@ realizes: product/checks/capability/test-run-writes-built
 start: run
 steps:
   run:
-    says: The agent runs the tests with --ogy-stamp (just stamp here); ogy writes the built line of every entry that needs a proof and whose every proof item passed, and leaves any other entry as it was.
+    says: The agent runs the tests with --ogy-stamp (just stamp here); ogy writes the built line of every entry that needs a proof and whose every proof passed, deletes the line of an entry one of whose proofs failed, and leaves an entry whose proof was skipped or did not run as it was.
     actor: product/shared/actor/agent
     choices:
       run:
