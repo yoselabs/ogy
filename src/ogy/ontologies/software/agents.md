@@ -11,7 +11,7 @@ there; everything else lives in the area that owns it. Change it only through og
   stand; `{ogy} find <words>` searches live and removed entries (search before you propose); `{ogy} show <address>` reads one.
 - Before you create an entry of a kind, read `{ogy} kinds <kind>`: what it is, its guidance (when to use it rather than its
   neighbours: an actor, a lifecycle state or an attribute) and its fields and links, with the kinds each link may name; these facts
-  live only in the kind files, so read them there and never from memory. `{ogy} kinds --map` prints the whole ontology on one screen, with its rules.
+  live only in the kind files, so read them there and never from memory. `{ogy} kinds --map` prints the whole ontology on one screen by its groups (why, data, flows, build, record), with its rules.
 - The constitution is small and never only grows: a new principle comes as one decision whose options add it, replace a named
   principle, sharpen a named principle, or set it `null`. When two principles pull apart on a real decision, that decision cites
   both and proposes a sharper sentence for each.

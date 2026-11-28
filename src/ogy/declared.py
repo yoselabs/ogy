@@ -3,10 +3,11 @@ entry may carry and the roles the engine reads them in, the harm tags in the ord
 schemes of `src` and the form of a proof, and the field names no kind may use. The engine reads these names; it knows none."""
 
 from enum import StrEnum
+lazy from collections.abc import Mapping
 
 from pydantic import BaseModel, ConfigDict
 
-from ogy.kinds import FieldSpec
+from ogy.kinds import FieldSpec, Kind, Shape
 
 
 class Roles(BaseModel):
@@ -59,6 +60,15 @@ class Reserved(BaseModel):
     sentence: tuple[str, ...] = ()  # other names for a sentence: a kind names its sentence field with `sentence:`
 
 
+class Group(BaseModel):
+    """One group of the kinds that stand on their own: what it holds, and its kinds in the order they are printed
+    (software/ontology/decision/kind-groups, answered declared)."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    says: str
+    kinds: tuple[str, ...]
+
+
 class Direction(StrEnum):
     """Which way a link may cross the ordered layers."""
 
@@ -79,6 +89,7 @@ class Declared(BaseModel):
     evidence: dict[str, Scheme] = {}
     proof: Proof
     reserved: Reserved = Reserved()
+    groups: dict[str, Group] = {}  # every kind that stands on its own in exactly one; unset: the map groups by layer
 
     def rank(self, tag: str | None) -> int:
         """The review order of a harm tag; no tag comes last."""
@@ -107,3 +118,19 @@ def problems(declared: Declared) -> list[str]:
     ]
     found += [f"evidence: {name} reads no files" for name, scheme in declared.evidence.items() if not scheme.files]
     return found + ([] if declared.proof.files else ["proof: names no file suffix"])
+
+
+def group_problems(declared: Declared) -> list[str]:
+    """A kind is in one group at most. A kind in none, or a name that is no kind, the map prints apart: a kind file added or
+    renamed needs no edit of ontology.yml to load, and a test holds the shipped ontology to every kind in exactly one."""
+    held: dict[str, list[str]] = {}
+    for group, spec in declared.groups.items():
+        for name in spec.kinds:
+            held.setdefault(name, []).append(group)
+    return [f"groups: {name} is in {' and '.join(groups)}" for name, groups in held.items() if len(groups) > 1]
+
+
+def ungrouped(declared: Declared, kinds: Mapping[str, Kind]) -> list[str]:
+    """The kinds that stand on their own and are in no declared group."""
+    held = {name for group in declared.groups.values() for name in group.kinds}
+    return sorted(name for name, kind in kinds.items() if kind.shape is not Shape.INLINE and name not in held)

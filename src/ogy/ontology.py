@@ -37,7 +37,7 @@ class Ontology:
         self.kinds = owing.derived(kinds, declared)  # a requirement a later layer owes is work
         self.declared, self.starts, self.agents = declared, starts, agents
         self._owed: dict[tuple[str, Requirement, str], str | None] = {}
-        found = declaring.problems(declared) + problems(self.kinds, declared)
+        found = declaring.problems(declared) + declaring.group_problems(declared) + problems(self.kinds, declared)
         if found:
             raise OntologyError("; ".join(found))
 

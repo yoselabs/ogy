@@ -5,6 +5,7 @@ lazy from pathlib import Path
 from tests.conftest import ogy
 
 from ogy import cli
+from ogy.declared import group_problems, ungrouped
 from ogy.kindmap import map_lines
 lazy from ogy.ontology import Ontology
 
@@ -20,20 +21,26 @@ def test_a_kind_prints_about_guidance_and_fields(repo: Path) -> None:
     assert "    nature: enum, one of human|ai|program, required" in lines
 
 
-def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> None:
+def test_the_map_is_one_line_per_kind_grouped_by_the_declared_groups(ontology: Ontology) -> None:
+    """Decision software/ontology/decision/kind-groups, answered declared: every kind that stands on its own is in exactly one."""
     lines = map_lines(ontology)
-    named = {line.split(":")[0].strip().removesuffix("[]") for line in lines[1 : lines.index("rules:")] if line.startswith("  ")}
+    assert ungrouped(ontology.declared, ontology.kinds) == []
+    named = {
+        line.split(":")[0].split(" [")[0].strip().removesuffix("[]") for line in lines[1 : lines.index("rules:")] if line.startswith("  ")
+    }
     assert named == set(ontology.kinds)
-    assert [line for line in lines if not line.startswith(" ")][1:] == [
-        "product and software:",
-        "product:",
-        "software:",
-        "constitution/ (fixed folder):",
+    assert [line.split(" (")[0] for line in lines if not line.startswith(" ")][1:] == [
+        "why",
+        "data",
+        "flows",
+        "build",
+        "record",
         "rules:",
         "kinds, like and unlike:",
     ]
     assert (
-        "  workflow: satisfies->>rule !says schedule->quantity event->transition details->step !start->step realizes->>capability" in lines
+        "  workflow [product and software]: satisfies->>rule !says schedule->quantity event->transition details->step "
+        "!start->step realizes->>capability" in lines
     )
     assert "        effect[]: as above" in lines  # a part of several kinds is written out once
     assert "  attribute: exactly one of type, of" in lines
@@ -50,3 +57,12 @@ def test_the_map_is_one_line_per_kind_grouped_by_layer(ontology: Ontology) -> No
 def test_the_map_is_a_flag_of_kinds(repo: Path) -> None:
     code, lines = ogy(repo, "kinds", "--map")
     assert code == cli.OK and lines[0].startswith("! required") and "rules:" in lines
+
+
+def test_a_kind_in_two_groups_is_refused(ontology: Ontology) -> None:
+    twice = ontology.declared.model_copy(update={"groups": {**ontology.declared.groups, "more": ontology.declared.groups["why"]}})
+    assert group_problems(twice) == [
+        "groups: pain is in why and more",
+        "groups: goal is in why and more",
+        "groups: capability is in why and more",
+    ]

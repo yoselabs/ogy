@@ -1,6 +1,7 @@
 """`ogy kinds --map`: the whole ontology on one screen. One line per kind, grouped by the layers it may live in, its parts
 indented under it; then the rules the kind files declare, as sentences. Read from the kind files; nothing is kept."""
 
+from ogy.declared import ungrouped
 from ogy.kinds import FieldSpec, FieldType, Flow, Holds, Kind, Shape
 from ogy.kindtext import likeness_lines
 lazy from ogy.ontology import Ontology
@@ -21,10 +22,17 @@ def _field(name: str, spec: FieldSpec) -> str:
     return text
 
 
-def _line(kind: Kind, depth: int) -> str:
+def _line(kind: Kind, depth: int, where: str = "") -> str:
     mark = "[]" if kind.shape is Shape.INLINE and kind.holding is Holds.LIST else ""
     fields = " ".join(_field(name, spec) for name, spec in kind.fields.items())
-    return f"{'  ' * depth}{kind.kind}{mark}:" + (f" {fields}" if fields else "")
+    return f"{'  ' * depth}{kind.kind}{mark}{where}:" + (f" {fields}" if fields else "")
+
+
+def _where(ontology: Ontology, kind: Kind) -> str:
+    """Where a top kind lives, when the map groups by declared groups and not by layer."""
+    if not ontology.declared.groups or kind.shape is Shape.INLINE:
+        return ""
+    return f" [{kind.area}/]" if kind.area else f" [{' and '.join(kind.layers)}]"
 
 
 def _tree(ontology: Ontology, kind: Kind, depth: int, shown: set[str]) -> list[str]:
@@ -32,14 +40,20 @@ def _tree(ontology: Ontology, kind: Kind, depth: int, shown: set[str]) -> list[s
     if kind.kind in shown:
         return [f"{'  ' * depth}{kind.kind}{'[]' if kind.holding is Holds.LIST else ''}: as above"]
     shown.add(kind.kind)
-    lines = [_line(kind, depth)]
+    lines = [_line(kind, depth, _where(ontology, kind) if depth == 1 else "")]
     for part in ontology.parts_of(kind.kind):
         lines += _tree(ontology, part, depth + 1, shown)
     return lines
 
 
 def _groups(ontology: Ontology) -> list[tuple[str, list[Kind]]]:
-    """Top kinds by where they live: each combination of layers in the ontology's order, then each fixed folder."""
+    """Top kinds by the groups `ontology.yml` declares (decision kind-groups); with none, by where they live: each combination
+    of layers in the ontology's order, then each fixed folder."""
+    if declared := ontology.declared.groups:
+        kinds = ontology.kinds
+        found = [(f"{name} ({group.says})", [kinds[kind] for kind in group.kinds if kind in kinds]) for name, group in declared.items()]
+        rest = ungrouped(ontology.declared, kinds)
+        return found + ([("in no group", [kinds[name] for name in rest])] if rest else [])
     top = [kind for _, kind in sorted(ontology.kinds.items()) if kind.shape is not Shape.INLINE]
     order = sorted({kind.layers for kind in top if kind.layers}, key=lambda layers: [ontology.layers.index(item) for item in layers])
     order.sort(key=lambda layers: (ontology.layers.index(layers[0]), -len(layers)))
