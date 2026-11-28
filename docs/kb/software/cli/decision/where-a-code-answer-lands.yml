@@ -1,0 +1,16 @@
+title: Where an answer that changes only code lands
+because:
+- constitution/principle/deterministic-first
+- constitution/principle/earned-on-a-real-case
+question: 'answered-uncited-is-work lists an answered decision that sets no entry and that nothing cites. Counted on 2026-11-28: 143 such decisions, 97 in software/ontology, 16 in software/cli, 10 in product/inspection. Many changed only code, which neither a kind file nor an entry can cite. What lets one stop being work?'
+context: Found while building answered-uncited-is-work (bead ogy-toht), before any work item was added. Code already names decisions in its docstrings ("decision software/cli/decision/work-brief, answered work-address", src/ogy/brief.py), but ogy reads none of them. Building the list as answered would add about 143 tracker items at once, most of them built long ago.
+options:
+  code-cites:
+    label: ogy reads a citation in code (the text "decision <address>" in a docstring of the source files the ontology names); a decision cited by a kind file, an entry or code is not work; the 143 are cited in batches, and the rest are real work
+  kinds-only:
+    label: Only decisions of software/ontology are listed (a kind file can cite them); a decision that changes code stays a decision bead opened by hand
+  backfill-first:
+    label: 'As answered, with no code citation: an agent first cites each of the 143 from the kind or entry it changed, and one that changed only code gets an entry that states its behaviour (entry-carries-it)'
+proposal:
+  chose: code-cites
+  why: The citations already exist in the docstrings; reading them is deterministic and leaves only real work listed.
