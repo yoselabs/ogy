@@ -42,3 +42,5 @@ attributes:
       - product/inspection/entity/inspection-request
 src:
 - code:src/ogy/inspect.py#inspect
+because:
+- product/inspection/decision/contextual-view-structure

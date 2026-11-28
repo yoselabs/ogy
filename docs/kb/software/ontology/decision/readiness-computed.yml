@@ -10,9 +10,12 @@ options:
     label: No readiness; the owner reads `ogy status` and `ogy review`
   computed-unanswered-only:
     label: 'Computed, never stored, and no new name: an entry waits when its status is `question waiting`, or it cites an unanswered decision with `because`, or a part of it or an entry it links to waits. `ogy work <layer>` lists a row owed for a waiting entry apart, with the address waited on. Entries decided by AI or changed since agreed stay counted apart. A decision asked again does not make its entries wait.'
+  unagreed-ai-waits:
+    label: 'As computed-unanswered-only, and an entry an AI wrote that nobody agreed to and no answered decision set waits too: its rows are listed apart and the tracker opens no task for it'
 proposal:
-  chose: computed-unanswered-only
-  why: The mark already exists in show; unagreed entries are not missing decisions and status already owns that fact.
+  chose: unagreed-ai-waits
+  why: 'A guess must not reach the work list or the tracker before a person saw it (goal work-follows-the-kb, pain tasks-drift); one of the safeguards before proposal-is-written. Before: computed-unanswered-only.'
+  at: '2026-11-28T06:17:33+01:00'
 answers:
 - chose: computed-unanswered-only
   said: "A on all eight of batch 1: readiness computed, stage filters, reverse links by field word, trace in a workflow's brief, the kind files the only owner of their lists, a ui scheme for the board, I don't know records nothing, kind files carry because"

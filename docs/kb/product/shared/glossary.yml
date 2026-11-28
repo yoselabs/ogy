@@ -254,7 +254,7 @@
     hash: 281f3d1b5c4c
 - id: proposal
   word: proposal
-  says: "The AI's pick for a decision: built until answered; a newer one asks again."
+  says: "The AI's pick for a decision: its additions built until answered; its removals wait."
   avoid:
   - assumed
   - ?assumed

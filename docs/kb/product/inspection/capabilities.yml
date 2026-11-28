@@ -56,3 +56,7 @@
     where: ai:claude/ontology-review-session-749f16
     said: "A on all eight of batch 1: readiness computed, stage filters, reverse links by field word, trace in a workflow's brief, the kind files the only owner of their lists, a ui scheme for the board, I don't know records nothing, kind files carry because"
     hash: 387a4a623f4b
+- id: overlap-read
+  says: 'ogy prints the entries that may do the same thing: decisions that set or are cited by one entry, decisions whose questions share their main words, goals citing the same pains, capabilities of one goal with no workflow.'
+  realizes:
+  - product/inspection/goal/understand-recorded-product

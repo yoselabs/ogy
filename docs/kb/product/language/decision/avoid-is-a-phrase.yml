@@ -1,0 +1,13 @@
+title: An avoided word is refused in its phrase
+because:
+- constitution/principle/words-from-known-tools
+question: Is an avoided word refused only in the phrase it is avoided in, not wherever the bare word appears?
+context: 'Found by the audit of 2026-11-28 (friction ledger; reconciled with the independent review). Ledger item 21, and this decision itself: a word avoided for the state of a question was refused in two sentences about tracker tasks, where it is the natural word, and could not be written here either.'
+options:
+  phrase:
+    label: A term's avoid list names phrases; a sentence is refused only when it holds the phrase
+  word:
+    label: 'As today: the bare word is refused anywhere'
+proposal:
+  chose: phrase
+  why: Words from known tools keep their natural senses (principle words-from-known-tools).

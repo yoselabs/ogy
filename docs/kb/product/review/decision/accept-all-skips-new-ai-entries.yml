@@ -1,0 +1,13 @@
+title: yes all skips new AI entries
+because:
+- product/review/pain/guesses-look-decided
+question: Does yes all agree to an entry an AI wrote that cites no answered decision?
+context: Found by the audit of 2026-11-28 (friction ledger; reconciled with the independent review). In round rea07bb 5 of 31 cards were contracts an AI wrote with nothing the owner said behind them; a bare yes would have agreed them all.
+options:
+  own-number:
+    label: 'No: such an entry is agreed only by its own number; yes all leaves it and says so'
+  as-today:
+    label: 'As today: yes all agrees every card'
+proposal:
+  chose: own-number
+  why: Pains guesses-look-decided and design-errors-pass-checks; one of the safeguards before proposal-is-written.

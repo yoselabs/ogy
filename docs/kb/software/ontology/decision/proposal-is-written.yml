@@ -1,0 +1,13 @@
+title: A proposed entry is written, not asked
+because:
+- product/review/pain/flooded-with-questions
+question: Is a proposed entry written and agreed by its own card, or asked as a decision first?
+context: 'Found by the audit of 2026-11-28 (friction ledger; reconciled with the independent review). About 57 decisions have two options of which one is no or as today, and about 57 set only a rule that repeats the option: confirmations written as choices, the main source of the decision count. Asked last: it waits for card-says-what-it-rests-on, no-n-keeps-the-sentence-built (unbuild-unagreed), readiness-computed (unagreed-ai-waits) and accept-all-skips-new-ai-entries to be built, and changes the AGENTS.md line A proposal becomes a decision entry before it is acted on and the capture skill (eval P2 re-run first).'
+options:
+  write-the-entry:
+    label: A proposed entry is written and waits for its card; a decision is written only for two or more alternatives one could live with, a no to something that exists, or a choice with no entry
+  decision-first:
+    label: 'As today: every proposal becomes a decision before it is acted on'
+proposal:
+  chose: write-the-entry
+  why: The card already offers yes, a reworded sentence and no; a decision around a confirmation asks the same yes twice (goal fewest-questions, pain flooded-with-questions). Safe only behind the four safeguards.

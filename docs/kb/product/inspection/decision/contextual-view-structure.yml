@@ -1,8 +1,7 @@
 question: How are situation-specific representations of entries built?
-context: The earlier design dispatches by kind, context, detail and mode. A complete set of independent renderers would repeat fact selection and identity logic.
+context: The earlier design dispatches by kind, context, detail and mode. A complete set of independent renderers would repeat fact selection and identity logic. It rests also on software/ontology/decision/style-book-home (style lives in entries, tokens in the viewer); that link was dropped when this decision moved to the product layer (reason-of-a-product-entry, 2026-11-28), because a product entry cannot name a software decision.
 because:
 - constitution/principle/one-owner-per-fact
-- software/ontology/decision/style-book-home
 options:
   projection:
     label: Derive shared inspection data, then compose kind recipes in context adapters

@@ -30,10 +30,10 @@ steps:
         label: I do not know
         then: show
     agreed:
-      at: '2026-11-28T05:11:55+01:00'
+      at: '2026-11-28T06:13:33+01:00'
       where: ai:claude/ontology-review-session-749f16
-      said: Agreed the twenty cards the review found true or resting on answers already given
-      hash: d8c4f49b0e68
+      said: "A on all eight of the audit's first batch: readings need their own letter, put dry run, the two decisions move to product, cards say what they rest on, a refused AI entry stops being built, contexts link entries, kind lines name their option, removals wait for the answer"
+      hash: a6ed4e776ae6
   apply:
     says: ogy applies each item of the reply to the round, each on its own.
     cases:

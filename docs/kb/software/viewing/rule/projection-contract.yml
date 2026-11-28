@@ -2,7 +2,7 @@ says: Every inspection model is derived deterministically from the resolved snap
 constrains:
 - product/inspection/entity/inspection-projection
 because:
-- software/viewing/decision/contextual-view-structure
+- product/inspection/decision/contextual-view-structure
 - constitution/principle/one-owner-per-fact
 agreed:
   at: '2026-11-28T05:11:55+01:00'

@@ -21,4 +21,4 @@ attributes:
     optional: true
     says: Serialized proposed records, kept apart from the live entries and validated before preview.
 because:
-- product/inspection/decision/board-is-product
+- product/inspection/decision/contextual-view-structure

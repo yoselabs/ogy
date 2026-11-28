@@ -5,3 +5,8 @@ serves:
 src:
 - code:src/ogy/cli.py#_asks
 form: cli
+agreed:
+  at: '2026-11-28T06:13:33+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  said: "A on all eight of the audit's first batch: readings need their own letter, put dry run, the two decisions move to product, cards say what they rest on, a refused AI entry stops being built, contexts link entries, kind lines name their option, removals wait for the answer"
+  hash: 87aa4e80762f
