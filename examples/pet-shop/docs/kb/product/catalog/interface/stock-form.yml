@@ -2,7 +2,9 @@ says: The form the assistant adds a new pet with.
 form: web
 serves:
 - product/catalog/workflow/stock/step/add
-accepts:
-- product/catalog/entity/pet
 because:
 - product/catalog/decision/stock-goal
+inputs:
+  pet:
+    says: The new pet, as the assistant types it in.
+    of: product/catalog/entity/pet

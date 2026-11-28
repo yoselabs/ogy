@@ -5,3 +5,8 @@ serves:
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  before:
+    says: The commit compared from.
+  after:
+    says: The commit compared to.

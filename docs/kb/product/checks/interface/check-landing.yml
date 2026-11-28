@@ -5,3 +5,7 @@ serves:
 - product/checks/workflow/check-and-land/step/run
 src:
 - code:src/ogy/check.py#LANDING
+inputs:
+  commit:
+    says: The merge base the change is checked against.
+    optional: true

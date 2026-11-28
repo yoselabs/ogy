@@ -5,3 +5,6 @@ serves:
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  file:
+    says: The Markdown file whose anchors are listed.

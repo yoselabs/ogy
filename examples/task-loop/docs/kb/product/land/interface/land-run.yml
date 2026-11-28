@@ -5,3 +5,10 @@ serves:
 - product/land/workflow/land/step/run
 src:
 - code:src/taskloop/cli_land.py#register
+inputs:
+  task:
+    says: The task whose attempt lands.
+  key:
+    says: The backlog the task is in.
+  path:
+    says: The checkout the attempt ran in.

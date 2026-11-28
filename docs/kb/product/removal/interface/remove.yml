@@ -1,7 +1,17 @@
 says: Delete an entry and record it in its area's removed.yml; --why is required.
-invoked_as: ogy remove <address> --why <address or words> [--to <address>]
+invoked_as: ogy remove <address> --why <why> [--to <replacement>]
 serves:
 - product/removal/workflow/remove-entry/step/ask
 src:
 - code:src/ogy/cli.py#_writes
 form: cli
+inputs:
+  address:
+    says: The entry removed.
+    of: product/capture/entity/entry
+  why:
+    says: A decision address or plain words that say why.
+  replacement:
+    says: The entry that replaces it.
+    of: product/capture/entity/entry
+    optional: true

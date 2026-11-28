@@ -107,7 +107,7 @@ attributes:
   notes: {says: What the desk wrote., type: list}
 """
 DESK = (
-    "says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\naccepts: [product/app/entity/loan]\n"
+    "says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\ninputs: {loan: {says: L., of: product/app/entity/loan}}\n"
     "src: ['code:app.py#lend']\n"
 )
 HEARD = DECISION.replace("proposal: {chose: two, why: Small.}", "proposal: {chose: two, why: Small., heard: {said: Two seems fair}}")

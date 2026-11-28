@@ -130,6 +130,7 @@ class Problem(StrEnum):
     UNCOVERED_END = "uncovered-end"
     NEVER_STARTED = "never-started"
     LINK_CYCLE = "link-cycle"
+    UNMATCHED_PLACEHOLDER = "unmatched-placeholder"
     STORED_STATE = "stored-state"
     BAD_KEY = "bad-key"
     DUPLICATE_SAYS = "duplicate-says"

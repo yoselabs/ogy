@@ -35,7 +35,7 @@ steps:
 ends:
   done: {result: success, says: D.}
 """
-PAGE = "says: The page.\nform: web\nserves: [product/app/workflow/ask/step/ask]\naccepts: [product/app/entity/loan]\n"
+PAGE = "says: The page.\nform: web\nserves: [product/app/workflow/ask/step/ask]\ninputs: {loan: {says: L., of: product/app/entity/loan}}\n"
 SERVED = {
     "product/app/interface/ask-page.yml": PAGE,
     "software/app/handler/write.yml": "says: Writes.\nperforms: [product/app/workflow/ask/step/ask/choice/stay]\n",
@@ -89,11 +89,11 @@ def test_an_attribute_has_a_type_or_names_what_it_holds(kb: Make) -> None:
     assert not kb({**SERVED, "product/app/entity/loan.yml": plain}).findings() - kb({**SERVED}).findings()
 
 
-def test_an_attribute_nothing_writes_or_accepts_is_never_written(kb: Make) -> None:
-    page = PAGE.replace("accepts: [product/app/entity/loan]\n", "")
+def test_an_attribute_nothing_writes_or_carries_in_is_never_written(kb: Make) -> None:
+    page = PAGE.replace("inputs: {loan: {says: L., of: product/app/entity/loan}}\n", "")
     flow = {**SERVED, "product/app/interface/ask-page.yml": page, "product/app/workflow/ask.yml": STEP}
     assert left(kb, flow, "unwritten") == {"product/app/entity/loan/attribute/member"}  # days is written, late derived
-    accepted = page + "accepts: [product/app/entity/loan/attribute/member]\n"
+    accepted = page + "inputs: {member: {says: Who., of: product/app/entity/loan/attribute/member}}\n"
     assert left(kb, {**flow, "product/app/interface/ask-page.yml": accepted}, "unwritten") == set()
     created = STEP.replace(
         '"on": product/app/entity/loan/attribute/days}',
@@ -191,7 +191,7 @@ def test_the_loader_refuses_a_requirement_that_names_nothing(requires: str, mess
     ("page", "problem"),
     [
         ("says: P.\nform: cli\nserves: [product/app/workflow/ask/step/ask]\n", Problem.UNMET),  # a command line says how it is invoked
-        ("says: P.\nform: web\naccepts: [product/app/entity/loan]\n", Problem.UNMET),  # what accepts input serves a step
+        ("says: P.\nform: web\ninputs: {loan: {says: L., of: product/app/entity/loan}}\n", Problem.UNMET),  # its input carries a fact
         ("says: P.\nform: web\noffers: [product/app/workflow/ask/step/ask/choice/go]\n", Problem.UNMET),
         ("says: P.\nform: web\nserves: [product/app/workflow/ask/step/ask]\nallows: [product/app/actor/member]\n", Problem.UNMET),
         ("says: P.\nform: web\nserves: []\n", Problem.WRONG_TYPE),  # an empty list would read as set

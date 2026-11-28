@@ -7,3 +7,8 @@ offers:
 - product/loop/workflow/round/step/run/choice/once
 src:
 - code:src/taskloop/cli_step.py#_register_rounds
+inputs:
+  key:
+    says: The backlog the round takes tasks from.
+  label:
+    says: Only tasks with this label.

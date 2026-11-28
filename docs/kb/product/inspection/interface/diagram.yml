@@ -5,3 +5,7 @@ serves:
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  address:
+    says: The entry drawn.
+    of: product/capture/entity/entry

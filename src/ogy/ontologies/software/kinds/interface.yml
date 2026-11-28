@@ -3,29 +3,30 @@ was:                                                 # view and command merged (
   - {kind: view, defaults: {form: web}}
   - {kind: command, defaults: {form: cli}}
 about: "a point where an actor reaches the product: what it shows, accepts and offers"
-guidance: "Where an actor reaches the product: a screen, command line, API call, file or message (`form`). `serves` names its steps, `offers` their choices; one that only shows may serve none, and `allows` names its users. `includes` names its parts. What it shows and accepts is its contract, tested by its proof; a rule only for more."
+guidance: "Where an actor reaches the product: a screen, command line, API call, file or message (`form`). `serves` names its steps, `offers` their choices; one that only shows may serve none, and `allows` names its users. `includes` names its parts, `inputs` what it takes. What it shows and takes is its contract, tested by its proof."
 like: "ArchiMate application interface: the point where an actor reaches the product (a screen, a command line, an API call, an MCP tool)"
 unlike: "a UML, Java or TypeScript interface: a type contract with no user"
 shape: file
 sentence: says
-because: [software/ontology/decision/interface-layer, software/ontology/decision/own-part-contracts]
+because: [software/ontology/decision/interface-layer, software/ontology/decision/own-part-contracts, software/ontology/decision/command-inputs-are-accepted]
 layers: [product]                                    # where an actor outside the product reaches it; a contract between two of our own parts is not one (decisions interface-layer, own-part-contracts)
 needs_proof: true
 fingerprint: {proofs: true}
+input: {input: content}                             # what it takes in changes: stale
 acyclic: [includes]                                  # a part never includes the interface that includes it
 requires:
   - {if_equals: {field: form, value: cli}, needs_field: invoked_as, error: "a command line interface says how it is invoked (`invoked_as`)"}
-  - {if_set: accepts, needs_field: serves, error: "an interface that accepts input serves a step"}
+  - {if_reaches: ["/input", "of"], needs_field: serves, error: "an interface whose inputs carry a product fact serves a step"}
   - {if_set: offers, needs_field: serves, error: "an interface that offers choices serves the step they belong to"}
   - {if_set: allows, kinds: [interface], without: [serves], error: "an interface that serves a step takes who may use it from the steps' actors; `allows` is for one that serves none"}
 fields:
   says: {required: true}
   form: {type: enum, of: [web, cli, http, mcp, file, message], required: true}   # read by requires: a cli says how it is invoked
-  invoked_as: {}                                     # the exact command line or route
+  invoked_as: {placeholders: input}                  # the exact command line or route; each `<name>` is an input (decision command-inputs-are-accepted)
   serves: {type: links, to: [step], input: {parts: [choice]}}   # the served steps' set of choices changes: stale
   offers: {type: links, to: [choice], input: none}
   shows: {type: links, to: [entity, attribute], input: content}     # what it displays changes: stale
-  accepts: {type: links, to: [entity, attribute], input: content}   # what it takes in changes: stale
   includes: {type: links, to: [interface], input: content}   # the interfaces it is made of; a part changes: stale
   satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (a rule it is held to changes: it is stale)
   allows: {type: links, to: [actor], harm: [authorization], input: none}   # who may use it, when it serves no step
+dropped: [accepts]                                   # `ogy migrate`: accepts is computed from the inputs' `of` (decision input-carries-fact)

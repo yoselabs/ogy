@@ -1,8 +1,25 @@
 says: Apply the owner's reply to a review round, read as a grammar line, with a short paraphrase of what they said.
-invoked_as: ogy reply <grammar line> --said <paraphrase> --where <uri> [--at <iso>] [--round <id>] [--note <words>]
+invoked_as: ogy reply <line> --said <paraphrase> --where <uri> [--at <iso>] [--round <id>] [--note <words>]
 serves:
 - product/review/workflow/review-and-reply/step/reply
 - product/capture/workflow/store-owner-words/step/store
 src:
 - code:src/ogy/cli.py#_writes
 form: cli
+inputs:
+  line:
+    says: The owner's reply as one grammar line.
+  paraphrase:
+    says: One plain line in the agent's words of what the owner said.
+  uri:
+    says: Where the owner said it, such as an agent session.
+  iso:
+    says: When the owner said it; now when left out.
+    optional: true
+  id:
+    says: The review round replied to; the last one when left out.
+    of: product/review/entity/review-round/attribute/id
+    optional: true
+  words:
+    says: A hedge or condition the owner gave, paraphrased.
+    optional: true

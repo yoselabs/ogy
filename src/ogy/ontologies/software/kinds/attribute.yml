@@ -13,8 +13,8 @@ exactly_one_of: [[type, of]]                         # a plain value has a type;
 requires:
   - {if_set: derived, kinds: [attribute], without: [max, optional], error: "a derived attribute has no max and is never optional"}
   # never-written: written by a write effect on it or its entity, or a create of its entity (`|create`: the owner's switch,
-  # decision create-writes-attributes), or accepted by an interface (it or its entity)
-  - {if_unset: derived, path: ["<-accepts"], or_paths: [["<-on?do=write"], ["^", "<-on?do=write|create"], ["^", "<-accepts"]], kinds: [interface, choice, case, timeout], work: true, status: unwritten, error: "never-written: an attribute that is not derived is written by an effect or accepted by an interface (it or its entity)"}
+  # decision create-writes-attributes), or carried in by an input of an interface (it or its entity)
+  - {if_unset: derived, path: ["<-of?@kind=input", "^"], or_paths: [["<-on?do=write"], ["^", "<-on?do=write|create"], ["^", "<-of?@kind=input", "^"]], kinds: [interface, choice, case, timeout], work: true, status: unwritten, error: "never-written: an attribute that is not derived is written by an effect or carried in by an interface's input (it or its entity)"}
   # unread: shown by an interface (it or its entity), or read by a condition or a derived value (decision attribute-nothing-reads)
   - {path: ["<-shows"], or_paths: [["^", "<-shows"], ["<-when"], ["<-derived"]], kinds: [interface, case, choice, attribute], work: true, status: unread, error: "an attribute no interface shows and no condition or derived value reads"}
 fields:

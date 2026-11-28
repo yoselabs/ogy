@@ -8,3 +8,7 @@ src:
 form: cli
 satisfies:
 - product/inspection/rule/reverse-links-by-field-word
+inputs:
+  address:
+    says: The entry read.
+    of: product/capture/entity/entry

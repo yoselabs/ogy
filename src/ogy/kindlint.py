@@ -130,6 +130,8 @@ def _spec(kinds: Mapping[str, Kind], where: str, spec: FieldSpec) -> list[str]:
     found += [f"{where}: links to unknown kind {target}" for target in spec.to if target != ANY and target not in kinds]
     if (spec.type is FieldType.ENUM) != bool(spec.of):
         found.append(f"{where}: enum fields, and only they, list their members in `of`")
+    if spec.placeholders is not None and (spec.type is not FieldType.TEXT or spec.placeholders not in kinds):
+        found.append(f"{where}: `placeholders` is on a text field and names a part kind")
     if (spec.type is FieldType.URI) != bool(spec.schemes):
         found.append(f"{where}: uri fields, and only they, list their `schemes`")
     return found + _picked(kinds, where, spec, spec.input)

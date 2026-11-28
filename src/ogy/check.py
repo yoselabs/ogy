@@ -17,6 +17,7 @@ from ogy.ledgers import check_against_base, check_ledgers
 from ogy.links import link_items, resolve
 from ogy.lints import check_lints
 from ogy.model import Entry, Finding, Problem, parse_address
+from ogy.placeholders import check_placeholders
 from ogy.requires import applies, reaching, satisfied, unmet
 from ogy.settle import check_decisions, decisions, said_no
 from ogy.snapshot import Snapshot, load
@@ -173,6 +174,7 @@ CHECKS: tuple[Check, ...] = (
     check_evidence,
     check_decisions,
     check_terms,
+    check_placeholders,
     check_ledgers,
     check_lints,
 )

@@ -6,3 +6,7 @@ serves:
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  commit:
+    says: The merge base the change is checked against.
+    optional: true

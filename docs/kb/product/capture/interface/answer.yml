@@ -1,7 +1,27 @@
 says: Choose an option of a decision, keeping a short paraphrase of what the person said, who, when and where.
-invoked_as: ogy answer <decision> <option> --said <paraphrase> --where <uri> [--at <iso>] [--from human|ai] [--note <words>] [--delegated <decision>]
+invoked_as: ogy answer <decision> <option> --said <paraphrase> --where <uri> [--at <iso>] [--from human|ai] [--note <words>] [--delegated <delegation>]
 serves:
 - product/capture/workflow/store-owner-words/step/store
 src:
 - code:src/ogy/cli.py#_writes
 form: cli
+inputs:
+  decision:
+    says: The decision the owner answered.
+    of: product/review/entity/decision
+  option:
+    says: The option the owner chose.
+  paraphrase:
+    says: One plain line in the agent's words of what the owner said.
+  uri:
+    says: Where the owner said it, such as an agent session.
+  iso:
+    says: When the owner said it; now when left out.
+    optional: true
+  words:
+    says: A hedge or condition the owner gave, paraphrased.
+    optional: true
+  delegation:
+    says: The decision where the owner let the agent answer for him.
+    of: product/review/entity/decision
+    optional: true

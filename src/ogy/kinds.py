@@ -98,6 +98,7 @@ class FieldSpec(BaseModel):
     member_harm: dict[str, tuple[str, ...]] = {}  # an enum member's own cost, e.g. `delete: [irreversible]`
     input: Input | Picked | None = None
     because: tuple[str, ...] = ()  # the decisions or principles that are this field's reason (decision kind-reasons)
+    placeholders: str | None = None  # a text whose every `<name>` is a part of this kind by id, and every such part a `<name>`
 
 
 class Fingerprint(BaseModel):

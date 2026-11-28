@@ -1,8 +1,15 @@
 says: What changed, who said so and what is in force for an address or an area, computed from Git.
-invoked_as: ogy history <address | layer/area> [--limit <commits>]
+invoked_as: ogy history <address> [--limit <commits>]
 serves:
 - product/capture/workflow/capture-entries/step/search
 - product/inspection/workflow/inspect-kb/step/read
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  address:
+    says: The entry, or a layer and area, whose history is read.
+    of: product/capture/entity/entry
+  commits:
+    says: How many commits are read at most.
+    optional: true

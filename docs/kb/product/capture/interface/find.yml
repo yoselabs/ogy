@@ -1,7 +1,12 @@
 says: Live and removed entries whose address or sentence hold every word, narrowed by kind, area, state or parent, as a table.
-invoked_as: ogy find [words] [--kind] [--area] [--state] [--removed] [--parent <address>]
+invoked_as: ogy find [words] [--kind] [--area] [--state] [--removed] [--parent <parent>]
 serves:
 - product/capture/workflow/capture-entries/step/search
 src:
 - code:src/ogy/cli.py#_reads
 form: cli
+inputs:
+  parent:
+    says: Only entries under this one.
+    of: product/capture/entity/entry
+    optional: true

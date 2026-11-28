@@ -1,0 +1,14 @@
+kind: input
+because: [software/ontology/decision/inputs-that-are-no-fact, software/ontology/decision/input-carries-fact]
+about: one value an actor hands an interface, such as a placeholder of its command line
+guidance: "One value an actor hands an interface: a `<name>` of its `invoked_as`, a form field, a request body. `of` names the entity or attribute it carries when it is a fact the product keeps; a revision, a path or a flag names none. What an interface accepts is the `of` of its inputs."
+like: "a parameter of an OpenAPI operation, or an argument of a command line"
+unlike: "an attribute: a fact the product keeps, which an input may carry in"
+shape: inline
+sentence: says
+part_of: [interface]
+key: inputs
+fields:
+  says: {required: true}
+  of: {type: link, to: [entity, attribute]}         # the product fact it carries; none for a plain value (decision input-carries-fact)
+  optional: {type: flag}                             # the actor may leave it out

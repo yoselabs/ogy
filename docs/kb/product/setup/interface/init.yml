@@ -5,3 +5,10 @@ serves:
 src:
 - code:src/ogy/cli.py#_writes
 form: cli
+inputs:
+  name:
+    says: The ontology the repository starts from.
+    optional: true
+  branch:
+    says: The branch a change lands on.
+    optional: true

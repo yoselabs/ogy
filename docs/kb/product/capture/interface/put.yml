@@ -10,3 +10,7 @@ agreed:
   where: ai:claude/ontology-review-session-749f16
   said: "A on all eight of the audit's first batch: readings need their own letter, put dry run, the two decisions move to product, cards say what they rest on, a refused AI entry stops being built, contexts link entries, kind lines name their option, removals wait for the answer"
   hash: e6c696ae8f41
+inputs:
+  path:
+    says: A file of records, or - for standard input.
+    optional: true
