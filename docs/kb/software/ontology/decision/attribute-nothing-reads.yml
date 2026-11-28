@@ -1,0 +1,13 @@
+title: An attribute nothing reads is work
+because:
+- constitution/principle/fix-the-class
+question: Is an attribute that nothing reads (no interface shows it, no condition or derived value reads it) work left, as one that nothing writes is?
+context: Found by the ontology audit of 2026-11-28 (Fable). The board asks for "inputs nothing reads" (bead ogy-ful.5). The ontology computes `unwritten` for an attribute and nothing for the other side.
+options:
+  unread-is-work:
+    label: 'Yes: one requirement on attribute, status `unread`'
+  no:
+    label: Only `unwritten` is computed
+proposal:
+  chose: unread-is-work
+  why: The same class both ways (principle fix-the-class).

@@ -1,0 +1,15 @@
+title: The name a person reads
+because:
+- constitution/principle/one-owner-per-fact
+question: What name of an entry does a person read on a review card or the board?
+context: 'Found by the ontology audit of 2026-11-28 (Fable). A name has three homes: the id, `title` (on 158 decisions and 4 other entries) and a term that `names` the entry (0 of 34 terms). The board derives names from ids (bead ogy-ful.22).'
+options:
+  title-else-id:
+    label: '`title` when written, else the id with dashes as spaces; a term never names an entry, and term.names is dropped'
+  term-names:
+    label: The glossary word that names the entry, else the id
+  id-only:
+    label: The id only; `title` is dropped
+proposal:
+  chose: title-else-id
+  why: It is what 162 entries already do and needs no new field; term.names has no use in ogy.

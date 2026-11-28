@@ -1,0 +1,16 @@
+title: What a new knowledge base starts with
+because:
+- constitution/principle/one-owner-per-fact
+- constitution/principle/layers-split-business-from-technical
+question: Does `ogy init` put ogy's own modelling principle (rigid-where-checked) and the actors owner and agent into every new product?
+context: 'Found by the ontology audit of 2026-11-28 (both auditors). pet-shop keeps none of the three. agents.md tells an agent to make `product/<area>/actor/human`, while starts.yml seeds `product/shared/actor/owner`: two identities for one person.'
+options:
+  actors-only:
+    label: No principle is seeded; the actors owner and agent stay, and agents.md names product/shared/actor/owner instead of making a human actor
+  nothing:
+    label: Nothing is seeded; agents.md says to make both actors
+  as-today:
+    label: As today
+proposal:
+  chose: actors-only
+  why: A product's constitution holds that product's values; ogy's modelling rule is already printed by the kinds' guidance. One person keeps one identity.

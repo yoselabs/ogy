@@ -1,0 +1,13 @@
+title: Command inputs that are no product fact
+because:
+- constitution/principle/rigid-where-checked
+question: command-inputs-are-accepted (answered checked) matches each placeholder of `invoked_as` to an accepted entity or attribute. What does a placeholder match that is no fact the product keeps, such as `--rev` or an area?
+context: Found by the ontology audit of 2026-11-28 (Fable). 15 of 28 interfaces carry placeholders; 1 has `accepts`. Many placeholders (a revision, a file, a flag) are no entity or attribute. The board's walk cannot take typed inputs (bead ogy-ful.10). This does not reopen command-inputs-are-accepted.
+options:
+  declared-inputs:
+    label: An interface lists its inputs as parts (name, what it holds, optional); `accepts` names the product facts among them, and `invoked_as` is checked against the list
+  exempt:
+    label: Only a placeholder naming an entity or attribute is checked; the rest stay prose
+proposal:
+  chose: declared-inputs
+  why: What is checked is rigid (principle rigid-where-checked); prose placeholders are what the board cannot walk.

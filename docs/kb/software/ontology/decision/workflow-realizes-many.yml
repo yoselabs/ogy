@@ -1,0 +1,13 @@
+title: A workflow may realize several capabilities
+because:
+- constitution/principle/one-owner-per-fact
+question: May a workflow realize more than one capability, as a capability may realize more than one goal?
+context: Found by the ontology audit of 2026-11-28 (Fable). `realizes` takes many goals on a capability and one capability on a workflow, so a workflow that serves two capabilities must pick one (hand-over was such a case). No entry changes either way.
+options:
+  many:
+    label: workflow.realizes takes one or more capabilities
+  one:
+    label: It stays one; a second purpose is a second workflow or a call
+proposal:
+  chose: many
+  why: The same link keeps one cardinality, and a writer is not forced to drop a true purpose.

@@ -1,0 +1,14 @@
+title: An answered kind change nothing cites is work
+because:
+- constitution/principle/deterministic-first
+- constitution/principle/fix-the-class
+question: Is an answered decision of software/ontology whose options set no entry, and that no kind file or field cites with `because`, listed as work left?
+context: 'Found by the ontology audit of 2026-11-28 (Fable and the independent review). Four answers changed nothing in the kind files and had no tracker item: answer-where-ui, harm-names, command-inputs-are-accepted and rules-need-a-check. Today a session opens a decision bead by hand when it records the answer, so a missed one stays invisible. `ogy kinds --unreasoned` lists all 128 kinds and fields, since no kind file cites anything yet.'
+options:
+  computed:
+    label: 'Yes: `ogy work` lists such a decision as `uncited`, and the tracker runner takes it from there; decision beads opened by hand stop'
+  by-hand:
+    label: 'As today: the session that records the answer opens a decision bead'
+proposal:
+  chose: computed
+  why: A missed bead cannot be seen; a computed list cannot miss one (principles deterministic-first and fix-the-class).

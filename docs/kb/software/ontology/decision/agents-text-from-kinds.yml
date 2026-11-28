@@ -1,0 +1,14 @@
+title: The agent text prints the kind facts
+because:
+- constitution/principle/one-owner-per-fact
+- constitution/principle/deterministic-first
+question: Do the facts about kinds that agents.md and the glossary repeat come from the kind files, or are the texts fixed by hand?
+context: 'Found by the ontology audit of 2026-11-28, by both auditors. The shipped agents.md says `from: human` twice, though answer.yml dropped `from`; it says `because` cites a principle or a decision, though ontology.yml also allows a pain; it says a term has nothing beyond word, says and avoid, though term.yml has `names`. The glossary says `shape` may be entity, list, single or inline, though the kinds say `file`, and that an area is not a kind, though `area` is one. decision.yml describes a decision with a verb the glossary lists under avoid for it.'
+options:
+  printed:
+    label: agents.md keeps its rules of work; every fact about a kind (its fields, links and the kinds a link may point at) is printed from the kind files, and the glossary entries that restate a kind are checked against it
+  by-hand:
+    label: The nine sentences are fixed by hand
+proposal:
+  chose: printed
+  why: A copied fact drifts again; one owner per fact (principles one-owner-per-fact and deterministic-first).

@@ -1,0 +1,13 @@
+title: The board's own read model leaves product
+because:
+- constitution/principle/layers-split-business-from-technical
+question: Where do the entries that describe how the board reads and renders (inspection-request, inspection-projection, the enums inspection-context and inspection-detail, and rule one-mention-path) live?
+context: Found by the ontology audit of 2026-11-28 (the independent review). inspection-context has members board, tooltip, pinned, search, relation, walk and legend; inspection-request.change is "Serialized proposed records"; one-mention-path names an icon. board-is-product (answered product) said what is promised moves and how it renders stays. Moving them is `ogy move`; the board interface would then show a product entry, which is a change of its own.
+options:
+  software-viewing:
+    label: The five move to software/viewing with `ogy move`; product/inspection keeps what the board promises
+  stay:
+    label: They stay in product/inspection
+proposal:
+  chose: software-viewing
+  why: How a screen renders is technical (principle layers-split-business-from-technical), and board-is-product already says so.

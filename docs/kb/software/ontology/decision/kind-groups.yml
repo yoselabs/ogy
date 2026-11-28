@@ -1,0 +1,14 @@
+title: The groups of kinds are declared once
+because:
+- constitution/principle/intuitive-for-ai
+- constitution/principle/deterministic-first
+question: Are the groups of kinds (the why chain, the flows, the data, the build, the record of decisions) declared once in the ontology?
+context: Found by the ontology audit of 2026-11-28 (Fable). The 17 kinds that stand on their own form one flat list; `ogy kinds --map` prints them by name, and the board and agents.md each group them in their own words. The row set and the derived relations were already answered as declared once.
+options:
+  declared:
+    label: ontology.yml names each group and its kinds; the map, agents.md and the board print by it
+  each-reader:
+    label: Every reader groups the kinds as it likes
+proposal:
+  chose: declared
+  why: As with the row set and the derived relations, one declared list instead of several copies.

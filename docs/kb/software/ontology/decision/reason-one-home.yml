@@ -1,0 +1,13 @@
+title: One home for why an entry exists
+because:
+- constitution/principle/one-owner-per-fact
+question: An entry's reason can be the decision whose answer sets it and also a `because` to a decision. Which holds it?
+context: Found by the ontology audit of 2026-11-28 (both auditors). 94 entries are set by an answered option, 30 cite a decision with `because`, 5 do both and 1 of them cites a different decision. goal.yml reads both. The why chain and the board must take the union.
+options:
+  computed:
+    label: The deciding decision is computed from `sets`; `because` names a decision only when no answered option sets the entry, and check reports one that does
+  both:
+    label: Both stay; readers take the union
+proposal:
+  chose: computed
+  why: One owner per fact; the 5 doubles are cleared once.

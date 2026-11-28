@@ -1,0 +1,15 @@
+title: Values and fields no product uses
+because:
+- constitution/principle/earned-on-a-real-case
+question: Do the values and fields that no instance uses in ogy, pet-shop, task-loop or the tool library stay in the kinds?
+context: "Found by the ontology audit of 2026-11-28 (Fable; the independent review found a longer list in ogy alone). Unused in all four: attribute types date, datetime and duration; interface form library; proposal.sets (every one of the 257 decisions has options, and an answer can only choose an option, so a proposal's own sets can never be answered); term.names (decided by entry-name). Kinds timeout and workaround are not in this question: the fixture and task-loop use them."
+options:
+  drop:
+    label: Each is dropped, declared for `ogy migrate`, and comes back with its first real case
+  staged:
+    label: Each stays only with a named real case or a dated plan (the Rust and TypeScript products), written beside it; one with neither is dropped
+  keep:
+    label: All stay as today
+proposal:
+  chose: drop
+  why: 'Earned on a real case; a value is cheap to add back when a product needs it. The independent review picked staged: it keeps what the planned products may need.'

@@ -1,0 +1,16 @@
+title: One meaning per word in the kind files
+because:
+- constitution/principle/intuitive-for-ai
+- constitution/principle/words-from-known-tools
+question: 'Five words carry two meanings in the kinds, the glossary and agents.md: card, context, row, proposal and unused. How is each resolved?'
+context: "Found by the ontology audit of 2026-11-28 (the independent review; Fable found card). card: a numbered item of a review round, and the parts an interface `includes`. context: why a question comes up, a board situation (inspection-context), and a grouping above areas (context-form). row: used 41 times in 8 kind files, with no term. proposal: the AI's pick on a decision, and now also an AI entry waiting for its card (proposal-is-written). unused: nothing links to it, nothing satisfies a rule, no effect fires a transition, and no goal answers a pain."
+options:
+  terms:
+    label: 'A glossary term for each word, and the clashing use renamed: interface `includes` described as parts not cards; a waiting AI entry is "decided by AI"; a pain no goal answers is `unanswered`; row gets its term; context keeps the decision meaning'
+  qualified:
+    label: Qualified terms only (review card, board card), the uses unchanged
+  leave:
+    label: As today
+proposal:
+  chose: terms
+  why: An agent reads one meaning per word (principle intuitive-for-ai).

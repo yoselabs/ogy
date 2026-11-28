@@ -1,0 +1,13 @@
+title: The effect values are verbs
+because:
+- constitution/principle/words-from-known-tools
+question: The effect value `transition` has the name of a kind, while the other four (create, delete, write, tell) are verbs. Does it become a verb?
+context: Found by the ontology audit of 2026-11-28 (Fable). 15 of the 30 effects in the four knowledge bases use it. A transition is "one allowed move between states" in its own definition. The owner said on the board to use only the ontology's own words.
+options:
+  move:
+    label: 'The value is `move` ("do: move, on: <transition>"), declared for `ogy migrate`'
+  keep:
+    label: The value stays `transition`
+proposal:
+  chose: move
+  why: The word is already in the transition's own definition, and one word keeps one level (principle words-from-known-tools).
