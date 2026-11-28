@@ -45,10 +45,6 @@ def plain(text: str) -> str:
     return text[:1].lower() + text[1:]
 
 
-def named(address: Address) -> str:
-    return address.key or address.kind
-
-
 def tag(name: str, body: str, css: str = "") -> str:
     return f'<{name} class="{css}">{body}</{name}>' if css else f"<{name}>{body}</{name}>"
 
@@ -69,21 +65,21 @@ def workflow(snapshot: Snapshot, address: Address) -> str:
     if flow is None:
         return ""
     walk = graph(snapshot, flow, address)
-    start = [named(step) for step in link(snapshot, address, flow.start)]
+    start = [snapshot.name(step) for step in link(snapshot, address, flow.start)]
     items = []
     for step in walk.steps:
-        who = [named(actor) for actor in link(snapshot, step, flow.actor)]
-        line = f"<b>{escape(named(step))}</b> {escape(said(snapshot, step))}"
+        who = [snapshot.name(actor) for actor in link(snapshot, step, flow.actor)]
+        line = f"<b>{escape(snapshot.name(step))}</b> {escape(said(snapshot, step))}"
         if who:
             line += f' <i class="who">{escape(", ".join(who))}</i>'
         rows = [
             f"{escape(str(snapshot.entries[row].fields.get('label') or said(snapshot, row)))} "
-            f"&rarr; {escape(', '.join(named(target) for target in link(snapshot, row, flow.then)))}"
+            f"&rarr; {escape(', '.join(snapshot.name(target) for target in link(snapshot, row, flow.then)))}"
             for kind in (flow.choice, flow.case, flow.timeout)
             for row in walk.rows[step][kind]
         ]
         items.append(line + listing(rows))
-    ends = [f"<b>{escape(named(end))}</b> {escape(said(snapshot, end))}" for end in walk.ends]
+    ends = [f"<b>{escape(snapshot.name(end))}</b> {escape(said(snapshot, end))}" for end in walk.ends]
     first = f'<p class="start">starts at <b>{escape(", ".join(start))}</b></p>' if start else ""
     return first + listing(items) + (tag("h4", "Ends") + listing(ends) if ends else "")
 
@@ -92,7 +88,7 @@ def entity(snapshot: Snapshot, address: Address) -> str:
     parts = snapshot.links.parts
     blocks = []
     for kind, title in (("attribute", "Facts kept"), ("state", "States"), ("transition", "Changes")):
-        found = [f"<b>{escape(named(part))}</b> {escape(said(snapshot, part))}" for part in parts(address, kind)]
+        found = [f"<b>{escape(snapshot.name(part))}</b> {escape(said(snapshot, part))}" for part in parts(address, kind)]
         if found:
             blocks.append(tag("h4", title) + listing(found))
     return "".join(blocks)
@@ -101,12 +97,14 @@ def entity(snapshot: Snapshot, address: Address) -> str:
 def interface(snapshot: Snapshot, address: Address) -> str:
     fields = snapshot.entries[address].fields
     head = [f"<code>{escape(str(fields['invoked_as']))}</code>"] if fields.get("invoked_as") else []
-    served = [f"{escape(named(step.parent() or step))}: {escape(named(step))}" for step in link(snapshot, address, "serves")]
+    name = snapshot.name
+    served = [f"{escape(name(step.parent() or step))}: {escape(name(step))}" for step in link(snapshot, address, "serves")]
     return listing([*head, f"form {escape(str(fields.get('form', '')))}", *([f"serves {', '.join(served)}"] if served else [])])
 
 
 def decision(snapshot: Snapshot, address: Address) -> str:
-    options = [f"<b>{escape(named(option))}</b> {escape(said(snapshot, option))}" for option in snapshot.links.parts(address, "option")]
+    parts = snapshot.links.parts(address, "option")
+    options = [f"<b>{escape(snapshot.name(option))}</b> {escape(said(snapshot, option))}" for option in parts]
     return tag("h4", "Options") + listing(options)
 
 
@@ -117,8 +115,8 @@ def card(snapshot: Snapshot, address: Address) -> str:
     detail = DETAIL.get(address.kind)
     body = detail(snapshot, address) if detail else ""
     if not body:
-        return tag("li", f"<b>{escape(named(address))}</b> {escape(said(snapshot, address))}")
-    return tag("li", fold(named(address), said(snapshot, address), body, css=address.kind))
+        return tag("li", f"<b>{escape(snapshot.name(address))}</b> {escape(said(snapshot, address))}")
+    return tag("li", fold(snapshot.name(address), said(snapshot, address), body, css=address.kind))
 
 
 def narrative(snapshot: Snapshot, members: dict[str, list[Address]]) -> str:

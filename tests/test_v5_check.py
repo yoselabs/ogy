@@ -301,28 +301,27 @@ def test_a_row_that_deletes_ranks_as_irreversible(kb: Make) -> None:
     assert row is not None and harm(found.snapshot, row) == "irreversible"
 
 
-def test_a_step_is_agreed_with_its_rows_and_a_term_with_the_sentence_it_names(kb: Make) -> None:
+def test_a_step_is_agreed_with_its_rows(kb: Make) -> None:
     """A row is never a card of its own: it is read and agreed with its step, so a changed row sends the step back to the
-    owner. A term that names an entry is agreed with that entry's sentence."""
-    step, term = "product/app/workflow/sign-in/step/ask", "product/shared/term/member"
-    words = "product/shared/glossary.yml"
-    plain = kb({words: "- {id: member, word: member, names: product/app/actor/member}\n"}).snapshot
-    at, named = plain.resolve(step), plain.resolve(term)
-    assert at is not None and named is not None and plain.agreed_print(at) != plain.fingerprint(at)
+    owner."""
+    step = "product/app/workflow/sign-in/step/ask"
+    plain = kb({}).snapshot
+    at = plain.resolve(step)
+    assert at is not None and plain.agreed_print(at) != plain.fingerprint(at)
     flow = SIGN_IN.replace("    choices:", f"    agreed: {stamp(fingerprint=plain.agreed_print(at))}\n    choices:")
-    member = f"- {{id: member, word: member, names: product/app/actor/member, agreed: {stamp(fingerprint=plain.agreed_print(named))}}}\n"
-    agreed = {words: member, "product/app/workflow/sign-in.yml": flow}
-    now = kb(agreed).snapshot
-    assert agreement(now, at) is Agreement.AGREED and agreement(now, named) is Agreement.AGREED
-    relabelled = kb(
-        {
-            **agreed,
-            "product/app/workflow/sign-in.yml": flow.replace("label: Sign in", "label: Log in"),
-            "product/app/actors.yml": "- {id: member, says: A person who lends., nature: human}\n",
-        }
-    ).snapshot
-    assert agreement(relabelled, at) is Agreement.CHANGED and agreement(relabelled, named) is Agreement.CHANGED
+    agreed = {"product/app/workflow/sign-in.yml": flow}
+    assert agreement(kb(agreed).snapshot, at) is Agreement.AGREED
+    relabelled = kb({"product/app/workflow/sign-in.yml": flow.replace("label: Sign in", "label: Log in")}).snapshot
+    assert agreement(relabelled, at) is Agreement.CHANGED
 
 
 def _no_file(path: str, rev: str | None = None) -> str | None:
     return None
+
+
+def test_the_name_a_person_reads_is_the_title_else_the_id(kb: Make) -> None:
+    """Decision software/ontology/decision/entry-name, answered title-else-id: a term never names an entry."""
+    snapshot = kb({"product/app/actors.yml": "- {id: club-member, title: Member, says: A person who lends., nature: human}\n"}).snapshot
+    titled, plain = snapshot.resolve("product/app/actor/club-member"), snapshot.resolve("product/app/workflow/sign-in")
+    assert titled is not None and plain is not None
+    assert (snapshot.name(titled), snapshot.name(plain)) == ("Member", "sign in")

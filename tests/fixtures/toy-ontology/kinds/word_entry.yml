@@ -2,15 +2,13 @@ kind: word_entry
 about: a word of the product's language
 shape: list
 sentence: tells
-glossary: {word: spelling, avoid: shun, words: 10, names: points_at}
+glossary: {word: spelling, avoid: shun, words: 10}
 file: words.yml
 layers: [business, tech]
 shared: true
 must_be_agreed: true
 evidence: none
-exactly_one_of: [[tells, points_at]]
 fields:
   spelling: {required: true}
-  tells: {}
-  points_at: {type: link, to: [person, journey]}
+  tells: {required: true}
   shun: {type: texts}

@@ -366,18 +366,6 @@ def test_a_stage_a_machine_acts_at_comes_back_through_a_screen_wired_to_the_mach
     assert not any(line.startswith("unwired:") for line in w(toy, "work")[1])
 
 
-def test_a_toy_word_points_at_the_entry_that_defines_it(toy: Path) -> None:
-    """`glossary: {names: points_at}`: a word with no sentence of its own prints the sentence of the entry it points at."""
-    words = toy / "docs/kb/business/shop/words.yml"
-    words.write_text(words.read_text() + "- {id: shopper, spelling: shopper, points_at: business/shop/person/shopper}\n")
-    assert w(toy, "check")[0] == cli.OK
-    assert "  shopper: A person who buys. (business/shop/person/shopper)" in w(toy, "glossary")[1]
-    words.write_text(
-        words.read_text().replace("points_at: business/shop/person/shopper", "points_at: business/shop/person/shopper, tells: Buys.")
-    )
-    assert [line.split(":")[0] for line in w(toy, "check")[1] if not line.startswith("waiting")] == ["one-of"]
-
-
 def test_a_toy_stage_needs_proof_only_while_it_holds_a_move() -> None:
     """`needs_proof: {if_part: move}`: the condition names a part kind of the toy's own."""
     texts = {rel.removeprefix("docs/kb/"): text for rel, text in FILES.items() if rel.startswith("docs/kb/")}

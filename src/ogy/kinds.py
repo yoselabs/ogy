@@ -228,7 +228,6 @@ class Glossary(BaseModel):
     word: str  # the field holding the word people say
     avoid: str  # the field listing words never used for it: a sentence that uses one is `avoided-word`
     words: int  # its sentence has fewer words than this (`term-too-long`)
-    names: str | None = None  # the link field naming the entry that defines the word: its sentence is the term's
 
 
 class PrintedFirst(BaseModel):

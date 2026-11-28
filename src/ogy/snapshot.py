@@ -81,12 +81,13 @@ class Snapshot:
     def sentence(self, address: Address) -> str | None:
         """What the entry says: the field its kind names as its sentence."""
         kind = self.kind_of(address)
-        own = self.entries[address].text(kind.sentence) if kind.sentence else None
-        if own is None and kind.glossary is not None and kind.glossary.names is not None:
-            named = sorted(self.links.forward(address, kind.glossary.names))
-            sentence = self.kind_of(named[0]).sentence if named else None
-            return self.entries[named[0]].text(sentence) if named and sentence else None  # one hop: a term naming a term
-        return own
+        return self.entries[address].text(kind.sentence) if kind.sentence else None
+
+    def name(self, address: Address) -> str:
+        """The name a person reads: `title` when written, else the id with dashes as spaces
+        (software/ontology/decision/entry-name, answered title-else-id)."""
+        title = self.entries[address].text(self.ontology.roles.title)
+        return title or (address.key or address.kind).replace("-", " ")
 
     def fingerprint(self, address: Address) -> str:
         """The meaning: the kind, the fields that are not notes and the unkeyed parts. Agreements, review cards and removed
@@ -107,16 +108,11 @@ class Snapshot:
         return bool(self.links.parts(address, given.if_part))
 
     def agreed_print(self, address: Address) -> str:
-        """What a person agrees to and a card shows: the fingerprint, with the fingerprints of the rows read with a step and,
-        for a term that names an entry, that entry's sentence. A row or a named sentence that changes sends the entry back to
-        the owner; an entry without either keeps its plain fingerprint."""
-        kind = self.kind_of(address)
+        """What a person agrees to and a card shows: the fingerprint, with the fingerprints of the rows read with a step. A row
+        that changes sends the entry back to the owner; an entry without rows keeps its plain fingerprint."""
         also: list[object] = [
             [str(row), self.fingerprint(row)] for name in sorted(self.ontology.rows()) for row in self.links.parts(address, name)
         ]
-        names = kind.glossary.names if kind.glossary is not None else None
-        if names is not None and self.entries[address].fields.get(names) is not None:
-            also.append([names, self.sentence(address)])
         meaning = self.fingerprint(address)
         return digest({"meaning": meaning, "with": also}, length=FINGERPRINT_LENGTH) if also else meaning
 

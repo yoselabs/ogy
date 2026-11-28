@@ -175,9 +175,7 @@ def glossary_lines(snapshot: Snapshot, home: str | None = None) -> list[str]:
         found = sorted((entry for entry in terms(snapshot) if entry.address.home == where), key=lambda entry: _word(glossary, entry))
         lines += [f"{where}:"] if found else []
         for entry in found:
-            pointed = link_values(entry.fields.get(glossary.names)) if glossary.names else ()
-            shown = snapshot.sentence(entry.address) or ""
-            lines.append(f"  {entry.text(glossary.word)}: {shown}" + (f" ({pointed[0]})" if pointed else ""))
+            lines.append(f"  {entry.text(glossary.word)}: {snapshot.sentence(entry.address) or ''}")
             if items := link_values(entry.fields.get(glossary.avoid)):
                 lines.append(f"    {glossary.avoid}: {'; '.join(items)}")
     return lines

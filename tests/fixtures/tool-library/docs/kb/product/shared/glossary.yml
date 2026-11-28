@@ -1,6 +1,5 @@
 - id: loan
   word: loan
-  names: product/lending/entity/loan
   avoid:
   - rental
   agreed:
@@ -8,6 +7,7 @@
     where: ai:claude/9b01#45
     said: Yes to the cards but the borrow step
     hash: 3d5b6be3f864
+  says: One tool lent to one member until it comes back.
 - id: member
   word: member
   agreed:
