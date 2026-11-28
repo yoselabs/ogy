@@ -74,7 +74,7 @@ def test_a_click_is_recorded_with_said_note_where_and_shows_on_the_next_read(boa
     answer = entry["fields"]["answers"][-1]
     assert answer["said"] == "Fine, this one"
     assert answer["note"] == "for now"
-    assert answer["where"].startswith("path:ogy-board/")
+    assert answer["where"].startswith("ui:board/")
     assert "delegated" not in answer
 
 

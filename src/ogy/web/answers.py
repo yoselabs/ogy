@@ -20,9 +20,8 @@ if TYPE_CHECKING:
     from ogy.target import Target
     from ogy.web.cache import InspectionCache
 
-# The answer kind's `where` takes the schemes ai, bd and path only; `ui:` (the plan's form) needs a kind change the owner has not
-# made, so a board answer says `path:` plus the board's own name until then. One constant, one place to change.
-WHERE_PREFIX = "path:ogy-board/"
+# A board answer says where it was given with the scheme `ui` (decision software/ontology/decision/answer-where-ui, yes-ui-token).
+WHERE_PREFIX = "ui:board/"
 NO_STORE = {"Cache-Control": "no-store"}
 
 

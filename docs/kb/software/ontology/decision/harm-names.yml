@@ -20,9 +20,14 @@ options:
         - tells-outside
         - irreversible
         - who-is-allowed
+  no-copy:
+    label: As rename in ontology.yml, which declares tells-outside, irreversible and authorization; the enum product/review/enum/harm-tags, a drifted copy that still holds structure, is removed
+    sets:
+      product/review/enum/harm-tags:
 proposal:
-  chose: rename
-  why: A tag nothing carries ranks nothing.
+  chose: no-copy
+  why: "Found while building harm-names (2026-11-28): structure left ogy with the decision kind's structure flag (commit 4530b5b, decision flexibility-needs-evidence), so the copy drifted; lists-copied-from-shipped-files removed four such copies, and one owner per fact."
+  at: '2026-11-28T13:10:55+01:00'
 answers:
 - chose: rename
   said: 'Yes, all: mainstream renames'
