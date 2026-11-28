@@ -4,12 +4,23 @@ context: "Today nothing in the knowledge base says ogy must describe the task lo
 options:
   goal-and-cases:
     label: One goal in product/ontology says which sorts of product the ontology must describe; the named products are the folders of reference cases (software/ontology/decision/reference-cases). A product is added or dropped by answering this decision again, so its answers are the history
+    sets:
+      product/ontology/goal/describes-its-target-products:
+        says: ogy describes, with no kind added for one of them, a task factory with outside triggers, AI steps and several interfaces; a knowledge base reached over MCP; a legacy system recovered from its code; and ogy itself.
+        for:
+        - product/shared/actor/owner
   goal-per-product:
     label: One goal per named product
+    sets:
+      product/ontology/goal/describes-its-target-products:
   document:
     label: A document outside the knowledge base (README or docs/thoughts); no check reads it
+    sets:
+      product/ontology/goal/describes-its-target-products:
   no:
     label: Not written; each design pass asks the owner
+    sets:
+      product/ontology/goal/describes-its-target-products:
 proposal:
   chose: goal-and-cases
   why: A goal is a result the product exists to reach, and this is one. One goal cannot pile up; the cases are counted by folders; a change of mind is a new answer here, not a new entry.

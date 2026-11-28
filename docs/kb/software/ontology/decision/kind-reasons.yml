@@ -11,7 +11,7 @@ options:
   comments:
     label: 'As today: comments in the kind file, read by no check'
   because-key-computed:
-    label: 'As because-key, with no hand-kept list: kinds and fields without a because are printed by a command, and an answered decision in software/ontology that no kind file names is listed as work'
+    label: 'As because-key, with no hand-kept list: a command prints the kinds and fields that name no decision or principle. Decisions are not listed: whether an answer changed a kind file cannot be computed'
 proposal:
   chose: because-key-computed
-  why: 'A kind-file answer leaves no entry, so ogy work cannot list it; once a kind file names the decision behind it, an answered ontology decision no kind file names is computable (principles deterministic-first, earned-on-a-real-case). Before: because-key.'
+  why: 'The kinds and fields with no reason are the worklist of earned-on-a-real-case, computed instead of kept by hand (deterministic-first). A kind-file answer still leaves no work item; such a task is a tracker item that names the decision. Before: because-key.'

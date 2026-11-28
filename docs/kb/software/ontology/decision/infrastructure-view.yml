@@ -9,7 +9,7 @@ options:
   unit-kind:
     label: A kind for one deployed unit that handlers and interfaces name
   units-later:
-    label: Computed per software area now, each area drawn once with counted crossings; a kind for a deployed unit when a second unit exists; cloud resources never
+    label: Computed now from performs, serves and uses, drawn per software area with counted crossings (an area is a grouping, not a deployed unit); a kind for a deployed unit when a second unit exists; cloud resources later, with the first product that needs them described
 proposal:
   chose: units-later
   why: No second deployed unit exists to place; cloud resources are owned by their own code; a walk shows order, the picture shows each area once.

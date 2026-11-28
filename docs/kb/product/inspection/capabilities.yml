@@ -47,3 +47,7 @@
     where: ai:claude/ontology-review-session-749f16
     said: "Yes to Fable's picks: ogy work prints the tracker items and a runner applies them, the tracker names the entry, and the pain and goal of tasks that drift"
     hash: 0b9661e5ebd6
+- id: stage-views
+  says: ogy shows the work of one stage (product design, solution design, code design, implementation, QA, release) through a named filter over layer, work status and proof, the same on the command line and the board.
+  realizes:
+  - product/inspection/goal/understand-recorded-product

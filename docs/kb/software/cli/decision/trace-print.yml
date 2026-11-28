@@ -9,7 +9,7 @@ options:
   board-only:
     label: Only the board composes it
   covered-by-work-address:
-    label: ogy work <workflow or area> prints this trace; ogy show stays the plain read of one entry
+    label: ogy work <workflow address> prints this trace as part of the workflow's brief; ogy work <area> keeps meaning the work left in that area; ogy show stays the plain read of one entry
 proposal:
   chose: covered-by-work-address
-  why: 'The trace is the context needed to build the workflow, which ogy work <address> prints (work-brief, answered work-address): one print for one fact. Before: show-prints.'
+  why: 'The trace is the context needed to build the workflow, which ogy work <address> prints (work-brief, answered work-address): one print for one fact. A richer brief changes no fingerprint, so it can be built before the first tracker sync. Before: show-prints.'

@@ -9,7 +9,7 @@ options:
   no:
     label: No; context as today
   reach-printed:
-    label: ogy review prints, under each option, what it sets and what that reaches (computed, as the board's option reach already is); an example in words belongs in the context; no new field, no check
+    label: ogy review prints, under each option, what it sets and what that reaches (computed, as the board's option reach already is). The decision kind's guidance asks for one real example in the context, with what each option does to it; no new field, no check
 proposal:
   chose: reach-printed
-  why: 'example-field asked an example on a structural decision, a mark dropped from the decision kind; what an option changes is computed (principle deterministic-first). Goal fewest-questions, pain question-not-alone. Before: example-field.'
+  why: 'What an option changes is computed where it sets entries (deterministic-first). 105 of 129 decisions in software/ontology set nothing, so for those the example in the context is all a reader gets, and the guidance must ask for it. example-field required it on a structural decision, a mark the decision kind dropped. Goal fewest-questions, pain question-not-alone. Before: example-field.'

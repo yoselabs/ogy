@@ -4,10 +4,19 @@ context: map-layers answered two layer views with limits. Each stage question is
 options:
   filters:
     label: Six named filters over layer, work status and proof, the same in the command line and the board
+    sets:
+      product/inspection/capability/stage-views:
+        says: ogy shows the work of one stage (product design, solution design, code design, implementation, QA, release) through a named filter over layer, work status and proof, the same on the command line and the board.
+        realizes:
+        - product/inspection/goal/understand-recorded-product
   actors:
     label: One actor per stage, with goals for each
+    sets:
+      product/inspection/capability/stage-views:
   stage-kind:
     label: A kind stage that entries name
+    sets:
+      product/inspection/capability/stage-views:
 proposal:
   chose: filters
   why: A stage is a point of view, not a thing with identity; an entry passes through all six.

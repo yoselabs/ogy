@@ -1,6 +1,6 @@
 title: The name of the product layer
 question: Is the layer that holds what the product does, for whom and through which points of reach still called product?
-context: 'The glossary says: product (what, why), software (how it is built). The name suggests the work of product people only; with interface-layer answered both-layers it also holds API and message interfaces. A rename rewrites every product address.'
+context: 'The glossary says: product (what, why), software (how it is built). The name suggests the work of product people only; since interface-layer was answered product-only (2026-11-26) the layer holds every interface, API and message ones included, and every actor. A rename rewrites every product address.'
 options:
   keep:
     label: Keep product; the layer line says it holds every input and output the business agrees, whoever draws it

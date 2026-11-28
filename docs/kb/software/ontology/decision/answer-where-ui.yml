@@ -1,6 +1,6 @@
 title: A where for answers given in the board
 question: May an answer's `where` name the board (scheme `ui`), besides `ai`, `bd` and a path?
-context: '`answer.where` takes only ai:, bd: and path:. The decision mode of the board (human-decision-mode) records a choice from a click, so it has no honest address today.'
+context: '`answer.where` takes only ai:, bd: and path:. The board records a choice from a click and has no word for itself, so it writes `path:ogy-board/` (src/ogy/web/answers.py:25), stretching path to mean the board. All 459 `where` values in the knowledge base are `ai:`, so nothing migrates.'
 options:
   yes:
     label: Add the scheme `ui`, for example `ui:board`
