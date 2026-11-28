@@ -1,0 +1,24 @@
+title: An ontology tied to no language
+question: Does the constitution gain the principle that no part of the ontology is tied to one programming language or technology, and how wide is it?
+context: 'Owner, 2026-11-28, on citations-outside-python. Real cases today: the shipped ontology.yml says the code evidence scheme reads only .py files and a proof is a .py file in the form <path>.py::<function> (pytest); where-a-code-answer-lands reads citations only in Python docstrings. ogy will prove Rust, TypeScript and Python products (owner, 2026-11-27).'
+options:
+  technology:
+    label: 'Principle technology-agnostic: no kind, field or check names a programming language, a file type or a tool; what differs per repository is declared by that repository'
+    sets:
+      constitution/principle/technology-agnostic:
+        says: No part of the ontology names a programming language, file type or tool; a repository declares its own.
+        why: ogy proves Rust, TypeScript and Python products alike; a kind that knows one language fails the others.
+  language:
+    label: 'Principle language-agnostic, narrower: no kind, field or check names a programming language; a named tool such as Git may stay'
+    sets:
+      constitution/principle/technology-agnostic:
+        says: No part of the ontology names a programming language; a repository declares the files of its code and proofs.
+        why: ogy proves Rust, TypeScript and Python products alike; a kind that knows one language fails the others.
+  none:
+    label: No principle
+    sets:
+      constitution/principle/technology-agnostic:
+proposal:
+  chose: technology
+  why: Your words name technology first and language as the least; the wider one also covers pytest and the .py file types.
+  heard: No part of the ontology should be specific to Python or any other technology; at least it is language-agnostic

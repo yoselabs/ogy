@@ -265,3 +265,9 @@ Yes, Fable's picks
 ## 2026-11-28: on the order of audits and implementation
 
 > Are there any other problems for GUI? Maybe you know what? Maybe let's run audit. Or before we will do an audit of both ontology and software, maybe we could implement everything as much as possible. Let's do audit of ontology first. That should be enough. And then we'll implement ontology. And then we'll do audit of software and audit of ontology again.
+
+## 2026-11-28: on citations outside Python (software/cli/decision/citations-outside-python)
+
+> software/cli/decision/citations-outside-python - no part of ontology should be python-specific (or any other technology-specific)
+
+> ontology is technology or at least lanuage-agnostic
