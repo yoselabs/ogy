@@ -12,6 +12,3 @@ proof:
 - tests/test_view.py::test_view_writes_the_page_where_asked_and_changes_no_entry
 shows:
 - product/capture/entity/entry
-because:
-- product/inspection/decision/product-map
-- product/inspection/decision/view-command-contract

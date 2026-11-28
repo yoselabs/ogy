@@ -288,10 +288,31 @@ def _delegation(found: list[Decision], decision: Decision, answer: Answer) -> li
     return [_finding(decision, Problem.BAD_DELEGATION, detail) for detail in problems]
 
 
+def _reason_twice(snapshot: Snapshot, found: list[Decision]) -> list[Finding]:
+    """An entry an answered option sets has its reason there: a `because` that also names a decision gives it a second home
+    (software/ontology/decision/reason-one-home, answered computed). A principle or a pain it cites is no second home."""
+    named = {decision.address for decision in found}
+    because, setters = snapshot.ontology.roles.because, dict[str, list[Address]]()
+    for decision in found:
+        if (force := decision.in_force) is not None and force.by_answer:
+            for text, given in force.sets.items():  # a `because` the answer itself writes is the owner's: asked again, not dropped
+                if isinstance(given, dict) and because not in given:
+                    setters.setdefault(text, []).append(decision.address)
+    problems: list[Finding] = []
+    for text, by in sorted(setters.items()):
+        address = snapshot.resolve(text)
+        if address is None or address not in snapshot.entries:
+            continue
+        if cited := sorted(str(item) for item in snapshot.links.forward(address, because) if item in named):
+            detail = f"set by {', '.join(map(str, by))}; drop {', '.join(cited)} from {because}: the answer that sets it is its reason"
+            problems.append(Finding(Problem.REASON_TWICE, snapshot.entries[address].path, detail, address))
+    return problems
+
+
 def check_decisions(snapshot: Snapshot, _source: Source) -> list[Finding]:
     """D2, D4 to D6, D10 as a check: `(Snapshot, Source) -> list[Finding]`. Not registered in `CHECKS` here."""
     found = decisions(snapshot)
-    problems = _two_homes(found)
+    problems = _two_homes(found) + _reason_twice(snapshot, found)
     for decision in found:
         problems += [
             *_uneven(decision),

@@ -139,6 +139,7 @@ class Problem(StrEnum):
     MISSING_DOC = "missing-doc"
     UNEVEN_OPTIONS = "uneven-options"
     TWO_HOMES = "two-homes"
+    REASON_TWICE = "reason-twice"
     EQUAL_AT = "equal-at"
     NOT_IN_FORCE = "not-in-force"
     BAD_DELEGATION = "bad-delegation"

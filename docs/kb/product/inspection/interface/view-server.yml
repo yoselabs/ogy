@@ -13,6 +13,3 @@ shows:
 - product/capture/entity/entry
 satisfies:
 - product/inspection/rule/agent-inspection-parity
-because:
-- product/inspection/decision/view-delivery
-- product/inspection/decision/viewer-is-an-interface

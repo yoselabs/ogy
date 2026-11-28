@@ -325,3 +325,12 @@ def test_the_name_a_person_reads_is_the_title_else_the_id(kb: Make) -> None:
     titled, plain = snapshot.resolve("product/app/actor/club-member"), snapshot.resolve("product/app/workflow/sign-in")
     assert titled is not None and plain is not None
     assert (snapshot.name(titled), snapshot.name(plain)) == ("Member", "sign in")
+
+
+def test_an_entry_an_answer_sets_cites_no_decision_with_because(kb: Make) -> None:
+    """Decision software/ontology/decision/reason-one-home, answered computed: the answer that sets an entry is its reason."""
+    answer = "answers: [{chose: one, said: Two, at: '2026-11-12T10:05:00+01:00', where: 'ai:x'}]\n"
+    files = {"product/app/decision/fee.yml": DECISION + answer, "product/app/decision/other.yml": "question: Why?\n"}
+    cites = VALUES.replace("says: The fee.,", "says: The fee., because: [product/app/decision/other],")
+    assert only(kb({**files, "product/app/quantities.yml": cites}).findings(), Problem.REASON_TWICE) == {"product/app/quantity/fee"}
+    assert not only(kb({**files, "product/app/quantities.yml": VALUES}).findings(), Problem.REASON_TWICE)
