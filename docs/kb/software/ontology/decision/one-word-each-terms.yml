@@ -33,3 +33,8 @@ options:
 proposal:
   chose: add
   why: Each one names a meaning the kind files use with no term today.
+answers:
+- chose: add
+  said: Add the five one-word-each terms as written
+  at: '2026-11-28T14:48:46+01:00'
+  where: ai:claude/ontology-review-session-749f16

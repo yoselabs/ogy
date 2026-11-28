@@ -7,7 +7,7 @@ from tests.conftest import Kb
 from ogy.model import Address, Problem
 from ogy.ontology import packaged
 from ogy.snapshot import Snapshot, build
-from ogy.terms import check_terms, glossary_lines, proposed_terms, terms_not_agreed
+from ogy.terms import check_term_sets, check_terms, glossary_lines, proposed_terms, terms_not_agreed
 
 type Make = Callable[[Mapping[str, str | None] | None], Kb]
 LAND = "- {id: land, word: land, says: To finish a delivery., avoid: [merge, check run]}\n"
@@ -97,3 +97,17 @@ def test_a_decision_may_not_give_the_words_of_an_agreed_term() -> None:
     assert not {p for p, _ in problems(kb("product/shared/term/land: null"))} & {Problem.AGREED_TERM_IN_SETS}
     assert not {p for p, _ in problems(kb(reworded, agreed=False))} & {Problem.AGREED_TERM_IN_SETS}  # a new word may be proposed
     assert (Problem.AGREED_TERM_IN_SETS, "product/app/decision/q") in problems(kb("product/shared/term/land: {avoid: [end]}"))
+
+
+def test_the_answer_that_adds_a_term_is_its_agreement() -> None:
+    """The option the owner chose may give the term its words: answering a decision that proposes a word is no fault."""
+    stamp = "{at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1', said: Yes, hash: 'aaaaaaaaaaaa'}"
+    term = f"- {{id: land, word: land, says: To finish., agreed: {stamp}}}\n"
+    answer = "answers: [{chose: a, said: Yes, at: '2026-11-12T10:00:00+01:00', where: 'ai:claude/1'}]\n"
+    options = (
+        "options:\n  a: {label: A, sets: {product/shared/term/land: {says: To finish.}}}\n"
+        "  b: {label: B, sets: {product/shared/term/land: {says: To end.}}}\n"
+    )
+    decision = f"question: Q?\n{options}proposal: {{chose: a, why: x}}\n{answer}"
+    found = check_term_sets(snap(term, **{"product/app/decision/q.yml": decision}))
+    assert [f.detail for f in found] == ["product/shared/term/land is agreed: a decision may only set it to null"]  # option b only

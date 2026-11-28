@@ -285,15 +285,40 @@
 - id: row
   word: row
   says: 'A choice, case or timeout of a step: one way the step goes on.'
+  agreed:
+    at: '2026-11-28T14:48:46+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Add the five one-word-each terms as written
+    hash: 8b3cde96369c
 - id: context
   word: context
   says: A decision's note on why its question comes up; not a board situation.
+  agreed:
+    at: '2026-11-28T14:48:46+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Add the five one-word-each terms as written
+    hash: c62262720926
 - id: unused
   word: unused
   says: 'Work status: nothing links to the entry, so nothing needs it yet.'
+  agreed:
+    at: '2026-11-28T14:48:46+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Add the five one-word-each terms as written
+    hash: 7080f053ac11
 - id: unanswered
   word: unanswered
   says: Work status of a pain that no goal or decision answers yet.
+  agreed:
+    at: '2026-11-28T14:48:46+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Add the five one-word-each terms as written
+    hash: 0177eb544988
 - id: decided-by-ai
   word: decided by AI
   says: An agent's entry waiting for the owner's yes; not a decision's proposal.
+  agreed:
+    at: '2026-11-28T14:48:46+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Add the five one-word-each terms as written
+    hash: 9c79fc459da1

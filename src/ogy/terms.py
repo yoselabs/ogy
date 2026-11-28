@@ -114,12 +114,14 @@ def check_terms(snapshot: Snapshot, _source: Source | None = None) -> list[Findi
 
 
 def check_term_sets(snapshot: Snapshot, _source: Source | None = None) -> list[Finding]:
-    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no option or proposal
-    gives it fields: its words have one home, the term and its agreement."""
+    """T6: a decision may propose a new word or set a term to null; once a person agreed to a term, no other option gives it
+    fields: its words have one home, the term and its agreement. The option the owner chose is that agreement."""
     agreed, kind = agreed_hashes(snapshot), snapshot.ontology.glossary_kind()
     found: list[Finding] = []
     for decision in decisions(snapshot):
-        for sets in decision.sets_all():
+        force = decision.in_force
+        answered = force.option if force is not None and force.by_answer else None
+        for sets in (sets for option, sets in decision.options.items() if option != answered):  # the answer agreed its own
             for text, given in sets.items():
                 address = snapshot.resolve(text)
                 if address is not None and kind and address.kind == kind.kind and text in agreed and given is not None:
