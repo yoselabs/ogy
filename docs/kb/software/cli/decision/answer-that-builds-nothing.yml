@@ -1,0 +1,15 @@
+title: An answer that builds nothing
+because:
+- constitution/principle/rigid-where-checked
+question: answered-uncited-is-work (answered computed) lists every answered decision that no kind file, entry or code cites. Seven answers chose not now or keep as it is, so nothing was built and nothing can cite them. How does such an answer stop being work?
+context: 'Found while citing the uncited answers on 2026-11-28: case-built-record, ogy-only-exceptions, outside-contracts, proportion-home, measured-outcome, system-word and view-hint-fields chose an option that changes nothing. After citing 70 built answers, 65 are uncited; these 7 can never be cited.'
+options:
+  keeps:
+    label: 'An option says `keeps: true` when it changes nothing (not now, keep as it is); an answer that chose such an option is no work'
+  cite-what-stays:
+    label: 'No new field: the agent cites the answer from the kind file or code it leaves as it is, with `because` or a docstring line'
+  stays-work:
+    label: They stay work until the owner asks the decision again
+proposal:
+  chose: keeps
+  why: The option itself says it builds nothing, so the check reads it; a not now has no code to cite it from.

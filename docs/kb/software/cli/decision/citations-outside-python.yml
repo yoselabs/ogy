@@ -1,0 +1,15 @@
+title: Citations outside Python
+because:
+- constitution/principle/rigid-where-checked
+question: "where-a-code-answer-lands (answered code-cites) reads the text \"decision <address>\" only in Python docstrings, the files of the code evidence scheme. Seven answers are built in other files: the board's JavaScript, the justfile, skills SKILL.md files, examples and vendored files. How are they cited?"
+context: 'Found while citing the uncited answers on 2026-11-28: view-frontend-build (justfile), answer-drawer and view-hint-fields (board JavaScript), frontend-vendored-libraries (web/static/vendor), code-is-an-entry and stamping-across-languages (skills), reference-cases (examples). Five more were done as knowledge-base changes (board-read-model-home, reason-of-a-product-entry, because-term, words-from-known-tools, lists-copied-from-shipped-files): the entries they moved can cite them with `because` today, which brings those entries back to the owner as changed.'
+options:
+  any-tracked-file:
+    label: ogy reads "decision <address>" in a comment or Markdown line of any tracked text file, not only Python docstrings
+  python-points:
+    label: 'Only Python docstrings: the Python module that serves or loads the file cites the decision (web/serve.py for the board, test_examples.py for the examples)'
+  entry-states-it:
+    label: Each such build gets a knowledge-base entry that states the behaviour and cites the decision with `because`
+proposal:
+  chose: any-tracked-file
+  why: The citation sits beside what was built, whatever the language; the Rust and TypeScript products ogy will prove need it too.
