@@ -1,0 +1,14 @@
+title: What an input part names
+because:
+- constitution/principle/one-owner-per-fact
+- constitution/principle/rigid-where-checked
+question: inputs-that-are-no-fact (answered declared-inputs) gives an interface a list of input parts. Does each input name the product fact it carries, or does `accepts` stay the one list of facts?
+context: Found while building declared-inputs on 2026-11-28. In docs/kb, 28 interface files carry invoked_as with 35 `<name>` placeholders, and no interface writes `accepts` today. With inputs as parts, each placeholder becomes one input with a sentence, written by the agent and agreed by the owner with its interface. command-inputs-are-accepted (ogy-mlq3) checks each placeholder against a fact, so it waits on this.
+options:
+  input-of:
+    label: An input has `says`, `optional` and `of` (the entity or attribute it carries, only for a product fact); `accepts` is computed from the inputs, and every `<name>` of invoked_as is an input and every input is in invoked_as
+  accepts-apart:
+    label: An input has `says` and `optional` only; `accepts` stays a stored list beside it, and the check matches only placeholders to inputs
+proposal:
+  chose: input-of
+  why: 'One home for the fact an input carries: a stored accepts beside the inputs would say it twice and drift.'
