@@ -1,4 +1,6 @@
-"""`ogy kinds`: the kinds of an ontology as text, read from the kind files. Nothing is kept: the kind files are the one home."""
+"""`ogy kinds`: the kinds of an ontology as text, read from the kind files. Nothing is kept: the kind files are the one home.
+
+Built here: decision software/ontology/decision/kind-likeness."""
 
 from ogy.kinds import FieldSpec, Input, Kind, Picked
 from ogy.near import hint

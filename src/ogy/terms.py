@@ -3,6 +3,8 @@ the shared area of a layer). Its word, sentence and avoid fields and the word li
 data checks, T4 and T5 take what another module computed, T6 reads the decisions, `glossary_lines` prints it.
 
 `check_term_agreement` computes T4 and T5 from the agreement and status of each term.
+
+Built here: decision product/language/decision/avoid-is-a-phrase.
 """
 
 import re

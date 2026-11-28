@@ -3,6 +3,8 @@
 An entry of a kind that `needs_proof` is work until its built line matches it now; an address with a line and no entry is
 removal work until the line is deleted; an entry whose evidence (a symbol, a document section) changed since it was captured is
 listed.
+
+Built here: decision software/ontology/decision/archive-instead-of-remove.
 """
 
 from dataclasses import dataclass

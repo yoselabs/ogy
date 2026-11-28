@@ -8,11 +8,11 @@ shape: inline
 part_of: decision
 key: proposal
 holds: one
-because: [software/ontology/decision/unused-values]
+because: [software/ontology/decision/unused-values, software/ontology/decision/mainstream-kind-names, software/viewing/decision/staged-changes-home]
 fields:
   chose: {type: link, to: [option], required: true}
   why: {note: true, required: true}
-  heard: {note: true}                                # one short line: the AI's paraphrase of what the owner said, never a quote
-  at: {because: [software/ontology/decision/re-ask-conditions], type: time}                                   # stamped by `put` when the decision has an answer; newer than the newest answer: asked again (decision re-ask-conditions)
+  heard: {because: [software/ontology/decision/heard-is-a-field, software/ontology/decision/later-answer-changes-an-earlier-set], note: true}                                # one short line: the AI's paraphrase of what the owner said, never a quote
+  at: {because: [software/ontology/decision/re-ask-conditions, software/ontology/decision/ask-an-answered-decision-again], type: time}                                   # stamped by `put` when the decision has an answer; newer than the newest answer: asked again (decision re-ask-conditions)
 dropped: [value, sets]                               # a proposal chooses an option; its own values could never be answered (unused-values)
 folded: {heard: said}                                # the part heard {said} is now this text field (`ogy migrate`)

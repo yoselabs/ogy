@@ -1,6 +1,11 @@
 """What an ontology's `ontology.yml` declares beside its kinds: the layers, the shared area of every layer, the fields every
 entry may carry and the roles the engine reads them in, the harm tags in the order the review asks them, the evidence
-schemes of `src` and the form of a proof, and the field names no kind may use. The engine reads these names; it knows none."""
+schemes of `src` and the form of a proof, and the field names no kind may use. The engine reads these names; it knows none.
+
+Built here: decision software/ontology/decision/because-narrowed.
+Built here: decision software/ontology/decision/decision-raised-by-pain.
+Built here: decision software/ontology/decision/product-layer-name.
+"""
 
 from enum import StrEnum
 lazy from collections.abc import Mapping

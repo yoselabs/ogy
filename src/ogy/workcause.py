@@ -1,6 +1,9 @@
 """`ogy work` for a person, by type (discover, design, build: decision software/cli/decision/work-types), then by cause: the
 decision that set the entry (or one of its parents), else the one it cites with `because`, then what its flow realizes (the
-container's `flow.group` link). Display only: nothing routes on it, and the agents' table stays flat."""
+container's `flow.group` link). Display only: nothing routes on it, and the agents' table stays flat.
+
+Built here: decision software/cli/decision/work-by-cause.
+"""
 
 lazy from collections.abc import Iterable
 

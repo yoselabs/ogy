@@ -1,4 +1,6 @@
-"""The kind language: what one `kinds/<kind>.yml` file may say. Loading and cross-checking are in `ontology`."""
+"""The kind language: what one `kinds/<kind>.yml` file may say. Loading and cross-checking are in `ontology`.
+
+Built here: decision software/ontology/decision/file-shape."""
 
 import re
 from collections.abc import Mapping

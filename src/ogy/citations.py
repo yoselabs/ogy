@@ -1,7 +1,10 @@
 """What cites an answered decision, so that one whose answer sets no entry stops being work (decision
 software/cli/decision/answered-uncited-is-work, answered computed; decision software/cli/decision/where-a-code-answer-lands,
 answered code-cites). A decision is cited by a kind file or field (`because`), by an entry (`because`), or by code: the text
-"decision <address>" in a docstring of a tracked source file of a scheme that reads symbols. Computed, never stored."""
+"decision <address>" in a docstring of a tracked source file of a scheme that reads symbols. Computed, never stored.
+
+Built here: decision software/cli/decision/answered-uncited-is-work.
+"""
 
 import re
 lazy from collections.abc import Collection, Mapping

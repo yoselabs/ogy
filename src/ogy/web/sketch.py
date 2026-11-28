@@ -2,6 +2,8 @@
 
 The copy is read as it would stand after the `put`: the new entries (and their parts and links) are what the board draws, and what
 the sketch would touch comes from the same graph operations as `ogy impact`. Nothing here writes into the repository.
+
+Built here: decision product/inspection/decision/show-what-does-not-exist-yet.
 """
 
 from __future__ import annotations

@@ -14,6 +14,6 @@ fields:
   chose: {type: link, to: [option], required: true}
   said: {note: true, required: true}                 # one short line: the AI's paraphrase of what the person said, fitted to the decision; never their words verbatim
   at: {type: time, required: true}                   # date, time and timezone offset; the newest is in force
-  where: {because: [software/ontology/decision/answer-where-ui], type: uri, schemes: [ai, bd, path, ui], required: true}   # the session, e.g. ai:claude/<session-id>; ui:board/<token> for a click on the board
+  where: {because: [software/ontology/decision/answer-where-ui, software/ontology/decision/path-scheme], type: uri, schemes: [ai, bd, path, ui], required: true}   # the session, e.g. ai:claude/<session-id>; ui:board/<token> for a click on the board
   note: {note: true}                                 # the person's hedge or condition, paraphrased ("for now", "on condition that ..."); outside the fingerprint
   delegated: {type: link, to: [decision]}            # an agent answered, under the person's answer to this decision; without it a person answered

@@ -1,5 +1,5 @@
 kind: effect
-because: [software/ontology/decision/effect-do-words]
+because: [software/ontology/decision/effect-do-words, software/ontology/decision/effect-value]
 about: one thing a row changes or tells; the effects of one row happen together or not at all
 guidance: "What a row changes or tells, all together or not at all. `move` makes a transition (one with no `from` creates an entity with a lifecycle); `create`, `delete` an entity without one; `write` our own entity or attribute, not derived; `tell` an actor or a dependency, the one effect on what we do not own. A performing handler is required."
 like: "a UML effect on a transition: what a row changes or tells"
@@ -9,7 +9,7 @@ part_of: [choice, case, timeout]
 key: effects
 holds: list
 fields:
-  do: {type: enum, of: [move, create, delete, write, tell], required: true, member_harm: {delete: [irreversible], tell: [tells-outside]}}
+  do: {because: [software/ontology/decision/five-effects], type: enum, of: [move, create, delete, write, tell], required: true, member_harm: {delete: [irreversible], tell: [tells-outside]}}
   "on": {type: link, to: [transition, entity, attribute, actor, dependency], required: true}
 requires:
   - {if_equals: {field: do, value: move}, path: ["on"], kinds: [transition], error: "a move effect names a transition"}

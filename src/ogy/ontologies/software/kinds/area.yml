@@ -14,4 +14,4 @@ shared: true            # the area `shared` holds its own area.yml too
 renamed: {distinct: unlike}
 fields:
   says: {required: true}                             # one sentence: what the area covers
-  unlike: {type: links, to: [area]}                  # the neighbouring areas whose topic is close: a renamed area follows
+  unlike: {because: [software/ontology/decision/area-unlike-links], type: links, to: [area]}                  # the neighbouring areas whose topic is close: a renamed area follows

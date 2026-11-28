@@ -1,4 +1,6 @@
-"""What each decision option reaches: the `ogy impact` of every entry the option sets, on the current knowledge base."""
+"""What each decision option reaches: the `ogy impact` of every entry the option sets, on the current knowledge base.
+
+Built here: decision product/inspection/decision/human-decision-mode."""
 
 from __future__ import annotations
 

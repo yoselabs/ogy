@@ -1,4 +1,7 @@
-"""One loopback process for the current board API and the existing MCP tools."""
+"""One loopback process for the current board API and the existing MCP tools.
+
+Built here: decision software/cli/decision/serve-includes-mcp.
+Built here: decision software/cli/decision/view-server-substrate."""
 
 from __future__ import annotations
 

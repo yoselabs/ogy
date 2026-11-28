@@ -1,5 +1,8 @@
 """`requires:` of a kind, checked on one entry or on one item of a `holds: list` part (an effect): its condition, then the
-field it needs or the kinds it reaches along a link path (see `paths`), or, with `same`, a path that comes back to it."""
+field it needs or the kinds it reaches along a link path (see `paths`), or, with `same`, a path that comes back to it.
+
+Built here: decision software/ontology/decision/unused-is-work.
+"""
 
 from functools import partial
 from typing import TYPE_CHECKING

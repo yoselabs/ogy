@@ -1,4 +1,5 @@
 kind: case
+because: [software/ontology/decision/guard-is-a-case]
 about: "one condition of a system or calling step; the lowest `order` that matches wins; the case keyed `otherwise` has no `when`"
 guidance: "A branch of a system or calling step: the path differs by a condition. The lowest `order` that matches wins; `otherwise` takes the rest. Use a case when the path differs; use a choice's `when` when the same screen offers fewer choices. A condition names in `reads` at least one entry it depends on, actors included."
 like: "one arm of a switch, a BPMN conditional flow"

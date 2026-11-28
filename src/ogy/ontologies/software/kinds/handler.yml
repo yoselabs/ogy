@@ -1,4 +1,5 @@
 kind: handler
+because: [software/ontology/decision/handler-performs-rows-without-effect]
 was: {kind: operation}
 about: the code unit that performs rows, using dependencies
 guidance: "The code unit that performs rows, using dependencies. A row with an effect needs one; a row without may have one too (a check that only refuses). An interface serves a step to an actor; a handler does the work behind the row. One handler may perform several rows."

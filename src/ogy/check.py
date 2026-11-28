@@ -2,6 +2,9 @@
 
 `CHECKS` is the list of checks run after reading; each takes the snapshot and the source and returns findings. The checks
 of evidence, decisions, the glossary, the removed ledgers and the built record are in their own modules.
+
+Built here: decision software/ontology/decision/checks-fault-landing-work.
+Built here: decision software/ontology/decision/layer-direction.
 """
 
 from collections.abc import Callable

@@ -1,4 +1,6 @@
-"""Read-only board routes sharing an input-keyed inspection cache under the repository lock."""
+"""Read-only board routes sharing an input-keyed inspection cache under the repository lock.
+
+Built here: decision software/cli/decision/view-topology."""
 
 from __future__ import annotations
 

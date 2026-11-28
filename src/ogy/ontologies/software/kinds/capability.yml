@@ -1,5 +1,5 @@
 kind: capability
-because: [software/ontology/decision/capability-realizes-goal]
+because: [software/ontology/decision/capability-realizes-goal, software/ontology/decision/capability-realized-by-workflow]
 about: something the product can do, decided before its workflows
 guidance: "Something the product can do, named before its workflows. A goal says why the product exists, a capability what it offers, a workflow how one result is reached."
 like: "an ArchiMate capability: what the product can do, named before how"
@@ -14,5 +14,5 @@ requires:                     # owner: a capability realizes a goal; until the g
   - {path: ["<-realizes"], kinds: [workflow], work: true, status: no-workflow, error: "a workflow realizes the capability"}
 fields:
   says: {required: true}
-  realizes: {type: links, to: [goal]}
+  realizes: {because: [software/ontology/decision/mainstream-field-names], type: links, to: [goal]}
 renamed: {serves: realizes}

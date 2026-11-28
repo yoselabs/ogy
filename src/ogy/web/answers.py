@@ -1,4 +1,7 @@
-"""Board writes: the owner's click is an answer, recorded by the same operations as `ogy answer` and `ogy reply`."""
+"""Board writes: the owner's click is an answer, recorded by the same operations as `ogy answer` and `ogy reply`.
+
+Built here: decision product/inspection/decision/board-answers-in-v1.
+Built here: decision product/inspection/decision/click-is-an-answer."""
 
 from __future__ import annotations
 

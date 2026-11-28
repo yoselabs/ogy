@@ -2,6 +2,9 @@
 
 Pure functions over a snapshot. The names read (option, answer, proposal, sets, chose, said, at, where, note, delegated,
 heard) come from the settling kind's `Settling`; the key its answers are kept under is the answer kind's `key`.
+
+Built here: decision software/ontology/decision/delegated-reason.
+Built here: decision software/ontology/decision/reason-one-home.
 """
 
 from collections.abc import Mapping

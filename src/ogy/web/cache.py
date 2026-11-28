@@ -1,4 +1,6 @@
-"""One inspection per input identity, isolated from trial writes by the writer's repository lock."""
+"""One inspection per input identity, isolated from trial writes by the writer's repository lock.
+
+Built here: decision software/viewing/decision/view-state-store."""
 
 from __future__ import annotations
 

@@ -1,7 +1,10 @@
 """Evidence items of `src` in the schemes the ontology declares (`evidence:` in `ontology.yml`), such as `code:<path>#<symbol>`
 and `doc:<commit>:<path>#<anchor>`, checked and hashed by the reader each scheme names.
 
-A pinned scheme names a Git revision: the file may be deleted later, its history stays."""
+A pinned scheme names a Git revision: the file may be deleted later, its history stays.
+
+Built here: decision product/capture/decision/intake-of-inputs.
+"""
 
 import re
 from dataclasses import dataclass

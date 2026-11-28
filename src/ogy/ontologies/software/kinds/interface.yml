@@ -8,7 +8,7 @@ like: "ArchiMate application interface: the point where an actor reaches the pro
 unlike: "a UML, Java or TypeScript interface: a type contract with no user"
 shape: file
 sentence: says
-because: [software/ontology/decision/interface-layer, software/ontology/decision/own-part-contracts, software/ontology/decision/command-inputs-are-accepted]
+because: [software/ontology/decision/interface-layer, software/ontology/decision/own-part-contracts, software/ontology/decision/command-inputs-are-accepted, software/ontology/decision/interface-kind]
 layers: [product]                                    # where an actor outside the product reaches it; a contract between two of our own parts is not one (decisions interface-layer, own-part-contracts)
 needs_proof: true
 fingerprint: {proofs: true}
@@ -21,12 +21,12 @@ requires:
   - {if_set: allows, kinds: [interface], without: [serves], error: "an interface that serves a step takes who may use it from the steps' actors; `allows` is for one that serves none"}
 fields:
   says: {required: true}
-  form: {type: enum, of: [web, cli, http, mcp, file, message], required: true}   # read by requires: a cli says how it is invoked
+  form: {because: [software/ontology/decision/interface-form], type: enum, of: [web, cli, http, mcp, file, message], required: true}   # read by requires: a cli says how it is invoked
   invoked_as: {placeholders: input}                  # the exact command line or route; each `<name>` is an input (decision command-inputs-are-accepted)
   serves: {type: links, to: [step], input: {parts: [choice]}}   # the served steps' set of choices changes: stale
   offers: {type: links, to: [choice], input: none}
-  shows: {type: links, to: [entity, attribute], input: content}     # what it displays changes: stale
-  includes: {type: links, to: [interface], input: content}   # the interfaces it is made of; a part changes: stale
+  shows: {because: [software/ontology/decision/interface-shows-accepts, software/ontology/decision/shows-unreserved], type: links, to: [entity, attribute], input: content}     # what it displays changes: stale
+  includes: {because: [software/ontology/decision/interface-includes], type: links, to: [interface], input: content}   # the interfaces it is made of; a part changes: stale
   satisfies: {type: links, to: [rule], note: true, input: content}   # the rules it is held to (a rule it is held to changes: it is stale)
-  allows: {type: links, to: [actor], harm: [authorization], input: none}   # who may use it, when it serves no step
+  allows: {because: [software/ontology/decision/interface-allows], type: links, to: [actor], harm: [authorization], input: none}   # who may use it, when it serves no step
 dropped: [accepts]                                   # `ogy migrate`: accepts is computed from the inputs' `of` (decision input-carries-fact)

@@ -3,7 +3,10 @@ files its `src` items cite, so a commit that changes none of them has nothing ne
 
 The cited paths are remembered per knowledge-base tree id in one small file inside the Git directory (nothing in the worktree): a
 check that ran on a tree writes its paths, the next commit reads the file and asks Git one question (`git diff --cached --quiet`)
-about those paths and the knowledge base. No file, or a file of another tree: the hook cannot tell and checks."""
+about those paths and the knowledge base. No file, or a file of another tree: the hook cannot tell and checks.
+
+Built here: decision software/checks/decision/check-every-commit.
+"""
 
 import json
 import os

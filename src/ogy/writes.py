@@ -3,7 +3,12 @@ check finds a new error, puts every file back and refuses.
 
 `agree` (inside `reply`) and `answer` change the knowledge base, as `put` does; nothing here writes a status. ogy keeps no
 message and no quote: an answer and an agreement keep a short paraphrase of what the person said (`said`), when (`at`) and
-where (`where`, the session), in the names the settling kind gives them; who answered is computed from `delegated`."""
+where (`where`, the session), in the names the settling kind gives them; who answered is computed from `delegated`.
+
+Built here: decision product/review/decision/named-delegation.
+Built here: decision software/cli/decision/view-lock-model.
+Built here: decision software/ontology/decision/answer-agrees-shown.
+"""
 
 import datetime as dt
 from collections.abc import Callable, Generator, Mapping

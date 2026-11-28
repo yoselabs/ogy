@@ -14,6 +14,8 @@ defaults to it):
         "ogy": {"command": "uvx", "args": ["--from", "git+https://github.com/yoselabs/ogy", "ogy", "mcp"]}
       }
     }
+
+Built here: decision software/cli/decision/agent-view-projection.
 """
 
 import contextlib

@@ -6,7 +6,10 @@ ontology's agents block (its `agents.md`) as a marked block in AGENTS.md (and CL
 `.mcp.json` and Claude Code deny rules for editing the folder by hand, and the entries the ontology starts with (its
 `starts.yml`), unless removed. Every name in them comes from the ontology folder. The Git hooks follow the repository
 (`ogy.prek`): with a prek config, one pre-commit entry merged into it and `core.hooksPath` left alone; without one, `.githooks`
-and `core.hooksPath` pointing at it, refused when another tool already owns `core.hooksPath`."""
+and `core.hooksPath` pointing at it, refused when another tool already owns `core.hooksPath`.
+
+Built here: decision software/ontology/decision/what-a-new-kb-starts-with.
+"""
 
 import json
 import os

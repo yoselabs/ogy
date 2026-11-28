@@ -1,5 +1,5 @@
 kind: attribute
-because: [software/ontology/decision/create-writes-attributes, software/ontology/decision/attribute-nothing-reads]
+because: [software/ontology/decision/create-writes-attributes, software/ontology/decision/attribute-nothing-reads, software/ontology/decision/attribute-types, software/ontology/decision/never-written]
 was: {kind: attr, key: attrs}
 about: one fact kept about an entity
 guidance: "A fact kept about an entity: a plain value has a `type`; a link to an entity, an enum or an actor names it in `of`; `many` holds a list. A fact computed from others is `derived` and never written. A fact that changes the outcome is tested in a case; a move the product reacts to is a state."

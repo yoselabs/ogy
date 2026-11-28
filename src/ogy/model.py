@@ -1,4 +1,6 @@
-"""Addresses, entries and the problems found while reading them."""
+"""Addresses, entries and the problems found while reading them.
+
+Built here: decision software/ontology/decision/finding-names."""
 
 from dataclasses import dataclass, field
 from enum import StrEnum

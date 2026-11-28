@@ -4,6 +4,9 @@ page as server-sent events.
 An agent points the owner at entries with a title and ordered targets, one sentence each. The spotlight lives until it is dismissed or
 replaced and is gone when the server stops. A sketch (entries in the `put` format, drawn but never written) lives the same way. Neither
 changes an entry, so the inspection version stays what it was.
+
+Built here: decision product/inspection/decision/agent-points-owner.
+Built here: decision product/inspection/decision/agent-session-view.
 """
 
 from __future__ import annotations

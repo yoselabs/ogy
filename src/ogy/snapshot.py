@@ -1,4 +1,6 @@
-"""A whole knowledge base at one commit: its ontology, its entries by address, and what reading them found."""
+"""A whole knowledge base at one commit: its ontology, its entries by address, and what reading them found.
+
+Built here: decision software/ontology/decision/empty-input-adds-nothing."""
 
 from dataclasses import dataclass, field
 from datetime import datetime

@@ -1,7 +1,10 @@
 """A text field that declares `placeholders: <part kind>` (an interface's `invoked_as`) and the parts it names: every `<name>`
 in the text is a part of that kind with the id `name`, and every such part is a `<name>` of the text (decisions
 software/ontology/decision/inputs-that-are-no-fact, answered declared-inputs, and
-software/ontology/decision/command-inputs-are-accepted, answered checked). An entry that leaves the text unset names none."""
+software/ontology/decision/command-inputs-are-accepted, answered checked). An entry that leaves the text unset names none.
+
+Built here: decision software/ontology/decision/command-inputs-are-accepted.
+"""
 
 import re
 

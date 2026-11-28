@@ -1,4 +1,6 @@
-"""The example knowledge bases, read-only: each loads and its check finds nothing but terms awaiting the owner's yes."""
+"""The example knowledge bases, read-only: each loads and its check finds nothing but terms awaiting the owner's yes.
+
+Built here: decision software/ontology/decision/taskloop-fit-fixture."""
 
 import re
 from pathlib import Path
