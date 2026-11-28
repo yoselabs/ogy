@@ -1,4 +1,4 @@
-says: "What the built record says is still to do, for a layer or an area, or one work item's brief for an entry's address (a workflow's brief prints its trace: each step, who acts, where it is reached, what each row changes, its handler and proof); a row owed for an entry that waits on an unanswered decision is listed apart, with what it waits on; exit 1 when work is left."
+says: "What the built record says is still to do, for a layer or an area, or one work item's brief for an entry's address (a workflow's brief prints its trace: each step, who acts, where it is reached, what each row changes, its handler and proof); a row owed for an entry that waits (on an unanswered decision, or written by an AI that nobody agreed to and no answer set) is listed apart, with what it waits on; exit 1 when work is left."
 invoked_as: ogy work [area | address]
 serves:
 - product/inspection/workflow/inspect-kb/step/read

@@ -11,3 +11,8 @@ options:
 proposal:
   chose: write-the-entry
   why: The card already offers yes, a reworded sentence and no; a decision around a confirmation asks the same yes twice (goal fewest-questions, pain flooded-with-questions). Safe only behind the four safeguards.
+answers:
+- chose: write-the-entry
+  said: "A on all five of the audit's second batch: unagreed AI entries wait, yes all skips them, proposals are written as entries once the safeguards are built, a computed overlap read, avoided words refused as phrases"
+  at: '2026-11-28T06:51:56+01:00'
+  where: ai:claude/ontology-review-session-749f16
