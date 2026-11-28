@@ -18,7 +18,19 @@ options:
     label: No principle
     sets:
       constitution/principle/technology-agnostic:
+  stack:
+    label: 'Principle stack-agnostic: no kind, field or check names a programming language or a tool of one stack; a tool most popular languages share, such as Git, may stay'
+    sets:
+      constitution/principle/technology-agnostic:
+        says: No part of the ontology names a programming language or a tool of one stack; a repository declares its own.
+        why: ogy proves Rust, TypeScript and Python products alike; a kind that knows one stack fails the others.
 proposal:
   chose: technology
   why: Your words name technology first and language as the least; the wider one also covers pytest and the .py file types.
   heard: No part of the ontology should be specific to Python or any other technology; at least it is language-agnostic
+answers:
+- chose: stack
+  said: Programming languages are out, and so is a tool of one stack; a tool most popular languages share is fine
+  at: '2026-11-28T19:22:05+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  note: A tool shared by only two popular languages is to be weighed case by case

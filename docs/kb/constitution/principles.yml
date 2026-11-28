@@ -68,5 +68,10 @@
     said: Agrees to the principle earned-on-a-real-case
     hash: 915f530749c3
 - id: technology-agnostic
-  says: No part of the ontology names a programming language, file type or tool; a repository declares its own.
-  why: ogy proves Rust, TypeScript and Python products alike; a kind that knows one language fails the others.
+  says: No part of the ontology names a programming language or a tool of one stack; a repository declares its own.
+  why: ogy proves Rust, TypeScript and Python products alike; a kind that knows one stack fails the others.
+  agreed:
+    at: '2026-11-28T19:22:05+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Programming languages are out, and so is a tool of one stack; a tool most popular languages share is fine
+    hash: 0e5bdf17bf15

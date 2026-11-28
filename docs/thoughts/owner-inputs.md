@@ -277,3 +277,7 @@ Yes, Fable's picks
 > why not B?
 
 > ask fable with a proper context and follow taht decision
+
+## 2026-11-28: on language-agnostic
+
+> Programming languages are banned, yes. The tools are alright, but maybe not every tool. If tool is one tech stack specific, then that's a ban as well. But if tool spans multiple languages, then we could consider that. I mean, like if it spans 2 languages, right? Popular languages, I mean. But if it is a generic tool which covers most popular languages, that's totally cool. Бывает падает.
