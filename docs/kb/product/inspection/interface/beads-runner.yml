@@ -5,10 +5,12 @@ serves:
 - product/inspection/workflow/sync-the-tracker/step/sync
 src:
 - code:tools/ogy_beads.py#main
+- code:tools/ogy_beads.py#plan_decided
 proof:
 - tests/test_brief.py::test_the_tracker_items_are_the_whole_work_left_keyed_by_address
 - tests/test_ogy_beads.py::test_the_plan_makes_the_open_ogy_beads_match_the_work_left
 - tests/test_ogy_beads.py::test_apply_creates_with_the_label_then_writes_the_address_and_fingerprint
+- tests/test_ogy_beads.py::test_a_decision_bead_closes_when_a_kind_file_cites_it_and_follows_a_new_answer
 agreed:
   at: '2026-11-28T02:58:03+01:00'
   where: ai:claude/ontology-review-session-749f16

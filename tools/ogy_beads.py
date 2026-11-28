@@ -6,6 +6,11 @@ differs from the item's, close a bead whose address the work left no longer list
 It shows the plan and changes nothing unless `--apply` is given. A closed bead is not reopened: an item that comes back gets a
 new bead (Fable's recommendation; the owner has not decided it).
 
+Beads labelled `ogy-decision` hold an answer whose work lives in a kind file, so no work item lists it (decision
+software/cli/decision/decision-items-close, answered computed-close). Their metadata names the decision (`ogy_decision`) and the
+option it was filed for (`ogy_option`). One closes when a kind file or field cites its decision with `because`; one is rewritten
+when the decision's answer in force is another option. The session that records the answer opens it.
+
 Usage: `just beads [--rev HEAD] [--apply]`.
 """
 
@@ -20,9 +25,17 @@ from typing import Literal
 from beads_client import Bd, Bead, NewBead
 
 from ogy import cli
+from ogy import config as settings
+from ogy.brief import sentence
+from ogy.kindreasons import cited
+from ogy.ontology import DEFAULT_ONTOLOGY
+from ogy.settle import decisions
+from ogy.target import Target
 
 LABEL = "ogy-work"
 ADDRESS, FINGERPRINT = "ogy_address", "ogy_fingerprint"
+DECIDED = "ogy-decision"
+DECISION, OPTION = "ogy_decision", "ogy_option"
 
 type Kind = Literal["create", "rewrite", "close"]
 
@@ -41,6 +54,16 @@ class Action:
     key: str
     bead: str = ""  # the bead to rewrite or close
     item: Item | None = None
+    answer: Answer | None = None  # for an ogy-decision bead: the answer in force it is rewritten to
+    reason: str = ""  # why a bead closes, when not that the work left no longer lists it
+
+
+@dataclass(frozen=True)
+class Answer:
+    """The answer in force of a decision: the option chosen and its label."""
+
+    option: str
+    label: str
 
 
 def plan(items: list[Item], beads: list[Bead]) -> list[Action]:
@@ -61,11 +84,32 @@ def plan(items: list[Item], beads: list[Bead]) -> list[Action]:
     return actions
 
 
+def plan_decided(beads: list[Bead], cited: set[str], answers: dict[str, Answer]) -> list[Action]:
+    """For the open beads labelled ogy-decision: close one whose decision a kind file cites; rewrite one whose decision is now
+    answered with another option than the one it was filed for (or that records none yet)."""
+    actions: list[Action] = []
+    for bead in sorted(beads, key=lambda bead: bead.id):
+        decision = str(bead.metadata.get(DECISION, ""))
+        if DECIDED not in bead.labels or not decision:
+            continue
+        if decision in cited:
+            actions.append(Action("close", decision, bead.id, reason=f"a kind file cites {decision} with because"))
+        elif (answer := answers.get(decision)) is not None and str(bead.metadata.get(OPTION, "")) != answer.option:
+            actions.append(Action("rewrite", decision, bead.id, answer=answer))
+    return actions
+
+
 def apply(actions: list[Action], bd: Bd) -> None:
     for action in actions:
         item = action.item
+        if action.answer is not None:  # an ogy-decision bead: its decision is answered with another option
+            label = f"Answered decision {action.key} (option {action.answer.option}): {action.answer.label}"
+            bd.update(action.bead, description=label, metadata={DECISION: action.key, OPTION: action.answer.option})
+            continue
         if action.kind == "close":
-            why = f"ogy work no longer lists {action.key}: built or removed" if action.key else "an ogy-work bead with no address"
+            why = action.reason or (
+                f"ogy work no longer lists {action.key}: built or removed" if action.key else "an ogy-work bead with no address"
+            )
             bd.close(action.bead, why)
             continue
         if item is None:
@@ -84,6 +128,19 @@ def read_items(repo: Path, rev: str) -> list[Item]:
     return [Item(raw["key"], raw["title"], raw["fingerprint"], raw["brief"]) for raw in json.loads("\n".join(lines))]
 
 
+def read_decided(repo: Path, rev: str) -> tuple[set[str], dict[str, Answer]]:
+    """What the kind files cite with `because`, and each decision's answer in force, read from the commit."""
+    target = Target(repo, rev=rev, ontology=settings.read(repo).ontology or DEFAULT_ONTOLOGY)
+    _, snapshot = target.read()
+    answers: dict[str, Answer] = {}
+    for decision in decisions(snapshot):
+        force = decision.in_force
+        if force is not None and force.by_answer and force.option is not None:
+            option = snapshot.resolve(f"{decision.address}/{decision.names.option}/{force.option}")
+            answers[str(decision.address)] = Answer(force.option, sentence(snapshot, option) if option else "")
+    return cited(target.kinds()), answers
+
+
 def main(argv: list[str] | None = None, bd: Bd | None = None) -> int:
     parser = argparse.ArgumentParser(prog="ogy-beads", description="Sync bd from ogy work --tracker; shows the plan unless --apply.")
     parser.add_argument("--repo", type=Path, default=Path.cwd())
@@ -93,7 +150,8 @@ def main(argv: list[str] | None = None, bd: Bd | None = None) -> int:
     args = parser.parse_args(argv)
     where = str(args.tracker_dir or args.repo)
     bd = bd or Bd("ogy-beads", cwd=where, env=os.environ)  # find bd on the PATH of the shell that ran it
-    actions = plan(read_items(args.repo, args.rev), bd.find(label=LABEL))
+    cited, answers = read_decided(args.repo, args.rev)
+    actions = plan(read_items(args.repo, args.rev), bd.find(label=LABEL)) + plan_decided(bd.find(label=DECIDED), cited, answers)
     counts = {kind: sum(1 for action in actions if action.kind == kind) for kind in ("create", "rewrite", "close")}
     for action in actions:
         sys.stdout.write(f"{action.kind} {action.bead or '-'} {action.key}\n")

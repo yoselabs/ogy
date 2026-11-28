@@ -5,6 +5,7 @@ from typing import Protocol
 lazy import argparse
 
 from ogy import ops, put, render, wire
+from ogy.kindreasons import unreasoned
 from ogy.model import home_of
 from ogy.tracker import items_json
 from ogy.verdict import Verdict
@@ -112,6 +113,9 @@ def _history(target: Target, args: argparse.Namespace, **_: object) -> Result:
 
 
 def _kinds(target: Target, args: argparse.Namespace, **_: object) -> Result:
+    if args.unreasoned:
+        found = unreasoned(target.kinds())
+        return Verdict.OK, found or ["every kind and field names its reason"]
     done = ops.run_kinds(target, args.kind, with_readers=args.readers, as_map=args.map)
     return done.verdict, done.value
 

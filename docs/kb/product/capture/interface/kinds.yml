@@ -3,5 +3,8 @@ invoked_as: ogy kinds [kind]
 serves:
 - product/capture/workflow/capture-entries/step/read-glossary
 src:
-- code:src/ogy/cli.py#_asks
+- code:src/ogy/kindreasons.py#unreasoned
 form: cli
+proof:
+- tests/test_kind_reasons.py::test_unreasoned_lists_a_kind_and_a_field_until_their_kind_file_names_a_reason
+- tests/test_kind_reasons.py::test_every_reason_a_shipped_kind_file_names_is_an_entry_of_ogys_knowledge_base

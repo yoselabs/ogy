@@ -97,6 +97,7 @@ class FieldSpec(BaseModel):
     harm: tuple[str, ...] = ()  # what a wrong value of this field costs, for an entry that sets it (tags of `harms`)
     member_harm: dict[str, tuple[str, ...]] = {}  # an enum member's own cost, e.g. `delete: [irreversible]`
     input: Input | Picked | None = None
+    because: tuple[str, ...] = ()  # the decisions or principles that are this field's reason (decision kind-reasons)
 
 
 class Fingerprint(BaseModel):
@@ -287,6 +288,7 @@ class Kind(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
     kind: str
     about: str
+    because: tuple[str, ...] = ()  # the decisions or principles that are this kind's reason (decision kind-reasons)
     guidance: str | None = None  # how to decide: when to use this kind rather than its neighbours (`ogy kinds <kind>`)
     like: str | None = None  # the mainstream notion it matches, one line (`ogy kinds`, `--map`, `ogy glossary`)
     unlike: str | None = None  # the mainstream notions of the same name it does not mean, one line

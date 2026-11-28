@@ -143,6 +143,9 @@ def _asks(commands: Adder) -> None:
     )
     kinds.add_argument("kind", nargs="?", help="only this kind")
     kinds.add_argument(
+        "--unreasoned", action="store_true", help="the kinds and fields whose kind file names no decision or principle (because)"
+    )
+    kinds.add_argument(
         "--readers",
         action="store_true",
         help="for each field, what reads it: the fingerprint, requires, flow, "

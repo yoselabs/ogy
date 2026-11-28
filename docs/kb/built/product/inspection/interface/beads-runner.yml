@@ -1,1 +1,1 @@
-product/inspection/interface/beads-runner: {own: e81e19c3c713, covers: [], sourced: {code:tools/ogy_beads.py#main: dc05d8c530e6}}
+product/inspection/interface/beads-runner: {own: f6de44e0c5e9, covers: [], sourced: {code:tools/ogy_beads.py#main: 4b125d893804, code:tools/ogy_beads.py#plan_decided: b791763a826a}}

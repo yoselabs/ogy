@@ -9,7 +9,22 @@ from beads_client import Bd, Bead
 from beads_client.testing import Script
 from tests.conftest import SOURCE, commit
 from tests.test_writes import w
-from tools.ogy_beads import ADDRESS, FINGERPRINT, LABEL, Action, Item, apply, main, plan, read_items
+from tools.ogy_beads import (
+    ADDRESS,
+    DECIDED,
+    DECISION,
+    FINGERPRINT,
+    LABEL,
+    OPTION,
+    Action,
+    Answer,
+    Item,
+    apply,
+    main,
+    plan,
+    plan_decided,
+    read_items,
+)
 
 from ogy import cli
 
@@ -57,15 +72,15 @@ def test_main_shows_the_plan_and_writes_only_with_apply(repo: Path) -> None:
     rule = {"address": A, "says": "It holds.", "src": [SOURCE]}
     assert w(repo, "put", json.dumps([rule]))[0] == cli.OK
     commit(repo, "a rule")  # the runner reads HEAD
-    shown = Script().say("[]")  # bd list: no ogy beads yet
+    shown = Script().say("[]").say("[]")  # bd list of ogy-work, then of ogy-decision: none yet
     assert main(["--repo", str(repo)], Bd("test", exe="bd", run=shown)) == 0
-    assert [call[3] for call in shown.calls] == ["list"]  # show only: nothing written
+    assert [call[3] for call in shown.calls] == ["list", "list"]  # show only: nothing written
     creates = len(plan(read_items(repo, "HEAD"), []))
-    applied = Script().say("[]")
+    applied = Script().say("[]").say("[]")
     for index in range(creates):
         applied.say(json.dumps({"id": f"t-{index}"})).say()  # create answers its id, the metadata update nothing
     assert main(["--repo", str(repo), "--apply"], Bd("test", exe="bd", run=applied)) == 0
-    assert [call[3] for call in applied.calls] == ["list", *["create", "update"] * creates]
+    assert [call[3] for call in applied.calls] == ["list", "list", *["create", "update"] * creates]
 
 
 def test_the_runner_answers_help_and_refuses_an_unknown_flag(capsys: pytest.CaptureFixture[str]) -> None:
@@ -76,3 +91,28 @@ def test_the_runner_answers_help_and_refuses_an_unknown_flag(capsys: pytest.Capt
     with pytest.raises(SystemExit) as refused:
         main(["--no-such-flag"], Bd("test", exe="bd", run=Script()))
     assert refused.value.code == 2
+
+
+D1, D2 = "software/ontology/decision/one", "software/ontology/decision/two"
+
+
+def _decided(id_: str, decision: str, option: str = "a", labels: tuple[str, ...] = (DECIDED,)) -> Bead:
+    return Bead(id_, labels=labels, metadata={DECISION: decision, OPTION: option})
+
+
+@pytest.mark.parametrize(
+    ("beads", "cites", "answers", "wanted"),
+    [
+        ([_decided("t-1", D1)], {D1}, {D1: Answer("a", "A")}, [("close", D1, "t-1")]),  # a kind file cites it: done
+        ([_decided("t-1", D1)], set(), {D1: Answer("b", "B")}, [("rewrite", D1, "t-1")]),  # answered again with another option
+        ([_decided("t-1", D1)], set(), {D1: Answer("a", "A")}, []),  # current, not yet built
+        ([_decided("t-1", D1, labels=())], {D1}, {}, []),  # without the label it is never touched
+        ([_decided("t-1", D1), _decided("t-2", D2)], {D2}, {D1: Answer("a", "A"), D2: Answer("a", "A")}, [("close", D2, "t-2")]),
+    ],
+    ids=["cited", "re-answered", "current", "unlabelled", "mixed"],
+)
+def test_a_decision_bead_closes_when_a_kind_file_cites_it_and_follows_a_new_answer(
+    beads: list[Bead], cites: set[str], answers: dict[str, Answer], wanted: list[tuple[str, str, str]]
+) -> None:
+    """Decision software/cli/decision/decision-items-close (computed-close)."""
+    assert [(action.kind, action.key, action.bead) for action in plan_decided(beads, cites, answers)] == wanted
