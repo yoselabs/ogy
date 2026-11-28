@@ -312,3 +312,14 @@ def test_an_attribute_may_name_an_actor_and_not_a_goal(kb: Make) -> None:
     goal = LOAN.replace("member: {of: product/app/entity/loan}", "member: {of: product/app/goal/lend}")
     found = kb({**SERVED, "product/app/goals.yml": "- {id: lend, says: Members borrow tools.}\n", "product/app/entity/loan.yml": goal})
     assert (Problem.LINK_KIND, "product/app/entity/loan/attribute/member") in found.findings()
+
+
+def test_an_attribute_no_interface_shows_and_nothing_reads_is_unread(kb: Make) -> None:
+    """Decision software/ontology/decision/attribute-nothing-reads, answered unread-is-work: shown by an interface (it or its
+    entity), or read by a condition or a derived value."""
+    flow = {**SERVED, "product/app/workflow/ask.yml": STEP}
+    loan = "product/app/entity/loan/attribute"
+    assert left(kb, flow, "unread") == {f"{loan}/member", f"{loan}/late"}  # days is read by the derived late
+    shown = {**flow, "product/app/interface/ask-page.yml": PAGE + f"shows: [{loan}/late]\n"}
+    assert left(kb, shown, "unread") == {f"{loan}/member"}
+    assert left(kb, {**flow, "product/app/interface/ask-page.yml": PAGE + "shows: [product/app/entity/loan]\n"}, "unread") == set()
