@@ -1,9 +1,9 @@
 title: The area of an interface that serves two areas
 question: In which area does an interface live, and what happens when it serves steps of two areas?
-context: 'Example: the command ogy check lives in product/checks and serves the step run of the workflow check-and-land. The end-of-session workflow hand-over in product/review has its own step where the agent runs ogy check, so the same interface serves steps of two areas. 4 of 27 interfaces do this: check (checks, review), show and history (inspection, capture), reply (review, capture). In all four the command does the same thing in both workflows. Where a command behaves differently per workflow it is already split by a flag: check --landing.'
+context: "Example: the command ogy check lives in product/checks and serves the step run of the workflow check-and-land. The end-of-session workflow hand-over in product/review has its own step where the agent runs ogy check, so the same interface serves steps of two areas. 4 of 27 interfaces do this: check (checks, review), show and history (inspection, capture), reply (review, capture: the owner replies in review-and-reply, the agent records the owner's words in store-owner-words; the same command applying the same grammar). Where a command behaves differently per workflow a flag tells the uses apart: check --landing, which has no interface of its own today."
 options:
   steps-area:
-    label: 'The step exists once: an interface lives in the area of the workflow that owns its step, and another workflow that needs the same step calls that workflow. An interface that still serves steps of two areas is listed as work. A command that behaves differently per workflow is split by a flag or subcommand, each its own interface'
+    label: 'The step exists once: an interface lives in the area of the workflow that owns its step, and another workflow that needs the same step calls that workflow (from its start; when the shared step is not the start, it becomes a workflow of its own that both call). An interface that still serves steps of two areas is listed as work. A command that behaves differently per workflow is split by a flag or subcommand, each served by its own interface, so check --landing gets one'
   shared-area:
     label: An interface that serves two areas lives in the shared area of its layer
   form-area:

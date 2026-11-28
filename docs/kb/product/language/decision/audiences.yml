@@ -18,7 +18,7 @@ options:
         says: The person who runs the AI factory and watches what is ready, running and blocked.
         nature: human
   not-now:
-    label: Not now; the existing actors stay
+    label: 'Not now: the four actors written on the earlier proposal (analyst, architect, engineer, operator) are removed; the actors that existed before stay'
     sets:
       product/shared/actor/analyst:
       product/shared/actor/architect:
