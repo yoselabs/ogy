@@ -15,7 +15,17 @@ steps:
         - tests/test_stamping.py::test_the_run_writes_a_line_only_for_an_entry_whose_proofs_all_passed
         - tests/test_stamping.py::test_a_run_without_the_flag_writes_nothing_and_a_partial_run_keeps_the_lines
         - tests/test_stamping.py::test_a_proof_that_fails_deletes_the_line_of_its_entry
+    agreed:
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: 610f167e8b5e
 ends:
   built:
     result: success
     says: The entries whose proofs passed have their built lines; ogy work no longer lists them.
+    agreed:
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: 93cf1d058a4c

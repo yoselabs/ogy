@@ -3,10 +3,10 @@ form: web
 serves:
 - product/inspection/workflow/inspect-kb/step/read
 agreed:
-  at: '2026-11-21T22:31:48+01:00'
-  where: ai:claude/f6fcc5ed
-  said: 'Approved the verdict table: delivery by a local server.'
-  hash: e7d6566f721d
+  at: '2026-11-28T05:11:55+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  said: Agreed the twenty cards the review found true or resting on answers already given
+  hash: b1c3ac834175
 includes:
 - product/inspection/interface/board
 shows:

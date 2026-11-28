@@ -14,9 +14,19 @@ steps:
         proof:
         - tests/test_brief.py::test_the_brief_of_a_row_reads_the_why_above_the_decision_and_one_hop_around
         - tests/test_brief.py::test_an_area_still_lists_the_work_and_a_missing_address_says_what_is_near
+    agreed:
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: 8c0a124b7890
 ends:
   briefed:
     result: success
     says: The agent knows what the item is for, what was decided and what it touches, without reading the files.
+    agreed:
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: 1a1827a9fa2d
 src:
 - code:src/ogy/brief.py#brief

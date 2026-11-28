@@ -1,3 +1,5 @@
 says: Every structured entry mention, including a heading, uses the same identity token with its canonical icon, title, full address and navigation action; context adds the field name beside it and cannot replace its identity with raw text.
 because:
 - product/inspection/decision/board-is-product
+src:
+- doc:44b841f8ba6e3dc9b562bd8906524977144d91e0:docs/design/board/labs/lab29b/FEEDBACK.md#owner-feedback-on-lab-28-that-lab-29b-must-address-paraphrased-his-raw-words-docsthoughtsowner-inputsmd-and-transcript-lines-3221-3371-3452-4058

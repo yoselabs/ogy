@@ -62,19 +62,19 @@ steps:
           - product/removal/entity/removed-item
         then: refused
     agreed:
-      at: '2026-11-19T19:50:03+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: f2966cebf68b
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: '480840469335'
 ends:
   removed:
     result: success
     says: The entry is gone from its file. removed.yml holds its item if the base commit had the entry or ogy init starts with it; otherwise none (Git keeps it).
     agreed:
-      at: '2026-11-19T19:50:03+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
-      hash: e757fe0c9cd5
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: d2423f23ccba
   refused:
     result: failure
     says: Nothing is written; the refusal says why.

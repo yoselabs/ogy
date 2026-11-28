@@ -17,10 +17,10 @@ steps:
       otherwise:
         then: all-read
     agreed:
-      at: '2026-11-21T01:42:56+01:00'
-      where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-      said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: e044f277c0f8
+      at: '2026-11-28T05:11:55+01:00'
+      where: ai:claude/ontology-review-session-749f16
+      said: Agreed the twenty cards the review found true or resting on answers already given
+      hash: 616bdd363c26
 ends:
   refused:
     result: failure

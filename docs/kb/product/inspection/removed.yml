@@ -1,0 +1,59 @@
+format: 1
+items:
+  - id: product/inspection/rule/typed-relation-conservation
+    kind: rule
+    parent:
+    title:
+    said: Each relation fact is accounted for by visible endpoints, a typed bundle, an internal count or a labelled boundary; bundling preserves field, direction, operation, overlay identity and witnesses without inventing ancestor relations.
+    why: product/inspection/decision/product-map
+    replaced_by:
+    at: 2026-11-28 04:14:00+00:00
+    last_seen: b5409fea6477c615bbb3bc59d650b35a55de130d
+    hash: 84eeb736a984
+    ontology: software
+    snapshot:
+      says: Each relation fact is accounted for by visible endpoints, a typed bundle, an internal count or a labelled boundary; bundling preserves field, direction, operation, overlay identity and witnesses without inventing ancestor relations.
+      because:
+      - product/inspection/decision/board-is-product
+  - id: product/inspection/entity/inspection-projection/attribute/models
+    kind: attribute
+    parent:
+      address: product/inspection/entity/inspection-projection
+      key: attributes
+      position: 1
+    title:
+    said:
+    why: renamed to the names the code returns (entries, findings), from the review of round rea07bb
+    replaced_by:
+    at: 2026-11-28 05:14:32+01:00
+    last_seen: b5409fea6477c615bbb3bc59d650b35a55de130d
+    hash: 88fea13dd167
+    ontology: software
+    snapshot:
+      type: text
+      many: true
+      derived:
+        text: Serialized entry models with canonical identities, exact fields, parts, selected facts, availability and witness paths from the resolved snapshot.
+        reads:
+        - product/inspection/entity/inspection-request
+  - id: product/inspection/entity/inspection-projection/attribute/diagnostics
+    kind: attribute
+    parent:
+      address: product/inspection/entity/inspection-projection
+      key: attributes
+      position: 3
+    title:
+    said:
+    why: renamed to the names the code returns (entries, findings), from the review of round rea07bb
+    replaced_by:
+    at: 2026-11-28 05:14:32+01:00
+    last_seen: b5409fea6477c615bbb3bc59d650b35a55de130d
+    hash: ffe4d55b8879
+    ontology: software
+    snapshot:
+      type: text
+      many: true
+      derived:
+        text: Missing purpose and unavailable, filtered or unsupported data are reported separately from absence established by the complete snapshot.
+        reads:
+        - product/inspection/entity/inspection-request

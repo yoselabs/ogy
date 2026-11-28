@@ -20,5 +20,5 @@ attributes:
     type: text
     optional: true
     says: Serialized proposed records, kept apart from the live entries and validated before preview.
-src:
-- code:src/ogy/inspect.py#InspectionRequest
+because:
+- product/inspection/decision/board-is-product

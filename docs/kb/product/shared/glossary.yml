@@ -134,10 +134,10 @@
   word: layer
   says: 'Top folder of areas: product, what the business agrees, interfaces included; software, how built.'
   agreed:
-    at: '2026-11-19T20:31:53+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: d9850da652f5
+    at: '2026-11-28T05:11:55+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Agreed the twenty cards the review found true or resting on answers already given
+    hash: 4c67cbfe5695
 - id: 'null'
   word: 'null'
   says: "In an option's sets, an address set to null: that entry does not exist."
@@ -186,10 +186,10 @@
   - ?open
   - open question
   agreed:
-    at: '2026-11-19T20:32:19+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to the round Fable judged true against the code'
-    hash: 2e792e702432
+    at: '2026-11-28T05:11:55+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Agreed the twenty cards the review found true or resting on answers already given
+    hash: 44f7a305f121
 - id: read-back
   word: read-back
   says: Entries played back as said, concluded, proposed; neither a summary nor a review round.
@@ -259,10 +259,10 @@
   - assumed
   - ?assumed
   agreed:
-    at: '2026-11-20T20:52:40+01:00'
-    where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
-    said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-    hash: c6325ce685f2
+    at: '2026-11-28T05:11:55+01:00'
+    where: ai:claude/ontology-review-session-749f16
+    said: Agreed the twenty cards the review found true or resting on answers already given
+    hash: bafa12aa72ee
 - id: no-answer-path
   word: no-answer path
   says: What a row that tells an outside system does when no answer comes.

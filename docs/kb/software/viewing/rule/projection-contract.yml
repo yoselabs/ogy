@@ -4,3 +4,8 @@ constrains:
 because:
 - software/viewing/decision/contextual-view-structure
 - constitution/principle/one-owner-per-fact
+agreed:
+  at: '2026-11-28T05:11:55+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  said: Agreed the twenty cards the review found true or resting on answers already given
+  hash: 4c136e0d601e

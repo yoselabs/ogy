@@ -3,28 +3,41 @@ attributes:
   snapshot:
     type: text
     derived:
-      text: The resolved knowledge base content identity, ontology content identity and inspection contract version.
-      reads:
-      - product/inspection/entity/inspection-request
-  models:
-    type: text
-    many: true
-    derived:
-      text: Serialized entry models with canonical identities, exact fields, parts, selected facts, availability and witness paths from the resolved snapshot.
+      text: Which state of the knowledge base the result was computed from, and what could not be read.
       reads:
       - product/inspection/entity/inspection-request
   relations:
     type: text
     many: true
     derived:
-      text: Serialized typed relation facts and their ordered witnesses, including stable row and effect-index identities.
+      text: Every link between entries, with its field and direction.
       reads:
       - product/inspection/entity/inspection-request
-  diagnostics:
+  ontology:
+    type: text
+    derived:
+      text: The kinds and fields the entries are read with.
+      reads:
+      - product/inspection/entity/inspection-request
+  entries:
     type: text
     many: true
     derived:
-      text: Missing purpose and unavailable, filtered or unsupported data are reported separately from absence established by the complete snapshot.
+      text: Every selected entry with its fields, address and parent.
+      reads:
+      - product/inspection/entity/inspection-request
+  parts:
+    type: text
+    many: true
+    derived:
+      text: The parts of the selected entries.
+      reads:
+      - product/inspection/entity/inspection-request
+  findings:
+    type: text
+    many: true
+    derived:
+      text: The findings of the check on that state.
       reads:
       - product/inspection/entity/inspection-request
 src:

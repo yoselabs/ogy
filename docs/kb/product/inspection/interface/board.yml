@@ -1,4 +1,4 @@
-says: Inspect the shared inspection data on a canvas and in entry details, walk declared paths and preview proposed changes; an answer chosen on the board is recorded with where ui:board/<token>.
+says: Inspect the shared inspection data on pages and in entry details, walk declared paths and preview proposed changes; an answer chosen on the board is recorded with where ui:board/<token>.
 form: web
 serves:
 - product/inspection/workflow/inspect-kb/step/read
