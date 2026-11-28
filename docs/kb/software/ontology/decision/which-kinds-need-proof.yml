@@ -11,10 +11,13 @@ options:
     label: 'As behaviour, and an answered decision marked `structure` whose option in force sets nothing is work until it carries a `proof`: a test that reads the kind files and fails when they stop matching that answer; a new answer makes the proof out of date.'
   behaviour-rule-carries-it:
     label: 'As behaviour. A decision proves nothing by itself: when its answer must stay true in the code, its option sets a rule, and the rule needs the proof'
+  entry-carries-it:
+    label: 'As behaviour. A decision proves nothing by itself. When its answer changes what ogy does, its option sets the entry that states it: the interface, row or handler sentence it changes, or a rule when the statement spans several of them; that entry carries the proof. An answer that lives in a kind file is carried by that kind file citing the decision with because and proved by the tool-library fixture; no rule repeats it'
 proposal:
-  chose: behaviour-rule-carries-it
-  why: 'The mark `structure` was dropped from the decision kind, and a mark saying a decision needs a proof would be set by hand, against principle missing-is-computed. A rule the option sets carries the proof, and a missing proof is computed as an unbuilt rule. Which answers need a rule is judged with rules-need-a-check. Before (2026-11-25): behaviour-and-built-decisions.'
-  at: '2026-11-27T16:27:36+01:00'
+  chose: entry-carries-it
+  why: 'The answer in force says sets a rule, which clashes with the interface guidance (a rule only for more) and with rules-need-a-check (a rule that repeats a kind-file check goes); one fact, one owner (principles one-owner-per-fact, deterministic-first). Found by the work comparison of 2026-11-28: 31 answers moved 7 work items and 14 tasks were filed by hand. Before: behaviour-rule-carries-it.'
+  at: '2026-11-28T02:46:16+01:00'
+  heard: 'The flow is: add to the knowledge base, use ogy work, create tracker items; a task tied to nothing drifts.'
 answers:
 - chose: behaviour
   said: 'Yes, all: D15, proof on rows, rule, interface, setting, workaround; entity only with transitions; not step, handler, quantity'

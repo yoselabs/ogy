@@ -1,0 +1,24 @@
+title: How a task named by a decision closes
+because:
+- product/inspection/pain/tasks-drift
+question: An answer that changes a kind file leaves no work item, so its task is a tracker item that names the decision, not an entry. How does such a task close?
+context: 'Found by the work comparison of 2026-11-28 (docs/research/work-snapshots): 31 answers moved 7 work items; 14 tasks were filed by hand with metadata ogy_decision and no ogy-work label, and the runner (tools/ogy_beads.py) never touches them. Opening one cannot be computed: 116 answered decisions set nothing and nothing names them, most rightly (a keep or a not now). Closing can: once kind files cite their decisions with because (kind-reasons, answered), a task is done when a kind file cites its decision.'
+options:
+  computed-close:
+    label: 'The runner also reads items labelled ogy-decision: it closes one when a kind file cites its decision with because, and rewrites or closes it when that decision is answered again with another option; the session that records the answer opens it'
+    sets:
+      product/inspection/interface/beads-runner:
+        says: 'The bd runner: just beads shows the plan from ogy work --tracker, just beads --apply writes it; an item labelled ogy-decision closes when a kind file cites its decision with because, and is rewritten when that decision is answered again.'
+  list-uncited:
+    label: ogy work lists every answered decision that sets nothing and that nothing cites (116 rows today)
+    sets:
+      product/inspection/interface/beads-runner:
+        says: 'The bd runner: just beads shows the plan from ogy work --tracker, just beads --apply writes it.'
+  manual:
+    label: 'As today: such tasks are closed by hand'
+    sets:
+      product/inspection/interface/beads-runner:
+        says: 'The bd runner: just beads shows the plan from ogy work --tracker, just beads --apply writes it.'
+proposal:
+  chose: computed-close
+  why: 'Capability work-as-tracker-items realizes goal work-follows-the-kb, which answers pain tasks-drift: these tasks close themselves when the kind file names the decision. Listing every uncited answer would be 116 rows of noise; manual is the drift itself.'

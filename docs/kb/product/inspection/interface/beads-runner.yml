@@ -1,4 +1,4 @@
-says: 'The bd runner: just beads shows the plan from ogy work --tracker, just beads --apply writes it.'
+says: 'The bd runner: just beads shows the plan from ogy work --tracker, just beads --apply writes it; an item labelled ogy-decision closes when a kind file cites its decision with because, and is rewritten when that decision is answered again.'
 invoked_as: just beads [--rev HEAD] [--apply]
 form: cli
 serves:
