@@ -1,0 +1,35 @@
+title: The five words of one-word-each
+because:
+- software/ontology/decision/one-word-each
+question: one-word-each (answered terms) gives card, context, row, proposal and unused one meaning each. Are these five terms the words it adds?
+context: Written while building one-word-each on 2026-11-28; a term lands only when agreed or proposed by a decision. card and proposal had terms already.
+options:
+  add:
+    label: Add the five terms as written
+    sets:
+      product/shared/term/row:
+        word: row
+        says: 'A choice, case or timeout of a step: one way the step goes on.'
+      product/shared/term/context:
+        word: context
+        says: A decision's note on why its question comes up; not a board situation.
+      product/shared/term/unused:
+        word: unused
+        says: 'Work status: nothing links to the entry, so nothing needs it yet.'
+      product/shared/term/unanswered:
+        word: unanswered
+        says: Work status of a pain that no goal or decision answers yet.
+      product/shared/term/decided-by-ai:
+        word: decided by AI
+        says: An agent's entry waiting for the owner's yes; not a decision's proposal.
+  none:
+    label: Add none of them
+    sets:
+      product/shared/term/row:
+      product/shared/term/context:
+      product/shared/term/unused:
+      product/shared/term/unanswered:
+      product/shared/term/decided-by-ai:
+proposal:
+  chose: add
+  why: Each one names a meaning the kind files use with no term today.
