@@ -1,6 +1,10 @@
 question: How long does the borrow page wait for the member?
 proposal:
   why: Two days fit a weekend.
-  sets:
-    product/lending/quantity/reply-wait:
-      is: 2
+  chose: two-days
+options:
+  two-days:
+    label: Two days
+    sets:
+      product/lending/quantity/reply-wait:
+        is: 2

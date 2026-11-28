@@ -114,7 +114,7 @@ def _settling(found: Reads, kinds: dict[str, Kind]) -> None:
         if (names := kind.settling) is not None:
             wanted = [
                 (names.option, names.sets),
-                *((names.proposal, f) for f in (names.chose, names.sets, names.heard)),
+                *((names.proposal, f) for f in (names.chose, names.heard)),
                 *((names.answer, f) for f in (names.chose, names.said, names.at, names.where, names.note, names.delegated)),
             ]
             for part, field in wanted:

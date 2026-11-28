@@ -5,6 +5,10 @@ src:
 - code:src/taskloop/land_push.py#ROUNDS
 proposal:
   why: It is the constant in the code; no document gives a reason for 3.
-  sets:
-    software/land/quantity/delivery-rounds:
-      is: 3
+  chose: code-constant
+options:
+  code-constant:
+    label: 3 passes, the constant in the code
+    sets:
+      software/land/quantity/delivery-rounds:
+        is: 3

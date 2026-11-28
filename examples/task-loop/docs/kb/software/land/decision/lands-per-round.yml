@@ -5,6 +5,10 @@ src:
 - code:src/taskloop/round_land.py#land_passed
 proposal:
   why: It is what the code does; the number is not written as a constant.
-  sets:
-    software/land/quantity/lands-per-round:
-      is: 1
+  chose: what-the-code-does
+options:
+  what-the-code-does:
+    label: One task per round
+    sets:
+      software/land/quantity/lands-per-round:
+        is: 1

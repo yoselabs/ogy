@@ -134,11 +134,13 @@ def test_sets_may_say_absent_and_name_entries_that_do_not_exist_yet(kb: Make) ->
     assert kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": unborn}).findings() == set()
 
 
-def test_proposal_has_one_of_chose_or_sets(kb: Make) -> None:
-    both = DECISION.replace("proposal: {chose: one,", "proposal: {chose: one, sets: {product/app/quantity/fee: {is: 2}},")
-    assert only(kb({"product/app/quantities.yml": VALUES, "product/app/decision/fee.yml": both}).findings(), Problem.ONE_OF) == {
-        "product/app/decision/fee/proposal"
-    }
+def test_a_proposal_chooses_an_option(kb: Make) -> None:
+    """Decision software/ontology/decision/unused-values: a proposal's own values could never be answered, so it only chooses."""
+    files = {"product/app/quantities.yml": VALUES}
+    own = DECISION.replace("proposal: {chose: one,", "proposal: {sets: {product/app/quantity/fee: {is: 2}},")
+    found = kb({**files, "product/app/decision/fee.yml": own}).findings()
+    assert only(found, Problem.NEEDS_MIGRATION) == {"product/app/decision/fee/proposal"}
+    assert only(found, Problem.MISSING_FIELD) == {"product/app/decision/fee/proposal"}
 
 
 def test_agreed_entry_shape(kb: Make) -> None:

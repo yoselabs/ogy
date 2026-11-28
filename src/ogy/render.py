@@ -125,7 +125,7 @@ def render_show(found: Shown) -> list[str]:
     if found.decided_in is not None:
         decided = found.decided_in
         note = f"; note: {decided.note}" if decided.note else ""
-        option = decided.option or "its proposal value"
+        option = decided.option
         lines.append(f"Decided in (computed): {decided.decision} (in force: {option}, by {decided.by}){note}")
     if found.came_from:
         lines.append(f"Came from (computed): {', '.join(found.came_from)}" + (", through the decision" if found.through_decision else ""))

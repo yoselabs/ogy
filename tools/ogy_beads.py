@@ -135,7 +135,7 @@ def read_decided(repo: Path, rev: str) -> tuple[set[str], dict[str, Answer]]:
     answers: dict[str, Answer] = {}
     for decision in decisions(snapshot):
         force = decision.in_force
-        if force is not None and force.by_answer and force.option is not None:
+        if force is not None and force.by_answer:
             option = snapshot.resolve(f"{decision.address}/{decision.names.option}/{force.option}")
             answers[str(decision.address)] = Answer(force.option, sentence(snapshot, option) if option else "")
     return cited(target.kinds()), answers

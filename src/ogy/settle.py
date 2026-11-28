@@ -31,12 +31,11 @@ class Answer:
 
 @dataclass(frozen=True)
 class Force:
-    """What is in force: its `sets`, whether an answer or the proposal put it there, and the option chosen (None for a
-    proposal that gives its own `sets`)."""
+    """What is in force: its `sets`, whether an answer or the proposal put it there, and the option chosen."""
 
     sets: Sets
     by_answer: bool
-    option: str | None
+    option: str
     note: str | None = None  # the newest answer's hedge or condition
     delegated: bool = False  # the newest answer was an agent's, under a person's delegation
 
@@ -82,15 +81,12 @@ class Decision:
             return Force(self.options[newest.chose], by_answer=True, option=newest.chose, note=newest.note, delegated=newest.who != "human")
         if self.proposal is None:
             return None
-        chose, value = self.proposal.fields.get(self.names.chose), self.proposal.fields.get(self.names.sets)
-        if isinstance(chose, str):
-            return Force(self.options.get(chose, {}), by_answer=False, option=chose)
-        return Force(value, by_answer=False, option=None) if isinstance(value, dict) else None
+        chose = self.proposal.fields.get(self.names.chose)
+        return Force(self.options.get(chose, {}), by_answer=False, option=chose) if isinstance(chose, str) else None
 
     def sets_all(self) -> list[Sets]:
-        """Every `sets` of the decision: its options' and the proposal's."""
-        value = self.proposal.fields.get(self.names.sets) if self.proposal else None
-        return [*self.options.values(), *([value] if isinstance(value, dict) else [])]
+        """Every `sets` of the decision: its options' (a proposal only chooses one, software/ontology/decision/unused-values)."""
+        return list(self.options.values())
 
 
 def resolve(snapshot: Snapshot, origin: Address, text: object, kind: str) -> Address | None:

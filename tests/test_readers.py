@@ -13,7 +13,7 @@ from ogy.readers import readers
 def test_the_shipped_fields_name_their_readers(ontology: Ontology) -> None:
     found = readers(ontology)
     assert {"flow", "requires", "links and impact", "fingerprint"} <= set(found[("step", "actor")])
-    assert found[("proposal", "sets")] == ["exactly_one_of", "settling"]
+    assert "settling" in found[("proposal", "chose")] and "exactly_one_of" in found[("attribute", "of")]
     assert "build input" in found[("dependency", "pin")]  # a handler that uses the dependency reads its pin (`input: {fields: [pin]}`)
     assert "build input" in found[("quantity", "unit")] and "build input" not in found[("dependency", "says")]
     assert found[("area", "unlike")] == ["links and impact"] and "check term-too-long" in found[("term", "says")]

@@ -5,6 +5,10 @@ src:
 - code:src/taskloop/claim_lease.py#LEASE_TTL_S
 proposal:
   why: It is the constant in the code, measured on bd 1.3.1.
-  sets:
-    software/claim/quantity/lease-ttl:
-      is: 300
+  chose: code-constant
+options:
+  code-constant:
+    label: 300 seconds, the constant in the code
+    sets:
+      software/claim/quantity/lease-ttl:
+        is: 300

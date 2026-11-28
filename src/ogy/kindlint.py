@@ -340,7 +340,6 @@ def _settling(kinds: Mapping[str, Kind]) -> list[str]:
         (settling.answer, settling.at),
         (settling.answer, settling.where),
         (settling.proposal, settling.chose),
-        (settling.proposal, settling.sets),
         (name, settling.context),
         (settling.proposal, settling.why),
         (settling.proposal, settling.heard),
