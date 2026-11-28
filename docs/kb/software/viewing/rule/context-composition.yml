@@ -1,10 +1,10 @@
 says: Each supported kind and context resolves deterministically through a kind recipe, a shared composition family and a context adapter; omission consumes identified facts, detached details restore context, and unsupported kinds remain identifiable and openable.
 constrains:
-- product/inspection/enum/inspection-context
+- software/viewing/enum/inspection-context
 because:
 - product/inspection/decision/contextual-view-structure
 agreed:
   at: '2026-11-28T05:11:55+01:00'
   where: ai:claude/ontology-review-session-749f16
   said: Agreed the twenty cards the review found true or resting on answers already given
-  hash: 44031cd877ac
+  hash: 57a8141417ad

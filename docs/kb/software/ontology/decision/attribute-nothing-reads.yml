@@ -11,3 +11,8 @@ options:
 proposal:
   chose: unread-is-work
   why: The same class both ways (principle fix-the-class).
+answers:
+- chose: unread-is-work
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:16+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -12,3 +12,8 @@ options:
 proposal:
   chose: declared
   why: As with the row set and the derived relations, one declared list instead of several copies.
+answers:
+- chose: declared
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:51+01:00'
+  where: ai:claude/ontology-review-session-749f16

@@ -7,10 +7,10 @@ attributes:
     type: text
     says: The revision selector resolved before deriving inspection data.
   context:
-    of: product/inspection/enum/inspection-context
+    of: software/viewing/enum/inspection-context
     says: The requested presentation situation.
   detail:
-    of: product/inspection/enum/inspection-detail
+    of: software/viewing/enum/inspection-detail
     says: The requested local detail profile.
   layer:
     type: text

@@ -11,3 +11,8 @@ options:
 proposal:
   chose: software-viewing
   why: How a screen renders is technical (principle layers-split-business-from-technical), and board-is-product already says so.
+answers:
+- chose: software-viewing
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:47:50+01:00'
+  where: ai:claude/ontology-review-session-749f16

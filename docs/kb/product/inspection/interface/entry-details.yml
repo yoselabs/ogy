@@ -4,9 +4,7 @@ allows:
 - product/shared/actor/owner
 - product/shared/actor/agent
 shows:
-- product/inspection/entity/inspection-projection/attribute/entries
-satisfies:
-- product/inspection/rule/one-mention-path
+- product/capture/entity/entry
 because:
 - product/inspection/decision/board-is-product
 src:

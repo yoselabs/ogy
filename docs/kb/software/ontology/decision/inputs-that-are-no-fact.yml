@@ -11,3 +11,8 @@ options:
 proposal:
   chose: declared-inputs
   why: What is checked is rigid (principle rigid-where-checked); prose placeholders are what the board cannot walk.
+answers:
+- chose: declared-inputs
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:49:28+01:00'
+  where: ai:claude/ontology-review-session-749f16

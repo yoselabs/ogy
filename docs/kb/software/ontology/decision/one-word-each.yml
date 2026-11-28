@@ -14,3 +14,8 @@ options:
 proposal:
   chose: terms
   why: An agent reads one meaning per word (principle intuitive-for-ai).
+answers:
+- chose: terms
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:49:20+01:00'
+  where: ai:claude/ontology-review-session-749f16

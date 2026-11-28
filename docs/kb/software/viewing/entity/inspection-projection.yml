@@ -5,41 +5,41 @@ attributes:
     derived:
       text: Which state of the knowledge base the result was computed from, and what could not be read.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
   relations:
     type: text
     many: true
     derived:
       text: Every link between entries, with its field and direction.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
   ontology:
     type: text
     derived:
       text: The kinds and fields the entries are read with.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
   entries:
     type: text
     many: true
     derived:
       text: Every selected entry with its fields, address and parent.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
   parts:
     type: text
     many: true
     derived:
       text: The parts of the selected entries.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
   findings:
     type: text
     many: true
     derived:
       text: The findings of the check on that state.
       reads:
-      - product/inspection/entity/inspection-request
+      - software/viewing/entity/inspection-request
 src:
 - code:src/ogy/inspect.py#inspect
 because:

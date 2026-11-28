@@ -10,10 +10,8 @@ offers:
 - product/inspection/workflow/inspect-map/step/inspect/choice/inspect
 - product/inspection/workflow/walk-product/step/walk/choice/walk
 - product/inspection/workflow/preview-requirement/step/preview/choice/preview
-accepts:
-- product/inspection/entity/inspection-request
 shows:
-- product/inspection/entity/inspection-projection
+- product/capture/entity/entry
 includes:
 - product/inspection/interface/entry-details
 satisfies:

@@ -11,3 +11,8 @@ options:
 proposal:
   chose: move
   why: The word is already in the transition's own definition, and one word keeps one level (principle words-from-known-tools).
+answers:
+- chose: move
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:25+01:00'
+  where: ai:claude/ontology-review-session-749f16

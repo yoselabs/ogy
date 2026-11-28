@@ -11,3 +11,8 @@ options:
 proposal:
   chose: many
   why: The same link keeps one cardinality, and a writer is not forced to drop a true purpose.
+answers:
+- chose: many
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:33+01:00'
+  where: ai:claude/ontology-review-session-749f16

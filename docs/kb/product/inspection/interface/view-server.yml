@@ -10,7 +10,7 @@ agreed:
 includes:
 - product/inspection/interface/board
 shows:
-- product/inspection/entity/inspection-projection
+- product/capture/entity/entry
 satisfies:
 - product/inspection/rule/agent-inspection-parity
 because:

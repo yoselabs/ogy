@@ -13,3 +13,8 @@ options:
 proposal:
   chose: title-else-id
   why: It is what 162 entries already do and needs no new field; term.names has no use in ogy.
+answers:
+- chose: title-else-id
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:43+01:00'
+  where: ai:claude/ontology-review-session-749f16

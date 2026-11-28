@@ -12,3 +12,8 @@ options:
 proposal:
   chose: printed
   why: A copied fact drifts again; one owner per fact (principles one-owner-per-fact and deterministic-first).
+answers:
+- chose: printed
+  said: A on all thirteen of the second ontology audit
+  at: '2026-11-28T12:48:07+01:00'
+  where: ai:claude/ontology-review-session-749f16
