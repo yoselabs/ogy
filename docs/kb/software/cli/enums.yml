@@ -1,8 +1,1 @@
-- id: where-schemes
-  says: The uri schemes the where of an answer or an agreement may use.
-  members:
-  - ai
-  - bd
-  - file
-  src:
-  - code:src/ogy/cli.py#WHERE
+[]

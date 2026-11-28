@@ -1,7 +1,1 @@
-- id: layers
-  says: The layer folders of the knowledge base.
-  members:
-  - product
-  - software
-  src:
-  - code:src/ogy/layout.py#locate
+[]

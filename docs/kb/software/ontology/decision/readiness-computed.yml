@@ -13,3 +13,8 @@ options:
 proposal:
   chose: computed-unanswered-only
   why: The mark already exists in show; unagreed entries are not missing decisions and status already owns that fact.
+answers:
+- chose: computed-unanswered-only
+  said: "A on all eight of batch 1: readiness computed, stage filters, reverse links by field word, trace in a workflow's brief, the kind files the only owner of their lists, a ui scheme for the board, I don't know records nothing, kind files carry because"
+  at: '2026-11-28T02:00:06+01:00'
+  where: ai:claude/ontology-review-session-749f16

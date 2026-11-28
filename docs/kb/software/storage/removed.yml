@@ -211,3 +211,21 @@ items:
     unit: hex digits
     src:
     - code:src/ogy/evidence.py#HASH_LENGTH
+- id: software/storage/enum/layers
+  kind: enum
+  parent:
+  title:
+  said: The layer folders of the knowledge base.
+  why: software/storage/decision/lists-copied-from-shipped-files
+  replaced_by:
+  at: 2026-11-28 01:01:24+00:00
+  last_seen: 0f7ceb2dc0466030077e6800ebb57adfc4b061a8
+  hash: 6e365d5ec34e
+  ontology: software
+  snapshot:
+    says: The layer folders of the knowledge base.
+    members:
+    - product
+    - software
+    src:
+    - code:src/ogy/layout.py#locate

@@ -33,3 +33,22 @@ items:
     says: '`answer` and `reply` are the public commands for what a person said; there is no `message` and no `agree` command, and a review round is the only road to agreement.'
     src:
     - code:src/ogy/cli.py#_writes
+- id: software/cli/enum/where-schemes
+  kind: enum
+  parent:
+  title:
+  said: The uri schemes the where of an answer or an agreement may use.
+  why: software/storage/decision/lists-copied-from-shipped-files
+  replaced_by:
+  at: 2026-11-28 01:01:28+00:00
+  last_seen: 0f7ceb2dc0466030077e6800ebb57adfc4b061a8
+  hash: 0a5481b4fb7d
+  ontology: software
+  snapshot:
+    says: The uri schemes the where of an answer or an agreement may use.
+    members:
+    - ai
+    - bd
+    - file
+    src:
+    - code:src/ogy/cli.py#WHERE
