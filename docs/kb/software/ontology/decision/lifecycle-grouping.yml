@@ -11,3 +11,8 @@ options:
 proposal:
   chose: reached-check
   why: One requires line on state. It finds 2 states in ogy's KB, both initial (entry nobody-agreed, decision question-waiting), so it depends on create-on-a-lifecycle; 0 in the fixture.
+answers:
+- chose: reached-check
+  said: "Yes to Fable's picks on batch 2: no new audience actors, software areas named after product areas, steps shared by calls, infrastructure later, the three unused rules, create always, the reached-state check, and the return workflow in the fixture"
+  at: '2026-11-28T02:17:00+01:00'
+  where: ai:claude/ontology-review-session-749f16

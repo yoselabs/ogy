@@ -15,3 +15,8 @@ options:
 proposal:
   chose: guidance-measure
   why: The area guidance says nothing on naming, so the writer had no line to follow. Shared mechanisms (storage, writes) are legitimate, so a check would mark them for good; a guidance line and a printed measure show the mismatch without a row that never clears.
+answers:
+- chose: guidance-measure
+  said: "Yes to Fable's picks on batch 2: no new audience actors, software areas named after product areas, steps shared by calls, infrastructure later, the three unused rules, create always, the reached-state check, and the return workflow in the fixture"
+  at: '2026-11-28T02:17:00+01:00'
+  where: ai:claude/ontology-review-session-749f16

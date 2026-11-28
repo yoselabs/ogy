@@ -11,3 +11,8 @@ options:
 proposal:
   chose: yes-handler-performs
   why: An orphan stays invisible otherwise (fix-the-class); a check written on inbound links would flag all 11 handlers.
+answers:
+- chose: yes-handler-performs
+  said: "Yes to Fable's picks on batch 2: no new audience actors, software areas named after product areas, steps shared by calls, infrastructure later, the three unused rules, create always, the reached-state check, and the return workflow in the fixture"
+  at: '2026-11-28T02:17:00+01:00'
+  where: ai:claude/ontology-review-session-749f16

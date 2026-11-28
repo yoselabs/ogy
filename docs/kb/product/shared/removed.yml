@@ -217,3 +217,59 @@ items:
       from: human
       said: Yes to the rest of the glossary
       hash: e214c8304276
+- id: product/shared/actor/analyst
+  kind: actor
+  parent:
+  title:
+  said: The person who states what the business needs and answers its questions; reads the product layer.
+  why: product/language/decision/audiences
+  replaced_by:
+  at: 2026-11-28 02:17:09+01:00
+  last_seen: 3900d116c1e643b81e245f85566a928ffe892ba5
+  hash: 6083bf64fc70
+  ontology: software
+  snapshot:
+    says: The person who states what the business needs and answers its questions; reads the product layer.
+    nature: human
+- id: product/shared/actor/architect
+  kind: actor
+  parent:
+  title:
+  said: The person who designs the system and its boundaries; reads both layers and what waits for a decision.
+  why: product/language/decision/audiences
+  replaced_by:
+  at: 2026-11-28 02:17:10+01:00
+  last_seen: 3900d116c1e643b81e245f85566a928ffe892ba5
+  hash: 077db35c53f1
+  ontology: software
+  snapshot:
+    says: The person who designs the system and its boundaries; reads both layers and what waits for a decision.
+    nature: human
+- id: product/shared/actor/engineer
+  kind: actor
+  parent:
+  title:
+  said: The person who builds from the software layer and its proofs.
+  why: product/language/decision/audiences
+  replaced_by:
+  at: 2026-11-28 02:17:12+01:00
+  last_seen: 3900d116c1e643b81e245f85566a928ffe892ba5
+  hash: 304b7bdcaa5d
+  ontology: software
+  snapshot:
+    says: The person who builds from the software layer and its proofs.
+    nature: human
+- id: product/shared/actor/operator
+  kind: actor
+  parent:
+  title:
+  said: The person who runs the AI factory and watches what is ready, running and blocked.
+  why: product/language/decision/audiences
+  replaced_by:
+  at: 2026-11-28 02:17:14+01:00
+  last_seen: 3900d116c1e643b81e245f85566a928ffe892ba5
+  hash: b42f09001a4b
+  ontology: software
+  snapshot:
+    says: The person who runs the AI factory and watches what is ready, running and blocked.
+    nature: human
