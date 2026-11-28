@@ -1,4 +1,6 @@
 - id: describes-its-target-products
-  says: ogy describes, with no kind added for one of them, a task factory with outside triggers, AI steps and several interfaces; a knowledge base reached over MCP; a legacy system recovered from its code; and ogy itself.
+  says: ogy describes, with no kind added for one of them, a small storefront, a task factory with outside triggers, AI steps and several interfaces, a knowledge base reached over MCP, a legacy system recovered from its code, and ogy itself.
   for:
   - product/shared/actor/owner
+  because:
+  - product/ontology/decision/target-products

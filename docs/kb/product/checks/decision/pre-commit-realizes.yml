@@ -5,7 +5,7 @@ options:
   link:
     label: 'Yes: pre-commit-check realizes check-the-kb'
   apart:
-    label: 'No: it realizes nothing'
+    label: 'No: it realizes nothing; the applier takes the link out with this decision as the reason (an option cannot set a single link to null yet, bead ogy-o4a)'
 proposal:
   chose: link
   why: 'Closes two rows at once: the workflow gets its why and the capability its workflow.'

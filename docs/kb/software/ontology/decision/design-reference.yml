@@ -1,6 +1,6 @@
 title: A reference to a drawn design
 question: Where does a workflow or an interface keep the reference to its drawn frame in a drawing tool?
-context: "High-fidelity drawings stay outside ogy. src accepts two schemes, code and doc, and each must read a file. No entry needs a frame today: 22 of ogy's 26 interfaces are commands."
+context: "High-fidelity drawings stay outside ogy. src accepts two schemes, code and doc, and each must read a file. No entry needs a frame today: 24 of ogy's 27 interfaces are commands, 3 are web views, and none cites a frame."
 options:
   evidence-scheme:
     label: A third scheme of src for an outside frame, one mechanism for every kind; ogy stores the reference and reads nothing

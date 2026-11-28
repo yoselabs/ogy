@@ -4,4 +4,4 @@ serves:
 - product/mcp/workflow/call-a-tool/step/call
 src:
 - code:src/ogy/cli.py#_asks
-form: cli
+form: mcp

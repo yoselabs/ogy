@@ -1,6 +1,6 @@
 title: Where a system's proportion lives
 question: If the ontology gains a kind for what the owner ships, where does the proportion of that system (proof of concept, startup, product) live, given that the constitution is one fixed set of principles printed to every agent?
-context: Found 2026-11-24 by the ontology review (finding N2). The redesign says a system cites principles with `because`. The constitution folder holds one set for the whole knowledge base, so two systems of different proportion cannot cite different principles; the only real case today is ogy itself (no second system). Comes up only if context-form is answered system-kind.
+context: Found 2026-11-24 by the ontology review (finding N2). The redesign says a system cites principles with `because`. The constitution folder holds one set for the whole knowledge base, so two systems of different proportion cannot cite different principles; the only real case today is ogy itself (no second system). It comes up only if context-form is answered system-kind; context-form is answered computed-until-second-system, so the question does not arise today.
 options:
   because-principle:
     label: A system cites constitution principles with `because`, as the redesign proposes

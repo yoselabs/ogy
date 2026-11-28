@@ -3,7 +3,7 @@ question: Is the layer that holds what the product does, for whom and through wh
 context: 'The glossary says: product (what, why), software (how it is built). The name suggests the work of product people only; since interface-layer was answered product-only (2026-11-26) the layer holds every interface, API and message ones included, and every actor. A rename rewrites every product address.'
 options:
   keep:
-    label: Keep product; the layer line says it holds every input and output the business agrees, whoever draws it
+    label: Keep product; the term layer is reworded to say the product layer holds every input and output the business agrees, whoever draws it (that rewording comes back to you as its own card)
   rename:
     label: Rename the layer to a word free of that bias (behaviour)
 proposal:

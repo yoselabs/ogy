@@ -3,12 +3,14 @@ question: Where is it written which products the shipped ontology must be able t
 context: "Today nothing in the knowledge base says ogy must describe the task loop, a2kay or a healthcare system. So on 2026-11-24 three reviews judged where interface lives by counting ogy's own entries, and gave three answers. With the goal written, a review asks 'can the task loop's MCP server be written down?' and gets one answer. It is one entry, never more: adding or dropping a product is a new answer on this decision. Goal text (written with the answer): ogy describes, with no kind added for one of them, a task factory with outside triggers, AI steps and several interfaces; a knowledge base reached over MCP; a legacy system recovered from its code; and ogy itself."
 options:
   goal-and-cases:
-    label: One goal in product/ontology says which sorts of product the ontology must describe; the named products are the folders of reference cases (software/ontology/decision/reference-cases). A product is added or dropped by answering this decision again, so its answers are the history
+    label: One goal in product/ontology says which sorts of product the ontology must describe; the reference cases (software/ontology/decision/reference-cases) are worked examples of some of them. A product is added or dropped by answering this decision again, so its answers are the history
     sets:
       product/ontology/goal/describes-its-target-products:
-        says: ogy describes, with no kind added for one of them, a task factory with outside triggers, AI steps and several interfaces; a knowledge base reached over MCP; a legacy system recovered from its code; and ogy itself.
+        says: ogy describes, with no kind added for one of them, a small storefront, a task factory with outside triggers, AI steps and several interfaces, a knowledge base reached over MCP, a legacy system recovered from its code, and ogy itself.
         for:
         - product/shared/actor/owner
+        because:
+        - product/ontology/decision/target-products
   goal-per-product:
     label: One goal per named product
     sets:

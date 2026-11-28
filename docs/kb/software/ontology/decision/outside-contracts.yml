@@ -10,4 +10,4 @@ options:
     label: Dependencies, their quantities and rules ship as read-only entries in a data package; a check compares our quantities with theirs
 proposal:
   chose: as-today
-  why: No real case to hold a design to; three cases before an abstraction. The first real record decides between a link and a shipped list.
+  why: One real case is held with what exists (a dependency with its pin, rules), so it needs no new link or shipped list yet; three cases before an abstraction, and the second real one decides between a link and a shipped list.
