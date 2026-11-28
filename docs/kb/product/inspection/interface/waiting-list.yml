@@ -1,0 +1,9 @@
+says: The board list of every decision that waits for the owner, grouped by layer and area.
+form: web
+allows:
+- product/shared/actor/owner
+- product/shared/actor/agent
+shows:
+- product/review/entity/decision
+because:
+- product/inspection/decision/answer-drawer

@@ -9,27 +9,19 @@ Built here: decision software/cli/decision/answered-uncited-is-work.
 import re
 lazy from collections.abc import Collection, Mapping
 
-from ogy.declared import Reader
 from ogy.kindreasons import cited as kind_cited
 from ogy.settle import decisions
 lazy from ogy.model import Address
 lazy from ogy.snapshot import Snapshot
 
-__all__ = ["code_suffixes", "in_code", "uncited"]
+__all__ = ["cited_in", "uncited"]
 
-DOCSTRING = re.compile(r'"""(.*?)"""', re.DOTALL)
 CITE = re.compile(r"\bdecision\s+([a-z0-9_-]+/[a-z0-9_-]+/decision/[a-z0-9_-]+)")
 
 
-def code_suffixes(snapshot: Snapshot) -> tuple[str, ...]:
-    """The file suffixes of the evidence schemes that read code symbols: where a docstring may cite a decision."""
-    schemes = snapshot.ontology.declared.evidence.values()
-    return tuple(sorted({suffix for scheme in schemes if scheme.reads is Reader.SYMBOL for suffix in scheme.files}))
-
-
-def in_code(texts: Mapping[str, str]) -> set[str]:
-    """Every decision address a docstring names as "decision <address>"."""
-    return {found for text in texts.values() for doc in DOCSTRING.findall(text) for found in CITE.findall(doc)}
+def cited_in(texts: Mapping[str, str]) -> set[str]:
+    """Every decision address the files name as "decision <address>"."""
+    return {found for text in texts.values() for found in CITE.findall(text)}
 
 
 def uncited(snapshot: Snapshot, code: Collection[str]) -> list[Address]:

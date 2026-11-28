@@ -93,7 +93,8 @@ def _land(repo: Path, given: str | None) -> str | None:
 def _config(repo: Path, name: str, land: str | None, written: list[str]) -> None:
     """`ogy.yml` with the ontology when there is no file, and the land branch when it names none; every other key is kept."""
     held = config.read(repo)
-    kept = {key: value for key in config.KEYS if (value := getattr(held, key)) is not None}
+    values = {key: getattr(held, key) for key in config.KEYS}
+    kept = {key: list(value) if isinstance(value, tuple) else value for key, value in values.items() if value not in (None, ())}
     data = dict(kept) if (repo / config.CONFIG_FILE).exists() else {"ontology": name}
     if land is not None:
         data["land"] = land

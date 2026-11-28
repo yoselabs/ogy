@@ -1,0 +1,4 @@
+says: The template library the board renders its pages with, vendored unmodified.
+pin: lit-html 3.3.3
+because:
+- software/viewing/decision/frontend-vendored-libraries

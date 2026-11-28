@@ -1,5 +1,7 @@
 # Reference cases
 
+Built here: decision software/ontology/decision/reference-cases.
+
 Each folder here is one product described with ogy's one ontology, written through ogy (`ogy --repo examples/<case>`), so a
 design pass can test a change against products other than ogy itself (decision
 `software/ontology/decision/reference-cases`). `tests/test_examples.py` checks that each one loads and that `ogy check` finds

@@ -7,6 +7,8 @@ description: Build what an ogy knowledge base describes and prove it built - pic
 
 # OGY build (draft, 2026-11-27)
 
+Built here: decision software/ontology/decision/stamping-across-languages.
+
 Status: **proposed, untested as a skill** (evals/ledger.md). Decisions behind it: `software/ontology/decision/built-line-writer`
 (the test run writes the lines), `software/ontology/decision/stamping-across-languages` (this skill for now; a deterministic
 writer for every language later), `software/ontology/decision/which-kinds-need-proof`, `done-is-rolled-up`. The knowledge

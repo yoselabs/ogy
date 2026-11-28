@@ -14,6 +14,7 @@ shows:
 - product/capture/entity/entry
 includes:
 - product/inspection/interface/entry-details
+- product/inspection/interface/waiting-list
 satisfies:
 - product/inspection/rule/reverse-links-by-field-word
 because:

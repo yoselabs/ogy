@@ -1,0 +1,17 @@
+title: Who decides citations outside Python
+question: Does Fable, given the full context, decide citations-outside-python, with the agent answering it under this delegation, or does the owner decide it?
+context: 'Owner, 2026-11-28, after asking why not B: ask Fable with proper context and follow its decision.'
+options:
+  fable-decides:
+    label: Fable decides citations-outside-python (adding an option if it finds a better one); the agent answers it under this delegation and ogy dropped lists the answer for the owner's veto
+  owner-decides:
+    label: The owner decides citations-outside-python himself
+proposal:
+  chose: fable-decides
+  why: The owner asked for it.
+  heard: Ask Fable with proper context and follow that decision
+answers:
+- chose: fable-decides
+  said: Ask Fable with proper context and follow that decision
+  at: '2026-11-28T15:47:30+01:00'
+  where: ai:claude/ontology-review-session-749f16

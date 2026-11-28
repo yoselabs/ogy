@@ -57,6 +57,8 @@ Imagine the task done and forgotten. If nothing in the ontology becomes false, i
 
 ## Code, entries and decisions
 
+Built here: decision product/capture/decision/code-is-an-entry.
+
 - **What the code does today** is an entry with `src` (`code:<path>#<symbol>`): captured as it is, agreed by the owner
   in a review round. It is not a decision: nobody chose it in front of the owner.
 - **A decision** needs an alternative the owner could pick: two or more options a reasonable owner might choose. A

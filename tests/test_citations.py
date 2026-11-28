@@ -1,12 +1,16 @@
 """An answered decision whose answer sets no entry is work until something cites it (decision
 software/cli/decision/answered-uncited-is-work, answered computed): a kind file, an entry's `because`, or code, the text
-"decision <address>" in a docstring (decision software/cli/decision/where-a-code-answer-lands, answered code-cites)."""
+"decision <address>" in a file `ogy.yml` lists in `cites`, read as plain text (decision
+software/cli/decision/citations-outside-python, answered entry-or-declared-file)."""
 
 from collections.abc import Callable, Mapping
 
+import pytest
 from tests.conftest import Kb
 
-from ogy.citations import code_suffixes, in_code, uncited
+from ogy.citations import cited_in, uncited
+from ogy.config import ConfigError, parse
+from ogy.source import listed
 
 type Make = Callable[[Mapping[str, str | None] | None], Kb]
 
@@ -33,10 +37,15 @@ def test_an_unanswered_decision_is_no_citation_work(kb: Make) -> None:
     assert uncited(made.snapshot, set()) == []
 
 
-def test_code_cites_a_decision_only_in_a_docstring(kb: Make) -> None:
-    texts = {
-        "a.py": f'"""Reads it (decision {ASKED}, answered quick)."""\n',
-        "b.py": "# decision product/app/decision/other\nx = 'decision product/app/decision/third'\n",
-    }
-    assert in_code(texts) == {ASKED}
-    assert code_suffixes(kb(None).snapshot) == (".py",)
+def test_any_language_cites_a_decision_in_plain_text() -> None:
+    texts = {"a.py": f'"""Reads it (decision {ASKED})."""\n', "b.js": "// decision product/app/decision/other\n", "c.md": "No citation."}
+    assert cited_in(texts) == {ASKED, "product/app/decision/other"}
+
+
+def test_ogy_yml_lists_the_paths_read_for_citations() -> None:
+    assert parse("land: main\ncites: [src/, justfile]\n").cites == ("src/", "justfile")
+    assert parse("land: main\n").cites == ()
+    assert listed("src/app/x.js", ("src/", "justfile")) and listed("justfile", ("src/", "justfile"))
+    assert not listed("docs/research/audit.md", ("src/", "justfile")) and not listed("srcx/y", ("src/",))
+    with pytest.raises(ConfigError, match="cites"):
+        parse("cites: src/\n")

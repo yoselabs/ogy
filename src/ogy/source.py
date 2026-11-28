@@ -37,9 +37,14 @@ class Source(Protocol):
         """A repository-relative file's text (at the commit `rev` when given, else at this snapshot), or None when it does not exist."""
         ...
 
-    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
-        """`{repository path: text}` of every tracked file of this snapshot ending in one of `suffixes`."""
+    def cited_texts(self, paths: tuple[str, ...]) -> dict[str, str]:
+        """`{repository path: text}` of every tracked file of this snapshot that is one of `paths` or under one (`dir/`)."""
         ...
+
+
+def listed(path: str, paths: tuple[str, ...]) -> bool:
+    """Whether a repository path is one of `paths` or lies under one that names a folder (`dir/`)."""
+    return any(path == item or (item.endswith("/") and path.startswith(item)) for item in paths)
 
 
 def _at(repo: Path, rev: str, path: str) -> str | None:
@@ -109,12 +114,12 @@ class GitSource(_TreeSource):
         data = self._commit.read(path) if self._commit is not None else None
         return None if data is None else data.decode()
 
-    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
+    def cited_texts(self, paths: tuple[str, ...]) -> dict[str, str]:
         if self._commit is None:
             self._commit = self._git.tree(self.rev)
-        if self._commit is None or not suffixes:
+        if self._commit is None or not paths:
             return {}
-        paths = [path for path in self._commit.files if path.endswith(suffixes)]
+        paths = tuple(path for path in self._commit.files if listed(path, paths))
         self.reads += len(paths)
         return {path: data.decode(errors="replace") for path, data in self._commit.read_many(paths).items() if data is not None}
 
@@ -144,14 +149,14 @@ class WorktreeSource(_TreeSource):
         self.reads += 1
         return target.read_text()
 
-    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
-        if not suffixes:
+    def cited_texts(self, paths: tuple[str, ...]) -> dict[str, str]:
+        if not paths:
             return {}
         try:
-            paths = [path for path in ls_files(self.root, ambient=os.environ) if path.endswith(suffixes)]
+            tracked = [path for path in ls_files(self.root, ambient=os.environ) if listed(path, paths)]
         except GitError:
             return {}
-        found = {path: self.root / path for path in paths if (self.root / path).is_file()}
+        found = {path: self.root / path for path in tracked if (self.root / path).is_file()}
         self.reads += len(found)
         return {path: target.read_text(errors="replace") for path, target in found.items()}
 

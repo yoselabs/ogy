@@ -58,8 +58,8 @@ class Nothing:
         del path, rev
         return None
 
-    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
-        del suffixes
+    def cited_texts(self, paths: tuple[str, ...]) -> dict[str, str]:
+        del paths
         return {}
 
 

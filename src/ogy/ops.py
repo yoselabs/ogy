@@ -11,12 +11,12 @@ lazy from pathlib import Path
 from git_porcelain import git_dir
 from process_lock import LockHeldError, ProcessLock
 
-from ogy import affected, hooks, near, put, removal, removed, reply, rounds, writes
+from ogy import affected, config, hooks, near, put, removal, removed, reply, rounds, writes
 from ogy.base import read_ledgers
 from ogy.brief import Row, brief, rows
 from ogy.built import Line, read_source
 from ogy.check import check
-from ogy.citations import code_suffixes, in_code
+from ogy.citations import cited_in
 from ogy.constitution import printed_lines
 from ogy.coverage import uncovered
 from ogy.diagram import mermaid
@@ -182,9 +182,10 @@ def _owes(item: Work, scope: str | None, ontology: Ontology) -> bool:
     return scope in (None, item.owed_by, area, f"{item.owed_by}/{area}")
 
 
-def _code(source: Source, snapshot: Snapshot) -> set[str]:
-    """The decisions the tracked source files cite in a docstring (decision software/cli/decision/where-a-code-answer-lands)."""
-    return in_code(source.code_texts(code_suffixes(snapshot)))
+def _code(source: Source, _snapshot: Snapshot) -> set[str]:
+    """The decisions the files `ogy.yml` lists in `cites` name (decision software/cli/decision/citations-outside-python)."""
+    text = source.repo_file(config.CONFIG_FILE)
+    return cited_in(source.cited_texts(config.parse(text).cites)) if text else set()
 
 
 def run_work(target: Target, scope: str | None = None, loaded: Loaded | None = None) -> Run[list[Work]]:

@@ -10,6 +10,14 @@ options:
     label: 'Only Python docstrings: the Python module that serves or loads the file cites the decision (web/serve.py for the board, test_examples.py for the examples)'
   entry-states-it:
     label: Each such build gets a knowledge-base entry that states the behaviour and cites the decision with `because`
+  entry-or-declared-file:
+    label: An answer that changes what an actor sees or what ogy depends on is stated by an entry that cites it with `because`; any other is cited by the text "decision <address>" in a file the repository lists in ogy.yml, read as plain text whatever its language
 proposal:
   chose: any-tracked-file
   why: The citation sits beside what was built, whatever the language; the Rust and TypeScript products ogy will prove need it too.
+answers:
+- chose: entry-or-declared-file
+  said: "Fable chose it under the owner's delegation: behaviour gets an entry, the rest a plain-text citation in files ogy.yml lists"
+  at: '2026-11-28T15:51:35+01:00'
+  where: ai:claude/ontology-review-session-749f16
+  delegated: software/cli/decision/fable-decides-citations

@@ -271,3 +271,9 @@ Yes, Fable's picks
 > software/cli/decision/citations-outside-python - no part of ontology should be python-specific (or any other technology-specific)
 
 > ontology is technology or at least lanuage-agnostic
+
+> I don't understand. Are you saying that in A we mark it in the code, but in B we are not marking it in the code? We mark which function did it in knowledge base. Is that right? Or give me an example.
+
+> why not B?
+
+> ask fable with a proper context and follow taht decision

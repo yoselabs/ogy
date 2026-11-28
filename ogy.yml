@@ -1,2 +1,3 @@
 ontology: software
 land: main
+cites: [src/, tests/, tools/, skills/, justfile, docs/guidance.md, examples/README.md]   # where "decision <address>" cites an answer

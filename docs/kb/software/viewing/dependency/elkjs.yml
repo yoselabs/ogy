@@ -1,0 +1,4 @@
+says: The graph layout library the board draws its maps with, vendored unmodified.
+pin: elkjs 0.12.1
+because:
+- software/viewing/decision/frontend-vendored-libraries

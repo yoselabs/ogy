@@ -75,6 +75,7 @@ kb:
 check-extra: arch shfmt shell-test kb board-css-check board-js
 
 # Standalone Tailwind; the built stylesheet ships in the Python package.
+# Built here: decision software/cli/decision/view-frontend-build (standalone tailwindcss, checked in)
 board-css:
     #!/usr/bin/env bash
     set -euo pipefail
