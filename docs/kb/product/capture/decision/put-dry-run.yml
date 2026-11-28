@@ -1,0 +1,19 @@
+title: Check a batch without writing it
+question: Can a batch be checked by ogy put without being written?
+context: 'Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). Designs reached the owner before ogy had checked them: a change spec with two records for one address, an avoided word, a link across layers (ledger item 26).'
+options:
+  dry-run:
+    label: 'Yes: ogy put --dry-run checks the whole batch and writes nothing'
+    sets:
+      product/capture/interface/put:
+        says: Add or change entries, one or many records in one checked, atomic write; with --dry-run the whole batch is checked and nothing is written.
+  no:
+    label: 'No: a batch is checked by writing it'
+    sets:
+      product/capture/interface/put:
+        says: Add or change entries, one or many records in one checked, atomic write.
+proposal:
+  chose: dry-run
+  why: A design is checked before it reaches the owner (goal fewest-questions, pain design-errors-pass-checks).
+because:
+- product/review/pain/design-errors-pass-checks

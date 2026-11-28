@@ -1,0 +1,19 @@
+title: A reading of the owner's words needs its own yes
+question: Is a proposal that reads the owner's words (You said ..., read as B) confirmed by a bare yes?
+context: Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). On interface-area the proposal read I don't understand what you mean as option A, and a bare yes would have confirmed it (owner-inputs.md line 75). A reading is the AI's interpretation, not the owner's choice.
+options:
+  own-letter:
+    label: Only by its own letter; heard holds only words that choose an option, and I don't know or I don't understand is later
+    sets:
+      product/review/workflow/review-and-reply/step/reply:
+        says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase; a reading of what the owner said (You said ..., read as B) is confirmed only by its own letter, never by a bare yes.
+  bare-yes:
+    label: 'As today: a bare yes confirms every reading'
+    sets:
+      product/review/workflow/review-and-reply/step/reply:
+        says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase.
+proposal:
+  chose: own-letter
+  why: Hesitation is not consent (goal requirements-agreed, pain guesses-look-decided).
+because:
+- product/review/pain/guesses-look-decided

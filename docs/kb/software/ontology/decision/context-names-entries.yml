@@ -1,0 +1,11 @@
+title: A context is text and the entries it names
+question: Is a decision's context text plus links to the entries it names, with no counts written into it?
+context: 'Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). Contexts hold addresses, counts and file names in free text; the independent reviewer found about a dozen out of date (moved addresses, old counts). Rule rigid-where-checked: text naming another entry makes that part a link.'
+options:
+  text-and-links:
+    label: "Text and links: an address in a context or an option's label is a link, or a finding when it names nothing; a label naming an entry its option does not set is a finding; counts are printed by ogy review at print time, never written"
+  plain-text:
+    label: 'As today: plain text, checked by nobody'
+proposal:
+  chose: text-and-links
+  why: A moved or removed entry then updates or flags the context; a count cannot go out of date if it is computed (principle deterministic-first).

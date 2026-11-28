@@ -1,4 +1,4 @@
-says: Add or change entries, one or many records in one checked, atomic write.
+says: Add or change entries, one or many records in one checked, atomic write; with --dry-run the whole batch is checked and nothing is written.
 invoked_as: ogy put [records ...] [--file <path> | --file -]
 serves:
 - product/capture/workflow/capture-entries/step/put

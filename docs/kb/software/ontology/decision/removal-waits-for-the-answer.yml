@@ -1,0 +1,11 @@
+title: A proposed removal waits for the answer
+question: Is a proposed removal, or an unset link, built before the owner answers?
+context: Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). A proposal that removes existing entries is refused while they exist, and an option cannot set a single link to null (ledger items 25, 8; bead ogy-o4a). The term proposal says built until answered; it is reworded on its own card.
+options:
+  additions-only:
+    label: What a proposal adds is built until answered; what it removes or unsets waits for the answer; null is allowed per field, a single link included
+  as-today:
+    label: 'As today: a proposal is built whole, so a removing proposal cannot be written'
+proposal:
+  chose: additions-only
+  why: A thing a person may have seen should not vanish on an AI's pick (goal nothing-silently-dropped, pain silent-drops); writing the removal as a proposal shows it on the card.

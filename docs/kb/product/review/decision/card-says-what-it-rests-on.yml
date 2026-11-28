@@ -1,0 +1,19 @@
+title: A card says what its sentence rests on
+question: Does a review card print where its sentence came from, what it rests on and who agreed?
+context: 'Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). The evidence line prints Decided by AI: nothing you said supports it even when the entry cites an answered decision with because (13 of 19 AI-written cards in round rea07bb; ledger item 28).'
+options:
+  three-lines:
+    label: 'Three computed lines: came from, rests on (what it cites with because), agreed by'
+    sets:
+      product/review/interface/review:
+        says: What the owner is asked, at most 7 cards with a count per area, or a page of what came from docs or code; each card says where its sentence came from, what it rests on (the answered decision, pain or principle it cites) and who agreed; under each option it prints what the option sets and what that reaches; it saves the round and prints its id.
+  as-today:
+    label: 'As today: one line from whether a decision set it or a person agreed'
+    sets:
+      product/review/interface/review:
+        says: What the owner is asked, at most 7 cards with a count per area, or a page of what came from docs or code; under each option it prints what the option sets and what that reaches; it saves the round and prints its id.
+proposal:
+  chose: three-lines
+  why: A card that names what it rests on can be agreed in seconds; one that rests on nothing stands out. Goal fewest-questions, pains question-not-alone and guesses-look-decided.
+because:
+- product/review/pain/guesses-look-decided

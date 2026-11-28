@@ -1,0 +1,13 @@
+title: Where decisions about what product interfaces show live
+question: derived-relations-declared and contextual-view-structure decide what product interfaces show and accept, but live in software, so the product entries resting on them cannot cite them. Where do they live?
+context: 'Found by the audit of 2026-11-28 (friction ledger, 29 items; independent review agreed). Ledger items 27, 29: rule reverse-links-by-field-word, entity inspection-request and enums inspection-context, inspection-detail cite a weaker reason. 8 product interfaces name those entries, so the entries cannot move to software.'
+options:
+  move-the-decisions:
+    label: Move both decisions to product/inspection (ogy move); the four entries then cite them with because
+  cite-a-pain:
+    label: They stay in software; the entries cite a pain or a goal
+proposal:
+  chose: move-the-decisions
+  why: A decision about what users see belongs where users' promises live (principle layers-split-business-from-technical).
+because:
+- constitution/principle/layers-split-business-from-technical

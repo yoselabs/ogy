@@ -20,7 +20,7 @@ steps:
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
       hash: 86a1a87ac257
   reply:
-    says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase.
+    says: The owner replies in the reply grammar, or in natural words that the agent reads as its items and records with a short paraphrase; a reading of what the owner said (You said ..., read as B) is confirmed only by its own letter, never by a bare yes.
     actor: product/shared/actor/owner
     choices:
       replied:

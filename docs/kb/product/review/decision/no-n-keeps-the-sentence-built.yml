@@ -11,9 +11,15 @@ options:
     sets:
       product/review/rule/no-n-keeps-the-sentence-built:
         says: '`no N` removes the sentence at once.'
+  unbuild-unagreed:
+    label: An entry nobody agreed to and no answer set stops being built after no N until its question is answered; an agreed entry stays built, as today
+    sets:
+      product/review/rule/no-n-keeps-the-sentence-built:
+        says: '`no N` stores the words and opens a decision that asks whether the sentence is still right; a sentence nobody agreed to and no answer set stops being built until it is answered, an agreed one stays built; ogy blocks nothing.'
 proposal:
-  chose: question-opens
-  why: The owner's no is a question to answer well, not a deletion; the agent asks "what instead?" in the same turn.
+  chose: unbuild-unagreed
+  why: 'A refused AI guess should not stay in the work list and the tracker (pain guesses-look-decided, goal requirements-agreed); an agreed sentence stays built. Found by the audit of 2026-11-28. Before: question-opens.'
+  at: '2026-11-28T05:55:37+01:00'
 answers:
 - chose: question-opens
   note: "accepted the recommendation as shown in round rb66bc9 (Fable's: Q1 review-by-area)"
