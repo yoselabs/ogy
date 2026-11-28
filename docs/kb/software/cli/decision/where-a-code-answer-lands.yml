@@ -14,3 +14,8 @@ options:
 proposal:
   chose: code-cites
   why: The citations already exist in the docstrings; reading them is deterministic and leaves only real work listed.
+answers:
+- chose: code-cites
+  said: 'A: code may cite a decision; the 143 are cited in batches'
+  at: '2026-11-28T15:01:54+01:00'
+  where: ai:claude/ontology-review-session-749f16

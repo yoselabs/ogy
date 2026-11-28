@@ -33,3 +33,7 @@ answers:
   said: 'Yes, all: mainstream renames'
   at: '2026-11-20T00:34:06+01:00'
   where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+- chose: no-copy
+  said: 'A: drop the drifted harm-tags copy'
+  at: '2026-11-28T15:02:00+01:00'
+  where: ai:claude/ontology-review-session-749f16

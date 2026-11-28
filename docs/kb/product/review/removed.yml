@@ -218,3 +218,28 @@ items:
       proposal:
         chose: this-pain
         why: A guess from what the code does; the owner's words replace it.
+  - id: product/review/enum/harm-tags
+    kind: enum
+    parent:
+    title:
+    said: The harm tags a kind or field may declare, in the order the review asks them.
+    why: software/ontology/decision/harm-names
+    replaced_by:
+    at: 2026-11-28 15:02:04+01:00
+    last_seen: d5e2afdfb5ada8c9bfd3f8e0641670d6d0ff47d1
+    hash: 976ee7900176
+    ontology: software
+    snapshot:
+      says: The harm tags a kind or field may declare, in the order the review asks them.
+      members:
+      - structure
+      - tells-outside
+      - irreversible
+      - authorization
+      src:
+      - code:src/ogy/declared.py#Declared.harms
+      agreed:
+        at: '2026-11-20T00:34:06+01:00'
+        where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
+        said: 'Yes, all: mainstream renames'
+        hash: 976ee7900176
