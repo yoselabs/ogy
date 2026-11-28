@@ -7,9 +7,10 @@ listed.
 
 from dataclasses import dataclass
 from enum import StrEnum
-lazy from collections.abc import Mapping
+lazy from collections.abc import Collection, Mapping
 
 from ogy import built, evidence, removed
+from ogy.citations import uncited
 from ogy.declared import Reader
 from ogy.flowcheck import unoffered
 from ogy.links import link_items
@@ -29,6 +30,7 @@ class Status(StrEnum):
     DOC_CHANGED = "document changed since captured"
     UNOFFERED = "unoffered"  # a serving interface lists `offers` and leaves out a choice of the step
     SAID_NO = "links to an entry said no to"  # an answer took the target away: re-point the link or remove the entry
+    UNCITED = "uncited"  # an answered decision that sets no entry and that no kind file, entry or code cites
 
 
 @dataclass(frozen=True)
@@ -114,12 +116,23 @@ def _said_no(snapshot: Snapshot) -> list[Work]:
     ]
 
 
+def _uncited(snapshot: Snapshot, code: Collection[str]) -> list[Work]:
+    """An answer built where nothing names it: cite the decision from the kind file, entry or code that carries it."""
+    note = 'cite it: `because` in a kind file or an entry, or "decision <address>" in a docstring'
+    return [Work(str(address), Status.UNCITED, "", None, note) for address in uncited(snapshot, code)]
+
+
 def work_left(
-    snapshot: Snapshot, record: Mapping[str, Line], read: evidence.Read, ledger: Mapping[str, removed.Item] | None = None
+    snapshot: Snapshot,
+    record: Mapping[str, Line],
+    read: evidence.Read,
+    ledger: Mapping[str, removed.Item] | None = None,
+    code: Collection[str] = (),
 ) -> list[Work]:
-    """Unbuilt and changed entries, unmet requirements that are work, links to an entry said no to, removal work, and sources that
-    changed since capture."""
+    """Unbuilt and changed entries, unmet requirements that are work, links to an entry said no to, removal work, sources that
+    changed since capture, and answered decisions nothing cites (`code`: the decisions the source files cite)."""
     return [
+        *_uncited(snapshot, code),
         *_unbuilt(snapshot, record),
         *_unmet(snapshot),
         *_unoffered(snapshot),

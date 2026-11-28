@@ -16,6 +16,7 @@ from ogy.base import read_ledgers
 from ogy.brief import Row, brief, rows
 from ogy.built import Line, read_source
 from ogy.check import check
+from ogy.citations import code_suffixes, in_code
 from ogy.constitution import printed_lines
 from ogy.coverage import uncovered
 from ogy.diagram import mermaid
@@ -181,14 +182,18 @@ def _owes(item: Work, scope: str | None, ontology: Ontology) -> bool:
     return scope in (None, item.owed_by, area, f"{item.owed_by}/{area}")
 
 
+def _code(source: Source, snapshot: Snapshot) -> set[str]:
+    """The decisions the tracked source files cite in a docstring (decision software/cli/decision/where-a-code-answer-lands)."""
+    return in_code(source.code_texts(code_suffixes(snapshot)))
+
+
 def run_work(target: Target, scope: str | None = None, loaded: Loaded | None = None) -> Run[list[Work]]:
     """What the built record says is still to do; given a scope, only in one layer (`product`: what the business still
     has to say, without the build behind it), one `<layer>/<area>`, or one area in every layer."""
     source, snapshot = loaded or target.read()
     _scope(snapshot, scope)
-    work = [
-        item for item in work_left(snapshot, _record(source), source.repo_file, _ledger(source)) if _owes(item, scope, snapshot.ontology)
-    ]
+    left = work_left(snapshot, _record(source), source.repo_file, _ledger(source), _code(source, snapshot))
+    work = [item for item in left if _owes(item, scope, snapshot.ontology)]
     return Run(work, source.reads, Verdict.FINDINGS if work else Verdict.OK)
 
 
@@ -201,7 +206,7 @@ def run_brief(target: Target, text: str) -> Run[list[Row]] | None:
             raise UnknownEntryError(near.no_entry(snapshot, text))
         return None
     record = _record(source)
-    found = brief(snapshot, address, work_left(snapshot, record, source.repo_file, _ledger(source)), record)
+    found = brief(snapshot, address, work_left(snapshot, record, source.repo_file, _ledger(source), _code(source, snapshot)), record)
     return Run(rows(snapshot, found), source.reads, Verdict.FINDINGS if found.work else Verdict.OK)
 
 
@@ -209,7 +214,7 @@ def run_tracker(target: Target) -> Run[list[Item]]:
     """The whole work left as items a tracker can hold."""
     source, snapshot = target.read()
     record = _record(source)
-    found = items(snapshot, work_left(snapshot, record, source.repo_file, _ledger(source)), record)
+    found = items(snapshot, work_left(snapshot, record, source.repo_file, _ledger(source), _code(source, snapshot)), record)
     return Run(found, source.reads, Verdict.FINDINGS if found else Verdict.OK)
 
 
@@ -223,7 +228,7 @@ def run_show(target: Target, text: str) -> Run[Shown]:
         if gone is None:
             raise UnknownEntryError(near.no_entry(snapshot, text))
         return Run(gone, source.reads)
-    work = work_left(snapshot, _record(source), source.repo_file, _ledger(source))
+    work = work_left(snapshot, _record(source), source.repo_file, _ledger(source), _code(source, snapshot))
     return Run(show(snapshot, address, _record(source), work), source.reads)
 
 

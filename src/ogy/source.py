@@ -5,7 +5,7 @@ from typing import Protocol
 lazy from collections.abc import Iterable
 lazy from pathlib import Path
 
-from git_porcelain import GitError, MissingRevision, RealRepo, Tree, worktree_tree
+from git_porcelain import GitError, MissingRevision, RealRepo, Tree, ls_files, worktree_tree
 
 from ogy.verdict import MissingTargetError
 
@@ -35,6 +35,10 @@ class Source(Protocol):
 
     def repo_file(self, path: str, rev: str | None = None) -> str | None:
         """A repository-relative file's text (at the commit `rev` when given, else at this snapshot), or None when it does not exist."""
+        ...
+
+    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
+        """`{repository path: text}` of every tracked file of this snapshot ending in one of `suffixes`."""
         ...
 
 
@@ -105,6 +109,15 @@ class GitSource(_TreeSource):
         data = self._commit.read(path) if self._commit is not None else None
         return None if data is None else data.decode()
 
+    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
+        if self._commit is None:
+            self._commit = self._git.tree(self.rev)
+        if self._commit is None or not suffixes:
+            return {}
+        paths = [path for path in self._commit.files if path.endswith(suffixes)]
+        self.reads += len(paths)
+        return {path: data.decode(errors="replace") for path, data in self._commit.read_many(paths).items() if data is not None}
+
 
 class WorktreeSource(_TreeSource):
     """The files on disk, including uncommitted edits."""
@@ -130,6 +143,17 @@ class WorktreeSource(_TreeSource):
             return None
         self.reads += 1
         return target.read_text()
+
+    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
+        if not suffixes:
+            return {}
+        try:
+            paths = [path for path in ls_files(self.root, ambient=os.environ) if path.endswith(suffixes)]
+        except GitError:
+            return {}
+        found = {path: self.root / path for path in paths if (self.root / path).is_file()}
+        self.reads += len(found)
+        return {path: target.read_text(errors="replace") for path, target in found.items()}
 
 
 def open_source(repo: Path, rev: str, kb: str, *, required: bool = True) -> Source:

@@ -58,6 +58,10 @@ class Nothing:
         del path, rev
         return None
 
+    def code_texts(self, suffixes: tuple[str, ...]) -> dict[str, str]:
+        del suffixes
+        return {}
+
 
 def covers(subject: str, text: str) -> bool:
     """The address or area `subject` is `text` or holds it."""
