@@ -68,7 +68,7 @@ def test_an_actor_step_keeps_one_choice_without_when(kb: Make) -> None:
     [
         '{do: write, "on": product/app/entity/loan/attribute/late}',  # a derived attribute is never written
         '{do: tell, "on": product/app/entity/loan}',
-        '{do: transition, "on": product/app/entity/loan}',
+        '{do: move, "on": product/app/entity/loan}',
     ],
 )
 def test_an_effect_names_what_its_do_acts_on(kb: Make, effect: str) -> None:

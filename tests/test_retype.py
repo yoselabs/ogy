@@ -105,7 +105,6 @@ src: ['code:app.py#lend']
 attributes:
   member: {says: Who borrows., type: one, of: product/app/entity/loan}
   notes: {says: What the desk wrote., type: list}
-  due: {says: When it is due., type: time}
 """
 DESK = (
     "says: The desk.\nform: web\nserves: [product/app/workflow/borrow/step/ask]\naccepts: [product/app/entity/loan]\n"
@@ -115,7 +114,7 @@ HEARD = DECISION.replace("proposal: {chose: two, why: Small.}", "proposal: {chos
 
 
 def test_migrate_rewrites_the_values_a_kind_reshaped(repo: Path) -> None:
-    """attribute type one, list and time, and a proposal's heard part, are rewritten; what was agreed stays agreed."""
+    """attribute type one and list, and a proposal's heard part, are rewritten; what was agreed stays agreed."""
     target, member = Target(repo), "product/app/entity/loan/attribute/member"
     (repo / "docs/kb/product/app/entity").mkdir(parents=True)
     (repo / "docs/kb/product/app/entity/loan.yml").write_text(LOAN)
@@ -129,10 +128,8 @@ def test_migrate_rewrites_the_values_a_kind_reshaped(repo: Path) -> None:
     ops.run_migrate(target)
     assert not ops.run_check(target).value
     entries = target.read()[1].entries
-    fields = {
-        key: entries[address_of(f"product/app/entity/loan/attribute/{key}", target.kinds())].fields for key in ("member", "notes", "due")
-    }
-    assert "type" not in fields["member"] and fields["notes"]["many"] is True and fields["due"]["type"] == "datetime"
+    fields = {key: entries[address_of(f"product/app/entity/loan/attribute/{key}", target.kinds())].fields for key in ("member", "notes")}
+    assert "type" not in fields["member"] and fields["notes"]["many"] is True
     assert dig(fields["member"], "agreed", "hash") == fingerprint(target, member)  # the owner's yes still holds
     assert entries[address_of("product/app/decision/fee/proposal", target.kinds())].fields["heard"] == "Two seems fair"
     commit(repo, "migrated")

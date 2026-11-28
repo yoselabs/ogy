@@ -23,7 +23,7 @@ RECORDS = [
         "address": WORKFLOW,
         "says": "A member reserves a tool for a day.",
         "start": "ask",
-        "realizes": "product/lending/capability/lend-tools",
+        "realizes": ["product/lending/capability/lend-tools"],
         "steps": {
             "ask": {
                 "says": "The member asks to reserve a tool.",

@@ -1,5 +1,6 @@
 says: A customer holds a pet until the visit.
-realizes: product/reservations/capability/hold-a-pet
+realizes:
+- product/reservations/capability/hold-a-pet
 because:
 - product/reservations/decision/hold-online
 start: pick
@@ -29,7 +30,7 @@ steps:
       otherwise:
         then: held
         effects:
-        - do: transition
+        - do: move
           on: product/catalog/entity/pet/transition/hold
         - do: tell
           on: product/shared/actor/customer

@@ -3,7 +3,8 @@ because:
 - product/inspection/pain/tasks-drift
 src:
 - code:tools/ogy_beads.py#plan
-realizes: product/inspection/capability/work-as-tracker-items
+realizes:
+- product/inspection/capability/work-as-tracker-items
 start: sync
 steps:
   sync:

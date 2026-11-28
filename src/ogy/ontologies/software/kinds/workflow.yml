@@ -26,6 +26,7 @@ flow:                                                # makes it a graph: the kin
   servers: [interface]                               # the kinds that serve a step to its actor
   offers: offers                                     # a server offering only some choices lists them
   group: realizes                                    # `ogy work` groups the work of a workflow by the capability it realizes
+widened: [realizes]                                  # one capability became several (decision workflow-realizes-many)
 dropped: [trigger]                                   # who starts it is computed from the links (decision software/ontology/decision/trigger-computed)
 requires:                     # owner (decision workflow-owes-capability): a workflow belongs to what the product offers, or is part of another flow
   - {path: [realizes], or_paths: [["<-calls"], ["<-then"], [details]], kinds: [capability, step, case, choice, timeout], work: true, status: unrealized, error: "a workflow realizes a capability, or a step calls it, a row leads to it or it details a step"}
@@ -36,4 +37,4 @@ fields:
   event: {type: link, to: [transition]}              # started when this transition happens; the listener names it, the cause does not
   details: {because: [software/ontology/decision/software-workflow-start], type: link, to: [step]}                  # a software flow behind a product step: started through it, no actor step (decision software-workflow-start)
   start: {type: link, to: [step], required: true}
-  realizes: {type: link, to: [capability]}
+  realizes: {because: [software/ontology/decision/workflow-realizes-many], type: links, to: [capability]}

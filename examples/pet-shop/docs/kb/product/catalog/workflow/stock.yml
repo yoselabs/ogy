@@ -1,5 +1,6 @@
 says: The assistant puts a new pet on the list.
-realizes: product/catalog/capability/keep-the-list-true
+realizes:
+- product/catalog/capability/keep-the-list-true
 because:
 - product/catalog/decision/stock-goal
 start: add
@@ -12,7 +13,7 @@ steps:
         label: Add to the list
         then: listed
         effects:
-        - do: transition
+        - do: move
           on: product/catalog/entity/pet/transition/arrive
 ends:
   listed:

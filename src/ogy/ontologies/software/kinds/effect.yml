@@ -1,6 +1,7 @@
 kind: effect
+because: [software/ontology/decision/effect-do-words]
 about: one thing a row changes or tells; the effects of one row happen together or not at all
-guidance: "What a row changes or tells, all together or not at all. `transition` names a transition (it also creates an entity with a lifecycle); `create`, `delete` an entity without one; `write` our own entity or attribute, not derived; `tell` an actor or a dependency, the one effect on what we do not own. A performing handler is required."
+guidance: "What a row changes or tells, all together or not at all. `move` makes a transition (one with no `from` creates an entity with a lifecycle); `create`, `delete` an entity without one; `write` our own entity or attribute, not derived; `tell` an actor or a dependency, the one effect on what we do not own. A performing handler is required."
 like: "a UML effect on a transition: what a row changes or tells"
 unlike: "a side effect nobody declared"
 shape: inline
@@ -8,11 +9,14 @@ part_of: [choice, case, timeout]
 key: effects
 holds: list
 fields:
-  do: {type: enum, of: [transition, create, delete, write, tell], required: true, member_harm: {delete: [irreversible], tell: [tells-outside]}}
+  do: {type: enum, of: [move, create, delete, write, tell], required: true, member_harm: {delete: [irreversible], tell: [tells-outside]}}
   "on": {type: link, to: [transition, entity, attribute, actor, dependency], required: true}
 requires:
-  - {if_equals: {field: do, value: transition}, path: ["on"], kinds: [transition], error: "a transition effect names a transition"}
+  - {if_equals: {field: do, value: move}, path: ["on"], kinds: [transition], error: "a move effect names a transition"}
   - {if_equals: {field: do, value: [create, delete]}, path: ["on"], kinds: [entity], error: "a create or delete effect names an entity"}
   - {if_equals: {field: do, value: write}, path: ["on"], kinds: [attribute, entity], without: [derived], error: "a write effect names our own entity or an attribute that is not derived; a dependency is told"}
   - {if_equals: {field: do, value: tell}, path: ["on"], kinds: [actor, dependency], error: "a tell effect names an actor or a dependency"}
 dropped: [value]
+revalued:                                            # `ogy migrate`: the value named like a kind is the verb move
+  do:
+    transition: {do: move}

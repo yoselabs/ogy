@@ -74,6 +74,7 @@ class Checker:
             for name, inner in kind.folded.items()
             if isinstance(fields.get(name), dict)
         ]
+        found += [f"{name} was one link and is now a list: run `ogy migrate`" for name in kind.widened if isinstance(fields.get(name), str)]
         return found + [
             f"{name} {value} is now {', '.join(f'{k} {v}' for k, v in values[value].items())}: run `ogy migrate`"
             for name, values in kind.revalued.items()

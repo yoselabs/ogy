@@ -1,5 +1,6 @@
 says: One round settles, advances and admits.
-realizes: product/loop/capability/run-rounds
+realizes:
+- product/loop/capability/run-rounds
 src:
 - code:src/taskloop/round.py#run_round
 start: run
@@ -25,7 +26,7 @@ steps:
           - product/loop/entity/attempt
         then: advance
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/hold
       otherwise:
         then: advance
@@ -42,7 +43,7 @@ steps:
         satisfies:
         - product/loop/rule/claimed-before-new
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/advance
       otherwise:
         then: admit
@@ -70,7 +71,7 @@ steps:
         effects:
         - do: tell
           on: product/shared/actor/tracker
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/admit
 ends:
   idle:

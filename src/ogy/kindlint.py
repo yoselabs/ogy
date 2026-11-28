@@ -57,7 +57,7 @@ def problems(kinds: Mapping[str, Kind], declared: Declared) -> list[str]:
         for name, kind in kinds.items()
         if kind.flow is not None
         and kind.flow.group is not None
-        and (kind.flow.group not in kind.fields or kind.fields[kind.flow.group].type is not FieldType.LINK)
+        and (kind.flow.group not in kind.fields or kind.fields[kind.flow.group].type not in {FieldType.LINK, FieldType.LINKS})
     ]
     return found
 

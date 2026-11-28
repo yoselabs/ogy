@@ -1,5 +1,6 @@
 says: The owner inspects the recorded product and follows its parts, links and reasons.
-realizes: product/inspection/capability/see-the-product-map
+realizes:
+- product/inspection/capability/see-the-product-map
 satisfies:
 - product/inspection/rule/inspection-preserves-declarations
 because:

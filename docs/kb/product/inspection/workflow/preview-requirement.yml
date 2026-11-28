@@ -1,5 +1,6 @@
 says: The owner inspects the prospective differences and impact of a proposed requirement before it is written.
-realizes: product/inspection/capability/preview-a-new-requirement
+realizes:
+- product/inspection/capability/preview-a-new-requirement
 satisfies:
 - product/inspection/rule/inspection-preserves-declarations
 because:

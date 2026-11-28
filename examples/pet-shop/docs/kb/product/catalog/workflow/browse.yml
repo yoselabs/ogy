@@ -1,5 +1,6 @@
 says: A customer looks through the pets the shop has.
-realizes: product/catalog/capability/show-what-is-left
+realizes:
+- product/catalog/capability/show-what-is-left
 because:
 - product/catalog/decision/stock-goal
 start: look

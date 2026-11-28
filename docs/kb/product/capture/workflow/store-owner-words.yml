@@ -1,7 +1,8 @@
 says: The agent records the owner's choice as an answer on its decision, with a short paraphrase of what the owner said.
 src:
 - code:src/ogy/writes.py#answer
-realizes: product/capture/capability/store-words
+realizes:
+- product/capture/capability/store-words
 start: store
 steps:
   store:
@@ -36,13 +37,13 @@ steps:
       otherwise:
         then: stored
         effects:
-        - do: transition
+        - do: move
           on: product/review/entity/decision/transition/answer
     agreed:
       at: '2026-11-20T20:52:40+01:00'
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: 'Owner delegated to Fable: agreed to what Fable judged true against the code'
-      hash: 78cdbd7723e6
+      hash: 28dd376aca88
 ends:
   stored:
     result: success

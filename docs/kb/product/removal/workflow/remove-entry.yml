@@ -1,7 +1,8 @@
 says: An agent removes an entry with a reason; ogy records it in the removed ledger when the base commit had it or ogy init starts with it, then deletes it.
 src:
 - code:src/ogy/removal.py#remove
-realizes: product/removal/capability/remove-with-reason
+realizes:
+- product/removal/capability/remove-with-reason
 start: ask
 steps:
   ask:

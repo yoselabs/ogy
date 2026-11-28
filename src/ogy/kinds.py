@@ -330,6 +330,7 @@ class Kind(BaseModel):
     renamed: dict[str, str] = {}  # old field name -> new: an entry written before holds the old one until `ogy migrate`
     revalued: dict[str, dict[str, dict[str, str | bool | None]]] = {}  # field -> old value -> the fields it now is (None removes)
     folded: dict[str, str] = {}  # field that held a part's mapping -> the part's one field whose value it now holds
+    widened: tuple[str, ...] = ()  # fields that were one link and are now links: an old single value becomes a list of one
     dropped: tuple[str, ...] = ()  # fields the kind no longer has: `ogy migrate` removes them (a filled one comes back to the owner)
 
     @field_validator("part_of", mode="before")

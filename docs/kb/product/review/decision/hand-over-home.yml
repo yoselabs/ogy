@@ -6,12 +6,14 @@ options:
     label: 'It delivers list-dropped: ogy lists what no person has seen'
     sets:
       product/review/workflow/hand-over:
-        realizes: product/removal/capability/list-dropped
+        realizes:
+        - product/removal/capability/list-dropped
   ask-the-owner:
     label: 'It delivers ask-the-owner: the question cards'
     sets:
       product/review/workflow/hand-over:
-        realizes: product/review/capability/ask-the-owner
+        realizes:
+        - product/review/capability/ask-the-owner
   remove:
     label: 'No: the hand-over is dropped'
     sets:

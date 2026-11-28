@@ -1,5 +1,6 @@
 says: A hold that ran out puts the pet back on the list.
-realizes: product/reservations/capability/hold-a-pet
+realizes:
+- product/reservations/capability/hold-a-pet
 because:
 - product/reservations/decision/hold-online
 schedule: product/reservations/quantity/release-check
@@ -16,7 +17,7 @@ steps:
           - product/reservations/quantity/hold-days
         then: released
         effects:
-        - do: transition
+        - do: move
           on: product/catalog/entity/pet/transition/release
       otherwise:
         then: kept

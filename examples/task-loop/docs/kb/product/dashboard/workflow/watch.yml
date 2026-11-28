@@ -1,5 +1,6 @@
 says: The person watches the factory work.
-realizes: product/dashboard/capability/watch
+realizes:
+- product/dashboard/capability/watch
 src:
 - code:src/taskloop/dash_server.py#respond
 start: look

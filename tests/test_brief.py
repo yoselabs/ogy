@@ -32,7 +32,7 @@ def _chain(repo: Path) -> None:
             "address": WF,
             "says": "A member borrows a tool.",
             "src": [SOURCE],
-            "realizes": CAP,
+            "realizes": [CAP],
             "start": "ask",
             "steps": {
                 "ask": {

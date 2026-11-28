@@ -8,13 +8,15 @@ options:
       product/mcp/capability/tools-over-mcp:
         says: A program calls every ogy command as an MCP tool and gets what the command line returns.
       product/mcp/workflow/call-a-tool:
-        realizes: product/mcp/capability/tools-over-mcp
+        realizes:
+        - product/mcp/capability/tools-over-mcp
   write-entries:
     label: It delivers write-entries only
     sets:
       product/mcp/capability/tools-over-mcp:
       product/mcp/workflow/call-a-tool:
-        realizes: product/capture/capability/write-entries
+        realizes:
+        - product/capture/capability/write-entries
   remove:
     label: 'No: the MCP door is dropped'
     sets:

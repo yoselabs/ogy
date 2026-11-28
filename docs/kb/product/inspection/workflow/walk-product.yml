@@ -1,5 +1,6 @@
 says: The owner follows a selected path through a recorded workflow, its calls and ends.
-realizes: product/inspection/capability/walk-the-product
+realizes:
+- product/inspection/capability/walk-the-product
 satisfies:
 - product/inspection/rule/inspection-preserves-declarations
 because:

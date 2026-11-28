@@ -1,5 +1,6 @@
 says: One task is planned, implemented and checked, each step in a slot.
-realizes: product/loop/capability/run-rounds
+realizes:
+- product/loop/capability/run-rounds
 src:
 - code:src/taskloop/operations.py#start
 start: plan
@@ -12,7 +13,7 @@ steps:
         label: Plan written
         then: implement
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/finish
       refused:
         label: Cannot plan it
@@ -27,7 +28,7 @@ steps:
         satisfies:
         - product/loop/rule/agent-never-pushes
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/finish
       refused:
         label: Cannot implement it
@@ -43,12 +44,12 @@ steps:
           - product/loop/entity/attempt
         then: checks-failed
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/fail
       otherwise:
         then: passed
         effects:
-        - do: transition
+        - do: move
           on: product/loop/entity/attempt/transition/pass
 ends:
   passed:

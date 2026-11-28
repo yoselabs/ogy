@@ -7,7 +7,7 @@ shape: inline
 part_of: entity
 key: transitions
 requires:
-  - {path: ["<-on?do=transition"], kinds: [case, choice, timeout], work: true, status: unused, error: "a transition no effect fires"}
+  - {path: ["<-on?do=move"], kinds: [case, choice, timeout], work: true, status: unused, error: "a transition no effect fires"}
 fields:
   from: {type: links, to: [state]}                   # left out: the entity is created in `to`
   to: {type: link, to: [state], required: true}

@@ -1,7 +1,8 @@
 says: An agent or CI runs the tests with the stamping plugin, and the entries whose proofs passed are built.
 src:
 - code:src/ogy/stamping.py#stamp_passed
-realizes: product/checks/capability/test-run-writes-built
+realizes:
+- product/checks/capability/test-run-writes-built
 start: run
 steps:
   run:

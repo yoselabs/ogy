@@ -36,9 +36,10 @@ ends:
       where: ai:claude/095b122d-a1b0-4f70-b4f0-5b1291469157
       said: "Owner delegated round rc461c4 to Fable: agreed to the seven, with init's ends, the remove check and the reply end reworded"
       hash: 46068d910c30
-realizes: product/removal/capability/list-dropped
+realizes:
+- product/removal/capability/list-dropped
 agreed:
   at: '2026-11-27T20:07:57+01:00'
   where: ai:claude/ontology-review-session-749f16
   said: Likes Fable's suggestions on the hand-over and skills
-  hash: b82a7fdcc2b2
+  hash: e71d10c7d6ad

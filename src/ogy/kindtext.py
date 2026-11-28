@@ -84,6 +84,7 @@ def _rules(kind: Kind) -> list[str]:
         for old, now in values.items()
     ]
     lines += [f"  folded: {field} held a part, now its {inner} (`ogy migrate`)" for field, inner in kind.folded.items()]
+    lines += [f"  widened: {field} was one link, now a list (`ogy migrate`)" for field in kind.widened]
     return lines + [f"  dropped: {old} (`ogy migrate`)" for old in kind.dropped]
 
 

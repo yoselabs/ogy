@@ -2,7 +2,7 @@
 
 lazy from collections.abc import Mapping
 
-from ogy.kinds import FILED, KIND_NAME, NAME, RESERVED_AREAS, Kind, Shape, Was
+from ogy.kinds import FILED, KIND_NAME, NAME, RESERVED_AREAS, FieldType, Kind, Shape, Was
 lazy from ogy.declared import Declared
 
 
@@ -17,6 +17,11 @@ def migration(declared: Declared, name: str, kind: Kind) -> list[str]:
     found += [f"{name}: {old} is both renamed and dropped" for old in kind.dropped if old in kind.renamed]
     found += [
         f"{name}: revalued or folded {field}, which is no field" for field in (*kind.revalued, *kind.folded) if field not in kind.fields
+    ]
+    found += [
+        f"{name}: widened {field}, which is no links field"
+        for field in kind.widened
+        if field not in kind.fields or kind.fields[field].type is not FieldType.LINKS
     ]
     return found
 

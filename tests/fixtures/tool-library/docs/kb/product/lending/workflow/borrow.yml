@@ -2,7 +2,8 @@ says: A member borrows a tool.
 src:
 - code:src/library/loans.py#lend
 start: ask
-realizes: product/lending/capability/lend-tools
+realizes:
+- product/lending/capability/lend-tools
 steps:
   standing:
     says: Only a member who owes no late fee may borrow.
@@ -59,13 +60,13 @@ steps:
         effects:
         - do: create
           on: product/lending/entity/loan
-        - do: transition
+        - do: move
           on: product/lending/entity/loan/transition/start
     agreed:
       at: '2026-11-25T09:00:00+01:00'
       where: ai:claude/9b01#45
       said: Yes to the cards but the borrow step
-      hash: 4ff69e70db67
+      hash: cf8607bbf746
 ends:
   lent:
     says: The member has the tool.

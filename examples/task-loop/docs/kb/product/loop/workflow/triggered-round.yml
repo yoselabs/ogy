@@ -1,5 +1,6 @@
 says: An outside automation asks for a round.
-realizes: product/loop/capability/run-rounds
+realizes:
+- product/loop/capability/run-rounds
 start: fire
 steps:
   fire:

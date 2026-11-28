@@ -1,7 +1,8 @@
 says: An agent takes one work item and reads, in one print, everything it rests on before building it.
 because:
 - product/inspection/pain/tasks-drift
-realizes: product/inspection/capability/work-as-tracker-items
+realizes:
+- product/inspection/capability/work-as-tracker-items
 start: read
 steps:
   read:

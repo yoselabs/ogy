@@ -1,5 +1,6 @@
 says: A customer pays for a pet and takes it home.
-realizes: product/sales/capability/pay-at-the-counter
+realizes:
+- product/sales/capability/pay-at-the-counter
 because:
 - product/sales/decision/card-payments
 start: ring-up
@@ -24,7 +25,7 @@ steps:
         effects:
         - do: tell
           on: product/sales/actor/payment-provider
-        - do: transition
+        - do: move
           on: product/catalog/entity/pet/transition/sell
         satisfies:
         - product/sales/rule/charge-once

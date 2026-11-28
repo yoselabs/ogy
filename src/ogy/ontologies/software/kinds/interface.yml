@@ -20,7 +20,7 @@ requires:
   - {if_set: allows, kinds: [interface], without: [serves], error: "an interface that serves a step takes who may use it from the steps' actors; `allows` is for one that serves none"}
 fields:
   says: {required: true}
-  form: {type: enum, of: [web, cli, http, mcp, library, file, message], required: true}   # read by requires: a cli says how it is invoked
+  form: {type: enum, of: [web, cli, http, mcp, file, message], required: true}   # read by requires: a cli says how it is invoked
   invoked_as: {}                                     # the exact command line or route
   serves: {type: links, to: [step], input: {parts: [choice]}}   # the served steps' set of choices changes: stale
   offers: {type: links, to: [choice], input: none}

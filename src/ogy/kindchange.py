@@ -82,6 +82,10 @@ class _Pass:
             if isinstance(value := out.get(name), dict):
                 self.found.append(Change(address, where + name, f"{name} ({inner})", value))
                 out[name] = value.get(inner)
+        for name in kind.widened:
+            if isinstance(value := out.get(name), str):
+                self.found.append(Change(address, where + name, f"{name} [{value}]", value))
+                out[name] = [value]
         for name, values in kind.revalued.items():
             if isinstance(value := out.get(name), str) and (now := values.get(value)) is not None:
                 self.found.append(Change(address, f"{where}{name} {value}", ", ".join(f"{k} {v}" for k, v in now.items()), value))

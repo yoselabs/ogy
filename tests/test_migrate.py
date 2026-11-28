@@ -183,3 +183,32 @@ def test_migrate_leaves_an_agreement_whose_rows_changed_since(repo: Path) -> Non
     target = Target(repo)
     assert ops.run_migrate(target).value.lines() == ["nothing to migrate"]
     assert ops.run_show(target, ASK).value.status is Status_.CHANGED  # back to the owner
+
+
+ONE, MANY = "  actor: {type: link, to: [actor], input: none}", "  actor: {type: links, to: [actor], input: none}"
+WIDE = {"step.yml": [(ONE, MANY), ("", "widened: [actor]\n")]}
+
+
+@dataclass(frozen=True)
+class Widened(Target):
+    """The repository read with step.actor widened from one link to links, as workflow.realizes was (workflow-realizes-many)."""
+
+    @override
+    def kinds(self) -> Ontology:
+        return changed(WIDE)
+
+
+def test_a_widened_link_is_found_and_becomes_a_list_of_one(repo: Path, before: str) -> None:
+    target = Widened(repo)
+    step = GO.rsplit("/choice/", 1)[0]
+    assert (Problem.NEEDS_MIGRATION, step, "actor was one link and is now a list: run `ogy migrate`") in {
+        (item.problem, str(item.address), item.detail) for item in ops.run_check(target).value
+    }
+    assert f"renamed {step} actor to actor [product/app/actor/member]" in ops.run_migrate(target).value.lines()
+    assert target.read()[1].entries[address_of(step, target.kinds())].fields["actor"] == ["product/app/actor/member"]
+    assert not ops.run_check(target).value
+
+
+def test_a_widened_field_is_a_links_field() -> None:
+    with pytest.raises(OntologyError, match="widened actor, which is no links field"):
+        changed({"step.yml": [("", "widened: [actor]\n")]})
